@@ -35,6 +35,7 @@ do shell script "hdiutil attach tw_tmp.dmg"
 do shell script "touch /Volumes/@CPACK_PACKAGE_FILE_NAME@/.DS_Store"
 do shell script "chmod +w /Volumes/@CPACK_PACKAGE_FILE_NAME@/.DS_Store"
 do shell script "SetFile -a -v /Volumes/@CPACK_PACKAGE_FILE_NAME@/background.png"
+do shell script "ls /Volumes"
 
 -- Setup Drag N' Drop installer window layout
 tell application "Finder"
