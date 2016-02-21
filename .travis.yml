@@ -5,14 +5,26 @@ addons:
     packages:
     - cmake
     - libqt4-dev
+    - qtbase5-dev
+    - qtscript5-dev
+    - qttools5-dev
     - zlib1g-dev
     - libhunspell-dev
     - libpoppler-qt4-dev
+    - libpoppler-qt5-dev
+    - libpoppler-private-dev
     - liblua5.2-dev
+
 
 branches:
   only:
     - master
 
+env:
+  - QT=4
+  - QT=5
+
+before_script:
+  - mkdir build && cd build && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION="${QT}"
 script:
-  - mkdir build && cd build && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' && make VERBOSE=1
+  - cd build && make VERBOSE=1
