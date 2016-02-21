@@ -45,7 +45,8 @@ script:
   - make VERBOSE=1
 
 before_deploy:
-- travis-ci/prepare-bintray.sh
+- cd ${TRAVIS_BUILD_DIR} && travis-ci/prepare-bintray.sh
+
 deploy:
   provider: bintray
   file: travis-ci/bintray.desc
