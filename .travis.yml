@@ -3,7 +3,8 @@ language: cpp
 addons:
   apt:
     sources:
-    - ubuntu-sdk-team
+    - ubuntu-sdk-team # for qt5
+    - debian-sid # for poppler-qt5
     packages:
     - cmake
     - libqt4-dev
@@ -16,8 +17,6 @@ addons:
     - libpoppler-qt5-dev
     - libpoppler-private-dev
     - liblua5.2-dev
-
-dist: trusty
 
 branches:
   only:
