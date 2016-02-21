@@ -15,6 +15,7 @@ addons:
     - libpoppler-private-dev
     - liblua5.2-dev
 
+dist: trusty
 
 branches:
   only:
