@@ -19,8 +19,8 @@ language: cpp
 #    - liblua5.2-dev
 
 os:
-#  - linux
-  - osx
+  - linux
+#  - osx
 
 #dist: trusty
 #sudo: required
