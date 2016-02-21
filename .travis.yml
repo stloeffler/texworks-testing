@@ -48,6 +48,7 @@ before_deploy:
 - cd ${TRAVIS_BUILD_DIR} && travis-ci/prepare-bintray.sh
 
 deploy:
+  skip_cleanup: true
   provider: bintray
   file: travis-ci/bintray.json
   user: stloeffler
