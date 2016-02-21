@@ -26,6 +26,6 @@ env:
   - QT=5
 
 before_script:
-  - mkdir build && cd build && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION="${QT}"
+  - mkdir build-${QT} && cd build-${QT} && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION="${QT}"
 script:
-  - cd build && make VERBOSE=1
+  - cd build-${QT} && make VERBOSE=1
