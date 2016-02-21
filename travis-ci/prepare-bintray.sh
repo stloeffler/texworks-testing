@@ -3,7 +3,7 @@
 TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION\s"\?\([0-9.]\+\)"\?$,\1,p' src/TWVersion.h)
 GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 DATE=$(date --rfc-3339="seconds")
-DATE_HASH=$(date +"%Y%m%d%H%M%d")
+DATE_HASH=$(date +"%Y%m%d%H%M%S")
 
 VERSION_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
 
