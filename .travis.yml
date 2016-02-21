@@ -46,7 +46,7 @@ script:
 
 before_deploy:
   - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && make package; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes; fi
   - cd ${TRAVIS_BUILD_DIR} && find .
   - cd ${TRAVIS_BUILD_DIR} && travis-ci/prepare-bintray.sh
 
