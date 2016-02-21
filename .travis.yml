@@ -1,22 +1,25 @@
 language: cpp
 
-addons:
-  apt:
-    sources:
-    - ubuntu-sdk-team # for qt5
-    - debian-sid # for poppler-qt5
-    packages:
-    - cmake
-    - libqt4-dev
-    - qtbase5-dev
-    - qtscript5-dev
-    - qttools5-dev
-    - zlib1g-dev
-    - libhunspell-dev
-    - libpoppler-qt4-dev
-    - libpoppler-qt5-dev
-    - libpoppler-private-dev
-    - liblua5.2-dev
+#addons:
+#  apt:
+##    sources:
+##    - ubuntu-sdk-team # for qt5
+##    - debian-sid # for poppler-qt5
+#    packages:
+#    - cmake
+#    - libqt4-dev
+#    - qtbase5-dev
+#    - qtscript5-dev
+#    - qttools5-dev
+#    - zlib1g-dev
+#    - libhunspell-dev
+#    - libpoppler-qt4-dev
+#    - libpoppler-qt5-dev
+#    - libpoppler-private-dev
+#    - liblua5.2-dev
+
+dist: trusty
+sudo: required
 
 branches:
   only:
@@ -25,6 +28,11 @@ branches:
 env:
   - QT=4
   - QT=5
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y cmake libqt4-dev qtbase5-dev qtscript5-dev qttools5-dev zlib1g-dev libhunspell-dev libpoppler-qt4-dev libpoppler-qt5-dev libpoppler-private-dev liblua5.2-dev
+
 
 before_script:
   - mkdir build-$QT && cd build-$QT && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION="$QT"
