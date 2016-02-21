@@ -20,7 +20,8 @@ cat > travis-ci/bintray.json << EOF
 	},
 	"files":
 	[
-		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/(.*)", "uploadPattern": "build-${TRAVIS_OS_NAME}-qt${QT}/$1"}
+		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/texworks", "uploadPattern": "build-${TRAVIS_OS_NAME}-qt${QT}/texworks"},
+		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/libTWLuaPlugin.so", "uploadPattern": "build-${TRAVIS_OS_NAME}-qt${QT}/libTWLuaPlugin.so"}
 	],
 	
 	"publish": true
