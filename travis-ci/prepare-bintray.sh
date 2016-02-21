@@ -5,7 +5,7 @@ GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 DATE=$(date --rfc-3339="seconds")
 DATE_HASH=$(date +"%Y%m%d%H%M%d")
 
-PACKAGE_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}.tar.bz2"
+VERSION_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
 
 cat > travis-ci/bintray.json << EOF
 {
@@ -15,7 +15,7 @@ cat > travis-ci/bintray.json << EOF
 		"subject": "stloeffler"
 	},
 	"version": {
-		"name": "${PACKAGE_NAME}",
+		"name": "${VERSION_NAME}",
 		"released": "${DATE}"
 	},
 	"files":
