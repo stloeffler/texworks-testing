@@ -20,7 +20,7 @@ cat > travis-ci/bintray.json << EOF
 	},
 	"files":
 	[
-		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/.*", "uploadPattern": "files"}
+		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/(.*)", "uploadPattern": "build-${TRAVIS_OS_NAME}-qt${QT}/$1"}
 	],
 	
 	"publish": true
