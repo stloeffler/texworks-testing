@@ -5,7 +5,7 @@ GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 DATE=$(date --rfc-3339="seconds")
 DATE_HASH=$(date +"%Y%m%d%H%M%d")
 
-PACKAGE_NAME="TeXworks-mac-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}.tar.bz2"
+PACKAGE_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}.tar.bz2"
 
 cat > travis-ci/bintray.json << EOF
 {
@@ -20,7 +20,7 @@ cat > travis-ci/bintray.json << EOF
 	},
 	"files":
 	[
-		{"includePattern": "build-${TRAVIS_OS_NAME}-qt${QT}/.*", "uploadPattern": "files"}
+		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/.*", "uploadPattern": "files"}
 	],
 	
 	"publish": true
