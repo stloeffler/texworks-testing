@@ -36,7 +36,7 @@ env:
 before_install:
   - if [ $TRAVIS_OS_NAME == linux -a $QT -eq 4 ]; then sudo apt-get -qq update && sudo apt-get install -y cmake libqt4-dev zlib1g-dev libhunspell-dev libpoppler-qt4-dev liblua5.2-dev; fi
   - if [ $TRAVIS_OS_NAME == linux -a $QT -eq 5 ]; then sudo apt-get -qq update && sudo apt-get install -y cmake qtbase5-dev qtscript5-dev qttools5-dev zlib1g-dev libhunspell-dev libpoppler-qt5-dev libpoppler-private-dev liblua5.2-dev; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install qt && brew install hunspell && brew install poppler --with-qt --enable-xpdf-headers && brew install lua; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then (brew update > brew_update.log || cat brew_update.log) && brew install qt && brew install hunspell && brew install poppler --with-qt --enable-xpdf-headers && brew install lua; fi
 
 before_script:
   - if [ $TRAVIS_OS_NAME == linux ]; then mkdir build-$TRAVIS_OS_NAME-qt$QT && cd build-$TRAVIS_OS_NAME-qt$QT && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION="$QT"; fi
