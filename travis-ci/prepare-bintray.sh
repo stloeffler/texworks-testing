@@ -41,7 +41,7 @@ cat > travis-ci/bintray.desc << EOF
 
 	"files":
 	[
-		{"includePattern": "build/.*", "uploadPattern": "files"}
+		{"includePattern": "build-${TRAVIS_OS_NAME}-qt${QT}/.*", "uploadPattern": "files"}
 	],
 	
 	"publish": true
