@@ -1,0 +1,18 @@
+language: cpp
+
+addons:
+  apt:
+    packages:
+    - cmake
+    - libqt4-dev
+    - zlib1g-dev
+    - libhunspell-dev
+    - libpoppler-qt4-dev
+    - liblua5.2-dev
+
+branches:
+  only:
+    - master
+
+script:
+  - mkdir build && cd build && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' && make VERBOSE=1
