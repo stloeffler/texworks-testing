@@ -24,7 +24,7 @@ echo "DATE_HASH = ${DATE_HASH}"
 cat > travis-ci/bintray.json << EOF
 {
 	"package": {
-		"name": "TeXworks-latest",
+		"name": "Latest-TeXworks-Mac",
 		"repo": "generic",
 		"subject": "stloeffler"
 	},
