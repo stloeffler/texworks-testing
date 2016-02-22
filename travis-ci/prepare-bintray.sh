@@ -13,6 +13,9 @@ sed -nEe 's,^#define TEXWORKS_VERSION\s\+,,p' src/TWVersion.h
 sed -nEe 's,^#define TEXWORKS_VERSION\s\+",,p' src/TWVersion.h
 sed -nEe 's,^#define TEXWORKS_VERSION\s"\?\([0-9.]\+\)"\?$,\1,p' src/TWVersion.h
 
+# GNU extensions are not supported; on Linux, use --posix
+sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h
+
 TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION\s"\?\([0-9.]\+\)"\?$,\1,p' src/TWVersion.h)
 GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 #DATE=$(date --rfc-3339="seconds")
