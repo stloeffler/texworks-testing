@@ -39,8 +39,8 @@ before_install:
   - if [ $TRAVIS_OS_NAME == osx ]; then (brew update > brew_update.log || cat brew_update.log) && brew install qt && brew install hunspell && brew install poppler --with-qt --enable-xpdf-headers && brew install lua; fi
 
 before_script:
-  - if [ $TRAVIS_OS_NAME == linux ]; then mkdir build-$TRAVIS_OS_NAME-qt$QT && cd build-$TRAVIS_OS_NAME-qt$QT && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -#DDESIRED_QT_VERSION="$QT"; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then mkdir build-$TRAVIS_OS_NAME-qt$QT && cd build-$TRAVIS_OS_NAME-qt$QT && cmake .. -DTW_BUILD_ID='travis-ci' -DDESIRED_QT_VERSION="$QT" -#DCMAKE_OSX_DEPLOYMENT_TARGET='10.6' -DCMAKE_OSX_SYSROOT=macosx; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then mkdir build-$TRAVIS_OS_NAME-qt$QT && cd build-$TRAVIS_OS_NAME-qt$QT && cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION="$QT"; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then mkdir build-$TRAVIS_OS_NAME-qt$QT && cd build-$TRAVIS_OS_NAME-qt$QT && cmake .. -DTW_BUILD_ID='travis-ci' -DDESIRED_QT_VERSION="$QT" -DCMAKE_OSX_DEPLOYMENT_TARGET='10.6' -DCMAKE_OSX_SYSROOT=macosx; fi
 script:
   - make VERBOSE=1
 
