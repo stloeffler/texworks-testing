@@ -4,14 +4,14 @@ set -v
 
 pwd
 #cat src/TWVersion.h
-sed -ne 's,^#define TEXWORKS_VERSION,,p' src/TWVersion.h
-sed -ne 's,^#define TEXWORKS_VERSION\s,,p' src/TWVersion.h
-sed -ne 's,^#define TEXWORKS_VERSION\t,,p' src/TWVersion.h
-sed -ne 's,^#define TEXWORKS_VERSION\\s,,p' src/TWVersion.h
-sed -ne 's,^#define TEXWORKS_VERSION\\t,,p' src/TWVersion.h
-#sed -ne 's,^#define TEXWORKS_VERSION\s\+,,p' src/TWVersion.h
-#sed -ne 's,^#define TEXWORKS_VERSION\s\+",,p' src/TWVersion.h
-#sed -ne 's,^#define TEXWORKS_VERSION\s"\?\([0-9.]\+\)"\?$,\1,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION,,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION\s,,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION\t,,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION\\s,,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION\\t,,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION\s\+,,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION\s\+",,p' src/TWVersion.h
+sed -nEe 's,^#define TEXWORKS_VERSION\s"\?\([0-9.]\+\)"\?$,\1,p' src/TWVersion.h
 
 TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION\s"\?\([0-9.]\+\)"\?$,\1,p' src/TWVersion.h)
 GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
