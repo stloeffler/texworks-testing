@@ -21,7 +21,7 @@ DATE_HASH=$(date -u +"%Y%m%d%H%M%S")
 if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
 	RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z" --date="${GIT_DATE}")
 elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-	RELEASE_DATE=$(date -ujf "%Y-%m-%dT%H:%M:%S%z" "${GIT_DATE}")
+	RELEASE_DATE=$(date -ujf "%Y-%m-%d %H:%M:%S %z" "${GIT_DATE}" "+%Y-%m-%dT%H:%M:%S%z")
 else
 	print_error "Unsupported operating system '${TRAVIS_OS_NAME}'"
 	exit 1
