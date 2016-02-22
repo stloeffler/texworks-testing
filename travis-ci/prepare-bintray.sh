@@ -3,11 +3,14 @@
 # GNU extensions for sed are not supported; on Linux, use --posix to mimick this behaviour
 TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
 GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
+GIT_DATE=$(git --git-dir=".git" show --no-patch --pretty="%ci")
+RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z" --date="${GIT_DATE}")
 #DATE=$(date --rfc-3339="seconds")
 #DATE=$(date +"%Y-%m-%d %H:%M:%S%:z")
 #DATE=$(date -u -Iseconds)
-DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z")
+#DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z")
 DATE_HASH=$(date -u +"%Y%m%d%H%M%S")
+
 
 #VERSION_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
 VERSION_NAME="${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
@@ -27,7 +30,7 @@ cat > travis-ci/bintray.json << EOF
 	},
 	"version": {
 		"name": "${VERSION_NAME}",
-		"released": "${DATE}"
+		"released": "${RELEASE_DATE}"
 	},
 	"files":
 	[
