@@ -33,19 +33,19 @@ env:
   - QT=4
   - QT=5
 
-#before_install:
-#  - travis-ci/get-dependencies.sh
-#
-#before_script:
-#  - travis-ci/configure.sh
-#
+before_install:
+  - travis-ci/get-dependencies.sh
+
+before_script:
+  - travis-ci/configure.sh
+
 script:
-#  - cd "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}" && make VERBOSE=1
-#
-#before_deploy:
-#  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && make package; fi
-##  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes; fi
-##  - cd ${TRAVIS_BUILD_DIR} && find .
+  - cd "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}" && make VERBOSE=1
+
+before_deploy:
+  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && make package; fi
+#  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes; fi
+#  - cd ${TRAVIS_BUILD_DIR} && find .
   - cd ${TRAVIS_BUILD_DIR} && travis-ci/prepare-bintray.sh
 
 deploy:
@@ -57,4 +57,4 @@ deploy:
     condition: "$TRAVIS_OS_NAME == osx && $QT == 4"
   key:
     secure: oULH4rfgoSAo46cmFdhTZ4Bse+DWAFke4toShIzDiOoooyXhXkbMU/lDMe5msUXVYejIr4icyuC/9/JkRCLtSYNIgafuLtvCYI+SWF2pyta00NyETDmXrF6tQqtaUVMEpfsozbYVcnMGrEUDCEzKseLgnUPthz7Kr2hvXO2ga6WX/0csiH2Tvr/vwQHM3hz4uck/O+VSEXWt1WvYMbHGd3hnxuzUBSCDorPJNLl/zWs0MgzGepZwFq3NXWUkee0k7G6d1vHotdinShqfdG4pWx/ZJIRFys2R8PYosKx62/1CAdNLfW8bT8lP7h+eape7QlaHqRHkFZrU0wpzqvQdtCnoAibp7ND+44L4iyJAg2XhvKqxp912OaEloLYklx4rsGRPiu408/z304zYG2KRAWwHwn0Ik2JY+oXtfF3lxbD7O/yYG267R8hjq1A9MRiMCd/eXNRZbGhkLoP41eIU1icbowsEgiue6mXLY1vIs68vA4qu5fA5rebfialzfUqpsnvLf5lyCI8eHtOJ825Km002LErcI0ODCFyoqVlk4W2rTwsmQzN4NlU9G4e4HoRxP5TgwzvHyMEzlgz+HGroglR6uqxmrOTBFlSq+4V4xfTXGLLJreC7NtZ2f50pv8GZMH57gt/GoZ9K03n84K0U68rlBH1HydSrQZZ1R2gfkPE=
-  dry-run: true
+#  dry-run: true
