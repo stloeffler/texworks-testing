@@ -5,6 +5,8 @@ set -e
 
 . $(dirname $0)/defs.sh
 
+date +"%s"
+
 print_headline "Getting dependencies for ${TRAVIS_OS_NAME}/qt${QT}"
 
 if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
