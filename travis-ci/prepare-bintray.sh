@@ -1,15 +1,31 @@
 #!/usr/bin/env sh
 
-# GNU extensions for sed are not supported; on Linux, use --posix to mimick this behaviour
+# Exit on errors
+set -e
+
+. $(dirname $0)/defs.sh
+
+print_headline "Preparing ${TRAVIS_OS_NAME}/qt${QT} for deployment"
+
+
+# GNU extensions for sed are not supported; on Linux, --posix mimicks this behaviour
 TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
 GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 GIT_DATE=$(git --git-dir=".git" show --no-patch --pretty="%ci")
-RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z" --date="${GIT_DATE}")
 #DATE=$(date --rfc-3339="seconds")
 #DATE=$(date +"%Y-%m-%d %H:%M:%S%:z")
 #DATE=$(date -u -Iseconds)
 #DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z")
 DATE_HASH=$(date -u +"%Y%m%d%H%M%S")
+
+if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+	RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z" --date="${GIT_DATE}")
+elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+	RELEASE_DATE=$(date -ujf "%Y-%m-%dT%H:%M:%S%z" "${GIT_DATE}")
+else
+	print_error "Unsupported operating system '${TRAVIS_OS_NAME}'"
+	exit 1
+fi
 
 
 #VERSION_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
@@ -17,9 +33,12 @@ VERSION_NAME="${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
 
 echo "TW_VERSION = ${TW_VERSION}"
 echo "GIT_HASH = ${GIT_HASH}"
-echo "DATE = ${DATE}"
+echo "GIT_DATE = ${GIT_DATE}"
+echo "RELEASE_DATE = ${RELEASE_DATE}"
 echo "DATE_HASH = ${DATE_HASH}"
 echo "VERSION_NAME = ${VERSION_NAME}"
+
+print_info "Preparing travis-ci/bintray.json"
 
 cat > travis-ci/bintray.json << EOF
 {
@@ -44,3 +63,5 @@ EOF
 
 #		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/texworks", "uploadPattern": "build-${TRAVIS_OS_NAME}-qt${QT}/texworks"},
 #		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/libTWLuaPlugin.so", "uploadPattern": "build-${TRAVIS_OS_NAME}-qt${QT}/libTWLuaPlugin.so"}
+
+print_info "Deployment preparation successful"
