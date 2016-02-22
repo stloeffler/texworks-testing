@@ -33,19 +33,19 @@ env:
   - QT=4
   - QT=5
 
-before_install:
-  - travis-ci/get-dependencies.sh
-
-before_script:
-  - travis-ci/configure.sh
-
+#before_install:
+#  - travis-ci/get-dependencies.sh
+#
+#before_script:
+#  - travis-ci/configure.sh
+#
 script:
-  - cd "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}" && make VERBOSE=1
-
-before_deploy:
-  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && make package; fi
-#  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes; fi
-#  - cd ${TRAVIS_BUILD_DIR} && find .
+#  - cd "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}" && make VERBOSE=1
+#
+#before_deploy:
+#  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && make package; fi
+##  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes; fi
+##  - cd ${TRAVIS_BUILD_DIR} && find .
   - cd ${TRAVIS_BUILD_DIR} && travis-ci/prepare-bintray.sh
 
 deploy:
