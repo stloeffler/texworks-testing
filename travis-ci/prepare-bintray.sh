@@ -16,7 +16,7 @@ GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 #DATE=$(date +"%Y-%m-%d %H:%M:%S%:z")
 #DATE=$(date -u -Iseconds)
 DATE=$(date -u +"%Y-%m-%dT%H:%M:%S%z")
-DATE_HASH=$(date +"%Y%m%d%H%M%S")
+DATE_HASH=$(date -u +"%Y%m%d%H%M%S")
 
 #VERSION_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
 
