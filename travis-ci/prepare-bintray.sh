@@ -55,7 +55,7 @@ cat > travis-ci/bintray.json << EOF
 	},
 	"files":
 	[
-		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/(TeXworks.*\.dmg)", "uploadPattern": "TeXworks-${TW_VERSION}.dmg"}
+		{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/(TeXworks.*\.dmg)", "uploadPattern": "TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"}
 	],
 	
 	"publish": true
