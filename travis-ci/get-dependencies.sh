@@ -5,7 +5,7 @@ set -e
 
 . $(dirname $0)/defs.sh
 
-print_headline "Getting dependencies for ${TRAVIS_OS_NAME} with Qt${QT}"
+print_headline "Getting dependencies for ${TRAVIS_OS_NAME}/qt${QT}"
 
 if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Updating apt cache"

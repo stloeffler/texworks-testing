@@ -5,7 +5,7 @@ set -e
 
 . $(dirname $0)/defs.sh
 
-print_headline "Configuring for ${TRAVIS_OS_NAME} with Qt${QT}"
+print_headline "Configuring for ${TRAVIS_OS_NAME}/qt${QT}"
 
 BUILDDIR="build-${TRAVIS_OS_NAME}-qt${QT}"
 
