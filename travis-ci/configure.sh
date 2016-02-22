@@ -9,8 +9,6 @@ print_headline "Configuring for ${TRAVIS_OS_NAME}/qt${QT}"
 
 BUILDDIR="build-${TRAVIS_OS_NAME}-qt${QT}"
 
-date +"%s"
-
 print_info "Making build directory '${BUILDDIR}'"
 mkdir "${BUILDDIR}"
 cd "${BUILDDIR}"
