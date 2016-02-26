@@ -19,11 +19,11 @@ language: cpp
 #    - liblua5.2-dev
 
 os:
-  - linux
+#  - linux
   - osx
 
-dist: trusty
-sudo: required
+#dist: trusty
+#sudo: required
 
 branches:
   only:
@@ -31,7 +31,7 @@ branches:
 
 env:
   - QT=4
-  - QT=5
+#  - QT=5
 
 before_install:
   - travis-ci/get-dependencies.sh
