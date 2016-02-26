@@ -36,6 +36,7 @@ class Poppler < Formula
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
+  depends_on "libtool" => :build
 # END TEXWORKS ADDITION
 
   option "with-qt", "Build Qt backend"
