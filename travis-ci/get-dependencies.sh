@@ -27,7 +27,7 @@ elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ $QT -eq 4 ]; then
 		print_info "Brewing packages: qt4 poppler hunspell lua"
 		brew install qt4
-		brew install "${TRAVIS_BUILD_DIR}/CMake/packaging/mac/poppler.rb" --with-qt --enable-xpdf-headers
+		brew install -v "${TRAVIS_BUILD_DIR}/CMake/packaging/mac/poppler.rb" --with-qt --enable-xpdf-headers
 	elif [ $QT -eq 5 ]; then
 		print_info "Brewing packages: qt5 poppler hunspell lua"
 		brew install qt5
