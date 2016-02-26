@@ -23,7 +23,6 @@ if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
 elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
-	brew unlink poppler
 	if [ $QT -eq 4 ]; then
 		print_info "Brewing packages: qt4 poppler hunspell lua"
 		brew install qt4
