@@ -33,6 +33,9 @@ class Poppler < Formula
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0003-Add-support-for-persistent-GlobalParams.patch'
     sha256 "6c17fe4d91c7c5d77e265af48c511db31fce73370cd2af4cbacc218435c9c86a"
   end
+
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
 # END TEXWORKS ADDITION
 
   option "with-qt", "Build Qt backend"
