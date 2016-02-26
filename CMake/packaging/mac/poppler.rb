@@ -92,7 +92,7 @@ class Poppler < Formula
 # BEGIN TEXWORKS ADDITION
     # We changed the config file (to add native font handling), so we need to
     # update the configure script
-    system "autoreconf", "-v", "-i"
+    system "autoreconf", "-ivf"
 # END TEXWORKS ADDITION
     system "./configure", *args
     system "make", "install"
