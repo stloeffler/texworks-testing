@@ -16,7 +16,7 @@ class Poppler < Formula
   homepage "https://poppler.freedesktop.org/"
   url "https://poppler.freedesktop.org/poppler-0.41.0.tar.xz"
   sha256 "420abaab63caed9e1ee28964a0ba216d1979506726164bc99ad5ade289192a1b"
-# BEGIN TEXWORKS ADDITIONS
+# BEGIN TEXWORKS ADDITION
   version '0.41.0-texworks'
 
   TEXWORKS_SOURCE_DIR = Pathname.new(__FILE__).realpath.dirname.join('../../..')
@@ -33,7 +33,7 @@ class Poppler < Formula
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0003-Add-support-for-persistent-GlobalParams.patch'
     sha256 "6c17fe4d91c7c5d77e265af48c511db31fce73370cd2af4cbacc218435c9c86a"
   end
-# END TEXWORKS ADDITIONS
+# END TEXWORKS ADDITION
 
   option "with-qt", "Build Qt backend"
   option "with-qt5", "Build Qt5 backend"
@@ -89,6 +89,11 @@ class Poppler < Formula
 
     args << "--enable-cms=lcms2" if build.with? "little-cms2"
 
+# BEGIN TEXWORKS ADDITION
+    # We changed the config file (to add native font handling), so we need to
+    # update the configure script
+    system "autoreconf", "-v", "-i"
+# END TEXWORKS ADDITION
     system "./configure", *args
     system "make", "install"
     resource("font-data").stage do
