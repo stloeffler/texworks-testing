@@ -31,14 +31,14 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
   # Download and install Poppler data
   # ---------------------------------
   IF ( NOT EXISTS "${PROJECT_SOURCE_DIR}/${POPPLER_DATA_ARCHIVE}" )
-    MESSAGE( "Downloading Poppler data files")
+    MESSAGE(STATUS "Downloading Poppler data files")
     FILE(DOWNLOAD "${POPPLER_DATA_ARCHIVE_URL}"
       "${PROJECT_SOURCE_DIR}/${POPPLER_DATA_ARCHIVE}"
       EXPECTED_MD5 "${POPPLER_DATA_ARCHIVE_MD5}"
       SHOW_PROGRESS
     )
   ELSE ( )
-    MESSAGE( "Using Poppler data files in '${PROJECT_SOURCE_DIR}/${POPPLER_DATA_ARCHIVE}'")
+    MESSAGE(STATUS "Using Poppler data files in '${PROJECT_SOURCE_DIR}/${POPPLER_DATA_ARCHIVE}'")
   ENDIF ()
 
   IF ( NOT EXISTS "${PROJECT_SOURCE_DIR}/${POPPLER_DATA_BASE}" )
@@ -47,10 +47,10 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
       WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     )
   ELSE ( )
-    MESSAGE( "'${PROJECT_SOURCE_DIR}/${POPPLER_DATA_BASE}' already present")
+    MESSAGE(STATUS "'${PROJECT_SOURCE_DIR}/${POPPLER_DATA_BASE}' already present")
   ENDIF ()
 
-  MESSAGE( "Bundling poppler data files")
+  MESSAGE(STATUS "Bundling poppler data files")
   FILE(INSTALL "${PROJECT_SOURCE_DIR}/${POPPLER_DATA_BASE}/"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/poppler-data"
     PATTERN CMakeLists.txt EXCLUDE
@@ -61,14 +61,14 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
   # Download and install TeXworks manual
   # ------------------------------------
   IF ( NOT EXISTS "${PROJECT_SOURCE_DIR}/${TW_MANUAL_ARCHIVE}" )
-    MESSAGE( "Downloading TeXworks HTML manual")
+    MESSAGE(STATUS "Downloading TeXworks HTML manual")
     FILE(DOWNLOAD "${TW_MANUAL_ARCHIVE_URL}"
       "${PROJECT_SOURCE_DIR}/${TW_MANUAL_ARCHIVE}"
       EXPECTED_MD5 "${TW_MANUAL_ARCHIVE_MD5}"
       SHOW_PROGRESS
     )
   ELSE ( )
-    MESSAGE( "Using manual files in '${PROJECT_SOURCE_DIR}/${TW_MANUAL_ARCHIVE}'")
+    MESSAGE(STATUS "Using manual files in '${PROJECT_SOURCE_DIR}/${TW_MANUAL_ARCHIVE}'")
   ENDIF ()
 
   IF ( NOT EXISTS "${PROJECT_SOURCE_DIR}/${TW_MANUAL_BASE}" )
@@ -78,10 +78,10 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
       WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/${TW_MANUAL_BASE}"
     )
   ELSE ( )
-    MESSAGE( "'${PROJECT_SOURCE_DIR}/${TW_MANUAL_BASE}' already present")
+    MESSAGE(STATUS "'${PROJECT_SOURCE_DIR}/${TW_MANUAL_BASE}' already present")
   ENDIF ()
 
-  MESSAGE( "Bundling manual files")
+  MESSAGE(STATUS "Bundling manual files")
   FILE(INSTALL "${PROJECT_SOURCE_DIR}/${TW_MANUAL_BASE}/TeXworks-manual"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/texworks-help/"
   )
@@ -130,8 +130,8 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
   # `CMAKE_OSX_ARCHITECTURES`, then the variable will be an empty string and the
   # format of the resulting binary will depend on the versions of OS X and
   # XCode.
-  MESSAGE( "Reducing the size of bundled libraries.")
-  MESSAGE( "Scanning architectures of: ${APP_MAIN}")
+  MESSAGE(STATUS "Reducing the size of bundled libraries.")
+  MESSAGE(STATUS "Scanning architectures of: ${APP_MAIN}")
   EXECUTE_PROCESS(
     # `lipo -info` returns a list of the form:
     #
@@ -149,7 +149,7 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
   # Convert spaces to semicolons so CMake will interpret the string as a list.
   STRING(REPLACE " " ";" APP_ARCHS ${APP_ARCHS})
 
-  MESSAGE( "Will reduce bundled libraries to: ${APP_ARCHS}")
+  MESSAGE(STATUS "Will reduce bundled libraries to: ${APP_ARCHS}")
 
   FOREACH(ARCH IN LISTS APP_ARCHS)
     SET(ARCHS_TO_EXTRACT "${ARCHS_TO_EXTRACT} -extract ${ARCH}")
@@ -171,18 +171,18 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
       RESULT_VARIABLE DYLIB_IS_FAT
     )
     IF(NOT ${DYLIB_IS_FAT} EQUAL 0)
-      MESSAGE( "Processing fat library: ${DYLIB}")
+      MESSAGE(STATUS "Processing fat library: ${DYLIB}")
       # `lipo` is very very anal about how arguments get passed to it. So we
       # execute through bash to side-step the issue.
       EXECUTE_PROCESS(
         COMMAND bash -c "lipo ${ARCHS_TO_EXTRACT} ${DYLIB} -output ${DYLIB}"
       )
     ELSE()
-      MESSAGE( "Skipping non-fat library: ${DYLIB}")
+      MESSAGE(STATUS "Skipping non-fat library: ${DYLIB}")
     ENDIF()
   ENDFOREACH ()
 
-  MESSAGE( "Finished stripping architectures from bundled libraries.")
+  MESSAGE(STATUS "Finished stripping architectures from bundled libraries.")
 
 ENDIF ()
 
