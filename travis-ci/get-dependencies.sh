@@ -28,7 +28,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo apt-get -qq update
 	print_info "Installing packages: mxe-i686-w64-mingw32.static-qt"
 	sudo apt-get install -y mxe-i686-w64-mingw32.static-qt
-elif [ "${TARGET_OS}" = "osx" "${TRAVIS_OS_NAME}" = "osx" ]; then
+elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
 	if [ $QT -eq 4 ]; then
