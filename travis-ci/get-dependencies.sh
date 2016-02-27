@@ -26,8 +26,8 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
 	print_info "Updating apt cache"
 	sudo apt-get -qq update
-	print_info "Installing packages: mxe-i686-w64-mingw32.static-qt"
-	sudo apt-get install -y mxe-i686-w64-mingw32.static-qt
+	print_info "Installing packages: qt5 hunspell"
+	sudo apt-get install -y mxe-i686-w64-mingw32.static-qt mxe-i686-w64-mingw32.static-hunspell
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
