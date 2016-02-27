@@ -20,8 +20,8 @@ language: cpp
 
 matrix:
   include:
-    - os: osx
-      env: QT=4 TARGET_OS=osx
+#    - os: osx
+#      env: QT=4 TARGET_OS=osx
 #    - os: osx
 #      env: QT=5 TARGET_OS=osx
     - os: linux
