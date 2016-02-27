@@ -28,10 +28,10 @@ matrix:
       dist: trusty
       sudo: required
       env: QT=5 TARGET_OS=win
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: QT=5 TARGET_OS=linux
+#    - os: linux
+#      dist: trusty
+#      sudo: required
+#      env: QT=5 TARGET_OS=linux
 
 before_install:
   - travis-ci/get-dependencies.sh
