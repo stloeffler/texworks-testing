@@ -25,9 +25,9 @@ os:
 #dist: trusty
 #sudo: required
 
-branches:
-  only:
-    - master
+#branches:
+#  only:
+#    - master
 
 env:
 #  - QT=4
