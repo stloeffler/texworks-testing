@@ -3,7 +3,7 @@
 # Exit on errors
 set -e
 
-. $(dirname $0)/defs.sh
+. ${TRAVIS_BUILD_DIR}/travis-ci/defs.sh
 
 print_headline "Configuring for building for ${TARGET_OS}/qt${QT} on ${TRAVIS_OS_NAME}"
 
