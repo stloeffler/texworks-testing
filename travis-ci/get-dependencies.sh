@@ -28,6 +28,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo apt-get -qq update
 	print_info "Installing packages: qt5 hunspell"
 	sudo apt-get install -y mxe-i686-w64-mingw32.static-qt mxe-i686-w64-mingw32.static-hunspell
+	find /usr/lib/mxe/ -iname '*'
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
