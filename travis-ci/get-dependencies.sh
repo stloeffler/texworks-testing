@@ -26,8 +26,8 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
 	print_info "Updating apt cache"
 	sudo apt-get -qq update
-	print_info "Installing packages: qt5 hunspell"
-	sudo apt-get install -y mxe-i686-w64-mingw32.static-qt mxe-i686-w64-mingw32.static-hunspell
+	print_info "Installing packages: qt5 hunspell pkg-config"
+	sudo apt-get install -y mxe-i686-w64-mingw32.static-qt mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-pkgconf
 	print_info "Building poppler"
 	cd travis-ci
 	env PREFIX="/usr/lib/mxe/usr" TARGET="i686-w64-mingw32.static" make -f build-poppler-mxe.mk
