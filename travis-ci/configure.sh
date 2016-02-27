@@ -5,18 +5,20 @@ set -e
 
 . $(dirname $0)/defs.sh
 
-print_headline "Configuring for ${TRAVIS_OS_NAME}/qt${QT}"
+print_headline "Configuring for building for ${TARGET_OS}/qt${QT} on ${TRAVIS_OS_NAME}"
 
-BUILDDIR="build-${TRAVIS_OS_NAME}-qt${QT}"
+export BUILDDIR="build-${TRAVIS_OS_NAME}-${TARGET_OS}-qt${QT}"
 
 print_info "Making build directory '${BUILDDIR}'"
 mkdir "${BUILDDIR}"
 cd "${BUILDDIR}"
 
-if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Running CMake"
 	echo_and_run "cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION=\"$QT\""
-elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
+	exit 1
+elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ "${QT}" -eq 4 ]; then
 		print_info "Running CMake"
 		echo_and_run "cmake .. -DTW_BUILD_ID='travis-ci' -DDESIRED_QT_VERSION=\"$QT\" -DCMAKE_OSX_SYSROOT=macosx"
@@ -29,7 +31,7 @@ elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
 	fi
 	# -DCMAKE_OSX_DEPLOYMENT_TARGET='10.6'
 else
-	print_error "Unsupported operating system '${TRAVIS_OS_NAME}'"
+	print_error "Unsupported host/target combination '${TRAVIS_OS_NAME}/${TARGET_OS}'"
 	exit 1
 fi
 

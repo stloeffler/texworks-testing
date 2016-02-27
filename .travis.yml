@@ -18,20 +18,20 @@ language: cpp
 #    - libpoppler-private-dev
 #    - liblua5.2-dev
 
-os:
-#  - linux
-  - osx
-
-#dist: trusty
-#sudo: required
-
-#branches:
-#  only:
-#    - master
-
-env:
-#  - QT=4
-  - QT=5
+matrix:
+  include:
+    - os: osx
+      env: QT=4 TARGET_OS=osx
+#    - os: osx
+#      env: QT=5 TARGET_OS=osx
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: QT=5 TARGET_OS=win
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: QT=5 TARGET_OS=linux
 
 before_install:
   - travis-ci/get-dependencies.sh
@@ -40,10 +40,10 @@ before_script:
   - travis-ci/configure.sh
 
 script:
-  - cd "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}" && make VERBOSE=1
+  - cd "${BUILDDIR}" && make VERBOSE=1
 
 before_deploy:
-  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && cpack --verbose; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${BUILDDIR}" && cpack --verbose; fi
 #  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes; fi
 #  - cd ${TRAVIS_BUILD_DIR} && find .
   - cd ${TRAVIS_BUILD_DIR} && travis-ci/prepare-bintray.sh

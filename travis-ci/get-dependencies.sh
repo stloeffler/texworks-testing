@@ -5,9 +5,9 @@ set -e
 
 . $(dirname $0)/defs.sh
 
-print_headline "Getting dependencies for ${TRAVIS_OS_NAME}/qt${QT}"
+print_headline "Getting dependencies for building for ${TARGET_OS}/qt${QT} on ${TRAVIS_OS_NAME}"
 
-if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Updating apt cache"
 	sudo apt-get -qq update
 	if [ $QT -eq 4 ]; then
@@ -20,7 +20,14 @@ if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
 		print_error "Unsupported Qt version '${QT}'"
 		exit 1
 	fi
-elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
+	print_info "Adding pkg.mxe.cc apt repo"
+	echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mxeapt.list > /dev/null
+	print_info "Updating apt cache"
+	sudo apt-get -qq update
+	print_info "Installing packages: mxe-i686-w64-mingw32.static-qt"
+	sudo apt-get install mxe-i686-w64-mingw32.static-qt
+elif [ "${TARGET_OS}" = "osx" "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
 	if [ $QT -eq 4 ]; then
@@ -38,7 +45,7 @@ elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
 	brew install hunspell
 	brew install lua;
 else
-	print_error "Unsupported operating system '${TRAVIS_OS_NAME}'"
+	print_error "Unsupported host/target combination '${TRAVIS_OS_NAME}/${TARGET_OS}'"
 	exit 1
 fi
 
