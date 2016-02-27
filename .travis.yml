@@ -37,7 +37,7 @@ before_install:
   - travis-ci/get-dependencies.sh
 
 before_script:
-  - travis-ci/configure.sh
+  - . travis-ci/configure.sh
 
 script:
   - cd "${BUILDDIR}" && make VERBOSE=1
