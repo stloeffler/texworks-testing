@@ -47,9 +47,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	cd travis-ci/mxe
 
 	print_info "Patching MXE Qt5 (see https://github.com/mxe/mxe/issues/1185)"
-	patch -f -d "${MXEDIR}/usr/${MXETARGET}" -p1 < qt5-QUiLoader-fix.patch || echo "Patching failed; maybe the patch is already applied?"
-	find "${MXEDIR}/usr/${MXETARGET}" -name "Qt5UiPluginConfig.cmake"
-	cat "${MXEDIR}/usr/${MXETARGET}/qt5/lib/cmake/Qt5UiPlugin/Qt5UiPluginConfig.cmake"
+	patch -f -d "${MXEDIR}/usr/${MXETARGET}" -p1 < qt5-QUiLoader-fix.patch || { echo "Patching failed; maybe the patch is already applied?"; cat "${MXEDIR}/usr/${MXETARGET}/qt5/lib/cmake/Qt5UiPlugin/Qt5UiPluginConfig.cmake" }
 
 	print_info "Building poppler"
 
