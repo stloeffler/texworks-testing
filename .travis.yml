@@ -42,9 +42,9 @@ before_script:
 script:
   - cd "${BUILDDIR}" && make VERBOSE=1
   - cd "${TRAVIS_BUILD_DIR}"
-
-before_deploy:
   - . travis-ci/package.sh
+
+#before_deploy:
 #  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${BUILDDIR}" && cpack --verbose; fi
 #  - if [ $TRAVIS_OS_NAME == osx ]; then cd "${TRAVIS_BUILD_DIR}/build-$TRAVIS_OS_NAME-qt$QT" && ./set_dmg_layout.scpt; ls /Volumes; fi
 #  - cd ${TRAVIS_BUILD_DIR} && find .
