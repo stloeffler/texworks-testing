@@ -37,8 +37,9 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	# make sure dependencies are not rebuilt
 #	echo "JOBS := 2\nMXE_TARGETS := i686-w64-mingw32.static" | sudo tee "settings.mk"
 #	find . -iname 'installed/*'
-	sudo make qt5 --touch
-	sudo make poppler
+#	sudo make qt5 --touch
+#	sudo make poppler
+	sudo make gcc
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
