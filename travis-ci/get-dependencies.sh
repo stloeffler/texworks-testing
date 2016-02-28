@@ -41,13 +41,17 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Exporting CXX = ${MXETARGET}-g++"
 	export CXX="${MXETARGET}-g++"
 
-	print_info "Building poppler"
+	print_info "Make MXE writable"
+	sudo chmod -R a+w "${MXEDIR}"
 
 	cd travis-ci/mxe
+
+	print_info "Building poppler"
+
 	JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
 	print_info "Using $JOBS jobs"
 	# Note: sudo is necessary for the installation part so succeed. PATH must be specified explicitly because sudo does not inherit it.
-	sudo env PATH="$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
+	env PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
 
 #	Doesn't work because "not a git repo"
 #	sudo make download-only-poppler
