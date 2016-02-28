@@ -34,12 +34,12 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	MXEDIR="/usr/lib/mxe"
 	MXETARGET="i686-w64-mingw32.static"
 
-	print_info "Prepending '${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin' to PATH"
-	export PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH"
+#	print_info "Prepending '${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin' to PATH"
+#	export PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH"
 	print_info "Exporting CC = ${MXETARGET}-gcc"
-	export CC="${MXETARGET}-gcc"
+	CC="${MXETARGET}-gcc"
 	print_info "Exporting CXX = ${MXETARGET}-g++"
-	export CXX="${MXETARGET}-g++"
+	CXX="${MXETARGET}-g++"
 
 	print_info "Make MXE writable"
 	sudo chmod -R a+w "${MXEDIR}"
@@ -54,7 +54,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
 	print_info "Using $JOBS jobs"
 	# Note: sudo is necessary for the installation part so succeed. PATH must be specified explicitly because sudo does not inherit it.
-	env PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
+	env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
 
 #	Doesn't work because "not a git repo"
 #	sudo make download-only-poppler
