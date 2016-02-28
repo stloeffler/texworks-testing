@@ -78,7 +78,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			],
 			"publish": true
 		}
-		EOF
+EOF
 		export DEPOLY_TEXWORKS=1
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
@@ -108,7 +108,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 			],
 			"publish": true
 		}
-		EOF
+EOF
 		export DEPOLY_TEXWORKS=1
 	elif [ ${QT} -eq 5 ]; then
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
