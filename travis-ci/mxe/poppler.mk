@@ -9,7 +9,7 @@ $(PKG)_SUBDIR   := poppler-$($(PKG)_VERSION)
 $(PKG)_FILE     := poppler-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := http://poppler.freedesktop.org/$($(PKG)_FILE)
 #$(PKG)_DEPS     := gcc glib cairo libpng lcms1 jpeg tiff freetype zlib curl qt qt5
-$(PKG)_DEPS     := gcc glib cairo libpng lcms1 jpeg tiff freetype zlib curl qt5
+$(PKG)_DEPS     := gcc glib cairo libpng lcms jpeg tiff freetype zlib curl qt qt5
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'http://poppler.freedesktop.org/' | \
@@ -22,7 +22,6 @@ define $(PKG)_BUILD
     #       pick up libtiff (otherwise linking a minimal test program fails not
     #       because libtiff is not found, but because some references are
     #       undefined)
-    #       lcms1 must be used as qt depends on libmng, which pulls in lcms1
     cd '$(1)' \
         && PATH='$(PREFIX)/$(TARGET)/qt/bin:$(PATH)' \
         ./configure \
@@ -45,7 +44,6 @@ define $(PKG)_BUILD
         --enable-splash-output \
         --enable-compile-warnings=yes \
         --enable-introspection=auto \
-        --enable-cms=lcms1 \
         --disable-libopenjpeg \
         --disable-gtk-test \
         --disable-utils \
