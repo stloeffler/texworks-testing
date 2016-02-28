@@ -28,32 +28,23 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo apt-get -qq update
 	print_info "Installing packages: curl freetype gcc hunspell jpeg libpng lcms1 pkg-config qtbase qtscript qttools tiff"
 	sudo apt-get install -y mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-gcc mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-lcms1 mxe-i686-w64-mingw32.static-pkgconf mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff
-	print_info "Building poppler"
 
-	cd travis-ci/mxe
 	MXEDIR="/usr/lib/mxe"
 	MXETARGET="i686-w64-mingw32.static"
 
-	print_info "Exporting PATH"
+	print_info "Prepending '${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin' to PATH"
 	export PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH"
 	print_info "Exporting CC = ${MXETARGET}-gcc"
 	export CC="${MXETARGET}-gcc"
 	print_info "Exporting CXX = ${MXETARGET}-g++"
 	export CXX="${MXETARGET}-g++"
 
-	print_info "other env vars"
-	PREFIX="${MXEDIR}/usr"
-	TARGET="${MXETARGET}"
+	print_info "Building poppler"
+
+	cd travis-ci/mxe
 	JOBS=2
-#	print_info "debug"
-#	which "${MXETARGET}-gcc"
-#	ls -lisa "${MXEDIR}/usr/bin"
-#	${MXETARGET}-gcc --version
-#	env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" CXX="${MXETARGET}-g++" make -f build-poppler-mxe.mk
-	# Override default settings by travis-ci
-	print_info "build"
-	sudo env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" make -f build-poppler-mxe.mk
-	cd "${MXEDIR}"
+	# Note: sudo is necessary for the installation part so succeed. PATH must be specified explicitly because sudo does not inherit it.
+	sudo env PATH="$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
 
 #	Doesn't work because "not a git repo"
 #	sudo make download-only-poppler
