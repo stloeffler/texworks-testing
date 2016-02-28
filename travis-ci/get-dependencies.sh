@@ -40,7 +40,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	which "${MXETARGET}-gcc"
 	ls -lisa "${MXEDIR}/usr/bin"
 	${MXETARGET}-gcc --version
-	make -f build-poppler-mxe.mk
+	env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" make -f build-poppler-mxe.mk
 	cd "${MXEDIR}"
 
 #	Doesn't work because "not a git repo"
