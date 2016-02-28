@@ -39,7 +39,9 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 #	find . -iname 'installed/*'
 #	sudo make qt5 --touch
 #	sudo make poppler
-	sudo make gcc
+#	sudo make gcc
+	sudo make download-only-poppler
+	sudo make build-only-poppler_${MXE_TARGETS}
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
