@@ -34,7 +34,7 @@ matrix:
 #      env: QT=5 TARGET_OS=linux
 
 before_install:
-  - travis-ci/get-dependencies.sh
+  - . travis-ci/get-dependencies.sh
 
 before_script:
   - . travis-ci/configure.sh

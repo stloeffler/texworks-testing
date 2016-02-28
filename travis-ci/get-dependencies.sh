@@ -3,7 +3,9 @@
 # Exit on errors
 set -e
 
-. $(dirname $0)/defs.sh
+cd "${TRAVIS_BUILD_DIR}"
+
+. travis-ci/defs.sh
 
 print_headline "Getting dependencies for building for ${TARGET_OS}/qt${QT} on ${TRAVIS_OS_NAME}"
 
