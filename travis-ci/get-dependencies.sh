@@ -31,8 +31,6 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Building poppler"
 
 	export PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH"
-	export CC="${MXETARGET}-gcc"
-	export CXX="${MXETARGET}-g++"
 
 	cd travis-ci
 	MXEDIR="/usr/lib/mxe"
@@ -45,7 +43,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	${MXETARGET}-gcc --version
 #	env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" CXX="${MXETARGET}-g++" make -f build-poppler-mxe.mk
 	# Override default settings by travis-ci
-	env PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" sudo make -f build-poppler-mxe.mk
+	env PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" CXX="${MXETARGET}-g++" sudo make -f build-poppler-mxe.mk
 	cd "${MXEDIR}"
 
 #	Doesn't work because "not a git repo"
