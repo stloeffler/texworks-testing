@@ -55,7 +55,8 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		echo_and_run "cp -r \"win32/fonts\" \"package-zip/share/\""
 		# FIXME: manual (only for tags)
 		# FIXME: poppler-dat
-		# FIXME: README.txt
+		echo_and_run "cp -r \"travis-ci/README.win\" \"package-zip/README.txt\""
+
 		print_info "zipping '${TRAVIS_BUILD_DIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip'"
 		echo_and_run "cd package-zip && zip -r \"${TRAVIS_BUILD_DIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip\" *"
 
