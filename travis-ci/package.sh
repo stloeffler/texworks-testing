@@ -9,6 +9,12 @@ cd "${TRAVIS_BUILD_DIR}"
 
 print_headline "Packaging ${TARGET_OS}/qt${QT} for deployment"
 
+POPPLERDATA_VERSION="0.4.7"
+POPPLERDATA_SUBDIR="poppler-data-${POPPLERDATA_VERSION}"
+POPPLERDATA_FILE="poppler-data-${POPPLERDATA_VERSION}.tar.gz"
+POPPLERDATA_URL="https://poppler.freedesktop.org/${POPPLERDATA_FILE}"
+POPPLERDATA_SHA256="e752b0d88a7aba54574152143e7bf76436a7ef51977c55d6bd9a48dccde3a7de"
+
 # Gather information
 
 # GNU extensions for sed are not supported; on Linux, --posix mimicks this behaviour
@@ -54,8 +60,18 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		echo_and_run "cp COPYING \"package-zip/\""
 		echo_and_run "cp -r \"win32/fonts\" \"package-zip/share/\""
 		# FIXME: manual (only for tags)
-		# FIXME: poppler-dat
 		echo_and_run "cp -r \"travis-ci/README.win\" \"package-zip/README.txt\""
+
+		print_info "Fetching poppler data"
+		wget "${POPPLERDATA_URL}"
+		CHKSUM=$(openssl dgst -sha256 "${POPPLERDATA_FILE}" 2> /dev/null)
+		if [ "${CHKSUM}" != "SHA256(${POPPLERDATA_FILE})= ${POPPLERDATA_SHA256}" ]; then
+			print_error "Wrong checksum"
+			print_error "${CHKSUM}"
+			print_error "(expected: ${POPPLERDATA_SHA256})"
+			exit 1
+		fi
+		echo_and_run "tar -x -C \"package-zip/share/\" -f \"${TRAVIS_BUILD_DIR}/${POPPLERDATA_FILE}\" && mv \"package-zip/share/${POPPLERDATA_SUBDIR}\" \"package-zip/share/poppler\""
 
 		print_info "zipping '${TRAVIS_BUILD_DIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip'"
 		echo_and_run "cd package-zip && zip -r \"${TRAVIS_BUILD_DIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip\" *"
