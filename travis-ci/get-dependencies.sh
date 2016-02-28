@@ -30,17 +30,22 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo apt-get install -y mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-gcc mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-lcms1 mxe-i686-w64-mingw32.static-pkgconf mxe-i686-w64-mingw32.static-qt mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff
 	print_info "Building poppler"
 
+	export PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH"
+	export CC="${MXETARGET}-gcc"
+	export CXX="${MXETARGET}-g++"
+
 	cd travis-ci
 	MXEDIR="/usr/lib/mxe"
 	MXETARGET="i686-w64-mingw32.static"
-	PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH"
 	PREFIX="${MXEDIR}/usr"
 	TARGET="${MXETARGET}"
 	JOBS=2
 	which "${MXETARGET}-gcc"
 	ls -lisa "${MXEDIR}/usr/bin"
 	${MXETARGET}-gcc --version
-	env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" CXX="${MXETARGET}-g++" make -f build-poppler-mxe.mk
+#	env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" CXX="${MXETARGET}-g++" make -f build-poppler-mxe.mk
+	# Override default settings by travis-ci
+	env PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" sudo make -f build-poppler-mxe.mk
 	cd "${MXEDIR}"
 
 #	Doesn't work because "not a git repo"
