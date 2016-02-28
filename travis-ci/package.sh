@@ -54,6 +54,8 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	if [ ${QT} -eq 4 ]; then
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
 	elif [ ${QT} -eq 5 ]; then
+		print_info "Stripping TeXworks.exe"
+		${MXEDIR}/usr/bin/${MXETARGET}-strip ${BUILDDIR}/TeXworks.exe
 		print_info "Assembling package"
 		echo_and_run "mkdir -p \"package-zip/share\""
 		echo_and_run "cp \"${BUILDDIR}/TeXworks.exe\" \"package-zip/\""
