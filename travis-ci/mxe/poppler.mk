@@ -33,8 +33,6 @@ define $(PKG)_BUILD
         --disable-shared \
         --enable-static \
         --enable-xpdf-headers \
-        --disable-poppler-qt4 \
-        --enable-poppler-qt5 \
         --enable-zlib \
         --enable-cms=lcms2 \
         --enable-libcurl \
