@@ -27,7 +27,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Updating apt cache"
 	sudo apt-get -qq update
 	print_info "Installing packages: curl freetype gcc hunspell jpeg libpng lcms1 pkg-config qtbase qtscript qttools tiff"
-	sudo apt-get install -y mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-gcc mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-lcms1 mxe-i686-w64-mingw32.static-pkgconf mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff
+	sudo apt-get install -y mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-gcc mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-lcms1 mxe-i686-w64-mingw32.static-pkgconf mxe-i686-w64-mingw32.static-qt mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff
 	print_info "Building poppler"
 #	cd travis-ci
 	MXEDIR="/usr/lib/mxe"
@@ -35,9 +35,9 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 #	env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS=2 make -f build-poppler-mxe.mk
 	cd "${MXEDIR}"
 	# make sure dependencies are not rebuilt
-	echo "JOBS := 2\nMXE_TARGETS := i686-w64-mingw32.static" | sudo tee "settings.mk"
-	find . -iname 'installed/*'
-	sudo make gcc glib cairo libpng lcms1 jpeg tiff freetype zlib curl qt5 --touch
+#	echo "JOBS := 2\nMXE_TARGETS := i686-w64-mingw32.static" | sudo tee "settings.mk"
+#	find . -iname 'installed/*'
+	sudo make qt5 --touch
 	sudo make poppler
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"
