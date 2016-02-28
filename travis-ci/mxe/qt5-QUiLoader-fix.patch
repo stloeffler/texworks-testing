@@ -5,7 +5,7 @@
  
  
 -    add_library(Qt5::UiPlugin STATIC IMPORTED)
--    set_property(TARGET Qt5::UiPlugin PROPERTY IMPORTED_LINK_INTERFACE_LANGUAGES "CXX")
+-    set_property(TARGET Qt5::UiPlugin PROPERTY IMPORTED_LINK_INTERFACE_LANGUAGES CXX)
 +    add_library(Qt5::UiPlugin INTERFACE IMPORTED)
  
      set_property(TARGET Qt5::UiPlugin PROPERTY
