@@ -52,7 +52,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 #	env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" CXX="${MXETARGET}-g++" make -f build-poppler-mxe.mk
 	# Override default settings by travis-ci
 	print_info "build"
-	sudo env PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" make -f build-poppler-mxe.mk
+	sudo env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" make -f build-poppler-mxe.mk
 	cd "${MXEDIR}"
 
 #	Doesn't work because "not a git repo"
