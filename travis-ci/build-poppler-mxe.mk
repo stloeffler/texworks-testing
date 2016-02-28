@@ -7,5 +7,5 @@ poppler : $(poppler_FILE)
 	$(call poppler_BUILD,$(poppler_SUBDIR))
 
 $(poppler_FILE) :
-	wget \$(poppler_URL)
+	wget "$(poppler_URL)"
 
