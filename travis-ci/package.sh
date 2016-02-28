@@ -103,7 +103,7 @@ EOF
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
-	if [ ${QT} -eq 4 ]; then
+	if [ ${QT} -eq 3 ]; then
 		print_info "Running CPack"
 
 		cd "${BUILDDIR}" && cpack --verbose
