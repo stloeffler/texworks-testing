@@ -45,10 +45,10 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	PREFIX="${MXEDIR}/usr"
 	TARGET="${MXETARGET}"
 	JOBS=2
-	print_info "debug"
-	which "${MXETARGET}-gcc"
-	ls -lisa "${MXEDIR}/usr/bin"
-	${MXETARGET}-gcc --version
+#	print_info "debug"
+#	which "${MXETARGET}-gcc"
+#	ls -lisa "${MXEDIR}/usr/bin"
+#	${MXETARGET}-gcc --version
 #	env PATH="$PATH" PREFIX="$PREFIX" TARGET="$TARGET" JOBS="$JOBS" CC="${MXETARGET}-gcc" CXX="${MXETARGET}-g++" make -f build-poppler-mxe.mk
 	# Override default settings by travis-ci
 	print_info "build"
