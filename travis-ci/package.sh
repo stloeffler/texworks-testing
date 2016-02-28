@@ -140,4 +140,10 @@ fi
 
 cd "${TRAVIS_BUILD_DIR}"
 
+echo_and_run "pwd"
+echo_and_run "ls travis-ci/bintray.json"
+echo_and_run "cat travis-ci/bintray.json"
+
+echo "$DEPLOY_TEXWORKS"
+
 print_info "Deployment preparation successful"
