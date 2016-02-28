@@ -74,4 +74,6 @@ else
 	exit 1
 fi
 
+cd "${TRAVIS_BUILD_DIR}"
+
 print_info "Successfully set up dependencies"
