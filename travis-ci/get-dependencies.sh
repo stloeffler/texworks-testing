@@ -42,7 +42,8 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Building poppler"
 
 	cd travis-ci/mxe
-	JOBS=2
+	JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
+	print_info "Using $JOBS jobs"
 	# Note: sudo is necessary for the installation part so succeed. PATH must be specified explicitly because sudo does not inherit it.
 	sudo env PATH="$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
 
