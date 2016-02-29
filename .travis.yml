@@ -24,24 +24,15 @@ matrix:
 #      sudo: required
 
 before_install:
-  - echo "$PATH"
   - . travis-ci/get-dependencies.sh
-  - echo "$PATH"
 
 before_script:
-  - echo "$PATH"
   - . travis-ci/configure.sh
-  - echo "$PATH"
 
 script:
-  - echo "$PATH"
   - cd "${BUILDDIR}" && make VERBOSE=1
   - cd "${TRAVIS_BUILD_DIR}"
   - . travis-ci/package.sh
-  - echo "${BINTRAYUPLOAD}"
-  - echo "$PATH"
-  - rvm get stable --auto-dotfiles
-  - echo "$PATH"
 
 deploy:
   skip_cleanup: true
