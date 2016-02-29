@@ -131,7 +131,7 @@ EOF
 
 		cat "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
 
-#		export DEPLOY_TEXWORKS=1
+		export DEPLOY_TEXWORKS=1
 	elif [ ${QT} -eq 5 ]; then
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
 	else
@@ -143,6 +143,6 @@ fi
 
 cd "${TRAVIS_BUILD_DIR}"
 
-echo "$DEPLOY_TEXWORKS"
+echo "${DEPLOY_TEXWORKS}"
 
 print_info "Deployment preparation successful"
