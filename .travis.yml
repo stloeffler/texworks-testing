@@ -38,7 +38,7 @@ after_success:
 deploy:
   skip_cleanup: true
   provider: bintray
-  file: travis-ci/bintray.json
+  file: ${TRAVIS_BUILD_DIR}/travis-ci/bintray.json
   user: stloeffler
   on:
     condition: -f ${TRAVIS_BUILD_DIR}/travis-ci/bintray.json
