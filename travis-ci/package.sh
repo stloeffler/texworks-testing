@@ -46,7 +46,7 @@ echo "VERSION_NAME = ${VERSION_NAME}"
 
 # Start packaging and prepare deployment
 
-export DEPOLY_TEXWORKS=0
+#export DEPOLY_TEXWORKS=0
 
 if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	echo "Not packaging for linux"
@@ -98,7 +98,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			"publish": true
 		}
 EOF
-		export BINTRAYUPLOAD=1
+#		export BINTRAYUPLOAD=1
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
@@ -131,7 +131,7 @@ EOF
 
 		cat "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
 
-		export BINTRAYUPLOAD=1
+#		export BINTRAYUPLOAD=1
 
 		echo "OK"
 	elif [ ${QT} -eq 5 ]; then
@@ -145,7 +145,7 @@ fi
 
 cd "${TRAVIS_BUILD_DIR}"
 
-echo "${BINTRAYUPLOAD}"
+#echo "${BINTRAYUPLOAD}"
 pwd
 
 print_info "Deployment preparation successful"
