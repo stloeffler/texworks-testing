@@ -1,0 +1,11 @@
+language: cpp
+
+os: osx
+
+script: echo "Hello World" > 1.txt
+
+deploy:
+	provider: bintray
+	file: bintray.json
+	user: "stloeffler"
+	dry-run: true
