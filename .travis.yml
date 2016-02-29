@@ -4,6 +4,8 @@ os: osx
 
 script: echo "Hello World" > 1.txt
 
+after_success: prepare_deploy.sh
+
 deploy:
   skip_cleanup: true
   provider: bintray

@@ -1,3 +1,6 @@
+#!/bin/sh
+
+cat > bintray.json <<EOF
 {
 	"package": {
 		"name": "auto-upload",
@@ -16,3 +19,4 @@
 	}],
 	"publish": true
 }
+EOF
