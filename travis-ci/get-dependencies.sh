@@ -26,6 +26,9 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	MXEDIR="/usr/lib/mxe"
 	MXETARGET="i686-w64-mingw32.static"
 
+	echo "MXEDIR=\"${MXEDIR}\"" >> travis-ci/defs.sh
+	echo "MXETARGET=\"${MXETARGET}\"" >> travis-ci/defs.sh
+
 	print_info "Exporting CC = ${MXETARGET}-gcc"
 	CC="${MXETARGET}-gcc"
 	print_info "Exporting CXX = ${MXETARGET}-g++"
