@@ -9,4 +9,5 @@ deploy:
   provider: bintray
   file: bintray.json
   user: "stloeffler"
+  on: all_branches: true
   dry-run: true
