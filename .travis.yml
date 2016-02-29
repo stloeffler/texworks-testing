@@ -25,7 +25,7 @@ before_script:
   - travis-ci/configure.sh
 
 script:
-  - cd "${BUILDDIR}" && make VERBOSE=1 && cd "${TRAVIS_BUILD_DIR}"
+  - travis-ci/build.sh
 
 after_success:
   - travis-ci/package.sh
