@@ -10,10 +10,10 @@ matrix:
       os: linux
     - env: TARGET_OS=win QT=5
       os: linux
-#    - env: TARGET_OS=linux QT=4
-#      os: linux
-#    - env: TARGET_OS=linux QT=5
-#      os: linux
+    - env: TARGET_OS=linux QT=4
+      os: linux
+    - env: TARGET_OS=linux QT=5
+      os: linux
 
 dist: trusty
 sudo: required
