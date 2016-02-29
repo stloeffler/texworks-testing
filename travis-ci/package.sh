@@ -80,7 +80,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 
 		print_info "Preparing travis-ci/bintray.json"
 
-		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" << EOF
+		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
 		{
 			"package": {
 				"name": "Latest-TeXworks-Win",
@@ -111,7 +111,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 
 		print_info "Preparing travis-ci/bintray.json"
 
-		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" << EOF
+		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
 		{
 			"package": {
 				"name": "Latest-TeXworks-Mac",
