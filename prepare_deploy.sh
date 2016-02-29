@@ -14,7 +14,7 @@ cat > bintray.json <<EOF
 		"released": "2016-02-29"
 	},
 	"files": [{
-		"includePattern": "1.txt",
+		"includePattern": "does-not-exist.txt",
 		"uploadPattern": "1.txt"
 	}],
 	"publish": true
