@@ -11,7 +11,8 @@ print_headline "Configuring for building for ${TARGET_OS}/qt${QT} on ${TRAVIS_OS
 
 ./getGitRevInfo.sh
 
-export BUILDDIR="${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-${TARGET_OS}-qt${QT}"
+BUILDDIR="${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-${TARGET_OS}-qt${QT}"
+echo "BUILDDIR=\"${BUILDDIR}\"" >> travis-ci/defs.sh
 
 print_info "Making build directory '${BUILDDIR}'"
 mkdir "${BUILDDIR}"
