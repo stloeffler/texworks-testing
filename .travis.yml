@@ -30,8 +30,9 @@ before_script:
   - . travis-ci/configure.sh
 
 script:
-  - cd "${BUILDDIR}" && make VERBOSE=1
-  - cd "${TRAVIS_BUILD_DIR}"
+  - cd "${BUILDDIR}" && make VERBOSE=1 && cd "${TRAVIS_BUILD_DIR}"
+
+after_success:
   - . travis-ci/package.sh
 
 deploy:
