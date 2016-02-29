@@ -140,6 +140,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 
 		echo "OK"
 	elif [ ${QT} -eq 5 ]; then
+		touch "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
