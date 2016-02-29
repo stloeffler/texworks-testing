@@ -103,7 +103,7 @@ EOF
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
-	if [ ${QT} -eq 4 ]; then
+#	if [ ${QT} -eq 4 ]; then
 		print_info "Running CPack"
 
 #		cd "${BUILDDIR}" && cpack --verbose
@@ -135,11 +135,11 @@ EOF
 #		export BINTRAYUPLOAD=1
 
 		echo "OK"
-	elif [ ${QT} -eq 5 ]; then
+#	elif [ ${QT} -eq 5 ]; then
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
-	else
+#	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
-	fi
+#	fi
 else
 	print_error "Skipping unsupported host/target combination '${TRAVIS_OS_NAME}/${TARGET_OS}'"
 fi
