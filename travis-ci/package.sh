@@ -46,8 +46,6 @@ echo "VERSION_NAME = ${VERSION_NAME}"
 
 # Start packaging and prepare deployment
 
-#export DEPOLY_TEXWORKS=0
-
 if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	echo "Not packaging for linux"
 elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
@@ -98,49 +96,34 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			"publish": true
 		}
 EOF
-#		export BINTRAYUPLOAD=1
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ ${QT} -eq 4 ]; then
 		print_info "Running CPack"
-
-#		cd "${BUILDDIR}" && cpack --verbose
-		cd "${BUILDDIR}" && make package
+		cd "${BUILDDIR}" && cpack --verbose
 
 		print_info "Preparing travis-ci/bintray.json"
-
-		echo "{\"package\": {\"name\": \"Latest-TeXworks-Mac\", \"repo\": \"generic\", \"subject\": \"stloeffler\"}, \"version\": {\"name\": \"${VERSION_NAME}\", \"released\": \"${RELEASE_DATE}\"}, \"files\": [{\"includePattern\": \"${BUILDDIR}/(TeXworks.*\\\\.dmg)\", \"uploadPattern\": \"TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg\"}], \"publish\": true}" > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
-
-#		touch "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
-
-#		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
-#		{
-#			"package": {
-#				"name": "Latest-TeXworks-Mac",
-#				"repo": "generic",
-#				"subject": "stloeffler"
-#			},
-#			"version": {
-#				"name": "${VERSION_NAME}",
-#				"released": "${RELEASE_DATE}"
-#			},
-#			"files":
-#			[
-#				{"includePattern": "${BUILDDIR}/(TeXworks.*\\\\.dmg)", "uploadPattern": "TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"}
-#			],
-#			"publish": true
-#		}
-#EOF
-#
-		cat "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
-
-#		export BINTRAYUPLOAD=1
-
-		echo "OK"
+		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
+		{
+			"package": {
+				"name": "Latest-TeXworks-Mac",
+				"repo": "generic",
+				"subject": "stloeffler"
+			},
+			"version": {
+				"name": "${VERSION_NAME}",
+				"released": "${RELEASE_DATE}"
+			},
+			"files":
+			[
+				{"includePattern": "${BUILDDIR}/(TeXworks.*\\\\.dmg)", "uploadPattern": "TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"}
+			],
+			"publish": true
+		}
+EOF
 	elif [ ${QT} -eq 5 ]; then
-		touch "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
@@ -150,8 +133,5 @@ else
 fi
 
 cd "${TRAVIS_BUILD_DIR}"
-
-#echo "${BINTRAYUPLOAD}"
-pwd
 
 print_info "Deployment preparation successful"

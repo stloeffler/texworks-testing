@@ -19,16 +19,16 @@ dist: trusty
 sudo: required
 
 before_install:
-  - travis-ci/get-dependencies.sh
+  - ${TRAVIS_BUILD_DIR}/travis-ci/get-dependencies.sh
 
 before_script:
-  - travis-ci/configure.sh
+  - ${TRAVIS_BUILD_DIR}/travis-ci/configure.sh
 
 script:
-  - travis-ci/build.sh
+  - ${TRAVIS_BUILD_DIR}/travis-ci/build.sh
 
 after_success:
-  - travis-ci/package.sh
+  - ${TRAVIS_BUILD_DIR}/travis-ci/package.sh
 
 deploy:
   skip_cleanup: true
