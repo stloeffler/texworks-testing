@@ -111,26 +111,26 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 
 		print_info "Preparing travis-ci/bintray.json"
 
-#		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
-#		{
-#			"package": {
-#				"name": "Latest-TeXworks-Mac",
-#				"repo": "generic",
-#				"subject": "stloeffler"
-#			},
-#			"version": {
-#				"name": "${VERSION_NAME}",
-#				"released": "${RELEASE_DATE}"
-#			},
-#			"files":
-#			[
-#				{"includePattern": "${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-qt${QT}/(TeXworks.*\\\\.dmg)", "uploadPattern": "TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"}
-#			],
-#			"publish": true
-#		}
-#EOF
+		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
+		{
+			"package": {
+				"name": "Latest-TeXworks-Mac",
+				"repo": "generic",
+				"subject": "stloeffler"
+			},
+			"version": {
+				"name": "${VERSION_NAME}",
+				"released": "${RELEASE_DATE}"
+			},
+			"files":
+			[
+				{"includePattern": "${BUILDDIR}/(TeXworks.*\\\\.dmg)", "uploadPattern": "TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"}
+			],
+			"publish": true
+		}
+EOF
 #
-#		cat "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
+		cat "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json"
 
 #		export BINTRAYUPLOAD=1
 
