@@ -5,6 +5,7 @@ os: osx
 script: echo "Hello World" > 1.txt
 
 deploy:
+  skip_cleanup: true
   provider: bintray
   file: bintray.json
   user: "stloeffler"
