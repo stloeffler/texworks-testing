@@ -106,7 +106,8 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ ${QT} -eq 4 ]; then
 		print_info "Running CPack"
 
-		cd "${BUILDDIR}" && cpack --verbose
+#		cd "${BUILDDIR}" && cpack --verbose
+		cd "${BUILDDIR}" && make package
 
 		print_info "Preparing travis-ci/bintray.json"
 
