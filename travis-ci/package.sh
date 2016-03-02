@@ -96,7 +96,14 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			print_info "   building package"
 			cd "${DEBDIR}"
 
-			echo "${DEB_PASSPHRASE}" > "/tmp/passphrase.txt" 2> /dev/null || print_error "Failed to create /tmp/passphrase.txt"
+			echo -n "" > "/tmp/passphrase.txt"
+			# Write the passphrase to the file several times; debuild (debsign)
+			# will try to sign (at least) the .dsc file and the .changes files,
+			# thus reading the passphrase from the pipe several times
+			# NB: --passphrase-file seems to be broken somehow
+			for i in $(seq 10); do
+				echo "${DEB_PASSPHRASE}" >> "/tmp/passphrase.txt" 2> /dev/null || print_error "Failed to create /tmp/passphrase.txt"
+			done
 			echo_and_run "gpg --version"
 			echo_and_run "gpg -k"
 			debuild -k00582F84 -p"gpg --no-tty --batch --passphrase-fd 0" -S < /tmp/passphrase.txt && DEBUILD_RETVAL=$? || DEBUILD_RETVAL=$?
