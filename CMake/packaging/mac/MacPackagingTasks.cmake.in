@@ -102,7 +102,7 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
   # all non-system libraries it depends on, copies them into the `.app` bundle
   # and then re-writes the necessary loader paths.
   SET(CMAKE_MODULE_PATH @CMAKE_MODULE_PATH@)
-  INCLUDE(DeployQt4)
+  INCLUDE(DeployQt${QT_VERSION_MAJOR})
 
   # Gather all TeXworks Plugin libraries.
   FILE(GLOB TeXworks_PLUGINS
@@ -112,8 +112,11 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
   # re-write some loader paths due to insufficiant permissions.
   SET(BU_CHMOD_BUNDLE_ITEMS ON)
 
-  FIXUP_QT4_BUNDLE(${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app "${QT_PLUGINS}" "${TeXworks_PLUGINS}" "${TeXworks_LIB_DIRS}")
-
+  if (QT_VERSION_MAJOR EQUAL 4)
+    FIXUP_QT4_BUNDLE(${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app "${QT_PLUGINS}" "${TeXworks_PLUGINS}" "${TeXworks_LIB_DIRS}")
+  elseif(QT_VERSION_MAJOR EQUAL 5)
+    FIXUP_QT5_EXECUTABLE(${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app "${QT_PLUGINS}" "${TeXworks_PLUGINS}" "${TeXworks_LIB_DIRS}")
+  endif()
 
   # Remove unecessary architectures from universal binaries
   # -------------------------------------------------------
