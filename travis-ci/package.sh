@@ -5,6 +5,8 @@ set -e
 
 cd "${TRAVIS_BUILD_DIR}"
 
+# FIXME: Do not package/deploy on pull requests
+
 . travis-ci/defs.sh
 
 print_headline "Packaging ${TARGET_OS}/qt${QT} for deployment"
@@ -48,7 +50,74 @@ echo "VERSION_NAME = ${VERSION_NAME}"
 cd "${BUILDDIR}"
 
 if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
-	echo "Not packaging for linux"
+	if [ ${QT} -eq 4 ]; then
+		DEBDATE=$(date -R)
+
+		echo_var "DEBDATE"
+		echo_var "DEB_MAINTAINER_NAME"
+		echo_var "DEB_MAINTAINER_EMAIL"
+		if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PASSPHRASE}" ]; then
+			print_error "DEB_MAINTAINER_NAME and/or DEB_MAINTAINER_EMAIL and/or DEB_PASSPHRASE are not set"
+			exit 0
+		fi
+		openssl aes-256-cbc -K $encrypted_9fc9b03c2815_key -iv $encrypted_9fc9b03c2815_iv -in "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc.enc" -out "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc" -d
+		gpg --import "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc"
+
+		for DISTRO in "precise" "trusty" "vivid" "wily" "xenial"; do
+			print_info "Packging for ${DISTRO}"
+			DEB_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")"~${DISTRO}"
+			echo -n "   "
+			echo_var "DEB_VERSION"
+
+			DEBDIR="${BUILDDIR}/texworks-${DEB_VERSION}"
+			print_info "   exporting sources to ${DEBDIR}"
+			mkdir -p "${DEBDIR}"
+			cd "${TRAVIS_BUILD_DIR}" && git archive --format=tar HEAD  | tar -x -C "${DEBDIR}" -f -
+
+			print_info "   copying debian directory"
+			cp -r "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/debian" "${DEBDIR}"
+
+			if [ -f "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/${DISTRO}.patch" ]; then
+				print_info "   applying ${DISTRO}.patch"
+				patch -d "${DEBDIR}" -p0 < "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/${DISTRO}.patch"
+			fi
+
+
+			print_info "   preparing copyright"
+			sed -i -e "s/<AUTHOR>/${DEB_MAINTAINER_NAME}/g" -e "s/<DATE>/${DEBDATE}/g" "${DEBDIR}/debian/copyright"
+
+			print_info "   preparing changelog"
+			echo "texworks (${DEB_VERSION}) ${DISTRO}; urgency=low\n" > "${DEBDIR}/debian/changelog"
+			# FIXME: For stable releases, derive the changelog from the NEWS file
+			git log --reverse --pretty=format:"%w(80,4,6)* %s" ${TRAVIS_COMMIT_RANGE} >> "${DEBDIR}/debian/changelog"
+			echo "" >> "${DEBDIR}/debian/changelog" # git log does not append a newline
+			echo "\n -- ${DEB_MAINTAINER_NAME} <${DEB_MAINTAINER_EMAIL}>  ${DEBDATE}" >> "${DEBDIR}/debian/changelog"
+
+			print_info "   building package"
+			cd "${DEBDIR}"
+
+			echo "${DEB_PASSPHRASE}" > "/tmp/passphrase.txt" 2> /dev/null
+			debuild -k00582F84 -p"gpg --no-tty --batch --passphrase-file /tmp/passphrase.txt" -S && DEBUILD_RETVAL=$? || DEBUILD_RETVAL=$?
+			rm -f /tmp/passphrase.txt
+
+			if [ $DEBUILD_RETVAL -ne 0 ]; then
+				print_warning "   debuild failed with status code ${DEBUILD_RETVAL}"
+				continue
+			fi
+			cd ..
+
+			DEBFILE="texworks_${DEB_VERSION}_source.changes"
+#			PPA="ppa:texworks/ppa"
+			PPA="ppa:st.loeffler/test"
+			print_info "   scheduling to upload ${DEBFILE} to ${PPA}"
+
+			echo "dput \"${PPA}\" \"${TRAVIS_BUILD_DIR}/travis-ci/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
+		done
+	elif [ ${QT} -eq 5 ]; then
+		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
+	else
+		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
+	fi
 elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	if [ ${QT} -eq 4 ]; then
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
