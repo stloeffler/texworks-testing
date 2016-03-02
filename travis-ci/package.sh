@@ -96,7 +96,8 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			print_info "   building package"
 			cd "${DEBDIR}"
 
-			echo "${DEB_PASSPHRASE}" > "/tmp/passphrase.txt" 2> /dev/null
+			echo "${DEB_PASSPHRASE}" > "/tmp/passphrase.txt" 2> /dev/null || echo "Failed to create /tmp/passphrase.txt"
+			ls -lisa /tmp
 			debuild -k00582F84 -p"gpg --no-tty --batch --passphrase-file /tmp/passphrase.txt" -S < /dev/null && DEBUILD_RETVAL=$? || DEBUILD_RETVAL=$?
 			rm -f /tmp/passphrase.txt
 
