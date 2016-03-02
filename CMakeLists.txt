@@ -425,7 +425,7 @@ elseif (QT_VERSION_MAJOR EQUAL 5)
   elseif (APPLE)
     get_target_property(QT_QPLATFORM_PLUGIN_RELEASE Qt5::QCocoaIntegrationPlugin LOCATION_Release)
   endif ()
-  SET(QT_PLUGINS "${QT_QPLATFORM_PLUGIN_RELEASE}"
+  SET(QT_PLUGINS "${QT_QPLATFORM_PLUGIN_RELEASE}")
 endif()
 
 # The file `CMake/packaging/CMakeLists.txt` controls the execution of tasks
