@@ -104,8 +104,6 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			for i in $(seq 10); do
 				echo "${DEB_PASSPHRASE}" >> "/tmp/passphrase.txt" 2> /dev/null || print_error "Failed to create /tmp/passphrase.txt"
 			done
-			echo_and_run "gpg --version"
-			echo_and_run "gpg -k"
 			debuild -k00582F84 -p"gpg --no-tty --batch --passphrase-fd 0" -S < /tmp/passphrase.txt && DEBUILD_RETVAL=$? || DEBUILD_RETVAL=$?
 			rm -f /tmp/passphrase.txt
 
