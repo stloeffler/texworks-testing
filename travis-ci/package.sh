@@ -5,7 +5,10 @@ set -e
 
 cd "${TRAVIS_BUILD_DIR}"
 
-# FIXME: Do not package/deploy on pull requests
+if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+	print_warning "Not packaging pull-requests for deployment"
+	exit 0
+fi
 
 . travis-ci/defs.sh
 
