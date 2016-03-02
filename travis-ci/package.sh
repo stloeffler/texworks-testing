@@ -184,6 +184,8 @@ EOF
 	fi
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ ${QT} -eq 4 ]; then
+		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
+	elif [ ${QT} -eq 5 ]; then
 		print_info "Running CPack"
 		cpack --verbose
 
@@ -207,8 +209,6 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 			"publish": true
 		}
 EOF
-	elif [ ${QT} -eq 5 ]; then
-		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
