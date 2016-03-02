@@ -120,7 +120,7 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			PPA="ppa:st.loeffler/test"
 			print_info "   scheduling to upload ${DEBFILE} to ${PPA}"
 
-			echo "dput \"${PPA}\" \"${TRAVIS_BUILD_DIR}/travis-ci/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
+			echo "dput \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
 		done
 	elif [ ${QT} -eq 5 ]; then
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
