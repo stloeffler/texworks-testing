@@ -27,7 +27,7 @@ echo "GIT_HASH = ${GIT_HASH}"
 GIT_DATE=$(git --git-dir=".git" show --no-patch --pretty="%ci")
 echo "GIT_DATE = ${GIT_DATE}"
 
-DATE_HASH=$(date -u +"%Y%m%d%H%M%S")
+DATE_HASH=$(date -u +"%Y%m%d%H%M")
 echo "DATE_HASH = ${DATE_HASH}"
 
 if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
@@ -41,10 +41,11 @@ fi
 echo "RELEASE_DATE = ${RELEASE_DATE}"
 
 #VERSION_NAME="TeXworks-${TRAVIS_OS_NAME}-${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
-VERSION_NAME="${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
+VERSION_NAME="${TW_VERSION}-t${DATE_HASH}-git_${GIT_HASH}"
 echo "VERSION_NAME = ${VERSION_NAME}"
 
 # Start packaging and prepare deployment
+cd "${BUILDDIR}"
 
 if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	echo "Not packaging for linux"
@@ -57,10 +58,10 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		print_info "Assembling package"
 		echo_and_run "mkdir -p \"package-zip/share\""
 		echo_and_run "cp \"${BUILDDIR}/TeXworks.exe\" \"package-zip/\""
-		echo_and_run "cp COPYING \"package-zip/\""
-		echo_and_run "cp -r \"win32/fonts\" \"package-zip/share/\""
+		echo_and_run "cp \"${TRAVIS_BUILD_DIR}/COPYING\" \"package-zip/\""
+		echo_and_run "cp -r \"${TRAVIS_BUILD_DIR}/win32/fonts\" \"package-zip/share/\""
 		# FIXME: manual (only for tags)
-		echo_and_run "cp -r \"travis-ci/README.win\" \"package-zip/README.txt\""
+		echo_and_run "cp -r \"${TRAVIS_BUILD_DIR}/travis-ci/README.win\" \"package-zip/README.txt\""
 
 		print_info "Fetching poppler data"
 		wget "${POPPLERDATA_URL}"
@@ -71,12 +72,14 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			print_error "(expected: ${POPPLERDATA_SHA256})"
 			exit 1
 		fi
-		echo_and_run "tar -x -C \"package-zip/share/\" -f \"${TRAVIS_BUILD_DIR}/${POPPLERDATA_FILE}\" && mv \"package-zip/share/${POPPLERDATA_SUBDIR}\" \"package-zip/share/poppler\""
+		echo_and_run "tar -x -C \"package-zip/share/\" -f \"${BUILDDIR}/${POPPLERDATA_FILE}\" && mv \"package-zip/share/${POPPLERDATA_SUBDIR}\" \"package-zip/share/poppler\""
 
 		print_info "zipping '${TRAVIS_BUILD_DIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip'"
-		echo_and_run "cd package-zip && zip -r \"${TRAVIS_BUILD_DIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip\" *"
+		echo_and_run "cd package-zip && zip -r \"${BUILDDIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip\" *"
 
-		print_info "Preparing travis-ci/bintray.json"
+		# FIXME: installer (only for tags)
+
+		print_info "Preparing bintray.json"
 
 		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
 		{
@@ -87,11 +90,12 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			},
 			"version": {
 				"name": "${VERSION_NAME}",
-				"released": "${RELEASE_DATE}"
+				"released": "${RELEASE_DATE}",
+				"gpgSign": false
 			},
 			"files":
 			[
-				{"includePattern": "${TRAVIS_BUILD_DIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip", "uploadPattern": "TeXworks-${TARGET_OS}-${VERSION_NAME}.zip"}
+				{"includePattern": "${BUILDDIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip", "uploadPattern": "TeXworks-${TARGET_OS}-${VERSION_NAME}.zip"}
 			],
 			"publish": true
 		}
@@ -102,9 +106,9 @@ EOF
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ ${QT} -eq 4 ]; then
 		print_info "Running CPack"
-		cd "${BUILDDIR}" && cpack --verbose
+		cpack --verbose
 
-		print_info "Preparing travis-ci/bintray.json"
+		print_info "Preparing bintray.json"
 		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
 		{
 			"package": {
@@ -114,7 +118,8 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 			},
 			"version": {
 				"name": "${VERSION_NAME}",
-				"released": "${RELEASE_DATE}"
+				"released": "${RELEASE_DATE}",
+				"gpgSign": false
 			},
 			"files":
 			[

@@ -40,7 +40,6 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 		print_error "Unsupported Qt version '${QT}'"
 		exit 1
 	fi
-	# -DCMAKE_OSX_DEPLOYMENT_TARGET='10.6'
 else
 	print_error "Unsupported host/target combination '${TRAVIS_OS_NAME}/${TARGET_OS}'"
 	exit 1
