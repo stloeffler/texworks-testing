@@ -94,11 +94,14 @@ public:
   QBrush currentSearchResultHighlightBrush() const { return _currentSearchResultHighlightBrush; }
   void setCurrentSearchResultHighlightBrush(const QBrush & brush);
 
+  bool canGoPrevViewRects() const { return !_oldViewRects.empty(); }
+
 public slots:
   void goPrev();
   void goNext();
   void goFirst();
   void goLast();
+  void goPrevViewRect();
   // `alignment` can be (a combination of) 0, Qt::AlignLeft, Qt::AlignRight,
   // Qt::AlignHCenter, Qt::AlignTop, Qt::AlignBottom, Qt::AlignVCenter.
   // 0 corresponds to no alignment, i.e., the view will change so that the
@@ -140,7 +143,7 @@ public slots:
 signals:
   void changedPage(int pageNum);
   void changedZoom(qreal zoomLevel);
-  void changedPageMode(PageMode newMode);
+  void changedPageMode(QtPDF::PDFDocumentView::PageMode newMode);
   // emitted, e.g., if a new document was loaded, or if the existing document
   // has changed (e.g., if it was unlocked)
   void changedDocument(const QWeakPointer<QtPDF::Backend::Document> newDoc);
@@ -183,6 +186,7 @@ protected slots:
   void goToPage(const PDFPageGraphicsItem * page, const QRectF view, const bool mayZoom = false);
   void goToPage(const PDFPageGraphicsItem * page, const int alignment = Qt::AlignLeft | Qt::AlignTop);
   void goToPage(const PDFPageGraphicsItem * page, const QPointF anchor, const int alignment = Qt::AlignHCenter | Qt::AlignVCenter);
+  void goToPDFDestination(const PDFDestination & dest, bool saveOldViewRect = true);
   void searchResultReady(int index);
   void searchProgressValueChanged(int progressValue);
   void switchInterfaceLocale(const QLocale & newLocale);
@@ -195,6 +199,8 @@ private:
   QVector<DocumentTool::AbstractTool*> _tools;
   DocumentTool::AbstractTool * _armedTool;
   QMap<uint, DocumentTool::AbstractTool*> _toolAccessors;
+
+  QStack<PDFDestination> _oldViewRects;
   
   static QTranslator * _translator;
   static QString _translatorLanguage;

@@ -92,6 +92,9 @@ PDFDocument::PDFDocument(const QString &fileName, TeXDocument *texDoc)
 	if (properties.contains("state"))
 		restoreState(properties.value("state").toByteArray(), kPDFWindowStateVersion);
 	
+	if (properties.contains("pdfPageMode"))
+		setPageMode(properties.value("pdfPageMode", -1).toInt());
+
 	if (texDoc != NULL) {
 		stackUnder((QWidget*)texDoc);
 		actionSide_by_Side->setEnabled(true);
@@ -130,8 +133,6 @@ void PDFDocument::init()
 	pdfWidget->setSearchResultHighlightBrush(QBrush(Qt::transparent));
 	pdfWidget->setCurrentSearchResultHighlightBrush(QBrush(Qt::transparent));
 	_searchResultHighlightBrush = QColor(255, 255, 0, 63);
-	pdfWidget->setPageMode(QtPDF::PDFDocumentView::PageMode_SinglePage);
-	actionPageMode_Single->setChecked(true);
 	setCentralWidget(pdfWidget);
 
 	connect(pdfWidget, SIGNAL(changedPage(int)), this, SLOT(updateStatusBar()));
@@ -139,6 +140,7 @@ void PDFDocument::init()
 	connect(pdfWidget, SIGNAL(changedDocument(const QWeakPointer<QtPDF::Backend::Document>)), this, SLOT(updateStatusBar()));
 	connect(pdfWidget, SIGNAL(changedDocument(const QWeakPointer<QtPDF::Backend::Document>)), this, SLOT(invalidateSyncHighlight()));
 	connect(pdfWidget, SIGNAL(searchResultHighlighted(const int, const QList<QPolygonF>)), this, SLOT(searchResultHighlighted(const int, const QList<QPolygonF>)));
+	connect(pdfWidget, SIGNAL(changedPageMode(QtPDF::PDFDocumentView::PageMode)), this, SLOT(updatePageMode(QtPDF::PDFDocumentView::PageMode)));
 
 	toolButtonGroup = new QButtonGroup(toolBar);
 	toolButtonGroup->addButton(qobject_cast<QAbstractButton*>(toolBar->widgetForAction(actionMagnify)), QtPDF::PDFDocumentView::MouseMode_MagnifyingGlass);
@@ -179,6 +181,8 @@ void PDFDocument::init()
 	connect(actionNext_Page, SIGNAL(triggered()), pdfWidget, SLOT(goNext()));
 	connect(actionLast_Page, SIGNAL(triggered()), pdfWidget, SLOT(goLast()));
 	connect(actionGo_to_Page, SIGNAL(triggered()), this, SLOT(doPageDialog()));
+	addAction(actionPrevious_ViewRect);
+	connect(actionPrevious_ViewRect, SIGNAL(triggered()), pdfWidget, SLOT(goPrevViewRect()));
 	connect(pdfWidget, SIGNAL(changedPage(int)), this, SLOT(enablePageActions(int)));
 
 	connect(actionActual_Size, SIGNAL(triggered()), pdfWidget, SLOT(zoom100()));
@@ -261,6 +265,21 @@ void PDFDocument::init()
 	exitFullscreen = NULL;
 	
 	QSETTINGS_OBJECT(settings);
+	switch(settings.value("pdfPageMode", kDefault_PDFPageMode).toInt()) {
+		case 0:
+			setPageMode(QtPDF::PDFDocumentView::PageMode_SinglePage);
+			break;
+		case 1:
+			setPageMode(QtPDF::PDFDocumentView::PageMode_OneColumnContinuous);
+			break;
+		case 2:
+			setPageMode(QtPDF::PDFDocumentView::PageMode_TwoColumnContinuous);
+			break;
+		default:
+			setPageMode(kDefault_PDFPageMode);
+			break;
+	}
+
 	TWUtils::applyToolbarOptions(this, settings.value("toolBarIconSize", 2).toInt(), settings.value("toolBarShowText", false).toBool());
 
 	TWApp::instance()->updateWindowMenus();
@@ -363,6 +382,7 @@ void PDFDocument::saveRecentFileInfo()
 	fileProperties.insert("path", curFile);
 	fileProperties.insert("geometry", saveGeometry());
 	fileProperties.insert("state", saveState(kPDFWindowStateVersion));
+	fileProperties.insert("pdfPageMode", pdfWidget->pageMode());
 	TWApp::instance()->addToRecentFiles(fileProperties);
 }
 
