@@ -215,6 +215,7 @@ void TWApp::init()
 
 	actionPreferences = new QAction(tr("Preferences..."), this);
 	actionPreferences->setIcon(QIcon(":/images/tango/preferences-system.png"));
+	actionPreferences->setMenuRole(QAction::PreferencesRole);
 	menuFile->addAction(actionPreferences);
 	connect(actionPreferences, SIGNAL(triggered()), this, SLOT(preferences()));
 
@@ -229,6 +230,11 @@ void TWApp::init()
 	connect(actionClear_Recent_Files, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
 	updateRecentFileActions();
 	menuFile->addMenu(menuRecent);
+
+	actionQuit = new QAction(tr("Quit TeXworks"), this);
+	actionQuit->setMenuRole(QAction::QuitRole);
+	menuFile->addAction(actionQuit);
+	connect(actionQuit, SIGNAL(triggered()), this, SLOT(quit()));
 
 	menuHelp = menuBar->addMenu(tr("Help"));
 
@@ -274,6 +280,8 @@ void TWApp::changeLanguage()
 	actionNew_from_Template->setShortcut(QKeySequence(tr("Ctrl+Shift+N")));
 	actionOpen->setText(tr("Open..."));
 	actionOpen->setShortcut(QKeySequence(tr("Ctrl+O")));
+	actionQuit->setText(tr("Quit TeXworks"));
+	actionQuit->setShortcut(QKeySequence("Ctrl+Q"));
 
 	menuRecent->setTitle(tr("Open Recent"));
 
