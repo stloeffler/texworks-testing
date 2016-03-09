@@ -886,23 +886,53 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
 
 	// Get a list of all boxes
 	QList<Poppler::TextBox*> poppler_boxes = _poppler_page->textList();
+	Poppler::TextBox * lastPopplerBox = NULL;
 
 	// Filter boxes by selection
 	foreach (Poppler::TextBox * poppler_box, poppler_boxes) {
 		if (!poppler_box)
 			continue;
 		bool include = false;
+		bool includeEntirely = false;
 		foreach (const QPolygonF & p, selection) {
 			if (!p.intersected(poppler_box->boundingBox()).empty()) {
 				include = true;
+				includeEntirely = QPolygonF(poppler_box->boundingBox()).subtracted(p).empty();
 				break;
 			}
 		}
 		if (!include)
 			continue;
 		// If we get here, we found a box in the selection, so we append its text
-		retVal += poppler_box->text();
-		if (poppler_box->hasSpaceAfter())
+
+		// Guess ends of line: if the new box is entirely below the old box, we
+		// assume it's a new line. This should work reasonably well for normal text
+		// (including RTL text), but may fail in some less common cases (e.g.,
+		// subscripts after superscripts, formulas, etc.).
+		if (lastPopplerBox && lastPopplerBox->boundingBox().bottom() < poppler_box->boundingBox().top())
+			retVal += QString::fromLatin1("\n");
+
+		bool appendSpace = false;
+		if (includeEntirely) {
+			retVal += poppler_box->text();
+			appendSpace = poppler_box->hasSpaceAfter();
+		}
+		else {
+			for (int i = 0; i < poppler_box->text().length(); ++i) {
+				foreach (const QPolygonF & p, selection) {
+					// Append text for char boxes iff they are entirely inside the
+					// selection area; using intersection only would cause problems for
+					// overlapping char boxes.
+					if (QPolygonF(poppler_box->charBoundingBox(i)).subtracted(p).empty()) {
+						retVal += poppler_box->text()[i];
+						if (i == poppler_box->text().length() - 1)
+							appendSpace = poppler_box->hasSpaceAfter();
+						break;
+					}
+				}
+			}
+		}
+		if (appendSpace)
 			retVal += QString::fromLatin1(" ");
 
 		if (wordBoxes) {
@@ -917,6 +947,8 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
 			if (poppler_box->hasSpaceAfter())
 				(*charBoxes)[charBoxes->count()] = poppler_box->boundingBox();
 		}
+
+		lastPopplerBox = poppler_box;
 	}
 
   return retVal;

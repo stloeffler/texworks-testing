@@ -59,14 +59,14 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		echo_var "DEBDATE"
 		echo_var "DEB_MAINTAINER_NAME"
 		echo_var "DEB_MAINTAINER_EMAIL"
-		if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PASSPHRASE}" ]; then
-			print_error "DEB_MAINTAINER_NAME and/or DEB_MAINTAINER_EMAIL and/or DEB_PASSPHRASE are not set"
+		if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PASSPHRASE}" -o -z "${LAUNCHPAD_DISTROS}" ]; then
+			print_error "DEB_MAINTAINER_NAME and/or DEB_MAINTAINER_EMAIL and/or DEB_PASSPHRASE and/or LAUNCHPAD_DISTROS are not set"
 			exit 0
 		fi
 		openssl aes-256-cbc -K $encrypted_9fc9b03c2815_key -iv $encrypted_9fc9b03c2815_iv -in "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc.enc" -out "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc" -d
 		gpg --import "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc"
 
-		for DISTRO in "precise" "trusty" "vivid" "wily" "xenial"; do
+		for DISTRO in ${LAUNCHPAD_DISTROS}; do
 			print_info "Packging for ${DISTRO}"
 			DEB_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")"~${DISTRO}"
 			echo -n "   "
