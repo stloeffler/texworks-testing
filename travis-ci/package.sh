@@ -5,12 +5,12 @@ set -e
 
 cd "${TRAVIS_BUILD_DIR}"
 
+. travis-ci/defs.sh
+
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
 	print_warning "Not packaging pull-requests for deployment"
 	exit 0
 fi
-
-. travis-ci/defs.sh
 
 print_headline "Packaging ${TARGET_OS}/qt${QT} for deployment"
 
