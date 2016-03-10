@@ -121,8 +121,14 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			cd ..
 
 			DEBFILE="texworks_${DEB_VERSION}_source.changes"
-#			PPA="ppa:texworks/ppa"
-			PPA="ppa:st.loeffler/test"
+			if [ -z "${TRAVIS_TAG}" ]; then
+				PPA="ppa:texworks/ppa"
+			else
+				PPA="ppa:texworks/stable"
+			fi
+# TESTING
+PPA="ppa:st.loeffler/test"
+# TESTING
 			print_info "   scheduling to upload ${DEBFILE} to ${PPA}"
 
 			echo "dput \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
