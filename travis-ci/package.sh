@@ -91,9 +91,13 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 
 			print_info "   preparing changelog"
 			echo "texworks (${DEB_VERSION}) ${DISTRO}; urgency=low\n" > "${DEBDIR}/debian/changelog"
-			# FIXME: For stable releases, derive the changelog from the NEWS file
-			git log --reverse --pretty=format:"%w(80,4,6)* %s" ${TRAVIS_COMMIT_RANGE} >> "${DEBDIR}/debian/changelog"
-			echo "" >> "${DEBDIR}/debian/changelog" # git log does not append a newline
+			if [ -z "${TRAVIS_TAG}" ]; then
+				git log --reverse --pretty=format:"%w(80,4,6)* %s" ${TRAVIS_COMMIT_RANGE} >> "${DEBDIR}/debian/changelog"
+				echo "" >> "${DEBDIR}/debian/changelog" # git log does not append a newline
+			else
+				NEWS=$(sed -n "/^Release ${TW_VERSION}/,/^Release/p" ${TRAVIS_BUILD_DIR}/NEWS | sed -e '/^Release/d' -e 's/^\t/    /')
+				echo "$NEWS" >> "${DEBDIR}/debian/changelog"
+			fi
 			echo "\n -- ${DEB_MAINTAINER_NAME} <${DEB_MAINTAINER_EMAIL}>  ${DEBDATE}" >> "${DEBDIR}/debian/changelog"
 
 			print_info "   building package"
