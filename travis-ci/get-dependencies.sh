@@ -41,7 +41,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
 	print_info "Updating apt cache"
 	# i386 is needed for wine
-	echo_and_run "sudo dpkg --add-architecture i386"
+	# echo_and_run "sudo dpkg --add-architecture i386"
 	echo_and_run "sudo apt-get -qq update"
 	if [ "${QT}" -eq 4 ]; then
 		print_info "Installing packages: curl freetype gcc hunspell jpeg lcms1 libpng lua pkg-config qt tiff"
@@ -55,7 +55,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
 	elif [ "${QT}" -eq 5 ]; then
 		print_info "Installing Inno Setup (using wine)"
-		echo_and_run "sudo apt-get -f install wine"
+		echo_and_run "sudo apt-get -f install wine:i386"
 		echo_and_run "wget http://www.jrsoftware.org/download.php/is-unicode.exe?site=1"
 		echo_and_run "wine is-unicode.exe"
 
