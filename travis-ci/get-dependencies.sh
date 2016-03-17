@@ -40,7 +40,9 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mxeapt.list > /dev/null
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
 	print_info "Updating apt cache"
-	sudo apt-get -qq update
+	# i386 is needed for wine
+	echo_and_run "sudo dpkg --add-architecture i386"
+	echo_and_run "sudo apt-get -qq update"
 	if [ "${QT}" -eq 4 ]; then
 		print_info "Installing packages: curl freetype gcc hunspell jpeg lcms1 libpng lua pkg-config qt tiff"
 		sudo apt-get install -y mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-gcc mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-lcms1 mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-lua mxe-i686-w64-mingw32.static-pkgconf mxe-i686-w64-mingw32.static-qt mxe-i686-w64-mingw32.static-tiff
@@ -52,13 +54,14 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		print_info "Building poppler (using ${JOBS} jobs)"
 		env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
 	elif [ "${QT}" -eq 5 ]; then
-		print_info "Installing packages: curl freetype gcc hunspell jpeg lcms1 libpng lua pkg-config qtbase qtscript qttools tiff"
-		sudo apt-get install -y mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-gcc mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-lcms1 mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-lua mxe-i686-w64-mingw32.static-pkgconf mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff
-
 		print_info "Installing Inno Setup (using wine)"
 		echo_and_run "sudo apt-get -f install wine"
 		echo_and_run "wget http://www.jrsoftware.org/download.php/is-unicode.exe?site=1"
 		echo_and_run "wine is-unicode.exe"
+
+
+		print_info "Installing packages: curl freetype gcc hunspell jpeg lcms1 libpng lua pkg-config qtbase qtscript qttools tiff"
+		sudo apt-get install -y mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-gcc mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-lcms1 mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-lua mxe-i686-w64-mingw32.static-pkgconf mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff
 
 		print_info "Make MXE writable"
 		sudo chmod -R a+w "${MXEDIR}"
