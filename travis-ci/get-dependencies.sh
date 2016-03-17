@@ -56,7 +56,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
 	elif [ "${QT}" -eq 5 ]; then
 		print_info "Installing Inno Setup (using wine)"
-		echo_and_run "sudo apt-get -f install wine:i386"
+		echo_and_run "sudo apt-get install --no-install-suggests -y wine"
 		echo_and_run "wget http://www.jrsoftware.org/download.php/is-unicode.exe?site=1"
 		echo_and_run "wine is-unicode.exe"
 
