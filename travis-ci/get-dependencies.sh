@@ -40,8 +40,8 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	echo "deb http://pkg.mxe.cc/repos/apt/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mxeapt.list > /dev/null
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D43A795B73B16ABE9643FE1AFD8FFF16DB45C6AB
 	print_info "Updating apt cache"
-	echo_and_run "find /etc/apt/sources.list.d/"
-	# i386 is needed for wine
+	# Remove google chrome as we don't need it and it does not play nice with the i386 architecture needed by wine
+	sudo mv /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.list.disabled
 	echo_and_run "sudo dpkg --add-architecture i386"
 	echo_and_run "sudo apt-get -qq update"
 	if [ "${QT}" -eq 4 ]; then
