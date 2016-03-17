@@ -46,7 +46,6 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QShortcut>
-#include <QFileSystemWatcher>
 #include <QToolTip>
 #include <QSignalMapper>
 
@@ -71,15 +70,12 @@ const int kPDFHighlightDuration = 2000;
 QList<PDFDocument*> PDFDocument::docList;
 
 PDFDocument::PDFDocument(const QString &fileName, TeXDocument *texDoc)
-	: _syncHighlight(NULL), watcher(NULL), reloadTimer(NULL), _synchronizer(NULL), openedManually(false)
+	: _syncHighlight(NULL), _synchronizer(NULL), openedManually(false)
 {
 	init();
 
-	if (texDoc == NULL) {
+	if (texDoc == NULL)
 		openedManually = true;
-		watcher = new QFileSystemWatcher(this);
-		connect(watcher, SIGNAL(fileChanged(const QString&)), this, SLOT(reloadWhenIdle()));
-	}
 
 	loadFile(fileName);
 
@@ -132,6 +128,7 @@ void PDFDocument::init()
 	pdfWidget = new QtPDF::PDFDocumentWidget(this);
 	pdfWidget->setSearchResultHighlightBrush(QBrush(Qt::transparent));
 	pdfWidget->setCurrentSearchResultHighlightBrush(QBrush(Qt::transparent));
+	pdfWidget->setAcceptDrops(false);
 	_searchResultHighlightBrush = QColor(255, 255, 0, 63);
 	setCentralWidget(pdfWidget);
 
@@ -280,6 +277,9 @@ void PDFDocument::init()
 			break;
 	}
 
+	if (settings.contains("previewResolution"))
+		pdfWidget->setResolution(settings.value("previewResolution", QApplication::desktop()->logicalDpiX()).toInt());
+
 	TWUtils::applyToolbarOptions(this, settings.value("toolBarIconSize", 2).toInt(), settings.value("toolBarShowText", false).toBool());
 
 	TWApp::instance()->updateWindowMenus();
@@ -394,12 +394,6 @@ void PDFDocument::loadFile(const QString &fileName)
 	settings.setValue("openDialogDir", info.canonicalPath());
 
 	reload();
-	if (watcher) {
-		const QStringList files = watcher->files();
-		if (!files.isEmpty())
-			watcher->removePaths(files); // in case we ever load different files into the same widget
-		watcher->addPath(curFile);
-	}
 }
 
 void PDFDocument::reload()
@@ -415,19 +409,6 @@ void PDFDocument::reload()
 		statusBar()->showMessage(tr("Failed to load file \"%1\"; perhaps it is not a valid PDF document.").arg(TWUtils::strippedName(curFile)));
 	}
 	QApplication::restoreOverrideCursor();
-}
-
-void PDFDocument::reloadWhenIdle()
-{
-	if (reloadTimer)
-		reloadTimer->stop();
-	else {
-		reloadTimer = new QTimer(this);
-		reloadTimer->setSingleShot(true);
-		reloadTimer->setInterval(1000);
-		connect(reloadTimer, SIGNAL(timeout()), this, SLOT(reload()));
-	}
-	reloadTimer->start();
 }
 
 void PDFDocument::loadSyncData()
@@ -881,6 +862,11 @@ void PDFDocument::setScaleFromContextMenu(const QString & strZoom)
 {
 	bool conversionOK = false;
 	float zoom = strZoom.toFloat(&conversionOK);
+	// FIXME: This should actually use the point the context menu was opened at as
+	// anchor for zooming. Currently, arbitrary coordinates are not supported yet
+	// (and using QGraphicsView::AnchorUnderMouse would use the position of the
+	// mouse cursor when the user clicks on the respective menu item - which will
+	// be somewhere else
 	if (pdfWidget && conversionOK)
 		pdfWidget->setZoomLevel(zoom);
 }

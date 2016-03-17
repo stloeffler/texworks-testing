@@ -126,14 +126,14 @@ public slots:
   void setMagnifierSize(const int size);
   void setUseGrayScale(const bool grayScale = true) { _useGrayScale = grayScale; }
 
-  void zoomBy(const qreal zoomFactor);
-  void zoomIn();
-  void zoomOut();
+  void zoomBy(const qreal zoomFactor, const QGraphicsView::ViewportAnchor anchor = QGraphicsView::AnchorViewCenter);
+  void zoomIn(const QGraphicsView::ViewportAnchor anchor = QGraphicsView::AnchorViewCenter);
+  void zoomOut(const QGraphicsView::ViewportAnchor anchor = QGraphicsView::AnchorViewCenter);
   void zoomToRect(QRectF a_rect);
   void zoomFitWindow();
   void zoomFitWidth();
   void zoom100();
-  void setZoomLevel(const qreal zoomLevel);
+  void setZoomLevel(const qreal zoomLevel, const QGraphicsView::ViewportAnchor anchor = QGraphicsView::AnchorViewCenter);
 
   void search(QString searchText, Backend::SearchFlags flags = Backend::Search_CaseInsensitive);
   void nextSearchResult();
@@ -458,9 +458,9 @@ public:
   int pageNumFor(const PDFPageGraphicsItem * const graphicsItem) const;
   PDFPageLayout& pageLayout() { return _pageLayout; }
 
-  void showOnePage(const int pageIdx) const;
-  void showOnePage(const PDFPageGraphicsItem * page) const;
-  void showAllPages() const;
+  void showOnePage(const int pageIdx);
+  void showOnePage(const PDFPageGraphicsItem * page);
+  void showAllPages();
 
   bool watchForDocumentChangesOnDisk() const { return _fileWatcher.files().size() > 0; }
   void setWatchForDocumentChangesOnDisk(const bool doWatch = true);
@@ -488,6 +488,9 @@ protected slots:
   void finishUnlock();
 
 protected:
+  // Used in non-continuous mode to keep track of currently shown page across
+  // reloads. -2 is used in continuous mode. -1 indicates an invalid value.
+  int _shownPageIdx;
   bool event(QEvent* event);
   
   QWidget * _unlockWidget;

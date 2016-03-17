@@ -92,7 +92,7 @@ void ZoomIn::mouseReleaseEvent(QMouseEvent * event)
   if (event->buttons() == Qt::NoButton && event->button() == Qt::LeftButton) {
     QPoint offset = event->pos() - _startPos;
     if (offset.manhattanLength() <  QApplication::startDragDistance())
-      _parent->zoomIn();
+      _parent->zoomIn(QGraphicsView::AnchorUnderMouse);
   }
   _started = false;
 }
@@ -125,7 +125,7 @@ void ZoomOut::mouseReleaseEvent(QMouseEvent * event)
   if (event->buttons() == Qt::NoButton && event->button() == Qt::LeftButton) {
     QPoint offset = event->pos() - _startPos;
     if (offset.manhattanLength() <  QApplication::startDragDistance())
-      _parent->zoomOut();
+      _parent->zoomOut(QGraphicsView::AnchorUnderMouse);
   }
   _started = false;
 }
@@ -948,7 +948,7 @@ void Select::keyPressEvent(QKeyEvent *event)
         Q_ASSERT(pageGraphicsItem != NULL);
       
         QTransform fromView = pageGraphicsItem->pointScale().inverted();
-        QString textToCopy = page->selectedText(_highlightPath->path().toFillPolygons(fromView));
+        QString textToCopy = page->selectedText(_highlightPath->path().toFillPolygons(fromView), NULL, NULL, true);
         // If the text is empty (e.g., there is no valid selection or the backend
         // doesn't (properly) support selectedText()) we don't overwrite the
         // clipboard

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pt_BR" sourcelanguage="en">
+<TS version="2.1" language="pt_BR" sourcelanguage="en">
 <context>
     <name>CompletingEdit</name>
     <message>
@@ -126,7 +126,7 @@
     </message>
     <message>
         <source>Unwrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Juntar linhas</translation>
     </message>
 </context>
 <context>
@@ -137,7 +137,7 @@
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is locked; this is not currently supported.</source>
-        <translation>Arquivo PDF &quot;%1&quot; está trancado; isto não é atualmente suportado.</translation>
+        <translation type="obsolete">Arquivo PDF &quot;%1&quot; está trancado; isto não é atualmente suportado.</translation>
     </message>
     <message>
         <source>Failed to load file &quot;%1&quot;; perhaps it is not a valid PDF document.</source>
@@ -529,7 +529,39 @@
     </message>
     <message>
         <source>Error initializing SyncTeX</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao inicializar o SyncTeX</translation>
+    </message>
+    <message>
+        <source>Go to previous view</source>
+        <translation>Voltar à visão anterior</translation>
+    </message>
+    <message>
+        <source>Alt+Left</source>
+        <translation>Alt+Esquerda</translation>
+    </message>
+    <message>
+        <source>Single Page</source>
+        <translation>Página Única</translation>
+    </message>
+    <message>
+        <source>Single Page Continuous</source>
+        <translation>Página Única Contínua</translation>
+    </message>
+    <message>
+        <source>Two Pages Continuous</source>
+        <translation>Página Dupla Contínua</translation>
+    </message>
+    <message>
+        <source>Jump to Source</source>
+        <translation>Saltar para o código-fonte</translation>
+    </message>
+    <message>
+        <source>Go to Page</source>
+        <translation>Ir para a página</translation>
+    </message>
+    <message>
+        <source>Page number:</source>
+        <translation>Número da página:</translation>
     </message>
 </context>
 <context>
@@ -575,92 +607,88 @@
     <name>PDFFontsDock</name>
     <message>
         <source>Name</source>
-        <translation>Novo</translation>
+        <translation type="obsolete">Novo</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
-    </message>
-    <message>
-        <source>Subset</source>
-        <translation></translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Arquivo</translation>
+        <translation type="obsolete">Arquivo</translation>
     </message>
     <message>
         <source>[none]</source>
-        <translation>[nenhum]</translation>
+        <translation type="obsolete">[nenhum]</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>sim</translation>
+        <translation type="obsolete">sim</translation>
     </message>
     <message>
         <source>no</source>
-        <translation>não</translation>
+        <translation type="obsolete">não</translation>
     </message>
     <message>
         <source>[embedded]</source>
-        <translation>[incluído]</translation>
+        <translation type="obsolete">[incluído]</translation>
     </message>
     <message>
         <source>Fonts</source>
-        <translation>Fontes</translation>
+        <translation type="obsolete">Fontes</translation>
     </message>
 </context>
 <context>
     <name>PDFInfoDock</name>
     <message>
         <source>PDF Info</source>
-        <translation>Informação do PDF</translation>
+        <translation type="obsolete">Informação do PDF</translation>
     </message>
 </context>
 <context>
     <name>PDFOutlineDock</name>
     <message>
         <source>No TOC</source>
-        <translation>Sem Sumário</translation>
+        <translation type="obsolete">Sem Sumário</translation>
     </message>
     <message>
         <source>Contents</source>
-        <translation>Conteúdo</translation>
+        <translation type="obsolete">Conteúdo</translation>
     </message>
 </context>
 <context>
     <name>PDFWidget</name>
     <message>
         <source>Zoom In</source>
-        <translation>Aumentar</translation>
+        <translation type="obsolete">Aumentar</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation>Diminuir</translation>
+        <translation type="obsolete">Diminuir</translation>
     </message>
     <message>
         <source>Actual Size</source>
-        <translation>Tamanho Real</translation>
+        <translation type="obsolete">Tamanho Real</translation>
     </message>
     <message>
         <source>Fit to Width</source>
-        <translation>Ajustar à Largura</translation>
+        <translation type="obsolete">Ajustar à Largura</translation>
     </message>
     <message>
         <source>Fit to Window</source>
-        <translation>Ajustar à Janela</translation>
+        <translation type="obsolete">Ajustar à Janela</translation>
     </message>
     <message>
         <source>Jump to Source</source>
-        <translation>Saltar para o código-fonte</translation>
+        <translation type="obsolete">Saltar para o código-fonte</translation>
     </message>
     <message>
         <source>Go to Page</source>
-        <translation>Ir para a página</translation>
+        <translation type="obsolete">Ir para a página</translation>
     </message>
     <message>
         <source>Page number:</source>
-        <translation>Número da página:</translation>
+        <translation type="obsolete">Número da página:</translation>
     </message>
 </context>
 <context>
@@ -935,19 +963,35 @@
     </message>
     <message>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interface</translation>
     </message>
     <message>
         <source>Locale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Localização:</translation>
     </message>
     <message>
         <source>Toolbar buttons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Botões da barra de tarefas:</translation>
     </message>
     <message>
         <source>Open corresponding PDF preview with TeX files</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir a visualização do PDF correspondente aos arquivos TeX</translation>
+    </message>
+    <message>
+        <source>Page mode:</source>
+        <translation>Modo de página:</translation>
+    </message>
+    <message>
+        <source>Single Page</source>
+        <translation>Página Única</translation>
+    </message>
+    <message>
+        <source>Single Page Continuous</source>
+        <translation>Página Única Contínua</translation>
+    </message>
+    <message>
+        <source>Two Page Continuous</source>
+        <translation>Página Dupla Contínua</translation>
     </message>
 </context>
 <context>
@@ -1002,11 +1046,11 @@
     </message>
     <message>
         <source>Log files (*.log *.blg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos de log (*.log *.blg)</translation>
     </message>
     <message>
         <source>Auxiliary files (*.aux *.toc *.lot *.lof *.nav *.out *.snm *.ind *.idx *.bbl *.brf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos auxiliares (*.aux *.toc *.lot *.lof *.nav *.out *.snm *.ind *.idx *.bbl *.brf)</translation>
     </message>
 </context>
 <context>
@@ -1257,7 +1301,7 @@
     </message>
     <message>
         <source>&lt;br&gt;&lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt; spell checker by L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</source>
-        <translation>&lt;br&gt;Verificador ortográfico &lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt;, por L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</translation>
+        <translation type="obsolete">&lt;br&gt;Verificador ortográfico &lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt;, por L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</translation>
     </message>
     <message>
         <source>&lt;br&gt;Concept and resources from &lt;a href=&quot;http://www.uoregon.edu/~koch/texshop/&quot;&gt;TeXShop&lt;/a&gt; by Richard Koch.</source>
@@ -1321,7 +1365,7 @@
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt application framework&lt;/a&gt; v%1 by Qt Software, a division of Nokia Corporation.</source>
-        <translation>&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Estrutura de aplicativos Qt&lt;/a&gt; v%1 by Qt Software, uma divisão da Nokia Corporation.</translation>
+        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Estrutura de aplicativos Qt&lt;/a&gt; v%1 by Qt Software, uma divisão da Nokia Corporation.</translation>
     </message>
     <message>
         <source>Save File</source>
@@ -1345,11 +1389,23 @@
     </message>
     <message>
         <source>&lt;br&gt;Version %1 (%2) [r.%3, %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Versão %1 (%2) [r %3, %4]</translation>
     </message>
     <message>
         <source>&lt;br&gt;Version %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Versão %1 (%2)</translation>
+    </message>
+    <message>
+        <source>Quit TeXworks</source>
+        <translation>Sair do TeXworks</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;a href=&quot;http://www.qt.io/&quot;&gt;Qt application framework&lt;/a&gt; v%1 by The Qt Company.</source>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://www.qt.io/&quot;&gt;Biblioteca para desenvolvimento de aplicativos Qt&lt;/a&gt; v%1 by The Qt Company.</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;a href=&quot;http://hunspell.github.io/&quot;&gt;Hunspell&lt;/a&gt; spell checker by L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</source>
+        <translation>&lt;br&gt;Verificador ortográfico &lt;a href=&quot;http://hunspell.github.io/&quot;&gt;Hunspell&lt;/a&gt;, de L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</translation>
     </message>
 </context>
 <context>
@@ -1415,7 +1471,12 @@
     </message>
     <message>
         <source>Script error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de script</translation>
+    </message>
+    <message>
+        <source>(disabled in the preferences)</source>
+        <extracomment>This string is appended to a script language name to indicate it is currently disabled</extracomment>
+        <translation>(desabilitado pelas preferências)</translation>
     </message>
 </context>
 <context>
@@ -2249,7 +2310,7 @@ Lamentamos a inconveniência.</translation>
     </message>
     <message>
         <source>Write UTF-8 byte order mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Escrever marcação da ordem de bytes UTF-8</translation>
     </message>
 </context>
 <context>

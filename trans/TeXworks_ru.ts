@@ -515,7 +515,7 @@
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is locked; this is not currently supported.</source>
-        <translation>PDF файл «%1» заблокирован; на данный момент операция не поддерживается.</translation>
+        <translation type="vanished">PDF файл «%1» заблокирован; на данный момент операция не поддерживается.</translation>
     </message>
     <message>
         <source>Find...</source>
@@ -542,6 +542,38 @@
     <message>
         <source>Error initializing SyncTeX</source>
         <translation>Ошибка при запуске SyncTeX</translation>
+    </message>
+    <message>
+        <source>Go to previous view</source>
+        <translation>Перейти к предыдущему виду</translation>
+    </message>
+    <message>
+        <source>Alt+Left</source>
+        <translation>Alt+Left</translation>
+    </message>
+    <message>
+        <source>Single Page</source>
+        <translation>Постранично</translation>
+    </message>
+    <message>
+        <source>Single Page Continuous</source>
+        <translation>Постранично свитком</translation>
+    </message>
+    <message>
+        <source>Two Pages Continuous</source>
+        <translation>По две страницы свитком</translation>
+    </message>
+    <message>
+        <source>Jump to Source</source>
+        <translation>Перейти к исходному файлу</translation>
+    </message>
+    <message>
+        <source>Go to Page</source>
+        <translation>Перейти к странице</translation>
+    </message>
+    <message>
+        <source>Page number:</source>
+        <translation>Страница:</translation>
     </message>
 </context>
 <context>
@@ -588,93 +620,93 @@
     <name>PDFFontsDock</name>
     <message>
         <source>Name</source>
-        <translation>Название</translation>
+        <translation type="vanished">Название</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Гарнитура</translation>
+        <translation type="vanished">Гарнитура</translation>
     </message>
     <message>
         <source>Subset</source>
-        <translation>Подмножество</translation>
+        <translation type="vanished">Подмножество</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Файл</translation>
+        <translation type="vanished">Файл</translation>
     </message>
     <message>
         <source>[none]</source>
-        <translation>[отсутствует]</translation>
+        <translation type="vanished">[отсутствует]</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>да</translation>
+        <translation type="vanished">да</translation>
     </message>
     <message>
         <source>no</source>
-        <translation>нет</translation>
+        <translation type="vanished">нет</translation>
     </message>
     <message>
         <source>[embedded]</source>
-        <translation>[встроенный]</translation>
+        <translation type="vanished">[вставленный]</translation>
     </message>
     <message>
         <source>Fonts</source>
-        <translation>Шрифты</translation>
+        <translation type="vanished">Шрифты</translation>
     </message>
 </context>
 <context>
     <name>PDFInfoDock</name>
     <message>
         <source>PDF Info</source>
-        <translation>Информация о PDF</translation>
+        <translation type="vanished">Информация о PDF</translation>
     </message>
 </context>
 <context>
     <name>PDFOutlineDock</name>
     <message>
         <source>No TOC</source>
-        <translation>Нет оглавления</translation>
+        <translation type="vanished">Нет оглавления</translation>
     </message>
     <message>
         <source>Contents</source>
         <translatorcomment>Содержание и оглавление синонимы.</translatorcomment>
-        <translation>Содержание</translation>
+        <translation type="vanished">Содержание</translation>
     </message>
 </context>
 <context>
     <name>PDFWidget</name>
     <message>
         <source>Zoom In</source>
-        <translation>Увеличить</translation>
+        <translation type="vanished">Увеличить</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation>Уменьшить</translation>
+        <translation type="vanished">Уменьшить</translation>
     </message>
     <message>
         <source>Actual Size</source>
-        <translation>Натуральный размер</translation>
+        <translation type="vanished">Натуральный размер</translation>
     </message>
     <message>
         <source>Fit to Width</source>
-        <translation>По ширине страницы</translation>
+        <translation type="vanished">По ширине страницы</translation>
     </message>
     <message>
         <source>Fit to Window</source>
-        <translation>По размеру окна</translation>
+        <translation type="vanished">По размеру окна</translation>
     </message>
     <message>
         <source>Jump to Source</source>
-        <translation>Перейти к исходному файлу</translation>
+        <translation type="vanished">Перейти к исходному файлу</translation>
     </message>
     <message>
         <source>Go to Page</source>
-        <translation>Перейти к странице</translation>
+        <translation type="vanished">Перейти к странице</translation>
     </message>
     <message>
         <source>Page number:</source>
-        <translation>Страница:</translation>
+        <translation type="vanished">Страница:</translation>
     </message>
 </context>
 <context>
@@ -979,6 +1011,22 @@
     <message>
         <source>Open corresponding PDF preview with TeX files</source>
         <translation>Открывать для просмотра PDF вместе с TeX файлами</translation>
+    </message>
+    <message>
+        <source>Page mode:</source>
+        <translation>Отображение страниц:</translation>
+    </message>
+    <message>
+        <source>Single Page</source>
+        <translation>Постранично</translation>
+    </message>
+    <message>
+        <source>Single Page Continuous</source>
+        <translation>Постранично свитком</translation>
+    </message>
+    <message>
+        <source>Two Page Continuous</source>
+        <translation>По две страницы свитком</translation>
     </message>
 </context>
 <context>
@@ -1301,7 +1349,7 @@
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt application framework&lt;/a&gt; v%1 by Qt Software, a division of Nokia Corporation.</source>
-        <translation>&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Инфраструктура приложений Qt&lt;/a&gt; вер%1 от Qt Software, подразделения Nokia Corporation.</translation>
+        <translation type="vanished">&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Инфраструктура приложений Qt&lt;/a&gt; вер%1 от Qt Software, подразделения Nokia Corporation.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;a href=&quot;http://poppler.freedesktop.org/&quot;&gt;Poppler&lt;/a&gt; PDF rendering library by Kristian H&amp;#xF8;gsberg, Albert Astals Cid and others.</source>
@@ -1309,7 +1357,7 @@
     </message>
     <message>
         <source>&lt;br&gt;&lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt; spell checker by L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</source>
-        <translation>&lt;br&gt;&lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt; программа проверки орфографии от L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</translation>
+        <translation type="vanished">&lt;br&gt;&lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt; программа проверки орфографии от L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</translation>
     </message>
     <message>
         <source>&lt;br&gt;Concept and resources from &lt;a href=&quot;http://www.uoregon.edu/~koch/texshop/&quot;&gt;TeXShop&lt;/a&gt; by Richard Koch.</source>
@@ -1403,6 +1451,18 @@
         <source>&lt;br&gt;Version %1 (%2)</source>
         <translation>&lt;br&gt;Версия %1 (%2)</translation>
     </message>
+    <message>
+        <source>Quit TeXworks</source>
+        <translation>Выйти из TeXworks</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;a href=&quot;http://www.qt.io/&quot;&gt;Qt application framework&lt;/a&gt; v%1 by The Qt Company.</source>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://www.qt.io/&quot;&gt;Платформа приложений Qt&lt;/a&gt; v%1 компании Qt.</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;a href=&quot;http://hunspell.github.io/&quot;&gt;Hunspell&lt;/a&gt; spell checker by L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</source>
+        <translation>&lt;br&gt;&lt;a href=&quot;http://hunspell.github.io/&quot;&gt;Hunspell&lt;/a&gt; проверка орфографии, разработчик L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</translation>
+    </message>
 </context>
 <context>
     <name>TWScriptAPI</name>
@@ -1468,6 +1528,11 @@
     <message>
         <source>Script error</source>
         <translation>Ошибка в сценарии</translation>
+    </message>
+    <message>
+        <source>(disabled in the preferences)</source>
+        <extracomment>This string is appended to a script language name to indicate it is currently disabled</extracomment>
+        <translation>(отключено в Настройках)</translation>
     </message>
 </context>
 <context>
