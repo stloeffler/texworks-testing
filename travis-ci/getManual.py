@@ -22,7 +22,7 @@ for asset in release["assets"]:
 		lang = os.path.splitext(asset['name'])[0].rsplit('-', 1)[1]
 		folder = os.path.join("texworks-help", "TeXworks-manual", lang)
 		if not os.path.exists(folder):
-			os.makedirs()
+			os.makedirs(folder)
 		print("Downloading %s from %s to %s" % (asset['name'], asset['browser_download_url'], folder))
 		urllib.urlretrieve(asset['browser_download_url'], os.path.join(folder, asset['name']))
 
