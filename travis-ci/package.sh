@@ -149,8 +149,13 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		echo_and_run "cp \"${BUILDDIR}/TeXworks.exe\" \"package-zip/\""
 		echo_and_run "cp \"${TRAVIS_BUILD_DIR}/COPYING\" \"package-zip/\""
 		echo_and_run "cp -r \"${TRAVIS_BUILD_DIR}/win32/fonts\" \"package-zip/share/\""
-		# FIXME: manual (only for tags)
 		echo_and_run "cp -r \"${TRAVIS_BUILD_DIR}/travis-ci/README.win\" \"package-zip/README.txt\""
+		if [ ! -z "${TRAVIS_TAG}" -o ! -z "${FORCE_MANUAL}" ]; then
+			print_info "Fetching manual"
+			cd package-zip
+			echo_and_run "python \"${TRAVIS_BUILD_DIR}/travis-ci/getManual.py\""
+			cd ..
+		fi
 
 		print_info "Fetching poppler data"
 		wget "${POPPLERDATA_URL}"
