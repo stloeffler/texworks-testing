@@ -209,9 +209,9 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 		cpack --verbose
 
 		print_info "Renaming .dmg"
-		ls "${BUILDDIR}/*.dmg"
+		ls "${BUILDDIR}/"*.dmg
 		mv "${BUILDDIR}/"TeXworks.*.dmg "${BUILDDIR}/TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"
-		ls "${BUILDDIR}/*.dmg"
+		ls "${BUILDDIR}/"*.dmg
 
 		print_info "Preparing bintray.json"
 		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
