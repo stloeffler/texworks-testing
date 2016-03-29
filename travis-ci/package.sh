@@ -204,6 +204,9 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 		print_info "Running CPack"
 		cpack --verbose
 
+		print_info "Renaming .dmg"
+		mv "${BUILDDIR}/TeXworks.*.dmg" "${BUILDDIR}/TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"
+
 		print_info "Preparing bintray.json"
 		cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json" <<EOF
 		{
@@ -219,7 +222,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 			},
 			"files":
 			[
-				{"includePattern": "${BUILDDIR}/(TeXworks.*\\\\.dmg)", "uploadPattern": "TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"}
+				{"includePattern": "${BUILDDIR}/TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg", "uploadPattern": "TeXworks-${TRAVIS_OS_NAME}-${VERSION_NAME}.dmg"}
 			],
 			"publish": true
 		}
