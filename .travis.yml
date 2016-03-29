@@ -30,6 +30,9 @@ script:
 after_success:
   - ${TRAVIS_BUILD_DIR}/travis-ci/package.sh
 
+before_deploy:
+	- export GITHUB_UPLOAD_FILE="$(sed -ne 's/.*"includePattern": "\([^"]*\)".*/\1/p' ${TRAVIS_BUILD_DIR}/travis-ci/bintray.json)"
+
 deploy:
   - provider: bintray
     skip_cleanup: true
@@ -47,7 +50,7 @@ deploy:
   - provider: releases
     api_key:
       secure: R95GDHMu7wk4TgBv4rkOmib1ZRrKwzC6OUUn4ZQmiRXjG2o8K5snWDsUtakbs+KGkKD/F8TNwlIvOxiacty00JTdzSVQnNXzkdBquv5E4Krj7w3YfC16tBZl7tfqjdf3Wp0ri4D/P79EpS6tpC9A9C6gjn1YYFA7fWvcYGzd2mSUlrB/gI9PUW7Wt66K0ustZnRzp3U51GhbGrq6llUnU3pixxny8B7obgwrj2AC9oWE2jzOghWeJBiG72EZNWFmWdAC3TK5FRKD9fEI9DVOt8rziM7azZKTfdCJn0KUX8jSVqQIgALxaUKRnBpeyvKFpDAtiI5SN4LcFmijfPmc54HJDIDr1SSyR26LcAhbl7/ZvLfpqJPDdwxWvsaEvWpCkksmHdkbzmauCD7SRet+bfUQ1rZejzcI0sdHQG19n6qopi2hFELB+IB7QBRcTBD5V/0ggNr8Pu2a4Ogh8IN3ixbbZ2bPBWJbva9Ui2lU0nfq15dSaHYiqKldFSwMK516UDr8LaURV5SUnT59p1n2C9r+VLe2nkiK3ShF7aERaD/iWfX7Fsq+aXfrHvpA17bGSE/e3ZUL4nRefapJl0MIzSh8RDpyc75uKIXnCodWQckBpCQoslaKphuw7uYjAO9Nypip38G/sdewIuIAI+CiadcOOZvdc3UUUTcdMi2a4G4=
-    file: $(sed -ne 's/.*"includePattern": "\([^"]*\)".*/\1/p' ${TRAVIS_BUILD_DIR}/travis-ci/bintray.json)
+    file: "${GITHUB_UPLOAD_FILE}"
     on:
       tags: true
-      condition: -f ${TRAVIS_BUILD_DIR}/travis-ci/bintray.json
+      condition: -f "${GITHUB_UPLOAD_FILE}"
