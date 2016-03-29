@@ -194,6 +194,10 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			"publish": true
 		}
 EOF
+		if [ ! -z "${TRAVIS_TAG}" ]; then
+			print_info "Preparing github-releases.txt"
+			echo "${BUILDDIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.zip" > "${TRAVIS_BUILD_DIR}/travis-ci/github-releases.txt"
+		fi
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
@@ -227,6 +231,10 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 			"publish": true
 		}
 EOF
+		if [ ! -z "${TRAVIS_TAG}" ]; then
+			print_info "Preparing github-releases.txt"
+			echo "${BUILDDIR}/TeXworks-${TARGET_OS}-${VERSION_NAME}.dmg" > "${TRAVIS_BUILD_DIR}/travis-ci/github-releases.txt"
+		fi
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
