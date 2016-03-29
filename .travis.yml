@@ -31,7 +31,7 @@ after_success:
   - ${TRAVIS_BUILD_DIR}/travis-ci/package.sh
 
 before_deploy:
-	- export GITHUB_UPLOAD_FILE="$(sed -ne 's/.*"includePattern": "\([^"]*\)".*/\1/p' ${TRAVIS_BUILD_DIR}/travis-ci/bintray.json)"
+	- export GITHUB_UPLOAD_FILE=$(sed -ne 's/.*"includePattern": "\([^"]*\)".*/\1/p' "${TRAVIS_BUILD_DIR}/travis-ci/bintray.json")
 
 deploy:
   - provider: bintray
