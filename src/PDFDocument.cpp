@@ -91,6 +91,8 @@ PDFDocument::PDFDocument(const QString &fileName, TeXDocument *texDoc)
 	if (properties.contains("pdfPageMode"))
 		setPageMode(properties.value("pdfPageMode", -1).toInt());
 
+	QTimer::singleShot(100, this, SLOT(setDefaultScale()));
+
 	if (texDoc != NULL) {
 		stackUnder((QWidget*)texDoc);
 		actionSide_by_Side->setEnabled(true);
@@ -134,8 +136,7 @@ void PDFDocument::init()
 
 	connect(pdfWidget, SIGNAL(changedPage(int)), this, SLOT(updateStatusBar()));
 	connect(pdfWidget, SIGNAL(changedZoom(qreal)), this, SLOT(updateStatusBar()));
-	connect(pdfWidget, SIGNAL(changedDocument(const QWeakPointer<QtPDF::Backend::Document>)), this, SLOT(updateStatusBar()));
-	connect(pdfWidget, SIGNAL(changedDocument(const QWeakPointer<QtPDF::Backend::Document>)), this, SLOT(invalidateSyncHighlight()));
+	connect(pdfWidget, SIGNAL(changedDocument(const QWeakPointer<QtPDF::Backend::Document>)), this, SLOT(changedDocument(const QWeakPointer<QtPDF::Backend::Document>)));
 	connect(pdfWidget, SIGNAL(searchResultHighlighted(const int, const QList<QPolygonF>)), this, SLOT(searchResultHighlighted(const int, const QList<QPolygonF>)));
 	connect(pdfWidget, SIGNAL(changedPageMode(QtPDF::PDFDocumentView::PageMode)), this, SLOT(updatePageMode(QtPDF::PDFDocumentView::PageMode)));
 
@@ -276,6 +277,7 @@ void PDFDocument::init()
 			setPageMode(kDefault_PDFPageMode);
 			break;
 	}
+	resetMagnifier();
 
 	if (settings.contains("previewResolution"))
 		pdfWidget->setResolution(settings.value("previewResolution", QApplication::desktop()->logicalDpiX()).toInt());
@@ -590,6 +592,12 @@ void PDFDocument::goToSource()
 		actionGo_to_Source->setEnabled(false);
 }
 
+void PDFDocument::changedDocument(const QWeakPointer<QtPDF::Backend::Document> newDoc) {
+	updateStatusBar();
+	invalidateSyncHighlight();
+	enablePageActions(pdfWidget->currentPage());
+}
+
 void PDFDocument::enablePageActions(int pageIndex)
 {
 //#if !defined(Q_OS_DARWIN)
@@ -746,7 +754,7 @@ void PDFDocument::jumpToSource()
 		return;
 
 	QPoint eventPos = act->data().toPoint();
-	QPointF scenePos = pdfWidget->mapFrom(this, eventPos);
+	QPointF scenePos = pdfWidget->mapToScene(pdfWidget->mapFrom(this, eventPos));
 
 	// Map to scene, then map to page
 	QtPDF::PDFDocumentScene * scene = qobject_cast<QtPDF::PDFDocumentScene*>(pdfWidget->scene());
@@ -756,7 +764,7 @@ void PDFDocument::jumpToSource()
 	if (!page)
 		return;
 
-	syncClick(scene->pageNumFor(page), page->mapFromScene(scenePos));
+	syncClick(scene->pageNumFor(page), page->mapToPage(page->mapFromScene(scenePos)));
 }
 
 void PDFDocument::doFindDialog()
@@ -799,6 +807,24 @@ void PDFDocument::searchResultHighlighted(const int pageNum, const QList<QPolygo
 		QRectF r = region[0].boundingRect();
 		QPointF pt(r.left() + 1e-5 * qMin(r.width(), 1.), r.center().y());
 		emit syncClick(pageNum, pt);
+	}
+}
+
+void PDFDocument::setDefaultScale() {
+	QSETTINGS_OBJECT(settings);
+	switch (settings.value("scaleOption", kDefault_PreviewScaleOption).toInt()) {
+		case 2:
+			pdfWidget->zoomFitWidth();
+			break;
+		case 3:
+			pdfWidget->zoomFitWindow();
+			break;
+		case 4:
+			pdfWidget->setZoomLevel(settings.value("previewScale", kDefault_PreviewScale).toFloat() / 100.);
+			break;
+		default:
+			pdfWidget->zoom100();
+			break;
 	}
 }
 

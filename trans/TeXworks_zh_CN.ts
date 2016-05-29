@@ -136,10 +136,6 @@
         <translation>打开最近的文件</translation>
     </message>
     <message>
-        <source>PDF file &quot;%1&quot; is locked; this is not currently supported.</source>
-        <translation type="obsolete">PDF 文件“%1”被锁定了；这一功能现在不支持。</translation>
-    </message>
-    <message>
         <source>Failed to load file &quot;%1&quot;; perhaps it is not a valid PDF document.</source>
         <translation>无法加载文件“%1”；可能它不是一个有效的 PDF 文档。</translation>
     </message>
@@ -212,16 +208,11 @@
         <translation>第一页</translation>
     </message>
     <message>
-        <source>Home</source>
-        <comment>shortcut key name, do not translate</comment>
-        <translation></translation>
-    </message>
-    <message>
         <source>Previous Page</source>
         <translation>上一页</translation>
     </message>
     <message>
-        <source>PgUp</source>
+        <source>Ctrl+PgUp</source>
         <comment>shortcut key name, do not translate</comment>
         <translation></translation>
     </message>
@@ -230,18 +221,13 @@
         <translation>下一页</translation>
     </message>
     <message>
-        <source>PgDown</source>
+        <source>Ctrl+PgDown</source>
         <comment>shortcut key name, do not translate</comment>
         <translation></translation>
     </message>
     <message>
         <source>Last Page</source>
         <translation>最后一页</translation>
-    </message>
-    <message>
-        <source>End</source>
-        <comment>shortcut key name, do not translate</comment>
-        <translation></translation>
     </message>
     <message>
         <source>Go to Page...</source>
@@ -604,98 +590,6 @@
     </message>
 </context>
 <context>
-    <name>PDFFontsDock</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">类型</translation>
-    </message>
-    <message>
-        <source>Subset</source>
-        <translation type="obsolete">子集</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">文件</translation>
-    </message>
-    <message>
-        <source>[none]</source>
-        <translation type="obsolete">[无]</translation>
-    </message>
-    <message>
-        <source>yes</source>
-        <translation type="obsolete">是</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
-        <source>[embedded]</source>
-        <translation type="obsolete">[已嵌入]</translation>
-    </message>
-    <message>
-        <source>Fonts</source>
-        <translation type="obsolete">字体</translation>
-    </message>
-</context>
-<context>
-    <name>PDFInfoDock</name>
-    <message>
-        <source>PDF Info</source>
-        <translation type="obsolete">PDF 文件信息</translation>
-    </message>
-</context>
-<context>
-    <name>PDFOutlineDock</name>
-    <message>
-        <source>No TOC</source>
-        <translation type="obsolete">没有目录 (TOC)</translation>
-    </message>
-    <message>
-        <source>Contents</source>
-        <translation type="obsolete">目录</translation>
-    </message>
-</context>
-<context>
-    <name>PDFWidget</name>
-    <message>
-        <source>Zoom In</source>
-        <translation type="obsolete">放大</translation>
-    </message>
-    <message>
-        <source>Zoom Out</source>
-        <translation type="obsolete">缩小</translation>
-    </message>
-    <message>
-        <source>Actual Size</source>
-        <translation type="obsolete">实际大小</translation>
-    </message>
-    <message>
-        <source>Fit to Width</source>
-        <translation type="obsolete">适合页面宽度</translation>
-    </message>
-    <message>
-        <source>Fit to Window</source>
-        <translation type="obsolete">适合页面</translation>
-    </message>
-    <message>
-        <source>Jump to Source</source>
-        <translation type="obsolete">跳至源文件</translation>
-    </message>
-    <message>
-        <source>Go to Page</source>
-        <translation type="obsolete">跳至页码</translation>
-    </message>
-    <message>
-        <source>Page number:</source>
-        <translation type="obsolete">页码：</translation>
-    </message>
-</context>
-<context>
     <name>PrefsDialog</name>
     <message>
         <source>Choose Directory</source>
@@ -720,10 +614,6 @@
     <message>
         <source>General</source>
         <translation>常规</translation>
-    </message>
-    <message>
-        <source>Toolbar buttons</source>
-        <translation type="obsolete">工具栏按钮</translation>
     </message>
     <message>
         <source>Small icons</source>
@@ -756,10 +646,6 @@
     <message>
         <source>File Open dialog</source>
         <translation>文件打开对话框</translation>
-    </message>
-    <message>
-        <source>Interface locale:</source>
-        <translation type="obsolete">程序界面语言：</translation>
     </message>
     <message>
         <source>Editor</source>
@@ -1033,14 +919,6 @@
         <translation>所有文件</translation>
     </message>
     <message>
-        <source>Log files (*.log)</source>
-        <translation type="obsolete">日志文件（*.log）</translation>
-    </message>
-    <message>
-        <source>Auxiliary files (*.aux *.toc *.lot *.lof *.nav *.out *.snm *.ind *.idx *.bbl)</source>
-        <translation type="obsolete">辅助文件（*.aux *.toc *.lot *.lof *.nav *.out *.snm *.ind *.idx *.bbl）</translation>
-    </message>
-    <message>
         <source>Log files (*.log *.blg)</source>
         <translation>日志文件 (*.log *.blg)</translation>
     </message>
@@ -1284,10 +1162,6 @@
         <translation>&lt;br&gt;&lt;a href=&quot;http://poppler.freedesktop.org/&quot;&gt;Poppler&lt;/a&gt; PDF 渲染库由 Kristian H&amp;#xF8;gsberg, Albert Astals Cid 及其他人开发。</translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt; spell checker by L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</source>
-        <translation type="obsolete">&lt;br&gt;&lt;a href=&quot;http://hunspell.sourceforge.net/&quot;&gt;Hunspell&lt;/a&gt; 语法检查器由 L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth 开发。</translation>
-    </message>
-    <message>
         <source>&lt;br&gt;Concept and resources from &lt;a href=&quot;http://www.uoregon.edu/~koch/texshop/&quot;&gt;TeXShop&lt;/a&gt; by Richard Koch.</source>
         <translation>&lt;br&gt;构想和实现方法来源于 Richard Koch 开发的 &lt;a href=&quot;http://www.uoregon.edu/~koch/texshop/&quot;&gt;TeXShop&lt;/a&gt; 。</translation>
     </message>
@@ -1336,8 +1210,8 @@
         <translation>没有找到默认的可执行程序（bin）目录</translation>
     </message>
     <message>
-        <source>None of the predefined directories for TeX-related programs could be found.&lt;p&gt;&lt;small&gt;To run any processes, you will need to set the binaries directory (or directories) for your TeX distribution using the Typesetting tab of the Preferences dialog.</source>
-        <translation>没有找到 TeX 相关程序所在的预定义目录。&lt;p&gt;&lt;small&gt;为了运行任何处理程序，您需要在＜首选项＞对话框的＜排版＞选项卡中设定 TeX 系统的二进制程序目录 (bin)。</translation>
+        <source>None of the predefined directories for TeX-related programs could be found.&lt;p&gt;&lt;small&gt;To run any processes, you will need to set the binaries directory (or directories) for your TeX distribution using the Typesetting tab of the Preferences dialog.&lt;/small&gt;</source>
+        <translation>没有找到 TeX 相关程序所在的预定义目录。&lt;p&gt;&lt;small&gt;为了运行任何处理程序，您需要在＜首选项＞对话框的＜排版＞选项卡中设定 TeX 系统的二进制程序目录 (bin)。&lt;/small&gt;</translation>
     </message>
     <message>
         <source>Unable to find help file.</source>
@@ -1346,14 +1220,6 @@
     <message>
         <source>Save File</source>
         <translation>保存文件</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Version %1 r.%2 (%3)</source>
-        <translation type="obsolete">&lt;br&gt;版本 %1 r%2 (%3)</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt application framework&lt;/a&gt; v%1 by Qt Software, a division of Nokia Corporation.</source>
-        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://qt.nokia.com/&quot;&gt;Qt应用程序框架&lt;/a&gt;v%1 由Nokia公司子公司 Qt Software 开发。</translation>
     </message>
     <message>
         <source>Permission request</source>

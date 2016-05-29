@@ -171,73 +171,73 @@
         <translation type="obsolete">Plik PDF &quot;%1&quot; jest zablokowany; Taka sytuacja obecnie nie jest obsługiwana.</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="415"/>
+        <location filename="../src/PDFDocument.cpp" line="411"/>
         <source>Failed to load file &quot;%1&quot;; perhaps it is not a valid PDF document.</source>
         <translation>Nie udało się załadować pliku &quot;%1&quot;; prawdopodobnie nie jest to prawidłowy plik PDF.</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="441"/>
+        <location filename="../src/PDFDocument.cpp" line="424"/>
         <source>Error initializing SyncTeX</source>
         <translation>Błąd podczas inicjalizowania SyncTeX</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="443"/>
+        <location filename="../src/PDFDocument.cpp" line="426"/>
         <source>No SyncTeX data available</source>
         <translation>Dane SyncTeX niedostępne</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="445"/>
+        <location filename="../src/PDFDocument.cpp" line="428"/>
         <source>SyncTeX: &quot;%1&quot;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="554"/>
+        <location filename="../src/PDFDocument.cpp" line="537"/>
         <source>%1[*] - %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="583"/>
+        <location filename="../src/PDFDocument.cpp" line="566"/>
         <source>page %1 of %2</source>
         <translation>strona %1 z %2</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="588"/>
+        <location filename="../src/PDFDocument.cpp" line="571"/>
         <source>%1%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="745"/>
+        <location filename="../src/PDFDocument.cpp" line="728"/>
         <source>Jump to Source</source>
-        <translation type="unfinished">Przejdź do źródła</translation>
+        <translation>Przejdź do źródła</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="829"/>
+        <location filename="../src/PDFDocument.cpp" line="830"/>
         <source>Unfortunately, this version of %1 is unable to print Pdf documents due to various technical reasons.
 </source>
         <translation>Niestety, ta wersja %1 nie może drukować dokumentów PDF z różnych powodów technicznych.
 </translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="830"/>
+        <location filename="../src/PDFDocument.cpp" line="831"/>
         <source>Do you want to open the file in the default viewer for printing instead?</source>
         <translation>Czy zamiast tego chcesz otworzyć plik w domyślnej przeglądarce aby wydrukować?</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="831"/>
+        <location filename="../src/PDFDocument.cpp" line="832"/>
         <source> (remember to close it again to avoid access problems)</source>
         <translation> (pamiętaj żeby zamknąć plik aby uniknąć problemów z dostępem)</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="907"/>
-        <location filename="../src/PDFDocument.cpp" line="911"/>
+        <location filename="../src/PDFDocument.cpp" line="913"/>
+        <location filename="../src/PDFDocument.cpp" line="917"/>
         <source>Go to Page</source>
-        <translation type="unfinished">Przejdź do strony</translation>
+        <translation>Przejdź do strony</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="908"/>
-        <location filename="../src/PDFDocument.cpp" line="912"/>
+        <location filename="../src/PDFDocument.cpp" line="914"/>
+        <location filename="../src/PDFDocument.cpp" line="918"/>
         <source>Page number:</source>
-        <translation type="unfinished">Strona numer:</translation>
+        <translation>Strona numer:</translation>
     </message>
     <message>
         <location filename="../src/PDFDocument.ui" line="17"/>
@@ -301,376 +301,364 @@
         <translation>Pierwsza strona</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="213"/>
-        <source>Home</source>
-        <comment>shortcut key name, do not translate</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/PDFDocument.ui" line="225"/>
+        <location filename="../src/PDFDocument.ui" line="222"/>
         <source>Previous Page</source>
         <translation>Poprzednia strona</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="228"/>
-        <source>PgUp</source>
+        <location filename="../src/PDFDocument.ui" line="225"/>
+        <source>Ctrl+PgUp</source>
         <comment>shortcut key name, do not translate</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="240"/>
+        <location filename="../src/PDFDocument.ui" line="237"/>
         <source>Next Page</source>
         <translation>Następna strona</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="243"/>
-        <source>PgDown</source>
+        <location filename="../src/PDFDocument.ui" line="240"/>
+        <source>Ctrl+PgDown</source>
         <comment>shortcut key name, do not translate</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="255"/>
+        <location filename="../src/PDFDocument.ui" line="252"/>
         <source>Last Page</source>
         <translation>Ostatnia strona</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="258"/>
-        <source>End</source>
-        <comment>shortcut key name, do not translate</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/PDFDocument.ui" line="266"/>
+        <location filename="../src/PDFDocument.ui" line="260"/>
         <source>Go to Page...</source>
         <translation>Przejdź do strony...</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="269"/>
+        <location filename="../src/PDFDocument.ui" line="263"/>
         <source>Ctrl+J</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="281"/>
-        <location filename="../src/PDFDocument.cpp" line="752"/>
+        <location filename="../src/PDFDocument.ui" line="275"/>
+        <location filename="../src/PDFDocument.cpp" line="735"/>
         <source>Zoom In</source>
         <translation>Powiększ</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="284"/>
+        <location filename="../src/PDFDocument.ui" line="278"/>
         <source>Ctrl++</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="296"/>
-        <location filename="../src/PDFDocument.cpp" line="753"/>
+        <location filename="../src/PDFDocument.ui" line="290"/>
+        <location filename="../src/PDFDocument.cpp" line="736"/>
         <source>Zoom Out</source>
         <translation>Pomniejsz</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="299"/>
+        <location filename="../src/PDFDocument.ui" line="293"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="314"/>
-        <location filename="../src/PDFDocument.cpp" line="756"/>
+        <location filename="../src/PDFDocument.ui" line="308"/>
+        <location filename="../src/PDFDocument.cpp" line="739"/>
         <source>Fit to Window</source>
         <translation>Najlepsze dopasowanie</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="317"/>
+        <location filename="../src/PDFDocument.ui" line="311"/>
         <source>Ctrl+3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="329"/>
-        <location filename="../src/PDFDocument.cpp" line="754"/>
+        <location filename="../src/PDFDocument.ui" line="323"/>
+        <location filename="../src/PDFDocument.cpp" line="737"/>
         <source>Actual Size</source>
         <translation>Widok normalny</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="332"/>
+        <location filename="../src/PDFDocument.ui" line="326"/>
         <source>Ctrl+1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="347"/>
-        <location filename="../src/PDFDocument.cpp" line="755"/>
+        <location filename="../src/PDFDocument.ui" line="341"/>
+        <location filename="../src/PDFDocument.cpp" line="738"/>
         <source>Fit to Width</source>
         <translation>Dopasuj do szerokości</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="350"/>
+        <location filename="../src/PDFDocument.ui" line="344"/>
         <source>Ctrl+2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="362"/>
+        <location filename="../src/PDFDocument.ui" line="356"/>
         <source>New</source>
         <translation>Nowy</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="365"/>
+        <location filename="../src/PDFDocument.ui" line="359"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="377"/>
+        <location filename="../src/PDFDocument.ui" line="371"/>
         <source>Open...</source>
         <translation>Otwórz...</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="380"/>
+        <location filename="../src/PDFDocument.ui" line="374"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="388"/>
+        <location filename="../src/PDFDocument.ui" line="382"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="391"/>
+        <location filename="../src/PDFDocument.ui" line="385"/>
         <source>Ctrl+W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="406"/>
+        <location filename="../src/PDFDocument.ui" line="400"/>
         <source>Undo</source>
         <translation>Cofnij</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="409"/>
+        <location filename="../src/PDFDocument.ui" line="403"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="424"/>
+        <location filename="../src/PDFDocument.ui" line="418"/>
         <source>Redo</source>
         <translation>Ponów</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="427"/>
+        <location filename="../src/PDFDocument.ui" line="421"/>
         <source>Ctrl+Shift+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="442"/>
+        <location filename="../src/PDFDocument.ui" line="436"/>
         <source>Cut</source>
         <translation>Wytnij</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="445"/>
+        <location filename="../src/PDFDocument.ui" line="439"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="460"/>
+        <location filename="../src/PDFDocument.ui" line="454"/>
         <source>Copy</source>
         <translation>Kopiuj</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="463"/>
+        <location filename="../src/PDFDocument.ui" line="457"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="478"/>
+        <location filename="../src/PDFDocument.ui" line="472"/>
         <source>Paste</source>
         <translation>Wklej</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="481"/>
+        <location filename="../src/PDFDocument.ui" line="475"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="492"/>
+        <location filename="../src/PDFDocument.ui" line="486"/>
         <source>Clear</source>
         <translation>Wyczyść</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="495"/>
+        <location filename="../src/PDFDocument.ui" line="489"/>
         <source>Ctrl+Backspace</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="507"/>
-        <location filename="../src/PDFDocument.cpp" line="707"/>
+        <location filename="../src/PDFDocument.ui" line="501"/>
+        <location filename="../src/PDFDocument.cpp" line="690"/>
         <source>Typeset</source>
         <translation>Składaj</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="510"/>
+        <location filename="../src/PDFDocument.ui" line="504"/>
         <source>Ctrl+T</source>
         <comment>action</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="522"/>
+        <location filename="../src/PDFDocument.ui" line="516"/>
         <source>Preferences...</source>
         <translation>Ustawienia...</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="530"/>
+        <location filename="../src/PDFDocument.ui" line="524"/>
         <source>Stack</source>
         <translation>Jedno nad drugim</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="538"/>
+        <location filename="../src/PDFDocument.ui" line="532"/>
         <source>Tile</source>
         <translation>Obok siebie (kafelki)</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="549"/>
+        <location filename="../src/PDFDocument.ui" line="543"/>
         <source>Go to Source</source>
         <translation>Przejdź do źródła</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="552"/>
+        <location filename="../src/PDFDocument.ui" line="546"/>
         <source>Ctrl+&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="560"/>
+        <location filename="../src/PDFDocument.ui" line="554"/>
         <source>New from Template...</source>
         <translation>Nowy na podstawie szablonu...</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="563"/>
+        <location filename="../src/PDFDocument.ui" line="557"/>
         <source>Ctrl+Shift+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="574"/>
+        <location filename="../src/PDFDocument.ui" line="568"/>
         <source>Full Screen</source>
         <translation>Pełen ekran</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="577"/>
+        <location filename="../src/PDFDocument.ui" line="571"/>
         <source>Ctrl+Shift+F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="595"/>
+        <location filename="../src/PDFDocument.ui" line="589"/>
         <source>Magnify</source>
         <translation>Powiększ</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="607"/>
+        <location filename="../src/PDFDocument.ui" line="601"/>
         <source>Scroll</source>
         <translation>Przewijaj</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="619"/>
+        <location filename="../src/PDFDocument.ui" line="613"/>
         <source>Select Text</source>
         <translation>Zaznacz tekst</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="631"/>
+        <location filename="../src/PDFDocument.ui" line="625"/>
         <source>Select Image</source>
         <translation>Zaznacz obraz</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="636"/>
+        <location filename="../src/PDFDocument.ui" line="630"/>
         <source>Go to TeXworks home page</source>
         <translation>Przejdź do strony domowej projektu</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="641"/>
+        <location filename="../src/PDFDocument.ui" line="635"/>
         <source>Email to the mailing list</source>
         <translation>Pisz na listę dyskusyjną</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="649"/>
+        <location filename="../src/PDFDocument.ui" line="643"/>
         <source>Side by Side</source>
         <translation>Obok siebie</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="654"/>
+        <location filename="../src/PDFDocument.ui" line="648"/>
         <source>Place on Left</source>
         <translation>Umieść po lewej</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="659"/>
+        <location filename="../src/PDFDocument.ui" line="653"/>
         <source>Place on Right</source>
         <translation>Umieść po prawej</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="664"/>
+        <location filename="../src/PDFDocument.ui" line="658"/>
         <source>Quit TeXworks</source>
         <translation>Zakończ TeXworks</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="667"/>
+        <location filename="../src/PDFDocument.ui" line="661"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="679"/>
+        <location filename="../src/PDFDocument.ui" line="673"/>
         <source>Find...</source>
         <translation>Znajdź...</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="682"/>
+        <location filename="../src/PDFDocument.ui" line="676"/>
         <source>Ctrl+F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="693"/>
+        <location filename="../src/PDFDocument.ui" line="687"/>
         <source>Find Again</source>
         <translation>Znajdź następne</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="696"/>
+        <location filename="../src/PDFDocument.ui" line="690"/>
         <source>Ctrl+G</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="739"/>
-        <location filename="../src/PDFDocument.cpp" line="834"/>
+        <location filename="../src/PDFDocument.ui" line="733"/>
+        <location filename="../src/PDFDocument.cpp" line="835"/>
         <source>Print Pdf...</source>
         <translation>Drukuj PDF…</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="742"/>
+        <location filename="../src/PDFDocument.ui" line="736"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="747"/>
+        <location filename="../src/PDFDocument.ui" line="741"/>
         <source>Settings and Resources...</source>
         <translation>Ustawienia i zasoby…</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="758"/>
+        <location filename="../src/PDFDocument.ui" line="752"/>
         <source>Clear Recent Files</source>
         <translation>Wyczyść ostatnie</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="763"/>
+        <location filename="../src/PDFDocument.ui" line="757"/>
         <source>Go to previous view</source>
-        <translation type="unfinished"></translation>
+        <translation>Powróć do poprzedniego układu</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="766"/>
+        <location filename="../src/PDFDocument.ui" line="760"/>
         <source>Alt+Left</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="779"/>
+        <location filename="../src/PDFDocument.ui" line="773"/>
         <source>Single Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncza strona</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="791"/>
+        <location filename="../src/PDFDocument.ui" line="785"/>
         <source>Single Page Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncza strona – widok ciągły</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="803"/>
+        <location filename="../src/PDFDocument.ui" line="797"/>
         <source>Two Pages Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Dwie strony – widok ciągły</translation>
     </message>
     <message>
         <location filename="../src/PDFDocument.ui" line="130"/>
@@ -682,17 +670,17 @@
         <translation type="obsolete">Uaktualnij skrypty</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="715"/>
+        <location filename="../src/PDFDocument.ui" line="709"/>
         <source>Manage Scripts</source>
         <translation>Zarządzaj skryptami</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="723"/>
+        <location filename="../src/PDFDocument.ui" line="717"/>
         <source>Show Scripts Folder</source>
         <translation>Pokaż kartotekę ze skryptami</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.cpp" line="700"/>
+        <location filename="../src/PDFDocument.cpp" line="683"/>
         <source>Abort typesetting</source>
         <translation>Przerwij skład</translation>
     </message>
@@ -702,12 +690,12 @@
         <translation>Skrypty TeXworks</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="707"/>
+        <location filename="../src/PDFDocument.ui" line="701"/>
         <source>Reload Script List</source>
         <translation>Przeładuj listę skryptów</translation>
     </message>
     <message>
-        <location filename="../src/PDFDocument.ui" line="731"/>
+        <location filename="../src/PDFDocument.ui" line="725"/>
         <source>About Scripts...</source>
         <translation>O skryptach...</translation>
     </message>
@@ -1074,22 +1062,22 @@
     <message>
         <location filename="../src/PrefsDialog.ui" line="708"/>
         <source>Page mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygląd strony:</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="716"/>
         <source>Single Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncza</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="721"/>
         <source>Single Page Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncza – ciągła</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="726"/>
         <source>Two Page Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>Dwie obok siebie – ciągłe</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="750"/>
@@ -1396,7 +1384,7 @@
         <location filename="../src/ResourcesDialog.ui" line="23"/>
         <source>Storage Locations</source>
         <translatorcomment>I am not sure…</translatorcomment>
-        <translation>Pamięć</translation>
+        <translation>Kartoteki</translation>
     </message>
     <message>
         <location filename="../src/ResourcesDialog.ui" line="41"/>
@@ -1568,7 +1556,7 @@
         <location filename="../src/TWApp.cpp" line="234"/>
         <location filename="../src/TWApp.cpp" line="283"/>
         <source>Quit TeXworks</source>
-        <translation type="unfinished">Zakończ TeXworks</translation>
+        <translation>Zakończ TeXworks</translation>
     </message>
     <message>
         <location filename="../src/TWApp.cpp" line="239"/>
@@ -1617,7 +1605,7 @@
     <message>
         <location filename="../src/TWApp.cpp" line="308"/>
         <source>&lt;br&gt;&lt;a href=&quot;http://hunspell.github.io/&quot;&gt;Hunspell&lt;/a&gt; spell checker by L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;meth.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;a href=&quot;http://hunspell.github.io/&quot;&gt;Hunspell&lt;/a&gt; korektor pisowni autorstwa L&amp;#xE1;szl&amp;#xF3; N&amp;#xE9;metha.</translation>
     </message>
     <message>
         <source>&lt;br&gt;Version %1 (r.%2)</source>
@@ -1644,7 +1632,7 @@
     <message>
         <location filename="../src/TWApp.cpp" line="306"/>
         <source>&lt;p&gt;&lt;a href=&quot;http://www.qt.io/&quot;&gt;Qt application framework&lt;/a&gt; v%1 by The Qt Company.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://www.qt.io/&quot;&gt;Środowisko programistyczne Qt&lt;/a&gt; v%1 opracowane przez The Qt Company.</translation>
     </message>
     <message>
         <location filename="../src/TWApp.cpp" line="307"/>
@@ -1718,8 +1706,8 @@
     </message>
     <message>
         <location filename="../src/TWApp.cpp" line="829"/>
-        <source>None of the predefined directories for TeX-related programs could be found.&lt;p&gt;&lt;small&gt;To run any processes, you will need to set the binaries directory (or directories) for your TeX distribution using the Typesetting tab of the Preferences dialog.</source>
-        <translation>Żadna ze zdefiniowanych kartotek z środowiskiem TeXowym nie może być znaleziona.&lt;p&gt;&lt;small&gt; Aby uruchamiać programy musisz zdefiniować kartoteki z binariami oraz drzewo kartotek zawierających Twoją dystrybucję TeXa. Użyj zakładki Skład w Ustawieniach programu. </translation>
+        <source>None of the predefined directories for TeX-related programs could be found.&lt;p&gt;&lt;small&gt;To run any processes, you will need to set the binaries directory (or directories) for your TeX distribution using the Typesetting tab of the Preferences dialog.&lt;/small&gt;</source>
+        <translation>Żadna ze zdefiniowanych kartotek z środowiskiem TeXowym nie może być znaleziona.&lt;p&gt;&lt;small&gt; Aby uruchamiać programy musisz zdefiniować kartoteki z binariami oraz drzewo kartotek zawierających Twoją dystrybucję TeXa. Użyj zakładki Skład w Ustawieniach programu.&lt;/small&gt;</translation>
     </message>
     <message>
         <location filename="../src/TWApp.cpp" line="1129"/>
@@ -1849,7 +1837,7 @@
         <location filename="../src/TWScriptable.cpp" line="622"/>
         <source>(disabled in the preferences)</source>
         <extracomment>This string is appended to a script language name to indicate it is currently disabled</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>(wyłączony w ustawieniach)</translation>
     </message>
     <message>
         <location filename="../src/TWScriptable.cpp" line="626"/>
