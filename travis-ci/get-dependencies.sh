@@ -63,7 +63,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		patch -f -d "${MXEDIR}/usr/${MXETARGET}" -p1 < qt5-QUiLoader-fix.patch || ( echo "Patching failed; maybe the patch is already applied?"; cat "${MXEDIR}/usr/${MXETARGET}/qt5/lib/cmake/Qt5UiPlugin/Qt5UiPluginConfig.cmake" )
 
 		print_info "Building poppler (using ${JOBS} jobs)"
-		env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" make -f build-poppler-mxe.mk
+		env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" MXE_CONFIGURE_OPTS="--host='${MXETARGET}' --build='`config.guess`' --prefix='${MXEDIR}/usr/${MXETARGET}' --enable-static --disable-shared ac_cv_prog_HAVE_DOXYGEN='false' --disable-doxygen" TEST_FILE="poppler-test.cxx" make -f build-poppler-mxe.mk
 	else
 		print_error "Unsupported Qt version '${QT}'"
 		exit 1
