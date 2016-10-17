@@ -79,7 +79,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	elif [ $QT -eq 5 ]; then
 		print_info "Brewing packages: qt5 poppler hunspell lua"
 		brew install qt5
-		brew install -v "${TRAVIS_BUILD_DIR}/CMake/packaging/mac/poppler.rb" --with-qt5 --enable-xpdf-headers
+		brew install "${TRAVIS_BUILD_DIR}/CMake/packaging/mac/poppler.rb" --with-qt5 --enable-xpdf-headers
 	else
 		print_error "Unsupported Qt version '${QT}'"
 		exit 1

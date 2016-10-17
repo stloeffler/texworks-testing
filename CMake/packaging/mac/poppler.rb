@@ -76,7 +76,8 @@ class Poppler < Formula
   end
 
   def install
-    ENV.cxx11 if MacOS.version < :mavericks
+#    ENV.cxx11 if MacOS.version < :mavericks
+    ENV.cxx11
     ENV["LIBOPENJPEG_CFLAGS"] = "-I#{Formula["openjpeg"].opt_include}/openjpeg-2.1"
 
     args = %W[
