@@ -17,6 +17,7 @@ SOURCES = \
   "../src/PDFDocument.cpp" \
   "../src/PrefsDialog.cpp" \
   "../src/ResourcesDialog.cpp" \
+  "../src/ScreenCalibrationWidget.cpp" \
   "../src/ScriptManager.cpp" \
   "../src/TWApp.cpp" \
   "../src/TWScript.cpp" \
@@ -50,6 +51,7 @@ HEADERS = \
   "../src/PDFDocument.h" \
   "../src/PrefsDialog.h" \
   "../src/ResourcesDialog.h" \
+  "../src/ScreenCalibrationWidget.h" \
   "../src/ScriptManager.h" \
   "../src/TWApp.h" \
   "../src/TWScript.h" \
@@ -103,3 +105,5 @@ TRANSLATIONS = \
   "TeXworks_sl.ts" \
   "TeXworks_tr.ts" \
   "TeXworks_zh_CN.ts"
+
+RC_FILE = "../res/TeXworks.rc"
