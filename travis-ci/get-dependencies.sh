@@ -62,8 +62,12 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		print_info "Make MXE writable"
 		sudo chmod -R a+w "${MXEDIR}"
 
+		echo_and_run "cat \"${MXEDIR}/usr/i686-w64-mingw32.static/lib/libharfbuzz.la\""
+
 		print_info "Fixing libharfbuzz.la"
 		echo_and_run "sed -ie 's#libfreetype.a#libfreetype.a -lharfbuzz_too#g' \"${MXEDIR}/usr/i686-w64-mingw32.static/lib/libharfbuzz.la\""
+
+		echo_and_run "cat \"${MXEDIR}/usr/i686-w64-mingw32.static/lib/libharfbuzz.la\""
 
 		cd travis-ci/mxe
 
