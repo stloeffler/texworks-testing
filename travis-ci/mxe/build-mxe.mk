@@ -1,7 +1,7 @@
 include poppler.mk
 include hunspell.mk
 
-all : poppler hunspell
+all : hunspell poppler
 
 poppler : $(poppler_FILE)
 	if [ "$(shell openssl dgst -sha256 '$^' 2>/dev/null)" != "SHA256($(poppler_FILE))= $(poppler_CHECKSUM)" ]; then echo "\nwrong checksum"; exit 1; fi
@@ -12,7 +12,6 @@ poppler : $(poppler_FILE)
 hunspell : $(hunspell_FILE)
 	if [ "$(shell openssl dgst -sha256 '$^' 2>/dev/null)" != "SHA256($(hunspell_FILE))= $(hunspell_CHECKSUM)" ]; then echo "\nwrong checksum"; exit 1; fi
 	tar -xf $^
-	for F in hunspell-*.patch; do echo "Applying $$F"; patch -d $(hunspell_SUBDIR) -p1 < "$$F"; done
 	$(call hunspell_BUILD,$(hunspell_SUBDIR),hunspell-test)
 
 $(poppler_FILE) :
