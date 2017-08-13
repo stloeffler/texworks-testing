@@ -49,6 +49,7 @@
 CompletingEdit::CompletingEdit(QWidget *parent)
 	: QTextEdit(parent),
 	  clickCount(0),
+	  wheelDelta(0),
 	  autoIndentMode(-1), prefixLength(0),
 	  smartQuotesMode(-1),
 	  c(NULL), cmpCursor(QTextCursor()),
@@ -87,6 +88,80 @@ CompletingEdit::CompletingEdit(QWidget *parent)
 	updateLineNumberAreaWidth(0);
 	updateColors();
 }
+
+void CompletingEdit::prefixLines(const QString &prefix)
+{
+	QTextCursor cursor = textCursor();
+	cursor.beginEditBlock();
+	int selStart = cursor.selectionStart();
+	int selEnd = cursor.selectionEnd();
+	cursor.setPosition(selStart);
+	if (!cursor.atBlockStart()) {
+		cursor.movePosition(QTextCursor::StartOfBlock);
+		selStart = cursor.position();
+	}
+	cursor.setPosition(selEnd);
+	if (!cursor.atBlockStart() || selEnd == selStart) {
+		cursor.movePosition(QTextCursor::NextBlock);
+		selEnd = cursor.position();
+	}
+	if (selEnd == selStart)
+		goto handle_end_of_doc;	// special case - cursor in blank line at end of doc
+	if (!cursor.atBlockStart()) {
+		cursor.movePosition(QTextCursor::StartOfBlock);
+		goto handle_end_of_doc; // special case - unterminated last line
+	}
+	while (cursor.position() > selStart) {
+		cursor.movePosition(QTextCursor::PreviousBlock);
+	handle_end_of_doc:
+		cursor.insertText(prefix);
+		cursor.movePosition(QTextCursor::StartOfBlock);
+		selEnd += prefix.length();
+	}
+	cursor.setPosition(selStart);
+	cursor.setPosition(selEnd, QTextCursor::KeepAnchor);
+	setTextCursor(cursor);
+	cursor.endEditBlock();
+}
+
+void CompletingEdit::unPrefixLines(const QString &prefix)
+{
+	QTextCursor cursor = textCursor();
+	cursor.beginEditBlock();
+	int selStart = cursor.selectionStart();
+	int selEnd = cursor.selectionEnd();
+	cursor.setPosition(selStart);
+	if (!cursor.atBlockStart()) {
+		cursor.movePosition(QTextCursor::StartOfBlock);
+		selStart = cursor.position();
+	}
+	cursor.setPosition(selEnd);
+	if (!cursor.atBlockStart() || selEnd == selStart) {
+		cursor.movePosition(QTextCursor::NextBlock);
+		selEnd = cursor.position();
+	}
+	if (!cursor.atBlockStart()) {
+		cursor.movePosition(QTextCursor::StartOfBlock);
+		goto handle_end_of_doc; // special case - unterminated last line
+	}
+	while (cursor.position() > selStart) {
+		cursor.movePosition(QTextCursor::PreviousBlock);
+	handle_end_of_doc:
+		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+		QString		str = cursor.selectedText();
+		if (str == prefix) {
+			cursor.removeSelectedText();
+			selEnd -= prefix.length();
+		}
+		else
+			cursor.movePosition(QTextCursor::PreviousCharacter);
+	}
+	cursor.setPosition(selStart);
+	cursor.setPosition(selEnd, QTextCursor::KeepAnchor);
+	setTextCursor(cursor);
+	cursor.endEditBlock();
+}
+
 
 void CompletingEdit::updateColors()
 {
@@ -557,6 +632,11 @@ void CompletingEdit::handleBackspace(QKeyEvent *e)
 	}
 	else
 		QTextEdit::keyPressEvent(e);
+
+	// Without the following, when pressing Up or Down immediately
+	// after Backspace the cursor ends up in the wrong column.
+	curs.setPosition(curs.position());
+	setTextCursor(curs);
 }
 
 void CompletingEdit::handleOtherKey(QKeyEvent *e)
@@ -761,8 +841,11 @@ void CompletingEdit::handleCompletionShortcut(QKeyEvent *e)
 	// if we are at the beginning of the line (i.e., only whitespaces before a
 	// caret cursor), insert a tab (for indentation) instead of doing completion
 	bool atLineStart = false;
+
 	QTextCursor lineStartCursor = textCursor();
-	if (lineStartCursor.selectionEnd() == lineStartCursor.selectionStart()) {
+	bool noSelection = lineStartCursor.selectionEnd() == lineStartCursor.selectionStart();
+
+	if (noSelection) {
 		lineStartCursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
 		if(lineStartCursor.selectedText().trimmed().isEmpty())
 			atLineStart = true;
@@ -851,7 +934,15 @@ void CompletingEdit::handleCompletionShortcut(QKeyEvent *e)
 		return;
 	}
 	
-	QTextEdit::keyPressEvent(e);
+	if(!noSelection) {
+		if(e->modifiers() == Qt::ShiftModifier) {
+			unPrefixLines("\t");
+		} else {
+			prefixLines("\t");
+		}
+	} else {
+		QTextEdit::keyPressEvent(e);
+	}
 }
 
 void CompletingEdit::showCompletion(const QString& completion, int insOffset)
@@ -1191,6 +1282,28 @@ void CompletingEdit::resizeEvent(QResizeEvent *e)
 	lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
+void CompletingEdit::wheelEvent(QWheelEvent *e)
+{
+	if (e->modifiers() & Qt::ControlModifier)
+	{
+		wheelDelta += e->delta();  // accumulate wheelDelta for high-resolution mice, which might pass small values.
+		int sign = (wheelDelta < 0) ? -1 : 1;
+		const int stepSize = 120;  // according to Qt docs a standard wheel step corresponds to a delta of 120.
+		int steps = (sign * wheelDelta) / stepSize;  // abs value to guarantee rounding towards 0.
+		if (steps > 0) {
+			QFont ft = font();
+			const int minFontSize = 4;
+			ft.setPointSize(qMax(ft.pointSize() + sign * steps, minFontSize));
+			setFont(ft);
+			wheelDelta = 0;
+		}
+		e->accept();
+		return;
+	}
+
+	QTextEdit::wheelEvent(e);
+}
+
 void CompletingEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
 	Q_ASSERT(lineNumberArea != NULL);
@@ -1269,7 +1382,7 @@ void CompletingEdit::setHighlightCurrentLine(bool highlight)
 void CompletingEdit::setAutocompleteEnabled(bool autocomplete)
 {
 	if (autocomplete != autocompleteEnabled) {
-    autocompleteEnabled = autocomplete;
+		autocompleteEnabled = autocomplete;
 	}
 }
 
