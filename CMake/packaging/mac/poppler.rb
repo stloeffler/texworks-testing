@@ -15,8 +15,8 @@
 class Poppler < Formula
   desc "PDF rendering library (based on the xpdf-3.0 code base)"
   homepage "https://poppler.freedesktop.org/"
-  url "https://poppler.freedesktop.org/poppler-0.54.0.tar.xz"
-  sha256 "10cca9a67cc2e6f4f9024192b1067c444218bf94430891f43dc819d78536ca31"
+  url "https://poppler.freedesktop.org/poppler-0.57.0.tar.xz"
+  sha256 "0ea37de71b7db78212ebc79df59f99b66409a29c2eac4d882dae9f2397fe44d8"
 
 # BEGIN TEXWORKS MODIFICATION
 #  bottle do
