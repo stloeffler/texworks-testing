@@ -40,7 +40,7 @@ define $(PKG)_BUILD
         --enable-splash-output \
         --enable-compile-warnings=yes \
         --enable-introspection=auto \
-        --disable-libopenjpeg \
+        --enable-libopenjpeg=none \
         --disable-gtk-test \
         --disable-utils \
         --disable-gtk-doc \
