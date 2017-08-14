@@ -25,7 +25,7 @@ class Poppler < Formula
 #    sha256 "44fcbb473c78c5ce034b65885fcb2e05d4ef0b2d537a043b7d2b6d44d075907b" => :el_capitan
 #    sha256 "47787f7ffa8f69dea50ebb1391186d8146386ad46f2f6b69e3786b7271caeb9d" => :yosemite
 #  end
-  version '0.54.0-texworks'
+  version '0.57.0-texworks'
 
   TEXWORKS_SOURCE_DIR = Pathname.new(__FILE__).realpath.dirname.join('../../..')
   TEXWORKS_PATCH_DIR = TEXWORKS_SOURCE_DIR + 'lib-patches/'
@@ -72,15 +72,15 @@ class Poppler < Formula
     :because => "poppler, pdftohtml, pdf2image, and xpdf install conflicting executables"
 
   resource "font-data" do
-    url "https://poppler.freedesktop.org/poppler-data-0.4.7.tar.gz"
-    sha256 "e752b0d88a7aba54574152143e7bf76436a7ef51977c55d6bd9a48dccde3a7de"
+    url "https://poppler.freedesktop.org/poppler-data-0.4.8.tar.gz"
+    sha256 "1096a18161f263cccdc6d8a2eb5548c41ff8fcf9a3609243f1b6296abdf72872"
   end
 
   needs :cxx11 if build.with?("qt") || MacOS.version < :mavericks
 
   def install
     ENV.cxx11 if build.with?("qt") || MacOS.version < :mavericks
-    ENV["LIBOPENJPEG_CFLAGS"] = "-I#{Formula["openjpeg"].opt_include}/openjpeg-2.1"
+    ENV["LIBOPENJPEG_CFLAGS"] = "-I#{Formula["openjpeg"].opt_include}/openjpeg-2.2"
 
     args = %W[
       --disable-dependency-tracking
