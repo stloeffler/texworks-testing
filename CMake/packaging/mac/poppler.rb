@@ -15,17 +15,18 @@
 class Poppler < Formula
   desc "PDF rendering library (based on the xpdf-3.0 code base)"
   homepage "https://poppler.freedesktop.org/"
-  url "https://poppler.freedesktop.org/poppler-0.57.0.tar.xz"
-  sha256 "0ea37de71b7db78212ebc79df59f99b66409a29c2eac4d882dae9f2397fe44d8"
+  url "https://poppler.freedesktop.org/poppler-0.60.1.tar.xz"
+  sha256 "19f185e05c3b59b4a1de2cec8ef39f5446035493d17bbed41d02fb9a77c8a93c"
 
 # BEGIN TEXWORKS MODIFICATION
 #  bottle do
-#    rebuild 1
-#    sha256 "5b6de69e6ab1996332934e21b3a5220990e2a5943775d002ee8e5c2447b93758" => :sierra
-#    sha256 "44fcbb473c78c5ce034b65885fcb2e05d4ef0b2d537a043b7d2b6d44d075907b" => :el_capitan
-#    sha256 "47787f7ffa8f69dea50ebb1391186d8146386ad46f2f6b69e3786b7271caeb9d" => :yosemite
+#    rebuild 2
+#    sha256 "13f8ff3f6eb14776b732a7cfa5e25195695fd966956afa9df9c4bbe92a83bf78" => :high_sierra
+#    sha256 "95b3beb2df01043bc3db58179016ca6f8f3b553a9ae9ac663ab4bdcb2c6656d2" => :sierra
+#    sha256 "4efb01d72131c21530168b4a545a1ebb5eb21cb4cedf9d2a80ac12a49b32421e" => :el_capitan
 #  end
-  version '0.57.0-texworks'
+
+  version '0.60.1-texworks'
 
   TEXWORKS_SOURCE_DIR = Pathname.new(__FILE__).realpath.dirname.join('../../..')
   TEXWORKS_PATCH_DIR = TEXWORKS_SOURCE_DIR + 'lib-patches/'
@@ -41,10 +42,6 @@ class Poppler < Formula
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0003-Add-support-for-persistent-GlobalParams.patch'
     sha256 "6c17fe4d91c7c5d77e265af48c511db31fce73370cd2af4cbacc218435c9c86a"
   end
-
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "libtool" => :build
 # END TEXWORKS MODIFICATION
 
   option "with-qt", "Build Qt5 backend"
@@ -54,6 +51,7 @@ class Poppler < Formula
   deprecated_option "with-qt5" => "with-qt"
   deprecated_option "with-lcms2" => "with-little-cms2"
 
+  depends_on "cmake" => :build
   depends_on "pkg-config" => :build
   depends_on "cairo"
   depends_on "fontconfig"
@@ -82,34 +80,37 @@ class Poppler < Formula
     ENV.cxx11 if build.with?("qt") || MacOS.version < :mavericks
     ENV["LIBOPENJPEG_CFLAGS"] = "-I#{Formula["openjpeg"].opt_include}/openjpeg-2.2"
 
-    args = %W[
-      --disable-dependency-tracking
-      --prefix=#{prefix}
-      --enable-xpdf-headers
-      --enable-poppler-glib
-      --disable-gtk-test
-      --enable-introspection=yes
-      --disable-poppler-qt4
+    args = std_cmake_args + %w[
+      -DENABLE_XPDF_HEADERS=ON
+      -DENABLE_GLIB=ON
+      -DBUILD_GTK_TESTS=OFF
+      -DWITH_GObjectIntrospection=ON
+      -DENABLE_QT4=OFF
     ]
 
     if build.with? "qt"
-      args << "--enable-poppler-qt5"
+      args << "-DENABLE_QT5=ON"
     else
-      args << "--disable-poppler-qt5"
+      args << "-DENABLE_QT5=OFF"
     end
 
-    args << "--enable-cms=lcms2" if build.with? "little-cms2"
+    if build.with? "little-cms2"
+      args << "-DENABLE_CMS=lcms2"
+    else
+      args << "-DENABLE_CMS=OFF"
+    end
 
-# BEGIN TEXWORKS MODIFICATION
-    # We changed the config file (to add native font handling), so we need to
-    # update the configure script
-    system "autoreconf", "-ivf"
-# END TEXWORKS MODIFICATION
-
-    system "./configure", *args
+    system "cmake", ".", *args
     system "make", "install"
     resource("font-data").stage do
       system "make", "install", "prefix=#{prefix}"
+    end
+    libpoppler = (lib/"libpoppler.dylib").readlink
+    ["#{lib}/libpoppler-cpp.dylib", "#{lib}/libpoppler-glib.dylib",
+     *Dir["#{bin}/*"]].each do |f|
+      macho = MachO.open(f)
+      macho.change_dylib("@rpath/#{libpoppler}", "#{lib}/#{libpoppler}")
+      macho.write!
     end
   end
 
