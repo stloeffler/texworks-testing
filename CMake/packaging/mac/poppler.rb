@@ -15,32 +15,31 @@
 class Poppler < Formula
   desc "PDF rendering library (based on the xpdf-3.0 code base)"
   homepage "https://poppler.freedesktop.org/"
-  url "https://poppler.freedesktop.org/poppler-0.60.1.tar.xz"
-  sha256 "19f185e05c3b59b4a1de2cec8ef39f5446035493d17bbed41d02fb9a77c8a93c"
+  url "https://poppler.freedesktop.org/poppler-0.61.0.tar.xz"
+  sha256 "53cde17a2afa3b73eb8b209d24e4369b52bfac444065dbb0a8cbcc7356582b7f"
 
 # BEGIN TEXWORKS MODIFICATION
 #  bottle do
-#    rebuild 2
-#    sha256 "13f8ff3f6eb14776b732a7cfa5e25195695fd966956afa9df9c4bbe92a83bf78" => :high_sierra
-#    sha256 "95b3beb2df01043bc3db58179016ca6f8f3b553a9ae9ac663ab4bdcb2c6656d2" => :sierra
-#    sha256 "4efb01d72131c21530168b4a545a1ebb5eb21cb4cedf9d2a80ac12a49b32421e" => :el_capitan
+#    sha256 "cc93d0fe33c51c4b34343f5a0741dd15f5ab1267758601d82a58bdcbf7e0ee12" => :high_sierra
+#    sha256 "3840e4e782fb50e889b7840c93ab338464c296f8107f3a0cbc33f3614dadf94c" => :sierra
+#    sha256 "c04f2f8df8b1c79b40cc15ca192ad06b23f73d6f02114a20cd9dfc264354e4df" => :el_capitan
 #  end
 
-  version '0.60.1-texworks'
+  version '0.61.0-texworks'
 
   TEXWORKS_SOURCE_DIR = Pathname.new(__FILE__).realpath.dirname.join('../../..')
   TEXWORKS_PATCH_DIR = TEXWORKS_SOURCE_DIR + 'lib-patches/'
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0001-Fix-bogus-memory-allocation-in-SplashFTFont-makeGlyp.patch'
-    sha256 "3b40b066995756a0c80badfe47e701bb0438305f3b8eb15b67875c7de38c7290"
+    sha256 "d991a203023ed9aa7b18b7550feb46a25f9076c4120dff7250cdcf4031cc20c1"
   end
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0002-Native-Mac-font-handling.patch'
-    sha256 "41cedfe209c203833574ace4c60c0440840cb03f7ba687a27a3a350b0d868cc4"
+    sha256 "557cb2c7e985326c1d4552f16cc35714dd6b94e8cb17e4fd3a5b6b093b46cbcb"
   end
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0003-Add-support-for-persistent-GlobalParams.patch'
-    sha256 "6c17fe4d91c7c5d77e265af48c511db31fce73370cd2af4cbacc218435c9c86a"
+    sha256 "29b00c768b73e6d296a64916b3f700a868c17c64fb784fbd2f01b5880289ef24"
   end
 # END TEXWORKS MODIFICATION
 
@@ -78,14 +77,15 @@ class Poppler < Formula
 
   def install
     ENV.cxx11 if build.with?("qt") || MacOS.version < :mavericks
-    ENV["LIBOPENJPEG_CFLAGS"] = "-I#{Formula["openjpeg"].opt_include}/openjpeg-2.2"
 
-    args = std_cmake_args + %w[
+    args = std_cmake_args + %W[
       -DENABLE_XPDF_HEADERS=ON
       -DENABLE_GLIB=ON
       -DBUILD_GTK_TESTS=OFF
       -DWITH_GObjectIntrospection=ON
       -DENABLE_QT4=OFF
+      -DCMAKE_INSTALL_INCLUDEDIR=#{include}
+      -DCMAKE_INSTALL_LIBDIR=#{lib}
     ]
 
     if build.with? "qt"
@@ -105,6 +105,7 @@ class Poppler < Formula
     resource("font-data").stage do
       system "make", "install", "prefix=#{prefix}"
     end
+
     libpoppler = (lib/"libpoppler.dylib").readlink
     ["#{lib}/libpoppler-cpp.dylib", "#{lib}/libpoppler-glib.dylib",
      *Dir["#{bin}/*"]].each do |f|
