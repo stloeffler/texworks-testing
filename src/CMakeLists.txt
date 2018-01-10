@@ -78,6 +78,10 @@ INCLUDE_DIRECTORIES(${TeXworks_INCLUDE_DIRS})
 # Make sure the compiler can find library files.
 LINK_DIRECTORIES(${TeXworks_LIB_DIRS})
 
+# Disallow automatic casts from char* to QString (enforcing the use of tr() or
+# explicitly specifying the string encoding)
+ADD_DEFINITIONS(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_BYTEARRAY)
+
 ADD_DEFINITIONS(-DTW_BUILD_ID=${TW_BUILD_ID})
 IF (UNIX AND NOT APPLE)
   IF (IS_ABSOLUTE ${TeXworks_HELP_DIR})
@@ -142,10 +146,10 @@ ENDIF ( APPLE OR NOT UNIX )
 # -----------
 
 IF (NOT ${BUILD_SHARED_PLUGINS})
-  IF (WITH_LUA)
+  IF (WITH_LUA AND LUA_FOUND)
     LIST(INSERT TeXworks_LIBS 0 TWLuaPlugin ${LUA_LIBRARIES})
   ENDIF()
-  IF (WITH_PYTHON)
+  IF (WITH_PYTHON AND PYTHONLIBS_FOUND)
     LIST(INSERT TeXworks_LIBS 0 TWPythonPlugin ${PYTHON_LIBRARIES})
   ENDIF()
 ENDIF()

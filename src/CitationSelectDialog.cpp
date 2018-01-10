@@ -109,18 +109,25 @@ bool BibTeXEntryLessThan(const BibTeXFile::Entry * a, const BibTeXFile::Entry * 
 QStringList CitationSelectDialog::getSelectedKeys(const bool ordered /* = true */) const
 {
 	QStringList keys = _model.selectedKeys();
+	QStringList unknownKeys;
+
 	if (!ordered) return keys;
 
 	QList<const BibTeXFile::Entry*> entries;
-	Q_FOREACH(QString key, keys)
-		entries.append(_model.getEntry(key));
+	// Convert keys to entry pointers so we can sort them, e.g., by their year
+	// All keys that or not managed by the model will be appended unchanged
+	Q_FOREACH(QString key, keys) {
+		const BibTeXFile::Entry * e = _model.getEntry(key);
+		if (e) entries.append(e);
+		else unknownKeys.append(key);
+	}
 
 	qStableSort(entries.begin(), entries.end(), BibTeXEntryLessThan);
 
 	keys.clear();
 	Q_FOREACH(const BibTeXFile::Entry * entry, entries)
 		keys.append(entry->key());
-	return keys;
+	return keys + unknownKeys;
 }
 
 
@@ -294,7 +301,7 @@ bool CitationProxyModel::filterAcceptsRow(int source_row, const QModelIndex &sou
 	static QLatin1String space(" ");
 	const BibTeXFile::Entry * e = static_cast<const BibTeXFile::Entry*>(sourceModel()->index(source_row, 1).internalPointer());
 	QString haystack = e->key() + space + e->typeString() + space + e->author() + space + e->title() + space + e->year() + space + e->howPublished();
-	QStringList needles = filterRegExp().pattern().split(' ', QString::SkipEmptyParts);
+	QStringList needles = filterRegExp().pattern().split(QChar::fromLatin1(' '), QString::SkipEmptyParts);
 
 	haystack = haystack.toLower();
 
