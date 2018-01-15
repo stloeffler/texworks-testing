@@ -23,7 +23,7 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	echo_and_run "cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION=\"$QT\""
 	if [ -f "CMakeFiles/CMakeError.log" ]; then
 		echo "=== CMake Error Log ==="
-		less CMakeFiles/CMakeError.log
+		less "CMakeFiles/CMakeError.log"
 	fi
 elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Running CMake"
@@ -36,7 +36,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		-Dgp_tool='none'"
 	if [ -f "CMakeFiles/CMakeError.log" ]; then
 		echo "=== CMake Error Log ==="
-		less CMakeFiles/CMakeError.log
+		less "CMakeFiles/CMakeError.log"
 	fi
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ "${QT}" -eq 5 ]; then
@@ -44,7 +44,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 		echo_and_run "cmake .. -DTW_BUILD_ID='travis-ci' -DDESIRED_QT_VERSION=\"$QT\" -DCMAKE_OSX_SYSROOT=macosx -DCMAKE_PREFIX_PATH=\"/usr/local/opt/qt5\""
 		if [ -f "CMakeFiles/CMakeError.log" ]; then
 			echo "=== CMake Error Log ==="
-			less CMakeFiles/CMakeError.log
+			less "CMakeFiles/CMakeError.log"
 		fi
 	else
 		print_error "Unsupported Qt version '${QT}'"
