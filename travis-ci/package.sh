@@ -131,7 +131,7 @@ PPA="ppa:st.loeffler/test"
 # TESTING
 			print_info "   scheduling to upload ${DEBFILE} to ${PPA}"
 
-			echo "for I in seq(10); do dput --debug \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\" && break; done" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
+			echo "for I in $(seq 10); do dput --debug \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\" && break; done" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
 		done
 	elif [ ${QT} -eq 5 ]; then
 		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
