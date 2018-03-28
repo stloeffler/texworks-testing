@@ -495,6 +495,21 @@ void PDFDocumentView::fitInView(const QRectF & rect, Qt::AspectRatioMode aspectR
   setVerticalScrollBarPolicy(oldVerticalPolicy);
 }
 
+const QWeakPointer<QtPDF::Backend::Document> PDFDocumentView::document() const
+{
+  return (_pdf_scene ? _pdf_scene->document() : QWeakPointer<QtPDF::Backend::Document>());
+}
+
+QString PDFDocumentView::selectedText() const
+{
+  QSharedPointer<Backend::Document> doc = document().toStrongRef();
+  if(!doc || !doc->permissions().testFlag(Backend::Document::Permission_Extract))
+    return QString();
+  if (!_armedTool || _armedTool->type() != DocumentTool::AbstractTool::Tool_Select)
+    return QString();
+  return static_cast<DocumentTool::Select*>(_armedTool)->selectedText();
+}
+
 // Public Slots
 // ------------
 
@@ -1270,6 +1285,12 @@ void PDFDocumentView::reinitializeFromScene()
   _searchString = QString();
 }
 
+void PDFDocumentView::notifyTextSelectionChanged()
+{
+  DocumentTool::Select * tool = static_cast<DocumentTool::Select *>(getToolByType(DocumentTool::AbstractTool::Tool_Select));
+  if (!tool) return;
+  emit textSelectionChanged(tool->isTextSelected());
+}
 
 void PDFDocumentView::registerTool(DocumentTool::AbstractTool * tool)
 {

@@ -50,7 +50,7 @@
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 // compile-time default paths - customize by defining in the .pro file
 #ifndef TW_DICPATH
-#define TW_DICPATH "/usr/share/myspell/dicts"
+#define TW_DICPATH "/usr/share/hunspell" PATH_LIST_SEP "/usr/share/myspell/dicts"
 #endif
 #ifndef TW_HELPPATH
 #define TW_HELPPATH "/usr/local/share/texworks-help"
@@ -405,12 +405,13 @@ QHash<QString, QString>* TWUtils::getDictionaryList(const bool forceReload /* = 
 	}
 
 	dictionaryList = new QHash<QString, QString>();
-	QDir dicDir(TWUtils::getLibraryPath(QString::fromLatin1("dictionaries")));
-	foreach (QFileInfo dicFileInfo, dicDir.entryInfoList(QStringList(QString::fromLatin1("*.dic")),
-				QDir::Files | QDir::Readable, QDir::Name | QDir::IgnoreCase)) {
-		QFileInfo affFileInfo(dicFileInfo.dir(), dicFileInfo.completeBaseName() + QLatin1String(".aff"));
-		if (affFileInfo.isReadable())
-			dictionaryList->insertMulti(dicFileInfo.canonicalFilePath(), dicFileInfo.completeBaseName());
+	foreach (QDir dicDir, TWUtils::getLibraryPath(QString::fromLatin1("dictionaries")).split(QLatin1String(PATH_LIST_SEP))) {
+		foreach (QFileInfo dicFileInfo, dicDir.entryInfoList(QStringList(QString::fromLatin1("*.dic")),
+					QDir::Files | QDir::Readable, QDir::Name | QDir::IgnoreCase)) {
+			QFileInfo affFileInfo(dicFileInfo.dir(), dicFileInfo.completeBaseName() + QLatin1String(".aff"));
+			if (affFileInfo.isReadable())
+				dictionaryList->insertMulti(dicFileInfo.canonicalFilePath(), dicFileInfo.completeBaseName());
+		}
 	}
 	
 	TWApp::instance()->notifyDictionaryListChanged();
@@ -431,15 +432,17 @@ Hunhandle* TWUtils::getDictionary(const QString& language)
 		return dictionaries->value(language);
 	
 	Hunhandle *h = NULL;
-	const QString dictPath = getLibraryPath(QString::fromLatin1("dictionaries"));
-	QFileInfo affFile(dictPath + QChar::fromLatin1('/') + language + QLatin1String(".aff"));
-	QFileInfo dicFile(dictPath + QChar::fromLatin1('/') + language + QLatin1String(".dic"));
-	if (affFile.isReadable() && dicFile.isReadable()) {
-		h = Hunspell_create(affFile.canonicalFilePath().toLocal8Bit().data(),
-							dicFile.canonicalFilePath().toLocal8Bit().data());
-		(*dictionaries)[language] = h;
+	foreach (QDir dicDir, TWUtils::getLibraryPath(QString::fromLatin1("dictionaries")).split(QLatin1String(PATH_LIST_SEP))) {
+		QFileInfo affFile(dicDir, language + QLatin1String(".aff"));
+		QFileInfo dicFile(dicDir, language + QLatin1String(".dic"));
+		if (affFile.isReadable() && dicFile.isReadable()) {
+			h = Hunspell_create(affFile.canonicalFilePath().toLocal8Bit().data(),
+			                    dicFile.canonicalFilePath().toLocal8Bit().data());
+			(*dictionaries)[language] = h;
+			return h;
+		}
 	}
-	return h;
+	return NULL;
 }
 
 QString TWUtils::getLanguageForDictionary(const Hunhandle * pHunspell)

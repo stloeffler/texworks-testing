@@ -928,6 +928,8 @@ void Select::mouseReleaseEvent(QMouseEvent * event)
   _mouseMode = MouseMode_None;
   if (_rubberBand)
     _rubberBand->hide();
+  if (_parent)
+    _parent->notifyTextSelectionChanged();
 }
 
 void Select::keyPressEvent(QKeyEvent *event)
@@ -954,7 +956,12 @@ void Select::keyPressEvent(QKeyEvent *event)
         Q_ASSERT(pageGraphicsItem != NULL);
       
         QTransform fromView = pageGraphicsItem->pointScale().inverted();
-        QString textToCopy = page->selectedText(_highlightPath->path().toFillPolygons(fromView), NULL, NULL, true);
+        // Get the selected text
+        // We use toSubpathPolygons() because it should be slightly faster, but
+        // more importantly, it keeps the original character bounding boxes.
+        // toFillPolygons(), for example, alters (removes) overlapping regions
+        // to ensure filling works properly. We don't need that here.
+        QString textToCopy = page->selectedText(_highlightPath->path().toSubpathPolygons(fromView), NULL, NULL, true);
         // If the text is empty (e.g., there is no valid selection or the backend
         // doesn't (properly) support selectedText()) we don't overwrite the
         // clipboard
@@ -1031,6 +1038,33 @@ void Select::pageDestroyed()
   _displayBoxes.clear();
 #endif
   resetBoxes(-1);
+}
+
+QString Select::selectedText() const
+{
+  Q_ASSERT(_parent != NULL);
+  if (!_highlightPath || _highlightPath->path().isEmpty())
+    return QString();
+
+  PDFDocumentScene * scene = static_cast<PDFDocumentScene*>(_parent->scene());
+  Q_ASSERT(scene != NULL);
+  QSharedPointer<Backend::Document> doc(scene->document().toStrongRef());
+  if (!doc)
+    return QString();
+  QSharedPointer<Backend::Page> page(doc->page(_pageNum).toStrongRef());
+  if (page.isNull())
+    return QString();
+
+  PDFPageGraphicsItem * pageGraphicsItem = static_cast<PDFPageGraphicsItem*>(scene->pageAt(_pageNum));
+  Q_ASSERT(pageGraphicsItem != NULL);
+
+  QTransform fromView = pageGraphicsItem->pointScale().inverted();
+  // Get the selected text
+  // We use toSubpathPolygons() because it should be slightly faster, but
+  // more importantly, it keeps the original character bounding boxes.
+  // toFillPolygons(), for example, alters (removes) overlapping regions
+  // to ensure filling works properly. We don't need that here.
+  return page->selectedText(_highlightPath->path().toSubpathPolygons(fromView), NULL, NULL, true);
 }
 
 void Select::setHighlightColor(const QColor & color)

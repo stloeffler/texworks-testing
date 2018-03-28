@@ -148,13 +148,15 @@ public slots:
 	void setPageMode(const int newMode);
 	void clearSyncHighlight();
 	void clearSearchResultHighlight();
-	
+	void copySelectedTextToClipboard();
+
 private slots:
 	void changedDocument(const QWeakPointer<QtPDF::Backend::Document> newDoc);
 	void updateRecentFileActions();
 	void updateWindowMenu();
 	void enablePageActions(int);
 	void syncClick(int page, const QPointF& pos);
+	void syncRange(const int pageIndex, const QPointF & start, const QPointF & end, const TWSynchronizer::Resolution resolution);
 	void invalidateSyncHighlight();
 	void scaleLabelClick(QMouseEvent * event) { showScaleContextMenu(event->pos()); }
 	void showScaleContextMenu(const QPoint pos);
@@ -164,11 +166,12 @@ private slots:
 	void doPageDialog();
 	void doScaleDialog();
 	void jumpToSource();
-	void searchResultHighlighted(const int pageNum, const QList<QPolygonF> region);
+	void searchResultHighlighted(const int pageNum, const QList<QPolygonF> pdfRegion);
 	void setDefaultScale();
 	void maybeOpenUrl(const QUrl url);
 	void maybeOpenPdf(QString filename, QtPDF::PDFDestination destination, bool newWindow);
 	void maybeZoomToWindow(bool doZoom) { if (doZoom) pdfWidget->zoomFitWindow(); }
+	void maybeEnableCopyCommand(const bool isTextSelected);
 
 signals:
 	void reloaded();
