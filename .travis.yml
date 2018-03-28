@@ -24,6 +24,7 @@ matrix:
             - libpoppler-qt4-dev
             - libpoppler-private-dev
             - liblua5.2-dev
+            - fakeroot
     - env: TARGET_OS=linux QT=5
       os: linux
       addons:
@@ -41,6 +42,7 @@ matrix:
             - libpoppler-qt5-dev
             - libpoppler-private-dev
             - liblua5.2-dev
+            - fakeroot
 
 #      dist: trusty
 
