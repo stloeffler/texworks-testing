@@ -16,7 +16,8 @@ matrix:
         apt:
           packages:
             - ubuntu-dev-tools
-            - dput debhelper
+            - dput
+            - debhelper
             - libqt4-dev
             - zlib1g-dev
             - libhunspell-dev
@@ -29,10 +30,12 @@ matrix:
         apt:
           packages:
             - ubuntu-dev-tools
-            - dput debhelper
+            - dput
+            - debhelper
             - qtbase5-dev
             - qtscript5-dev
             - qttools5-dev
+            - qttools5-dev-tools
             - zlib1g-dev
             - libhunspell-dev
             - libpoppler-qt5-dev
