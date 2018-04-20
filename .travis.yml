@@ -44,9 +44,6 @@ matrix:
             - liblua5.2-dev
             - fakeroot
 
-#      dist: trusty
-
-
 before_install:
   - ${TRAVIS_BUILD_DIR}/travis-ci/get-dependencies.sh
 
