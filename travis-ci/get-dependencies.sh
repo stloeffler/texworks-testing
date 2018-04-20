@@ -76,6 +76,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
 	if [ $QT -eq 5 ]; then
 		print_info "Brewing packages: qt5 poppler hunspell lua"
+		brew unlink python
 		brew install qt5
 		brew install "${TRAVIS_BUILD_DIR}/CMake/packaging/mac/poppler.rb" --with-qt --enable-xpdf-headers
 	else
