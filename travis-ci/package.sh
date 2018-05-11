@@ -14,11 +14,11 @@ fi
 
 print_headline "Packaging ${TARGET_OS}/qt${QT} for deployment"
 
-POPPLERDATA_VERSION="0.4.8"
+POPPLERDATA_VERSION="0.4.9"
 POPPLERDATA_SUBDIR="poppler-data-${POPPLERDATA_VERSION}"
 POPPLERDATA_FILE="poppler-data-${POPPLERDATA_VERSION}.tar.gz"
 POPPLERDATA_URL="https://poppler.freedesktop.org/${POPPLERDATA_FILE}"
-POPPLERDATA_SHA256="1096a18161f263cccdc6d8a2eb5548c41ff8fcf9a3609243f1b6296abdf72872"
+POPPLERDATA_SHA256="1f9c7e7de9ecd0db6ab287349e31bf815ca108a5a175cf906a90163bdbe32012"
 
 # Gather information
 
@@ -54,6 +54,8 @@ cd "${BUILDDIR}"
 
 if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	if [ ${QT} -eq 4 ]; then
+		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
+	elif [ ${QT} -eq 5 ]; then
 		DEBDATE=$(date -R)
 
 		echo_var "DEBDATE"
@@ -133,8 +135,6 @@ PPA="ppa:st.loeffler/test"
 
 			echo "for I in \$(seq 10); do dput --debug \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\" && break; done" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
 		done
-	elif [ ${QT} -eq 5 ]; then
-		print_info "Not packaging for ${TARGET_OS}/qt${QT}"
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
