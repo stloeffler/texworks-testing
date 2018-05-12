@@ -1,4 +1,4 @@
-From 6d3d301299e270be68473feee2a3e8a129a7d006 Mon Sep 17 00:00:00 2001
+From 6514aae3e3943c7c11a83d4926d583019241eb7a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stefan=20L=C3=B6ffler?= <st.loeffler@gmail.com>
 Date: Thu, 11 Feb 2016 23:14:20 -0500
 Subject: [PATCH 2/3] Native Mac font handling
@@ -158,7 +158,7 @@ index e3d660cf..bb39818a 100644
  				//   [GString]
 diff --git a/poppler/GlobalParamsMac.cc b/poppler/GlobalParamsMac.cc
 new file mode 100644
-index 00000000..cdf99f57
+index 00000000..a1f8cdea
 --- /dev/null
 +++ b/poppler/GlobalParamsMac.cc
 @@ -0,0 +1,314 @@
@@ -225,7 +225,7 @@ index 00000000..cdf99f57
 +		CFStringRef psName = CFStringCreateWithCStringNoCopy(kCFAllocatorDefault,
 +							 myName,
 +							 kCFStringEncodingASCII,
-+							 kCFAllocatornullptr);
++							 kCFAllocatorNull);
 +		fontRef = ATSFontFindFromPostScriptName(psName, kATSOptionFlagsDefault);
 +		CFRelease(psName);
 +		if (fontRef != kATSUInvalidFontID)
