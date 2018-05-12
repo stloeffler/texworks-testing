@@ -1,4 +1,4 @@
-From 3e952679a9a25785cb2c133a416929286d3d4d03 Mon Sep 17 00:00:00 2001
+From b67e646bdb6693792fa23eafec9b52f44405184e Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stefan=20L=C3=B6ffler?= <st.loeffler@gmail.com>
 Date: Fri, 12 Feb 2016 08:00:59 -0500
 Subject: [PATCH 3/3] Add support for persistent GlobalParams
