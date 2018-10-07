@@ -124,16 +124,13 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 
 			DEBFILE="texworks_${DEB_VERSION}_source.changes"
 			if [ -z "${TRAVIS_TAG}" ]; then
-				PPA="ppa:texworks/ppa"
+				PPA="tw-latest"
 			else
-				PPA="ppa:texworks/stable"
+				PPA="tw-stable"
 			fi
-# TESTING
-PPA="ppa:st.loeffler/test"
-# TESTING
 			print_info "   scheduling to upload ${DEBFILE} to ${PPA}"
 
-			echo "for I in \$(seq 10); do dput --debug \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\" && break; done" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
+			echo "dput --debug --config \"${TRAVIS_BUILD_DIR}/travis-ci/launchpad/dput.cf\" \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/travis-ci/dput-launchpad.sh"
 		done
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"

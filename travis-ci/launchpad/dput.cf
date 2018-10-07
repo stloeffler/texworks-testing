@@ -1,0 +1,13 @@
+[tw-latest]
+fqdn = ppa.launchpad.net
+method = sftp
+incoming = ~st.loeffler/ubuntu/test/
+login = st.loeffler
+allow_unsigned_uploads = 0
+
+[tw-stable]
+fqdn = ppa.launchpad.net
+method = sftp
+incoming = ~st.loeffler/ubuntu/test/
+login = st.loeffler
+allow_unsigned_uploads = 0
