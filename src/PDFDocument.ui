@@ -83,6 +83,7 @@
     <addaction name="actionActual_Size"/>
     <addaction name="actionFit_to_Width"/>
     <addaction name="actionFit_to_Window"/>
+    <addaction name="actionFit_to_Content_Width"/>
     <addaction name="separator"/>
     <addaction name="actionPageMode_Single"/>
     <addaction name="actionPageMode_Continuous"/>
@@ -183,6 +184,7 @@
    <addaction name="actionActual_Size"/>
    <addaction name="actionFit_to_Width"/>
    <addaction name="actionFit_to_Window"/>
+   <addaction name="actionFit_to_Content_Width"/>
    <addaction name="separator"/>
    <addaction name="actionMagnify"/>
    <addaction name="actionScroll"/>
@@ -298,8 +300,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../res/resources.qrc">
-     <normaloff>:/images/images/fitwindow.png</normaloff>:/images/images/fitwindow.png</iconset>
+    <iconset resource="../modules/QtPDF/QtPDF_icons.qrc">
+     <normaloff>:/QtPDF/icons/zoom-fitwindow.png</normaloff>:/QtPDF/icons/zoom-fitwindow.png</iconset>
    </property>
    <property name="text">
     <string>Fit to Window</string>
@@ -313,8 +315,8 @@
   </action>
   <action name="actionActual_Size">
    <property name="icon">
-    <iconset resource="../res/resources.qrc">
-     <normaloff>:/images/images/actualsize.png</normaloff>:/images/images/actualsize.png</iconset>
+    <iconset resource="../modules/QtPDF/QtPDF_icons.qrc">
+     <normaloff>:/QtPDF/icons/zoom100.png</normaloff>:/QtPDF/icons/zoom100.png</iconset>
    </property>
    <property name="text">
     <string>Actual Size</string>
@@ -331,8 +333,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../res/resources.qrc">
-     <normaloff>:/images/images/fitwidth.png</normaloff>:/images/images/fitwidth.png</iconset>
+    <iconset resource="../modules/QtPDF/QtPDF_icons.qrc">
+     <normaloff>:/QtPDF/icons/zoom-fitwidth.png</normaloff>:/QtPDF/icons/zoom-fitwidth.png</iconset>
    </property>
    <property name="text">
     <string>Fit to Width</string>
@@ -755,6 +757,27 @@
    </property>
    <property name="shortcut">
     <string>Alt+Left</string>
+   </property>
+  </action>
+  <action name="actionFit_to_Content_Width">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../modules/QtPDF/QtPDF_icons.qrc">
+     <normaloff>:/QtPDF/icons/zoom-fitcontentwidth.png</normaloff>:/QtPDF/icons/zoom-fitcontentwidth.png</iconset>
+   </property>
+   <property name="text">
+    <string>Fit to ContentWidth</string>
+   </property>
+   <property name="toolTip">
+    <string>Fit to Content Width</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <actiongroup name="actionPageModes">

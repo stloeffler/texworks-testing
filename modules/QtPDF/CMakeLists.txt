@@ -63,6 +63,7 @@ IF ( NOT DEFINED QTPDF_VIEWER )
 ENDIF ()
 
 OPTION(QTPDF_VIEWER "Build PDF viewer application" ${QTPDF_VIEWER})
+OPTION(WITH_TESTS "Build tests" ON)
 
 OPTION(WITH_POPPLER "Build Poppler Qt backend" ${WITH_POPPLERQT})
 # MuPDF backend is a bit immature, so we don't bother with it by default right
@@ -112,11 +113,11 @@ IF (DESIRED_QT_VERSION MATCHES 5 OR (NOT DESIRED_QT_VERSION AND (QT_VERSION_MAJO
   find_qt5_package(Qt5Xml)
   find_qt5_package(Qt5LinguistTools)
 
-  IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
+  IF( WITH_TESTS )
     find_qt5_package(Qt5Test QUIET)
   ENDIF()
 
-  IF(Qt5Core_FOUND AND Qt5Widgets_FOUND AND Qt5Concurrent_FOUND AND Qt5Xml_FOUND AND Qt5LinguistTools_FOUND AND (NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR (Qt5Test_FOUND)))
+  IF(Qt5Core_FOUND AND Qt5Widgets_FOUND AND Qt5Concurrent_FOUND AND Qt5Xml_FOUND AND Qt5LinguistTools_FOUND AND (NOT WITH_TESTS OR Qt5Test_FOUND))
     SET(QT5_FOUND TRUE)
     # Note: Qt5 only sets Qt5Widgets_VERSION, etc., but not QT_VERSION_MAJOR,
     # etc. which is used here.
@@ -158,7 +159,10 @@ IF (DESIRED_QT_VERSION MATCHES 5 OR (NOT DESIRED_QT_VERSION AND (QT_VERSION_MAJO
       FIND_LIBRARY(Qt5ThemeSupport_LIBRARIES Qt5ThemeSupport
         HINTS "${QT_LIB_DIR}"
       )
-      LIST(INSERT QT_LIBRARIES 0 ${Qt5QWindows_LIBRARIES} ${Qt5FontDatabaseSupport_LIBRARIES} ${Qt5EventDispatcherSupport_LIBRARIES} ${Qt5ThemeSupport_LIBRARIES})
+      FIND_LIBRARY(Qt5AccessibilitySupport_LIBRARIES Qt5AccessibilitySupport
+        HINTS "${QT_LIB_DIR}"
+      )
+      LIST(INSERT QT_LIBRARIES 0 ${Qt5QWindows_LIBRARIES} ${Qt5FontDatabaseSupport_LIBRARIES} ${Qt5EventDispatcherSupport_LIBRARIES} ${Qt5ThemeSupport_LIBRARIES} ${Qt5AccessibilitySupport_LIBRARIES})
     endif()
     ADD_DEFINITIONS(-DSTATIC_QT5)
   ENDIF()
@@ -176,7 +180,7 @@ IF (DESIRED_QT_VERSION MATCHES 4 OR NOT QT5_FOUND)
     QtGui
     QtXML
   )
-  IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
+  IF( WITH_TESTS )
     LIST(APPEND QT_COMPONENTS QtTest)
   ENDIF()
 
@@ -188,7 +192,7 @@ IF (DESIRED_QT_VERSION MATCHES 4 OR NOT QT5_FOUND)
   FIND_PACKAGE(Qt4 4.6.0 COMPONENTS ${QT_COMPONENTS} QUIET)
   INCLUDE(UseQt4)
 
-  # TODO: QtTest is included in the list of "normal" libraries for debug builds.
+  # TODO: QtTest is included in the list of "normal" libraries.
   # Therefore, QT_TEST_LIBRARIES is not set here. Can we improve this somehow
   # (i.e., can we pull in QtTest only for programs that actually use it)?
 
@@ -397,8 +401,10 @@ SET_TARGET_PROPERTIES(qtpdf PROPERTIES
 )
 
 # Inform parent scope (if any) what to do to use QtPDF
-SET(QTPDF_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src PARENT_SCOPE)
+IF(NOT ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+  SET(QTPDF_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src PARENT_SCOPE)
 #  ${CMAKE_CURRENT_SOURCE_DIR}/src/backend
+ENDIF()
 
 
 # Viewers
@@ -417,12 +423,6 @@ QT_ADD_RESOURCES(PDFVIEWER_RESOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/icons.qrc
 )
 
-SET(QTPDFTEST_SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests/TestQtPDF.cpp
-)
-
-
-
 IF( WITH_POPPLERQT )
   ADD_EXECUTABLE(poppler-qt${QT_VERSION_MAJOR}_viewer
     ${PDFVIEWER_SRCS}
@@ -439,16 +439,6 @@ IF( WITH_POPPLERQT )
 
   TARGET_LINK_LIBRARIES(poppler-qt${QT_VERSION_MAJOR}_viewer qtpdf)
 
-  IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    ADD_EXECUTABLE(poppler-qt${QT_VERSION_MAJOR}_test
-      ${QTPDFTEST_SRCS}
-    )
-    SET_TARGET_PROPERTIES(poppler-qt${QT_VERSION_MAJOR}_test PROPERTIES
-      COMPILE_FLAGS "-DUSE_POPPLERQT ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}"
-      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests
-    )
-    TARGET_LINK_LIBRARIES(poppler-qt${QT_VERSION_MAJOR}_test ${QT_TEST_LIBRARIES} qtpdf)
-  ENDIF()
 ENDIF()
 
 IF( WITH_MUPDF )
@@ -462,20 +452,46 @@ IF( WITH_MUPDF )
   )
 
   TARGET_LINK_LIBRARIES(mupdf_viewer qtpdf)
-
-  IF( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    ADD_EXECUTABLE(mupdf_test
-      ${QTPDFTEST_SRCS}
-    )
-    SET_TARGET_PROPERTIES(mupdf_test PROPERTIES
-      COMPILE_FLAGS "-DUSE_MUPDF ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}"
-      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests
-    )
-    TARGET_LINK_LIBRARIES(mupdf_test ${QT_TEST_LIBRARIES} qtpdf)
-  ENDIF()
 ENDIF()
 
 ENDIF() # QTPDF_VIEWER
+
+# Tests
+# -----
+
+IF ( WITH_TESTS )
+  ENABLE_TESTING(TRUE)
+  SET(QTPDFTEST_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests/TestQtPDF.cpp
+  )
+  IF ( APPLE )
+    # On OS X, we use Qt 5 which supports the "offscreen" platform
+    # Note that the "offscreen" platform on Linux causes problems with finding
+    # the system font directory.
+    SET(TEST_ARGS -platform offscreen)
+  ENDIF ()
+  IF( WITH_POPPLERQT )
+    ADD_EXECUTABLE(test_poppler-qt${QT_VERSION_MAJOR}
+      ${QTPDFTEST_SRCS}
+    )
+    SET_TARGET_PROPERTIES(test_poppler-qt${QT_VERSION_MAJOR} PROPERTIES
+      COMPILE_FLAGS "-DUSE_POPPLERQT ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}"
+    )
+    TARGET_LINK_LIBRARIES(test_poppler-qt${QT_VERSION_MAJOR} ${QT_TEST_LIBRARIES} qtpdf)
+    ADD_TEST(NAME test_poppler-qt${QT_VERSION_MAJOR} COMMAND test_poppler-qt${QT_VERSION_MAJOR} ${TEST_ARGS} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests)
+  ENDIF()
+  IF( WITH_MUPDF )
+    ADD_EXECUTABLE(test_mupdf
+      ${QTPDFTEST_SRCS}
+    )
+    SET_TARGET_PROPERTIES(test_mupdf PROPERTIES
+      COMPILE_FLAGS "-DUSE_MUPDF ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}"
+    )
+    TARGET_LINK_LIBRARIES(test_mupdf ${QT_TEST_LIBRARIES} qtpdf)
+    ADD_TEST(NAME test_mupdf COMMAND test_mupdf ${TEST_ARGS} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests)
+  ENDIF()
+ENDIF( WITH_TESTS )
+
 
 # Packaging
 # =========
