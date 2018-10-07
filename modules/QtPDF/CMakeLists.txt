@@ -468,7 +468,7 @@ IF ( WITH_TESTS )
     # On OS X, we use Qt 5 which supports the "offscreen" platform
     # Note that the "offscreen" platform on Linux causes problems with finding
     # the system font directory.
-    SET(TEST_ARGS -platform offscreen)
+#    SET(TEST_ARGS -platform offscreen)
   ENDIF ()
   IF( WITH_POPPLERQT )
     ADD_EXECUTABLE(test_poppler-qt${QT_VERSION_MAJOR}
