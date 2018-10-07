@@ -11,6 +11,9 @@ print_headline "Testing TeXworks for ${TARGET_OS}/qt${QT}"
 
 echo_and_run "cd \"${BUILDDIR}\""
 
+echo_and_run "pwd"
+echo_and_run "ls"
+
 # Run unit tests on supported platforms
 if [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	# For Windows, we are cross-compiling, i.e. we cannot run the produced binaries
