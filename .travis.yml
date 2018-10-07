@@ -29,6 +29,7 @@ matrix:
           packages:
             - ubuntu-dev-tools
             - dput
+            - python-paramiko
             - debhelper
             - qtbase5-dev
             - qtscript5-dev
