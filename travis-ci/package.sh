@@ -72,6 +72,13 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		# using sftp
 		echo "ppa.launchpad.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0aKz5UTUndYgIGG7dQBV+HaeuEZJ2xPHo2DS2iSKvUL4xNMSAY4UguNW+pX56nAQmZKIZZ8MaEvSj6zMEDiq6HFfn5JcTlM80UwlnyKe8B8p7Nk06PPQLrnmQt5fh0HmEcZx+JU9TZsfCHPnX7MNz4ELfZE6cFsclClrKim3BHUIGq//t93DllB+h4O9LHjEUsQ1Sr63irDLSutkLJD6RXchjROXkNirlcNVHH/jwLWR5RcYilNX7S5bIkK8NlWPjsn/8Ua5O7I9/YoE97PpO6i73DTGLh5H9JN/SITwCKBkgSDWUt61uPK3Y11Gty7o2lWsBjhBUm2Y38CBsoGmBw==" >> ~/.ssh/known_hosts
 
+		# Set up key for ssh (sftp) authentication
+		openssl aes-256-cbc -K $encrypted_6a8dc39105f1_key -iv $encrypted_6a8dc39105f1_iv -in "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/id_rsa_texworks.enc" -out "~/.ssh/id_rsa_texworks" -d
+		echo """Host ppa.launchpad.net
+	IdentityFile ~/.ssh/id_rsa_texworks
+	User st.loeffler
+""" >> ~/.ssh/config
+
 		for DISTRO in ${LAUNCHPAD_DISTROS}; do
 			print_info "Packging for ${DISTRO}"
 			DEB_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")"~${DISTRO}"
