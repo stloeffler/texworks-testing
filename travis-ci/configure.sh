@@ -18,9 +18,17 @@ print_info "Making build directory '${BUILDDIR}'"
 mkdir "${BUILDDIR}"
 cd "${BUILDDIR}"
 
+CMAKE_OPTS="-DTW_BUILD_ID='travis-ci' -DDESIRED_QT_VERSION=\"$QT\""
+
+if [ "x${COVERAGE}" != "x" ]; then
+	CMAKE_OPTS="${CMAKE_OPTS} -DCMAKE_BUILD_TYPE=\"Debug\" -DWITH_COVERAGE=On"
+else
+	CMAKE_OPTS="${CMAKE_OPTS} -DCMAKE_BUILD_TYPE=\"Release\""
+fi
+
 if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Running CMake"
-	echo_and_run "cmake .. -DTW_BUILD_ID='travis-ci' -DCMAKE_INSTALL_PREFIX='/usr' -DDESIRED_QT_VERSION=\"$QT\""
+	echo_and_run "cmake .. ${CMAKE_OPTS} -DCMAKE_INSTALL_PREFIX='/usr'"
 	if [ -f "CMakeFiles/CMakeError.log" ]; then
 		echo "=== CMake Error Log ==="
 		less "CMakeFiles/CMakeError.log"

@@ -74,6 +74,10 @@ IF(WIN32 AND MINGW)
   SET(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff <DEFINES> <SOURCE> <OBJECT>")
 ENDIF()
 
+# Make the contents of `CMake/Modules` available. Among other things, this
+# directory contains scripts that locate project components such as hunspell.
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake/Modules ${CMAKE_MODULE_PATH})
+
 
 # Determine Version Numbers
 # -------------------------
@@ -140,6 +144,11 @@ OPTION(WITH_TESTS "build unit tests" ON)
 IF (WITH_TESTS)
   ENABLE_TESTING(TRUE)
 ENDIF (WITH_TESTS)
+OPTION(WITH_COVERAGE "add support for lcov coverage" OFF)
+IF (WITH_COVERAGE)
+  include(CodeCoverage)
+  APPEND_COVERAGE_COMPILER_FLAGS()
+ENDIF (WITH_COVERAGE)
 
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} CACHE PATH "Path to place libraries in")
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} CACHE PATH "Path to place programs in")
@@ -192,10 +201,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 # Dependency Configuration
 # ========================
-
-# Make the contents of `CMake/Modules` available. Among other things, this
-# directory contains scripts that locate project components such as hunspell.
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake/Modules ${CMAKE_MODULE_PATH})
 
 set(DESIRED_QT_VERSION "" CACHE STRING "Pick a version of Qt to use: 4 or 5")
 MARK_AS_ADVANCED(DESIRED_QT_VERSION)
