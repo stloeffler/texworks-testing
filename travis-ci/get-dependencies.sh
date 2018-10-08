@@ -18,6 +18,11 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	echo "MXEDIR=\"${MXEDIR}\"" >> travis-ci/defs.sh
 	echo "MXETARGET=\"${MXETARGET}\"" >> travis-ci/defs.sh
 
+	print_info "Exporting CC = ${MXETARGET}-gcc"
+	export CC="${MXETARGET}-gcc"
+	print_info "Exporting CXX = ${MXETARGET}-g++"
+	export CXX="${MXETARGET}-g++"
+
 	JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
 
 	print_info "Adding pkg.mxe.cc apt repo"
