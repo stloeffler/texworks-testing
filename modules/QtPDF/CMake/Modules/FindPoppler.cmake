@@ -70,12 +70,7 @@ IF ( NOT(POPPLER_BASE_LIBRARIES) )
 ENDIF ()
 
 # Scan poppler libraries for dependencies on Fontconfig
-message("gp_tool: ${gp_tool}")
-message("gp_cmd: ${gp_cmd}")
 INCLUDE(GetPrerequisites)
-message("gp_tool: ${gp_tool}")
-message("gp_cmd: ${gp_cmd}")
-
 MARK_AS_ADVANCED(gp_cmd)
 GET_PREREQUISITES("${POPPLER_BASE_LIBRARIES}" POPPLER_PREREQS TRUE FALSE "" "")
 IF ("${POPPLER_PREREQS}" MATCHES "fontconfig")
