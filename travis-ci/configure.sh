@@ -37,7 +37,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	print_info "Running CMake"
 	echo_and_run "cat /usr/lib/mxe/usr/x86_64-unknown-linux-gnu/share/cmake-3.5/Modules/GetPrerequisites.cmake"
 	echo_and_run "${MXEDIR}/usr/bin/${MXETARGET}-cmake .. \
-		${CMAKE_OPTS}
+		${CMAKE_OPTS} \
 		-DQTPDF_ADDITIONAL_LIBS='freetype;harfbuzz;freetype;glib-2.0;intl;iconv;ws2_32;winmm;tiff;jpeg;png;lcms2;lzma;bz2;pcre16;dwmapi;uxtheme;imm32' \
 		-DTEXWORKS_ADDITIONAL_LIBS='opengl32;imm32;shlwapi;dwmapi;uxtheme' \
 		-Dgp_tool='none'"
