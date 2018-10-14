@@ -1,3 +1,5 @@
+# Source: https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
+#
 # Copyright (c) 2012 - 2017, Lars Bilke
 # All rights reserved.
 #
@@ -151,7 +153,7 @@ function(SETUP_TARGET_FOR_COVERAGE_LCOV)
     add_custom_target(${Coverage_NAME}
 
         # Cleanup lcov
-        COMMAND ${LCOV_PATH} --gcov-tool ${GCOV_PATH} -directory . --zerocounters
+        COMMAND ${LCOV_PATH} --gcov-tool ${GCOV_PATH} --directory . --zerocounters
         # Create baseline to make sure untouched files show up in the report
         COMMAND ${LCOV_PATH} --gcov-tool ${GCOV_PATH} -c -i -d . -o ${Coverage_NAME}.base
 
