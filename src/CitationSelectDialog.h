@@ -27,7 +27,7 @@
 #include <QTableView>
 #include <QSet>
 #include <QSortFilterProxyModel>
-#include "BibTeXfile.h"
+#include "BibTeXFile.h"
 
 class CitationModel : public QAbstractTableModel {
 	Q_OBJECT;
@@ -94,6 +94,7 @@ public:
 		_model.addBibTeXFile(file);
 		_proxyModel.sort(0, Qt::DescendingOrder);
 	}
+	void addBibTeXFile(const QString & filename) { addBibTeXFile(BibTeXFile(filename)); }
 
 	QStringList getSelectedKeys(const bool ordered = true) const;
 
