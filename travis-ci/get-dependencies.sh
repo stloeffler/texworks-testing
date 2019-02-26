@@ -89,7 +89,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	fi
 	brew install hunspell
 	brew install lua;
-elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "win" ]; then
+elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "windows" ]; then
 	echo_and_run "pwd"
 	echo_and_run "ls"
 	echo_and_run "ls /"
