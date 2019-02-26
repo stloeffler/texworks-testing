@@ -95,7 +95,8 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "windows" ]; then
 	ls /c/
 	print_info "Installing Qt5"
 	wget -O qt-installer.exe http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe
-	qt-installer.exe --script travis-ci/win32/qt-install.qs
+	ls
+	./qt-installer.exe --script travis-ci/win32/qt-install.qs
 
 	ls /c/
 	ls /c/Qt/
