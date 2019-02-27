@@ -1,4 +1,4 @@
-From 9b9f7ff69e56eab696d9873cfcae6f31579a96ab Mon Sep 17 00:00:00 2001
+From 78d7cc76735d8056952bdea1deec9c667c7c19bf Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stefan=20L=C3=B6ffler?= <st.loeffler@gmail.com>
 Date: Thu, 11 Feb 2016 23:14:20 -0500
 Subject: [PATCH 2/3] Native Mac font handling
@@ -72,7 +72,7 @@ index 7989cbfb..88aaf0ee 100644
  #cmakedefine WITH_FONTCONFIGURATION_WIN32 1
  
 diff --git a/poppler/GlobalParams.cc b/poppler/GlobalParams.cc
-index 60d3ca91..bc7803aa 100644
+index 60d3ca91..444d2bbe 100644
 --- a/poppler/GlobalParams.cc
 +++ b/poppler/GlobalParams.cc
 @@ -239,6 +239,9 @@ public:
@@ -85,7 +85,18 @@ index 60d3ca91..bc7803aa 100644
  private:
  
  #ifdef _WIN32
-@@ -554,6 +557,12 @@ GlobalParams::~GlobalParams() {
+@@ -382,6 +385,10 @@ GlobalParams::GlobalParams(const char *customPopplerDataDir)
+   : popplerDataDir(customPopplerDataDir)
+ {
+   initBuiltinFontTables();
++#if WITH_FONTCONFIGURATION_MAC
++  tempFontFiles = NULL;
++  numTempFontFiles = 0;
++#endif
+ 
+   // scan the encoding in reverse because we want the lowest-numbered
+   // index for each char name ('space' is encoded twice)
+@@ -554,6 +561,12 @@ GlobalParams::~GlobalParams() {
    delete nameToUnicodeZapfDingbats;
    delete nameToUnicodeText;
    deleteGooList<GooString>(toUnicodeDirs);
@@ -98,17 +109,6 @@ index 60d3ca91..bc7803aa 100644
    delete sysFonts;
    delete textEncoding;
  
-@@ -815,6 +824,10 @@ static FcPattern *buildFcPattern(GfxFont *font, const GooString *base14Name)
-   return p;
- }
- #endif
-+#if WITH_FONTCONFIGURATION_MAC
-+  tempFontFiles = NULL;
-+  numTempFontFiles = 0;
-+#endif
- 
- GooString *GlobalParams::findFontFile(const GooString *fontName) {
-   GooString *path = nullptr;
 @@ -1013,6 +1026,8 @@ fin:
  GooString *GlobalParams::findBase14FontFile(const GooString *base14Name, GfxFont *font) {
    return findFontFile(base14Name);
@@ -119,7 +119,7 @@ index 60d3ca91..bc7803aa 100644
  GooString *GlobalParams::findBase14FontFile(const GooString *base14Name, GfxFont *font) {
    return findFontFile(base14Name);
 diff --git a/poppler/GlobalParams.h b/poppler/GlobalParams.h
-index 365c4895..5bcbf0a9 100644
+index 365c4895..5073989b 100644
 --- a/poppler/GlobalParams.h
 +++ b/poppler/GlobalParams.h
 @@ -144,6 +144,9 @@ public:
@@ -145,7 +145,7 @@ index 365c4895..5bcbf0a9 100644
    std::unordered_map<std::string, std::string> fontFiles;
 diff --git a/poppler/GlobalParamsMac.cc b/poppler/GlobalParamsMac.cc
 new file mode 100644
-index 00000000..a1f8cdea
+index 00000000..b94afcb9
 --- /dev/null
 +++ b/poppler/GlobalParamsMac.cc
 @@ -0,0 +1,314 @@
