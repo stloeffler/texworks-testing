@@ -38,7 +38,7 @@ class Poppler < Formula
   end
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0002-Native-Mac-font-handling.patch'
-    sha256 "cf8618f1c5e88e8d9af7af9dfde1b078da24ba72e1c41bad76d1d23c7a97dcda"
+    sha256 "9b84a9c7007f4371d69394abc0eaf576dc7d3428e6ecd2bd177173a9f2711055"
   end
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0003-Add-support-for-persistent-GlobalParams.patch'

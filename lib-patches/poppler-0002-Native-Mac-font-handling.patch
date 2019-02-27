@@ -80,7 +80,7 @@ index 60d3ca91..444d2bbe 100644
    void addFcFont(SysFontInfo *si) {fonts->push_back(si);}
  #endif
 +#ifdef WITH_FONTCONFIGURATION_MAC
-+	void addMacFont(SysFontInfo *si) {fonts->append(si);}
++	void addMacFont(SysFontInfo *si) {fonts->push_back(si);}
 +#endif
  private:
  
@@ -148,7 +148,7 @@ new file mode 100644
 index 00000000..b94afcb9
 --- /dev/null
 +++ b/poppler/GlobalParamsMac.cc
-@@ -0,0 +1,314 @@
+@@ -0,0 +1,313 @@
 +//========================================================================
 +//
 +// GlobalParamsMac.cc
@@ -178,7 +178,6 @@ index 00000000..b94afcb9
 +#include "goo/gmem.h"
 +#include "goo/GooString.h"
 +#include "goo/GooList.h"
-+#include "goo/GooHash.h"
 +#include "goo/gfile.h"
 +#include "Error.h"
 +
@@ -418,7 +417,7 @@ index 00000000..b94afcb9
 +GooString *GlobalParams::findBase14FontFile(GooString *base14Name, GfxFont *font) {
 +  SysFontType type;
 +  int fontNum;
-+  
++
 +  return findSystemFontFile(font, &type, &fontNum, nullptr, base14Name);
 +}
 +
