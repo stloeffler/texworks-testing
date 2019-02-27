@@ -34,15 +34,15 @@ class Poppler < Formula
   TEXWORKS_PATCH_DIR = TEXWORKS_SOURCE_DIR + 'lib-patches/'
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0001-Fix-bogus-memory-allocation-in-SplashFTFont-makeGlyp.patch'
-    sha256 "9a293c408de4489eb2e180973893c0b2af555eafad28c899397dde2f6e243971"
+    sha256 "9a0f079027e09066e694a1407eda156c54637dda74640b242721aa17c9548b2f"
   end
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0002-Native-Mac-font-handling.patch'
-    sha256 "385169e2d8b8420d58e1f0713fd5a2b7ff270d6e948eb7c87d47597c6a5a8cdd"
+    sha256 "f5e6bd074f4924a7f74feee232af77c788a280709f9afa56f659d7e5383b126f"
   end
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0003-Add-support-for-persistent-GlobalParams.patch'
-    sha256 "bde4d3acc551274841ab25578de0b78c2dedf31724fb12657730fc6495238adc"
+    sha256 "7de0861fd60060039c11f5ed7587d89709e24345fe0440a79d6076adfee5600c"
   end
 # END TEXWORKS MODIFICATION
 

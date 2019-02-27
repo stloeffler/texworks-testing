@@ -16,7 +16,7 @@ index 22c672af..d76719de 100644
      rowSize = (bitmap->w + 7) >> 3;
    }
 +  if (rowSize == 0 || bitmap->h == 0) {
-+    return gFalse;
++    return false;
 +  }
    bitmap->data = (unsigned char *)gmallocn_checkoverflow(rowSize, bitmap->h);
    if (!bitmap->data) {

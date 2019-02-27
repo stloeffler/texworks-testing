@@ -17,7 +17,7 @@ index 0aa5bed4..adc88fe8 100644
  
    int DocumentData::count = 0;
    QMutex DocumentData::mutex;
-+  GBool DocumentData::ownGlobalParams = gFalse;
++  bool DocumentData::ownGlobalParams = false;
  
    Document *Document::load(const QString &filePath, const QByteArray &ownerPassword,
  			   const QByteArray &userPassword)
@@ -36,7 +36,7 @@ index 0c178a54..b4e25e2b 100644
 +                utf8Map = nullptr;
 +                delete globalParams;
 +                globalParams = nullptr;
-+                ownGlobalParams = gFalse;
++                ownGlobalParams = false;
 +            }
          }
        }
@@ -51,7 +51,7 @@ index 0c178a54..b4e25e2b 100644
 +            {
 +                utf8Map = nullptr;
 +                globalParams = new GlobalParams();
-+                ownGlobalParams = gTrue;
++                ownGlobalParams = true;
 +            }
              setErrorCallback(qt5ErrorFunction, nullptr);
          }
@@ -64,7 +64,7 @@ index f3980513..5b670bc3 100644
  	int m_hints;
  	static int count;
  	static QMutex mutex;
-+	static GBool ownGlobalParams;
++	static bool ownGlobalParams;
      };
  
      class FontInfoData

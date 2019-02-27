@@ -127,7 +127,7 @@ index 365c4895..5bcbf0a9 100644
    CMap *getCMap(const GooString *collection, GooString *cMapName, Stream *stream = nullptr);
    UnicodeMap *getTextEncoding();
 +#if WITH_FONTCONFIGURATION_MAC
-+  GBool loadPlatformFont(char * fontName);
++  bool loadPlatformFont(char * fontName);
 +#endif
  
    GooList *getEncodingNames();
@@ -205,7 +205,7 @@ index 00000000..a1f8cdea
 +
 +#include <ApplicationServices/ApplicationServices.h>
 +
-+GBool GlobalParams::loadPlatformFont(char * fontName) {
++bool GlobalParams::loadPlatformFont(char * fontName) {
 +	char * myName = copyString(fontName);
 +	ATSFontRef fontRef = kATSUInvalidFontID;
 +	while (1) {
@@ -238,7 +238,7 @@ index 00000000..a1f8cdea
 +	}
 +	gfree(myName);
 +	if (fontRef == kATSUInvalidFontID)
-+		return gFalse;
++		return false;
 +
 +	// Currently support only TrueType fonts: check for presence of 'glyf' table
 +	// TODO: what about OpenType/CFF? DisplayFontParam doesn't seem to allow for this
@@ -247,7 +247,7 @@ index 00000000..a1f8cdea
 +	ByteCount tableSize;
 +	if (ATSFontGetTable(fontRef, TAG('g','l','y','f'), 0, 0, nullptr, &tableSize) != noErr ||
 +			tableSize == 0)
-+		return gFalse;
++		return false;
 +
 +	do { // if the font comes from a .ttf file, we can use that directly
 +		FSRef fsRef;
@@ -266,7 +266,7 @@ index 00000000..a1f8cdea
 +			if (strcmp(ext, "ttf") == 0 || strcmp(ext, "TTF") == 0 ||
 +					strcmp(ext, "otf") == 0 || strcmp(ext, "OTF") == 0) {
 +				addFontFile(new GooString(fontName), new GooString((const char*)fontPath));
-+				return gTrue;
++				return true;
 +			}
 +		}
 +	} while (0);
@@ -290,7 +290,7 @@ index 00000000..a1f8cdea
 +
 +	ByteCount headerSize;
 +	if (ATSFontGetTableDirectory(fontRef, 0, nullptr, &headerSize) != noErr)
-+		return gFalse;
++		return false;
 +	struct sfntHeader * header = (struct sfntHeader *) new Byte[headerSize];
 +	ATSFontGetTableDirectory(fontRef, headerSize, (Byte *) header, &headerSize);
 +
@@ -303,7 +303,7 @@ index 00000000..a1f8cdea
 +//      version != TAG('O','T','T','0') &&
 +			version != TAG('t','r','u','e')) {
 +		delete [] (Byte *) header;
-+		return gFalse;
++		return false;
 +	}
 +
 +	UInt16 numTables = READ16(header->numTables);
@@ -334,7 +334,7 @@ index 00000000..a1f8cdea
 +	delete [] (Byte*) header;
 +	if (tableIndex < numTables) {
 +		delete [] ttfData;
-+		return gFalse;
++		return false;
 +	}
 +
 +	newFont->numTables = READ16(realTables);
@@ -359,10 +359,10 @@ index 00000000..a1f8cdea
 +	if (mkstemps(fontPath, 4) == -1) {
 +		delete [] ttfData;
 +		gfree(fontPath);
-+		return gFalse;
++		return false;
 +	}
 +
-+	GBool writtenOk = gFalse;
++	bool writtenOk = false;
 +	FILE * ttfFile = fopen(fontPath, "wb");
 +	if (ttfFile) {
 +		writtenOk = (fwrite(ttfData, 1, maxOffset, ttfFile) == maxOffset);
@@ -372,14 +372,14 @@ index 00000000..a1f8cdea
 +	if (!writtenOk) {
 +		unlink(fontPath);
 +		gfree(fontPath);
-+		return gFalse;
++		return false;
 +	}
 +
 +	void * p = realloc(tempFontFiles, (numTempFontFiles + 1) * sizeof(char *));
 +	if (!p) {
 +		unlink(fontPath);
 +		gfree(fontPath);
-+		return gFalse;
++		return false;
 +	}
 +	tempFontFiles = (char **) p;
 +	tempFontFiles[numTempFontFiles] = fontPath;
@@ -387,17 +387,17 @@ index 00000000..a1f8cdea
 +
 +	addFontFile(new GooString(fontName), new GooString(fontPath));
 +
-+	return gTrue;
++	return true;
 +}
 +
 +static const char *
 +findSubstituteName(const char * fontName) {
-+	GBool bold = (strstr(fontName, "Bold") != nullptr ||
++	bool bold = (strstr(fontName, "Bold") != nullptr ||
 +								strstr(fontName, "bold") != nullptr || // to catch "Semibold", "Demibold", etc
 +								strstr(fontName, "Ultra") != nullptr ||
 +								strstr(fontName, "Heavy") != nullptr ||
 +								strstr(fontName, "Black") != nullptr);
-+	GBool ital = (strstr(fontName, "Italic") != nullptr ||
++	bool ital = (strstr(fontName, "Italic") != nullptr ||
 +								strstr(fontName, "Oblique") != nullptr);
 +	if (bold) {
 +		return ital ? "Helvetica-BoldOblique" : "Helvetica-Bold";
