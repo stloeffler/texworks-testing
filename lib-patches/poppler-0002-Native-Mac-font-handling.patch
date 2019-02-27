@@ -435,10 +435,10 @@ index 00000000..b94afcb9
 +		if (!path) {
 +			GooString * substFontName = new GooString(findSubstituteName(fontName->c_str()));
 +			error(errSyntaxError, -1, "Couldn't find a font for '{0:t}', subst is '{1:t}'", fontName, substFontName);
-+			path = (GooString*)fontFiles->at(substFontName);
++			path = (GooString*)fontFiles->at(*substFontName);
 +			if (!path) {
 +				if (loadPlatformFont(substFontName->c_str()))
-+					path = (GooString*)fontFiles->at(substFontName);
++					path = (GooString*)fontFiles->at(*substFontName);
 +
 +				// this isn't supposed to fail, because the substitutes are system fonts
 +				// that should always be available
