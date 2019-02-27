@@ -428,17 +428,17 @@ index 00000000..b94afcb9
 +	GooString *fontName = font->getName()->copy();
 +	if (!fontName) return nullptr;
 +	lockGlobalParams;
-+	path = fontFiles.find(*fontName);
++	path = fontFiles.find(fontName->toStr());
 +	if (path == fontFiles.end()) {
 +		if (loadPlatformFont(fontName->c_str()))
-+			path = fontFiles.find(*fontName);
++			path = fontFiles.find(fontName->toStr());
 +		if (path == fontFiles.end()) {
 +			GooString * substFontName = new GooString(findSubstituteName(fontName->c_str()));
 +			error(errSyntaxError, -1, "Couldn't find a font for '{0:t}', subst is '{1:t}'", fontName, substFontName);
-+			path = fontFiles.find(*substFontName);
++			path = fontFiles.find(substFontName->toStr());
 +			if (path == fontFiles.end()) {
 +				if (loadPlatformFont(substFontName->c_str()))
-+					path = fontFiles.find(*substFontName);
++					path = fontFiles.find(substFontName->toStr());
 +
 +				// this isn't supposed to fail, because the substitutes are system fonts
 +				// that should always be available
