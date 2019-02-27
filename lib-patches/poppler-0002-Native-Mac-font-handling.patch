@@ -451,7 +451,7 @@ index 00000000..b94afcb9
 +	}
 +
 +	if (type) {
-+		if (path->getLength() > 4 && !strcasecmp(path->c_str() + path->getLength() - 4, ".ttc"))
++		if (path->second.size() > 4 && !strcasecmp(path->second.c_str() + path->second.size() - 4, ".ttc"))
 +			*type = sysFontTTC;
 +		else
 +			*type = sysFontTTF;
@@ -460,7 +460,7 @@ index 00000000..b94afcb9
 +		*fontNum = 0;
 +
 +	unlockGlobalParams;
-+	return path->copy();
++	return new GooString(path->second);
 +}
 diff --git a/poppler/poppler-config.h.cmake b/poppler/poppler-config.h.cmake
 index f0a5a1a0..2f7518f9 100644
