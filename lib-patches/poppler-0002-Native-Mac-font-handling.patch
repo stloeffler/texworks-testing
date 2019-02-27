@@ -428,30 +428,30 @@ index 00000000..b94afcb9
 +	GooString *fontName = font->getName()->copy();
 +	if (!fontName) return nullptr;
 +	lockGlobalParams;
-+	path = (GooString*)fontFiles->lookup(fontName);
++	path = (GooString*)fontFiles->at(fontName);
 +	if (!path) {
-+		if (loadPlatformFont(fontName->getCString()))
-+			path = (GooString*)fontFiles->lookup(fontName);
++		if (loadPlatformFont(fontName->c_str()))
++			path = (GooString*)fontFiles->at(fontName);
 +		if (!path) {
-+			GooString * substFontName = new GooString(findSubstituteName(fontName->getCString()));
++			GooString * substFontName = new GooString(findSubstituteName(fontName->c_str()));
 +			error(errSyntaxError, -1, "Couldn't find a font for '{0:t}', subst is '{1:t}'", fontName, substFontName);
-+			path = (GooString*)fontFiles->lookup(substFontName);
++			path = (GooString*)fontFiles->at(substFontName);
 +			if (!path) {
-+				if (loadPlatformFont(substFontName->getCString()))
-+					path = (GooString*)fontFiles->lookup(substFontName);
++				if (loadPlatformFont(substFontName->c_str()))
++					path = (GooString*)fontFiles->at(substFontName);
 +
 +				// this isn't supposed to fail, because the substitutes are system fonts
 +				// that should always be available
 +				assert(path);
 +				if (substituteFontName)
-+					substituteFontName->Set(substFontName->getCString());
++					substituteFontName->Set(substFontName->c_str());
 +			}
 +			delete substFontName;
 +		}
 +	}
 +
 +	if (type) {
-+		if (path->getLength() > 4 && !strcasecmp(path->getCString() + path->getLength() - 4, ".ttc"))
++		if (path->getLength() > 4 && !strcasecmp(path->c_str() + path->getLength() - 4, ".ttc"))
 +			*type = sysFontTTC;
 +		else
 +			*type = sysFontTTF;
