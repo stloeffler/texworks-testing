@@ -9,9 +9,9 @@ matrix:
 #      env: TARGET_OS=win QT=5
 #      os: linux
 #      sudo: required
-     - name: "Windows (MSVC)"
-       env: TARGET_OS=win QT=5
-       os: windows
+    - name: "Windows (MSVC)"
+      env: TARGET_OS=win QT=5
+      os: windows
 
 
 
