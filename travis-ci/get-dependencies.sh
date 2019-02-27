@@ -94,12 +94,12 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "windows" ]; then
 	echo_and_run "ls"
 	ls /c/
 	print_info "Installing Qt5"
-	wget -O qt-installer.exe http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe
-	ls
-	./qt-installer.exe --script travis-ci/win32/qt-install.qs
+	echo_and_run "wget --no-verbose -O qt-installer.exe http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe"
+	echo_and_run "ls"
+	echo_and_run "./qt-installer.exe --script travis-ci/win32/qt-install.qs"
 
-	ls /c/
-	ls /c/Qt/
+	echo_and_run "ls /c/"
+	echo_and_run "ls /c/Qt/"
 else
 	print_error "Unsupported host/target combination '${TRAVIS_OS_NAME}/${TARGET_OS}'"
 	exit 1
