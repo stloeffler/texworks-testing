@@ -127,7 +127,7 @@ index 365c4895..5073989b 100644
    CMap *getCMap(const GooString *collection, GooString *cMapName, Stream *stream = nullptr);
    UnicodeMap *getTextEncoding();
 +#if WITH_FONTCONFIGURATION_MAC
-+  bool loadPlatformFont(char * fontName);
++  bool loadPlatformFont(const char * fontName);
 +#endif
  
    GooList *getEncodingNames();
@@ -204,7 +204,7 @@ index 00000000..b94afcb9
 +
 +#include <ApplicationServices/ApplicationServices.h>
 +
-+bool GlobalParams::loadPlatformFont(char * fontName) {
++bool GlobalParams::loadPlatformFont(const char * fontName) {
 +	char * myName = copyString(fontName);
 +	ATSFontRef fontRef = kATSUInvalidFontID;
 +	while (1) {
