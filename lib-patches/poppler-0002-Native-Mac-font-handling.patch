@@ -414,7 +414,7 @@ index 00000000..b94afcb9
 +void GlobalParams::setupBaseFonts(char *dir) {
 +}
 +
-+GooString *GlobalParams::findBase14FontFile(GooString *base14Name, GfxFont *font) {
++GooString *GlobalParams::findBase14FontFile(const GooString *base14Name, GfxFont *font) {
 +  SysFontType type;
 +  int fontNum;
 +
@@ -423,7 +423,7 @@ index 00000000..b94afcb9
 +
 +GooString *GlobalParams::findSystemFontFile(GfxFont *font,
 +					  SysFontType *type,
-+					  int *fontNum, GooString *substituteFontName, GooString *base14Name) {
++					  int *fontNum, GooString *substituteFontName, const GooString *base14Name) {
 +	std::unordered_map<std::string, std::string>::iterator path;
 +	GooString *fontName = font->getName()->copy();
 +	if (!fontName) return nullptr;
