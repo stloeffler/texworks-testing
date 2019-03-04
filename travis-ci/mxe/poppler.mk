@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := 92e09fd3302567fd36146b36bb707db43ce436e8841219025a82ea9fb0076
 $(PKG)_SUBDIR   := poppler-$($(PKG)_VERSION)
 $(PKG)_FILE     := poppler-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://poppler.freedesktop.org/poppler-$($(PKG)_VERSION).tar.xz
-$(PKG)_DEPS     := cc cairo curl freetype glib jpeg lcms libpng libwebp qtbase tiff zlib
+$(PKG)_DEPS     := cc cairo curl freetype glib jpeg lcms libpng libwebp openjpeg qtbase tiff zlib
 
 define $(PKG)_UPDATE
     $(call GET_LATEST_VERSION, https://poppler.freedesktop.org/releases.html, poppler-)
