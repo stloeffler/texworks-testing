@@ -30,29 +30,14 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 
 	JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
 
-#	print_info "Make MXE writable"
-#	sudo chmod -R a+w "${MXEDIR}"
-
 	print_info "Fetching MXE from docker"
-#	echo_and_run "docker pull stloeffler/mxe-tw"
 	echo_and_run "docker create --name mxe stloeffler/mxe-tw"
 	echo_and_run "docker cp mxe:${MXEDIR} ${MXEDIR}"
 
-
-#	echo_and_run "cat \"${MXEDIR}/usr/i686-w64-mingw32.static/lib/libharfbuzz.la\""
-#
-#	print_info "Fixing libharfbuzz.la"
-#	echo_and_run "sed -ie 's#libfreetype.la#libfreetype.la -lharfbuzz_too#g' \"${MXEDIR}/usr/i686-w64-mingw32.static/lib/libharfbuzz.la\""
-
 	cd travis-ci/mxe
 
-#	print_info "Building hunspell (using ${JOBS} jobs)"
-#	env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" MXE_CONFIGURE_OPTS="--host='${MXETARGET}' --build='$(${MXEDIR}/ext/config.guess)' --prefix='${MXEDIR}/usr/${MXETARGET}' --enable-static --disable-shared" TEST_FILE="hunspell-test.cpp" make -f build-hunspell-mxe.mk
-
-	#sed -ie 's/^Cflags:/Cflags: -DHUNSPELL_STATIC/' /opt/mxe/usr/i686-w64-mingw32.static/lib/pkgconfig/hunspell.pc
-
 	print_info "Building poppler (using ${JOBS} jobs)"
-	env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt5/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" MXE_CONFIGURE_OPTS="--host='${MXETARGET}' --build='$(${MXEDIR}/ext/config.guess)' --prefix='${MXEDIR}/usr/${MXETARGET}' --enable-static --disable-shared ac_cv_prog_HAVE_DOXYGEN='false' --disable-doxygen --enable-poppler-qt5 --disable-poppler-qt4" TEST_FILE="poppler-test.cxx" make -f build-poppler-mxe.mk
+	env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" MXE_CONFIGURE_OPTS="--host='${MXETARGET}' --build='$(${MXEDIR}/ext/config.guess)' --prefix='${MXEDIR}/usr/${MXETARGET}' --enable-static --disable-shared ac_cv_prog_HAVE_DOXYGEN='false'" TEST_FILE="poppler-test.cxx" make -f build-poppler-mxe.mk
 
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	print_info "Updating homebrew"

@@ -52,6 +52,6 @@ add_library(hunspell UNKNOWN IMPORTED)
 set_target_properties(hunspell PROPERTIES IMPORTED_LOCATION ${HUNSPELL_LIBRARIES} INTERFACE_INCLUDE_DIRECTORIES ${HUNSPELL_INCLUDE_DIR})
 if (NOT BUILD_SHARED_LIBS)
   # At least statically compiled hunspell 1.7.0 requires HUNSPELL_STATIC
-  # For other versions, it should not hurt 
+  # For other versions, it should not hurt
   set_target_properties(hunspell PROPERTIES INTERFACE_COMPILE_DEFINITIONS HUNSPELL_STATIC)
 endif ()

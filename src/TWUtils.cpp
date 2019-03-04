@@ -512,15 +512,21 @@ QString TWUtils::chooseDefaultFilter(const QString & filename, const QStringList
 	return filters.last();
 }
 
-QString TWUtils::strippedName(const QString &fullFileName)
+QString TWUtils::strippedName(const QString &fullFileName, const unsigned int dirComponents /* = 0 */)
 {
-	return QFileInfo(fullFileName).fileName();
+	QDir dir(QFileInfo(fullFileName).dir());
+	for (unsigned int i = 0; i < dirComponents; ++i) {
+		// NB: dir.cdUp() would be more logical, but fails if the resulting
+		// path does not exist
+		dir.setPath(dir.path() + QString::fromLatin1("/.."));
+	}
+	return dir.relativeFilePath(fullFileName);
 }
 
 void TWUtils::updateRecentFileActions(QObject *parent, QList<QAction*> &actions, QMenu *menu, QAction * clearAction) /* static */
 {
 	QSETTINGS_OBJECT(settings);
-	QStringList fileList;
+	QStringList fileList, labelList;
 	if (settings.contains(QString::fromLatin1("recentFiles"))) {
 		QList<QVariant> files = settings.value(QString::fromLatin1("recentFiles")).toList();
 		foreach (const QVariant& v, files) {
@@ -543,7 +549,27 @@ void TWUtils::updateRecentFileActions(QObject *parent, QList<QAction*> &actions,
 			settings.setValue(QString::fromLatin1("recentFiles"), files);
 		}
 	}
-	
+
+	// Generate label list (list of filenames without directory components)
+	Q_FOREACH (QString file, fileList)
+		labelList.append(strippedName(file));
+	// Make label list unique, i.e. while labels are not unique, add
+	// directory components
+	for (unsigned int dirComponents = 1; ; ++dirComponents) {
+		QList<bool> isDuplicate;
+		Q_FOREACH(QString label, labelList)
+			isDuplicate.append(labelList.count(label) > 1);
+		if (!isDuplicate.contains(true))
+			break;
+
+		for (int i = 0; i < labelList.size(); ++i) {
+			if (!isDuplicate[i])
+				continue;
+			labelList[i] = strippedName(fileList[i], dirComponents);
+		}
+	}
+
+
 	int numRecentFiles = fileList.size();
 	
 	foreach(QAction * sep, menu->actions()) {
@@ -565,10 +591,8 @@ void TWUtils::updateRecentFileActions(QObject *parent, QList<QAction*> &actions,
 	}
 
 	for (int i = 0; i < numRecentFiles; ++i) {
-		QString path = fileList[i];
-		QString text = TWUtils::strippedName(path);
-		actions[i]->setText(text);
-		actions[i]->setData(path);
+		actions[i]->setText(labelList[i]);
+		actions[i]->setData(fileList[i]);
 		actions[i]->setVisible(true);
 	}
 	
@@ -1209,73 +1233,6 @@ bool CmdKeyFilter::eventFilter(QObject *obj, QEvent *event)
 	}
 #endif
 	return QObject::eventFilter(obj, event);
-}
-
-#pragma mark === Engine ===
-
-Engine::Engine()
-	: QObject()
-	, f_showPdf(false)
-{
-}
-
-Engine::Engine(const QString& name, const QString& program, const QStringList arguments, bool showPdf)
-	: QObject(), f_name(name), f_program(program), f_arguments(arguments), f_showPdf(showPdf)
-{
-}
-
-Engine::Engine(const Engine& orig)
-	: QObject(), f_name(orig.f_name), f_program(orig.f_program), f_arguments(orig.f_arguments), f_showPdf(orig.f_showPdf)
-{
-}
-
-Engine& Engine::operator=(const Engine& rhs)
-{
-	f_name = rhs.f_name;
-	f_program = rhs.f_program;
-	f_arguments = rhs.f_arguments;
-	f_showPdf = rhs.f_showPdf;
-	return *this;
-}
-
-const QString Engine::name() const
-{
-	return f_name;
-}
-
-const QString Engine::program() const
-{
-	return f_program;
-}
-
-const QStringList Engine::arguments() const
-{
-	return f_arguments;
-}
-
-bool Engine::showPdf() const
-{
-	return f_showPdf;
-}
-
-void Engine::setName(const QString& name)
-{
-	f_name = name;
-}
-
-void Engine::setProgram(const QString& program)
-{
-	f_program = program;
-}
-
-void Engine::setArguments(const QStringList& arguments)
-{
-	f_arguments = arguments;
-}
-
-void Engine::setShowPdf(bool showPdf)
-{
-	f_showPdf = showPdf;
 }
 
 /*static*/

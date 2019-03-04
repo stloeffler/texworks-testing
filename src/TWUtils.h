@@ -84,7 +84,7 @@ public:
 	static void updateWindowMenu(QWidget *window, QMenu *menu);
 
 	// return just the filename from a full pathname, suitable for UI display
-	static QString strippedName(const QString &fullFileName);
+	static QString strippedName(const QString &fullFileName, const unsigned int dirComponents = 0);
 
 	// window positioning utilities
 	typedef void (WindowArrangementFunction)(const QWidgetList& windows, const QRect& bounds);
@@ -167,33 +167,6 @@ private:
 	static CmdKeyFilter *filterObj;
 };
 
-// specification of an "engine" used to process files
-class Engine : public QObject
-{
-	Q_OBJECT
-	
-public:
-	Engine();
-	Engine(const QString& name, const QString& program, const QStringList arguments, bool showPdf);
-	Engine(const Engine& orig);
-	Engine& operator=(const Engine& rhs);
-
-	const QString name() const;
-	const QString program() const;
-	const QStringList arguments() const;
-	bool showPdf() const;
-
-	void setName(const QString& name);
-	void setProgram(const QString& program);
-	void setArguments(const QStringList& arguments);
-	void setShowPdf(bool showPdf);
-
-private:
-	QString f_name;
-	QString f_program;
-	QStringList f_arguments;
-	bool f_showPdf;
-};
 
 class FileVersionDatabase
 {
