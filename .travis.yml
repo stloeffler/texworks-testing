@@ -1,0 +1,13 @@
+language: minimal
+
+
+addons:
+  apt:
+    packages:
+    - texlive-latex-base
+    - tex4ht
+#- texlive-lang-french
+#- texlive-lang-english
+
+script:
+  - make
