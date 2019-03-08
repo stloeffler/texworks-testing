@@ -4,6 +4,7 @@ language: minimal
 addons:
   apt:
     packages:
+    - ghostscript
     - texlive-latex-base
     - texlive-latex-extra
     - texlive-luatex
