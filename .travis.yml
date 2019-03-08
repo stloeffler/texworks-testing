@@ -10,7 +10,7 @@ addons:
     - tex4ht
     - texlive-fonts-recommended
     - lmodern
-#- texlive-lang-french
+    - texlive-lang-french
 #- texlive-lang-english
 
 script:
