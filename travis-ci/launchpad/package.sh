@@ -110,5 +110,5 @@ for DISTRO in ${LAUNCHPAD_DISTROS}; do
 	fi
 	print_info "   scheduling to upload ${DEBFILE} to ${PPA}"
 
-	echo "dput --config \"${TRAVIS_BUILD_DIR}/travis-ci/launchpad/dput.cf\" \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/dput-launchpad.sh"
+	echo "dput --config \"${TRAVIS_BUILD_DIR}/travis-ci/launchpad/dput.cf\" \"${PPA}\" \"${TRAVIS_BUILD_DIR}/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/dput-launchpad.sh"
 done
