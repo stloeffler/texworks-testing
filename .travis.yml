@@ -11,7 +11,9 @@ addons:
     - texlive-fonts-recommended
     - lmodern
     - texlive-lang-french
-    - devscripts
+    - ubuntu-dev-tools
+    - dput
+    - fakeroot
 
 script:
   - make dist
