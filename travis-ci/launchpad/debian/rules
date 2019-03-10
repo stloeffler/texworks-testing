@@ -1,11 +1,14 @@
 #!/usr/bin/make -f
 
 export DH_VERBOSE=1
+export TEXMFCACHE=/tmp/texmf-var
+
+.PHONY : TeXdirs
 
 %:
 	dh $@
 
-override_dh_auto_build-indep:
+override_dh_auto_build-indep: TeXdirs
 	$(MAKE)
 
 override_dh_auto_install-indep:
@@ -13,3 +16,6 @@ override_dh_auto_install-indep:
 
 override_dh_auto_clean:
 	$(MAKE) dist-clean
+
+TeXdirs:
+	mkdir -p "$TEXMFCACHE"
