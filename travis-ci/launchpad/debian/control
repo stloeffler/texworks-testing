@@ -2,7 +2,7 @@ Source: texworks-help
 Section: tex
 Priority: optional
 Maintainer: Stefan Löffler <st.loeffler@gmail.com>
-Build-Depends: debhelper (>= 9), texlive-latex-base, texlive-latex-extra, texlive-luatex, tex4ht, texlive-fonts-recommended, lmodern, texlive-lang-french, ghostscript, imagemagick, netpbm
+Build-Depends: debhelper (>= 9), texlive-latex-base, texlive-latex-extra, texlive-luatex, tex4ht, texlive-fonts-recommended, lmodern, texlive-lang-french, ghostscript, imagemagick, netpbm, zip
 Standards-Version: 3.9.2
 Homepage: https://github.com/TeXworks/manual
 Vcs-Git: https://github.com/TeXworks/manual.git
