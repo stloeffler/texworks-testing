@@ -54,7 +54,7 @@ for DISTRO in ${LAUNCHPAD_DISTROS}; do
 	echo -n "   "
 
 	DEB_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")"~${DISTRO}"
-	DEBNAME="texworks-help-${DEB_VERSION}"
+	DEBNAME="texworks-help_${DEB_VERSION}"
 	DEBDIR="${TRAVIS_BUILD_DIR}/${DEBNAME}"
 	echo_var "DEB_VERSION"
 
