@@ -15,6 +15,7 @@ addons:
     - debhelper
     - dput
     - fakeroot
+    - python-paramiko
 
 script:
   - make dist
