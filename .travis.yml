@@ -3,7 +3,6 @@ language: minimal
 addons:
   apt:
     packages:
-    - ghostscript
     - texlive-latex-base
     - texlive-latex-extra
     - texlive-luatex
@@ -11,6 +10,9 @@ addons:
     - texlive-fonts-recommended
     - lmodern
     - texlive-lang-french
+    - ghostscript
+    - imagemagick
+    - netpbm
     - ubuntu-dev-tools
     - debhelper
     - dput
