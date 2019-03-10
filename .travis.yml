@@ -12,6 +12,7 @@ addons:
     - lmodern
     - texlive-lang-french
     - ubuntu-dev-tools
+    - debhelper
     - dput
     - fakeroot
 
