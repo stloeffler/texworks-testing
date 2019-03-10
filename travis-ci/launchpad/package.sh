@@ -82,6 +82,9 @@ for DISTRO in ${LAUNCHPAD_DISTROS}; do
 	fi
 	echo "\n -- ${DEB_MAINTAINER_NAME} <${DEB_MAINTAINER_EMAIL}>  ${DEBDATE}" >> "${DEBDIR}/debian/changelog"
 	
+	print_info "   building package"
+	cd "${DEBDIR}"
+
 	echo -n "" > "/tmp/passphrase.txt" || print_error "Failed to create /tmp/passphrase.txt"
 	# Write the passphrase to the file several times; debuild (debsign)
 	# will try to sign (at least) the .dsc file and the .changes files,
