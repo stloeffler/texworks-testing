@@ -51,11 +51,13 @@ User st.loeffler
 
 for DISTRO in ${LAUNCHPAD_DISTROS}; do
 	print_info "Packging for ${DISTRO}"
-	DEB_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")"~${DISTRO}"
 	echo -n "   "
+
+	DEB_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")"~${DISTRO}"
+	DEBNAME="texworks-help-${DEB_VERSION}"
+	DEBDIR="${TRAVIS_BUILD_DIR}/${DEBNAME}"
 	echo_var "DEB_VERSION"
 
-	DEBDIR="${TRAVIS_BUILD_DIR}/texworks-help-${DEB_VERSION}"
 	print_info "   exporting sources to ${DEBDIR}"
 	mkdir -p "${DEBDIR}"
 	cd "${TRAVIS_BUILD_DIR}" && git archive --format=tar HEAD  | tar -x -C "${DEBDIR}" -f -
@@ -102,7 +104,7 @@ for DISTRO in ${LAUNCHPAD_DISTROS}; do
 	fi
 	cd ..
 
-	DEBFILE="texworks_${DEB_VERSION}_source.changes"
+	DEBFILE="${DEBNAME}_source.changes"
 	if [ -z "${TRAVIS_TAG}" ]; then
 		PPA="tw-latest"
 	else
