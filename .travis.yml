@@ -11,6 +11,7 @@ addons:
     - texlive-fonts-recommended
     - lmodern
     - texlive-lang-french
+    - devscripts
 
 script:
   - make dist
