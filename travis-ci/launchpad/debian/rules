@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_auto_build-indep:
+	$(MAKE)
+
+override_dh_auto_install-indep:
+	$(MAKE) dist
+
+override_dh_auto_clean:
+	$(MAKE) dist-clean
