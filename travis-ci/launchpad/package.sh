@@ -60,7 +60,8 @@ for DISTRO in ${LAUNCHPAD_DISTROS}; do
 
 	print_info "   exporting sources to ${DEBDIR}"
 	mkdir -p "${DEBDIR}"
-	cd "${TRAVIS_BUILD_DIR}" && git archive --format=tar HEAD  | tar -x -C "${DEBDIR}" -f -
+	cd "${TRAVIS_BUILD_DIR}" && git archive --output="${DEBDIR}/../${DEBNAME}.orig.tar.gz" HEAD
+	tar -x -C "${DEBDIR}" -f "${DEBDIR}/../${DEBNAME}.orig.tar.gz"
 
 	print_info "   copying debian directory"
 	cp -r "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/debian" "${DEBDIR}"
