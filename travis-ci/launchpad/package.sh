@@ -53,15 +53,17 @@ for DISTRO in ${LAUNCHPAD_DISTROS}; do
 	print_info "Packging for ${DISTRO}"
 	echo -n "   "
 
-	DEB_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")"~${DISTRO}"
+	ORIG_VERSION=$(echo "${VERSION_NAME}" | tr "_-" "~")
+	ORIGNAME="texworks-help_${ORIG_VERSION}"
+	DEB_VERSION="${ORIG_VERSION}-1${DISTRO}"
 	DEBNAME="texworks-help_${DEB_VERSION}"
-	DEBDIR="${TRAVIS_BUILD_DIR}/${DEBNAME}"
+	DEBDIR="${DEBNAME}"
 	echo_var "DEB_VERSION"
 
 	print_info "   exporting sources to ${DEBDIR}"
 	mkdir -p "${DEBDIR}"
-	cd "${TRAVIS_BUILD_DIR}" && git archive --output="${DEBDIR}/../${DEBNAME}.orig.tar.gz" HEAD
-	tar -x -C "${DEBDIR}" -f "${DEBDIR}/../${DEBNAME}.orig.tar.gz"
+	cd "${TRAVIS_BUILD_DIR}" && git archive --prefix="${ORIGNAME}/" --output="${ORIGNAME}.orig.tar.gz" HEAD
+	tar -x -C "${DEBDIR}" --strip-components=1 -f "${ORIGNAME}.orig.tar.gz"
 
 	print_info "   copying debian directory"
 	cp -r "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/debian" "${DEBDIR}"
