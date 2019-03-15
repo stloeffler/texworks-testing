@@ -45,3 +45,5 @@ cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json" <<EOF
 	"publish": true
 }
 EOF
+
+echo_and_run "cat ${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json"
