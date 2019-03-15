@@ -9,6 +9,7 @@ print_headline "Packaging for Bintray"
 
 GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 GIT_DATE=$(git --git-dir=".git" show --no-patch --pretty="%ci")
+GIT_DATE_HASH=$(date -u +"%Y%m%d%H%M" --date="${GIT_DATE}")
 DATE_HASH=$(date -u +"%Y%m%d%H%M")
 VERSION="0.1.1"
 VERSION_NAME="${VERSION}-${DATE_HASH}-git_${GIT_HASH}"
@@ -36,7 +37,7 @@ cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json" <<EOF
 	"files":
 	[
 		{"includePattern": "pdf/([-_a-zA-Z]+)/(TeXworks-manual-[-_a-zA-Z]+.pdf)", "uploadPattern": "\$2"},
-		{"includePattern": "html/TeXworks-manual-html-${RELEASE_DATE}-${GIT_HASH}.zip", "uploadPattern": "TeXworks-manual-html.zip"}
+		{"includePattern": "html/TeXworks-manual-html-${GIT_DATE_HASH}-${GIT_HASH}.zip", "uploadPattern": "TeXworks-manual-html.zip"}
 	],
 	"publish": true
 }
