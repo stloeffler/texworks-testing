@@ -21,6 +21,8 @@ echo_var "GIT_DATE"
 echo_var "VERSION_NAME"
 echo_var "LANGS"
 
+echo_and_run "ls ${TRAVIS_BUILD_DIR}/pdf/"
+
 echo_and_run "ls ${TRAVIS_BUILD_DIR}/html/"
 
 cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json" <<EOF
@@ -38,7 +40,7 @@ cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json" <<EOF
 	"files":
 	[
 		{"includePattern": "pdf/([-_a-zA-Z]+)/TeXworks-manual-([-_a-zA-Z]+).pdf", "uploadPattern": "TeXworks-manual-${VERSION_NAME}-\$1.pdf"},
-		{"includePattern": "html/TeXworks-manual-html-.*-${GIT_HASH}.zip", "uploadPattern": "TeXworks-manual-${VERSION_NAME}-html.zip"}
+		{"includePattern": "html/TeXworks-manual-html-(.*)-${GIT_HASH}.zip", "uploadPattern": "TeXworks-manual-${VERSION_NAME}-html.zip"}
 	],
 	"publish": true
 }
