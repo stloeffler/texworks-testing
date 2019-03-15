@@ -21,6 +21,8 @@ echo_var "GIT_DATE"
 echo_var "VERSION_NAME"
 echo_var "LANGS"
 
+echo_and_run "ls ${TRAVIS_BUILD_DIR}/html/"
+
 cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json" <<EOF
 {
 	"package": {
