@@ -18,6 +18,7 @@ addons:
     - dput
     - fakeroot
     - python-paramiko
+    - tidy
 
 script:
   - make dist
