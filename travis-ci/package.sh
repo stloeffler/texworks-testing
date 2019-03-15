@@ -8,4 +8,4 @@ if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
 fi
 
 ${TRAVIS_BUILD_DIR}/travis-ci/bintray/package.sh
-${TRAVIS_BUILD_DIR}/travis-ci/launchpad/package.sh
+#${TRAVIS_BUILD_DIR}/travis-ci/launchpad/package.sh
