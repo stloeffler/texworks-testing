@@ -9,7 +9,7 @@ print_headline "Packaging for Bintray"
 
 GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
 GIT_DATE=$(git --git-dir=".git" show --no-patch --pretty="%ci")
-GIT_DATE_HASH=$(echo "$GIT_DATE" | tr -d '-:')
+GIT_DATE_HASH=$(date -u +"%Y%m%d%H%M%S" --date="${GIT_DATE}")
 DATE_HASH=$(date -u +"%Y%m%d%H%M")
 VERSION="0.1.1"
 VERSION_NAME="${VERSION}-${DATE_HASH}-git_${GIT_HASH}"
