@@ -36,7 +36,7 @@ cat > "${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json" <<EOF
 	"files":
 	[
 		{"includePattern": "pdf/([-_a-zA-Z]+)/(TeXworks-manual-[-_a-zA-Z]+.pdf)", "uploadPattern": "\$2"},
-		{"includePattern": "html/TeXworks-manual-html-${DATE_HASH}-${GIT_HASH}.zip", "uploadPattern": "TeXworks-manual-html.zip"}
+		{"includePattern": "html/TeXworks-manual-html-${RELEASE_DATE}-${GIT_HASH}.zip", "uploadPattern": "TeXworks-manual-html.zip"}
 	],
 	"publish": true
 }
