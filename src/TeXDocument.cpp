@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2007-2016  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2007-2019  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -514,8 +514,10 @@ void TeXDocument::reloadSpellcheckerMenu()
 			else {
 				QLocale::Country country = loc.country();
 				if (country != QLocale::AnyCountry)
+					//: Format to display spell-checking dictionaries (ex. "English - UnitedStates (en_US)")
 					label = tr("%1 - %2 (%3)").arg(QLocale::languageToString(loc.language())).arg(QLocale::countryToString(country)).arg(dict);
 				else
+					//: Format to display spell-checking dictionaries (ex. "English (en_US)")
 					label = tr("%1 (%2)").arg(QLocale::languageToString(loc.language())).arg(dict);
 			}
 
@@ -1490,6 +1492,7 @@ void TeXDocument::setCurrentFile(const QString &fileName)
 	textEdit->document()->setModified(false);
 	setWindowModified(false);
 
+	//: Format for the window title (ex. "file.tex[*] - TeXworks")
 	setWindowTitle(tr("%1[*] - %2").arg(TWUtils::strippedName(curFile)).arg(tr(TEXWORKS_NAME)));
 
 	actionRemove_Aux_Files->setEnabled(!isUntitled);
@@ -1532,6 +1535,20 @@ void TeXDocument::updateRecentFileActions()
 void TeXDocument::updateWindowMenu()
 {
 	TWUtils::updateWindowMenu(this, menuWindow);
+
+	// If the window list changed, we might want to update our window title as
+	// well to uniquely identify the current file among all others open in
+	// TeXworks
+	Q_FOREACH(QAction * action, menuWindow->actions()) {
+		SelWinAction * selWinAction = qobject_cast<SelWinAction*>(action);
+		// If this is not an action related to an open window, skip it
+		if (!selWinAction)
+			continue;
+		// If this action corresponds to the current file, use it's label as
+		// window text
+		if (selWinAction->data().toString() == fileName())
+			setWindowTitle(tr("%1[*] - %2").arg(selWinAction->text()).arg(tr(TEXWORKS_NAME)));
+	}
 }
 
 void TeXDocument::updateEngineList()
@@ -1541,13 +1558,18 @@ void TeXDocument::updateEngineList()
 		menuRun->removeAction(menuRun->actions().last());
 	while (engineActions->actions().count() > 0)
 		engineActions->removeAction(engineActions->actions().last());
-	engine->clear();
+
+	QStandardItemModel * model = qobject_cast<QStandardItemModel*>(engine->model());
+	Q_ASSERT(model);
+	model->clear();
 	foreach (Engine e, TWApp::instance()->getEngineList()) {
 		QAction *newAction = new QAction(e.name(), engineActions);
 		newAction->setCheckable(true);
 		newAction->setEnabled(e.isAvailable());
 		menuRun->addAction(newAction);
-		engine->addItem(e.name());
+		QStandardItem * item = new QStandardItem(e.name());
+		item->setFlags(Qt::ItemIsSelectable | (e.isAvailable() ? Qt::ItemIsEnabled : Qt::NoItemFlags));
+		model->appendRow(item);
 	}
 	connect(engine, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(selectedEngine(const QString&)));
 	int index = engine->findText(engineName, Qt::MatchFixedString);

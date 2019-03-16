@@ -7,11 +7,18 @@
 #   ├── <a href="CMakeLists.html">CMakeLists.txt</a>
 #   ├── src
 #   │   └── <a href="src/CMakeLists.html">CMakeLists.txt</a>
+#   ├── modules
+#   │   ├── <a href="modules/CMakeLists.html">CMakeLists.txt</a>
+#   │   ├── synctex
+#   │   │   └── <a href="modules/synctex/CMakeLists.html">CMakeLists.txt</a>
+#   │   └── QtPDF (documented separately)
 #   ├── plugins-src
 #   │   ├── TWLuaPlugin
 #   │   │   └── <a href="plugins-src/TWLuaPlugin/CMakeLists.html">CMakeLists.txt</a>
 #   │   └── TWPythonPlugin
 #   │       └── <a href="plugins-src/TWPythonPlugin/CMakeLists.html">CMakeLists.txt</a>
+#   ├── unit-tests
+#   │   └── <a href="unit-tests/CMakeLists.html">CMakeLists.txt</a>
 #   └── CMake
 #       └── packaging
 #           ├── <a href="CMake/packaging/CMakeLists.html">CMakeLists.txt</a>
@@ -203,7 +210,7 @@ IF (UNIX AND NOT APPLE)
   SET(TeXworks_ICON_DIR share/pixmaps CACHE PATH "Path in which icons are installed")
   SET(TeXworks_MAN_DIR share/man/man1 CACHE PATH "Path in which manpages are installed")
   SET(TeXworks_DESKTOP_DIR share/applications CACHE PATH "Path in which .desktop files are installed")
-  SET(TeXworks_APPDATA_DIR share/appdata CACHE PATH "Path in which .appdata.xml files are installed")
+  SET(TeXworks_APPDATA_DIR share/metainfo CACHE PATH "Path in which .appdata.xml files are installed")
   MARK_AS_ADVANCED(TeXworks_HELP_DIR)
   MARK_AS_ADVANCED(TeXworks_DIC_DIR)
   MARK_AS_ADVANCED(TeXworks_DOCS_DIR)
