@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-INSTALLER_URL="ftp://tug.org/historic/systems/texlive/2018/install-tl-unx.tar.gz"
+#INSTALLER_URL="ftp://tug.org/historic/systems/texlive/2018/install-tl-unx.tar.gz"
+INSTALLER_URL="http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
 
 # Exit on errors
 set -e
