@@ -5,13 +5,13 @@ dist: xenial
 addons:
   apt:
     packages:
-    - texlive-latex-base
-    - texlive-latex-extra
-    - texlive-luatex
-    - tex4ht
-    - texlive-fonts-recommended
-    - lmodern
-    - texlive-lang-french
+#    - texlive-latex-base
+#    - texlive-latex-extra
+#    - texlive-luatex
+#    - tex4ht
+#    - texlive-fonts-recommended
+#    - lmodern
+#    - texlive-lang-french
     - ghostscript
     - imagemagick
     - netpbm
