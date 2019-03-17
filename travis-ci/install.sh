@@ -22,5 +22,6 @@ echo_and_run "/tmp/install-tl/install-tl -profile \"${TRAVIS_BUILD_DIR}/travis-c
 echo_and_run "ls /usr/local"
 echo_and_run "ls /usr/local/bin"
 
-# FIXME
-exit 1
+export PATH="$HOME/texlive/2018/bin/x86_64-linux:$PATH"
+
+tlmgr install sectsty
