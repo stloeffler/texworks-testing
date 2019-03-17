@@ -27,8 +27,7 @@ install:
 
 script:
   - export PATH="$HOME/texlive/2018/bin/x86_64-linux:$PATH"
-  - env
-  - make dist
+  - make dist LTXFLAGS="--interaction=nonstopmode"
 
 after_success:
   - ${TRAVIS_BUILD_DIR}/travis-ci/package.sh
