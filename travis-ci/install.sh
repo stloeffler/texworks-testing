@@ -22,4 +22,4 @@ echo_and_run "/tmp/install-tl/install-tl -profile \"${TRAVIS_BUILD_DIR}/travis-c
 
 export PATH="$HOME/texlive/2018/bin/x86_64-linux:$PATH"
 
-tlmgr install etoolbox fncychap footmisc idxlayout keystroke lm luaotfload luatexbase microtype needspace sectsty tocbibind
+tlmgr install ctablestack etoolbox fncychap footmisc idxlayout keystroke lm luaotfload luatexbase microtype needspace sectsty tocbibind
