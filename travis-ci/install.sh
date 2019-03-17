@@ -17,6 +17,7 @@ mkdir -p /tmp/install-tl
 
 echo_and_run "wget -O install-tl-unx.tar.gz \"${INSTALLER_URL}\""
 echo_and_run "tar --extract --file install-tl-unx.tar.gz --strip-components=1 --directory /tmp/install-tl"
+echo_and_run "sed -ie 's/\$HOME/$HOME/' \"${TRAVIS_BUILD_DIR}/travis-ci/texlive.profile\""
 echo_and_run "/tmp/install-tl/install-tl -profile \"${TRAVIS_BUILD_DIR}/travis-ci/texlive.profile\""
 
 echo_and_run "ls /usr/local"
