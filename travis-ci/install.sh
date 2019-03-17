@@ -22,4 +22,4 @@ echo_and_run "/tmp/install-tl/install-tl -profile \"${TRAVIS_BUILD_DIR}/travis-c
 
 export PATH="$HOME/texlive/2018/bin/x86_64-linux:$PATH"
 
-tlmgr install booktabs ctablestack etoolbox fancyhdr fancyvrb fncychap footmisc framed graphics hyperref idxlayout keystroke lm luainputenc luaotfload luatexbase microtype needspace sectsty tocbibind upquote url wrapfig
+tlmgr install babel-french booktabs ctablestack etoolbox fancyhdr fancyvrb fncychap footmisc framed graphics hyperref idxlayout keystroke lm luainputenc luaotfload luatexbase microtype ms needspace sectsty tocbibind upquote url wrapfig zapfchan
