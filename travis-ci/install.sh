@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+INSTALLER_URL="ftp://tug.org/historic/systems/texlive/2018/install-tl-unx.tar.gz"
+
+# Exit on errors
+set -e
+
+. "${TRAVIS_BUILD_DIR}/travis-ci/defs.sh"
+
+print_headline "Installing TeX"
+
+echo_and_run "ls /usr/local"
+echo_and_run "ls /usr/local/bin"
+
+mkdir -p /tmp/install-tl
+
+echo_and_run "wget -O install-tl-unx.tar.gz \"${INSTALLER_URL}\""
+echo_and_run "tar --extract --file install-tl-unx.tar.gz --strip-components=1 --directory /tmp/install-tl"
+echo_and_run "/tmp/install-tl/install-tl -profile \"${TRAVIS_BUILD_DIR}/travis-ci/texlive.profile\""
+
+echo_and_run "ls /usr/local"
+echo_and_run "ls /usr/local/bin"
+
+# FIXME
+exit 1

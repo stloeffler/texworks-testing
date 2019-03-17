@@ -22,6 +22,9 @@ addons:
     - python-paramiko
     - tidy
 
+install:
+  - ${TRAVIS_BUILD_DIR}/travis-ci/install.sh
+
 script:
   - make dist
 
