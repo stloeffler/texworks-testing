@@ -12,6 +12,7 @@ addons:
 #    - texlive-fonts-recommended
 #    - lmodern
 #    - texlive-lang-french
+    - texlive-full
     - ghostscript
     - imagemagick
     - netpbm
@@ -22,11 +23,11 @@ addons:
     - python-paramiko
     - tidy
 
-install:
-  - ${TRAVIS_BUILD_DIR}/travis-ci/install.sh
+#install:
+#  - ${TRAVIS_BUILD_DIR}/travis-ci/install.sh
 
 script:
-  - export PATH="$HOME/texlive/2018/bin/x86_64-linux:$PATH"
+#  - export PATH="$HOME/texlive/2018/bin/x86_64-linux:$PATH"
   - make dist LTXFLAGS="--interaction=nonstopmode"
 
 after_success:
