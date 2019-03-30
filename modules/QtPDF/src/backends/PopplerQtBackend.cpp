@@ -27,6 +27,8 @@ inline bool operator<(const QSizeF & a, const QSizeF & b) {
 #if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
 #include "poppler-config.h"
 #include "GlobalParams.h"
+#include <QCoreApplication>
+#include <QDebug>
 #pragma message "[[[GlobalParamsHandler]]]"
 class PopplerGlobalParamsHandler {
 public:
@@ -36,7 +38,7 @@ public:
     // (requires patched poppler-qt lib to be effective,
     // otherwise the GlobalParams gets overwritten when a
     // document is opened)
-    QDir popplerDataDir(applicationDirPath() + QLatin1String("/../poppler-data"));
+    QDir popplerDataDir(QCoreApplication::applicationDirPath() + QLatin1String("/../poppler-data"));
     qDebug() << "popplerDataDir = " << popplerDataDir;
     if (popplerDataDir.exists()) {
       globalParams = new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data());
@@ -47,7 +49,7 @@ public:
     qDebug() << "</PopplerGlobalParamsHandler>"
   }
 };
-static GlobalParamsHandler _globalParamsHandler;
+static PopplerGlobalParamsHandler _popplerGlobalParamsHandler;
 #endif
 
 
