@@ -19,8 +19,8 @@
 // Comparison operator for QSizeF needed to use QSizeF as keys in a QMap
 // NB: Must be in the global namespace
 inline bool operator<(const QSizeF & a, const QSizeF & b) {
-    float areaA = a.width() * a.height();
-    float areaB = b.width() * b.height();
+    qreal areaA = a.width() * a.height();
+    qreal areaB = b.width() * b.height();
     return (areaA < areaB || (areaA == areaB && a.width() < b.width()));
 }
 
@@ -38,7 +38,7 @@ PDFDestination toPDFDestination(const ::Poppler::Document * doc, const ::Poppler
 
   // Coordinates in LinkDestination are in the range of 0..1, which does not
   // comply with the pdf specs---so we have to convert them back
-  float w = 1., h = 1.;
+  qreal w = 1., h = 1.;
   if (doc) {
     ::Poppler::Page * p = doc->page(dest.pageNumber() - 1);
     if (p) {
@@ -88,7 +88,7 @@ PDFDestination toPDFDestination(const ::Poppler::Document * doc, const ::Poppler
   return retVal;
 }
 
-void convertAnnotation(Annotation::AbstractAnnotation * dest, const ::Poppler::Annotation * src, QWeakPointer<Backend::Page> thePage)
+void convertAnnotation(Annotation::AbstractAnnotation * dest, const ::Poppler::Annotation * src, const QWeakPointer<Backend::Page> & thePage)
 {
   QSharedPointer<Backend::Page> page(thePage.toStrongRef());
   if (!dest || !src || !page)
@@ -123,7 +123,7 @@ void convertAnnotation(Annotation::AbstractAnnotation * dest, const ::Poppler::A
     flags |= Annotation::AbstractAnnotation::Annotation_ToggleNoView;
 
   if (dest->isMarkup()) {
-    Annotation::Markup * annot = static_cast<Annotation::Markup*>(dest);
+    Annotation::Markup * annot = dynamic_cast<Annotation::Markup*>(dest);
     annot->setAuthor(src->author());
     annot->setCreationDate(src->creationDate());
   }
@@ -132,7 +132,7 @@ void convertAnnotation(Annotation::AbstractAnnotation * dest, const ::Poppler::A
 
 // Document Class
 // ==============
-Document::Document(QString fileName):
+Document::Document(const QString & fileName):
   Super(fileName),
   _poppler_doc(::Poppler::Document::load(fileName)),
   _poppler_docLock(new QMutex()),
@@ -351,7 +351,7 @@ void Document::recursiveConvertToC(QList<PDFToCItem> & items, QDomNode node) con
     newItem.setOpen(attributes.namedItem(QString::fromUtf8("Open")).nodeValue() == QString::fromUtf8("true"));
     // Note: color and flags are not supported by poppler
 
-    PDFGotoAction * action = NULL;
+    PDFGotoAction * action = nullptr;
     QString val = attributes.namedItem(QString::fromUtf8("Destination")).nodeValue();
     if (!val.isEmpty())
       action = new PDFGotoAction(toPDFDestination(_poppler_doc.data(), ::Poppler::LinkDestination(val)));
@@ -405,11 +405,7 @@ QList<PDFFontInfo> Document::fonts() const
   if (!_poppler_doc || _isLocked())
     return QList<PDFFontInfo>();
 
-  // Since ::Poppler::Document::fonts() is extremely slow, we need to cache the
-  // result. Since this function is declared const, we need to const_cast.
-  QList<PDFFontInfo> & fonts = const_cast<QList<PDFFontInfo>&>(_fonts);
-  bool & fontsLoaded = const_cast<bool&>(_fontsLoaded);
-  fontsLoaded = true;
+  _fontsLoaded = true;
 
   foreach(::Poppler::FontInfo popplerFontInfo, _poppler_doc->fonts()) {
     PDFFontInfo fi;
@@ -479,7 +475,7 @@ QList<PDFFontInfo> Document::fonts() const
       default:
         continue;
     }
-    fonts << fi;
+    _fonts << fi;
   }
   return _fonts;
 }
@@ -512,7 +508,7 @@ Page::Page(Document *parent, int at, QSharedPointer<QReadWriteLock> docLock):
   _annotationsLoaded(false),
   _linksLoaded(false)
 {
-  _poppler_page = QSharedPointer< ::Poppler::Page >(static_cast<Document *>(_parent)->_poppler_doc->page(at));
+  _poppler_page = QSharedPointer< ::Poppler::Page >(dynamic_cast<Document *>(_parent)->_poppler_doc->page(at));
   loadTransitionData();
 }
 
@@ -528,7 +524,7 @@ QSizeF Page::pageSizeF() const
 {
   QReadLocker pageLocker(_pageLock);
 
-  Q_ASSERT(_poppler_page != NULL);
+  Q_ASSERT(_poppler_page != nullptr);
   return _poppler_page->pageSizeF();
 }
 
@@ -543,7 +539,7 @@ QImage Page::renderToImage(double xres, double yres, QRect render_box, bool cach
 
   {
     // Rendering pages is not thread safe.
-    QMutexLocker popplerDocLock(static_cast<Backend::PopplerQt::Document *>(_parent)->_poppler_docLock);
+    QMutexLocker popplerDocLock(dynamic_cast<Backend::PopplerQt::Document *>(_parent)->_poppler_docLock);
     if( render_box.isNull() ) {
       // A null QRect has a width and height of 0 --- we will tell Poppler to render the whole
       // page.
@@ -581,13 +577,13 @@ QList< QSharedPointer<Annotation::Link> > Page::loadLinks()
     return _links;
 
 
-  Q_ASSERT(_poppler_page != NULL);
+  Q_ASSERT(_poppler_page != nullptr);
   _linksLoaded = true;
   QList< ::Poppler::Link *> popplerLinks;
   QList< ::Poppler::Annotation *> popplerAnnots;
   {
     // Loading links is not thread safe.
-    QMutexLocker popplerDocLock(static_cast<Backend::PopplerQt::Document *>(_parent)->_poppler_docLock);
+    QMutexLocker popplerDocLock(dynamic_cast<Backend::PopplerQt::Document *>(_parent)->_poppler_docLock);
     popplerLinks = _poppler_page->links();
     popplerAnnots = _poppler_page->annotations();
   }
@@ -617,11 +613,11 @@ QList< QSharedPointer<Annotation::Link> > Page::loadLinks()
       if (!popplerAnnot || popplerAnnot->subType() != ::Poppler::Annotation::ALink || !denormalize.mapRect(popplerAnnot->boundary()).intersects(link->rect()))
         continue;
 
-      ::Poppler::LinkAnnotation * popplerLinkAnnot = static_cast< ::Poppler::LinkAnnotation *>(popplerAnnot);
+      ::Poppler::LinkAnnotation * popplerLinkAnnot = dynamic_cast< ::Poppler::LinkAnnotation *>(popplerAnnot);
       convertAnnotation(link.data(), popplerLinkAnnot, _parent->page(_n));
       // TODO: Does Poppler provide an easy interface to all quadPoints?
       // Note: ::Poppler::LinkAnnotation::HighlightMode is identical to PDFLinkAnnotation::HighlightingMode
-      link->setHighlightingMode((Annotation::Link::HighlightingMode)popplerLinkAnnot->linkHighlightMode());
+      link->setHighlightingMode(static_cast<Annotation::Link::HighlightingMode>(popplerLinkAnnot->linkHighlightMode()));
       break;
     }
 
@@ -630,8 +626,8 @@ QList< QSharedPointer<Annotation::Link> > Page::loadLinks()
     switch (popplerLink->linkType()) {
       case ::Poppler::Link::Goto:
         {
-          ::Poppler::LinkGoto * popplerGoto = static_cast< ::Poppler::LinkGoto *>(popplerLink);
-          PDFGotoAction * action = new PDFGotoAction(toPDFDestination(static_cast<Document *>(_parent)->_poppler_doc.data(), popplerGoto->destination()));
+          ::Poppler::LinkGoto * popplerGoto = dynamic_cast< ::Poppler::LinkGoto *>(popplerLink);
+          PDFGotoAction * action = new PDFGotoAction(toPDFDestination(dynamic_cast<Document *>(_parent)->_poppler_doc.data(), popplerGoto->destination()));
           if (popplerGoto->isExternal()) {
             // TODO: Verify that ::Poppler::LinkGoto only refers to pdf files
             // (for other file types we would need PDFLaunchAction)
@@ -644,15 +640,15 @@ QList< QSharedPointer<Annotation::Link> > Page::loadLinks()
         break;
       case ::Poppler::Link::Execute:
         {
-          ::Poppler::LinkExecute * popplerExecute = static_cast< ::Poppler::LinkExecute *>(popplerLink);
+          ::Poppler::LinkExecute * popplerExecute = dynamic_cast< ::Poppler::LinkExecute *>(popplerLink);
           if (popplerExecute->parameters().isEmpty())
             link->setActionOnActivation(new PDFLaunchAction(popplerExecute->fileName()));
           else
-            link->setActionOnActivation(new PDFLaunchAction(QString::fromUtf8("%1 %2").arg(popplerExecute->fileName()).arg(popplerExecute->parameters())));
+            link->setActionOnActivation(new PDFLaunchAction(QString::fromUtf8("%1 %2").arg(popplerExecute->fileName(), popplerExecute->parameters())));
         }
         break;
       case ::Poppler::Link::Browse:
-        link->setActionOnActivation(new PDFURIAction(static_cast< ::Poppler::LinkBrowse*>(popplerLink)->url()));
+        link->setActionOnActivation(new PDFURIAction(dynamic_cast< ::Poppler::LinkBrowse*>(popplerLink)->url()));
         break;
       /*
       case ::Poppler::Link::Action:
@@ -693,7 +689,7 @@ QList< QSharedPointer<Annotation::AbstractAnnotation> > Page::loadAnnotations()
   QList< ::Poppler::Annotation *> popplerAnnots;
   {
     // Loading annotations is not thread safe.
-    QMutexLocker popplerDocLock(static_cast<Document *>(_parent)->_poppler_docLock);
+    QMutexLocker popplerDocLock(dynamic_cast<Document *>(_parent)->_poppler_docLock);
     popplerAnnots = _poppler_page->annotations();
   }
 
@@ -728,7 +724,7 @@ QList< QSharedPointer<Annotation::AbstractAnnotation> > Page::loadAnnotations()
       }
       case ::Poppler::Annotation::AHighlight:
       {
-        ::Poppler::HighlightAnnotation * popplerHighlight = static_cast< ::Poppler::HighlightAnnotation*>(popplerAnnot);
+        ::Poppler::HighlightAnnotation * popplerHighlight = dynamic_cast< ::Poppler::HighlightAnnotation*>(popplerAnnot);
         switch (popplerHighlight->highlightType()) {
           case ::Poppler::HighlightAnnotation::Highlight:
           {
@@ -777,7 +773,7 @@ QList< QSharedPointer<Annotation::AbstractAnnotation> > Page::loadAnnotations()
   return _annotations;
 }
 
-QList<SearchResult> Page::search(QString searchText, SearchFlags flags)
+QList<SearchResult> Page::search(const QString & searchText, const SearchFlags & flags)
 {
   QList<SearchResult> results;
   SearchResult result;
@@ -796,7 +792,7 @@ QList<SearchResult> Page::search(QString searchText, SearchFlags flags)
 
   result.pageNum = _n;
 
-  QMutexLocker popplerDocLock(static_cast<Document *>(_parent)->_poppler_docLock);
+  QMutexLocker popplerDocLock(dynamic_cast<Document *>(_parent)->_poppler_docLock);
 
   if (flags & Search_Backwards) {
     left = right = pageSizeF().width();
@@ -908,7 +904,7 @@ void Page::loadTransitionData()
 QList< Backend::Page::Box > Page::boxes()
 {
   QReadLocker pageLocker(_pageLock);
-  Q_ASSERT(_poppler_page != NULL);
+  Q_ASSERT(_poppler_page != nullptr);
   QList< Backend::Page::Box > retVal;
 
   foreach (::Poppler::TextBox * popplerTextBox, _poppler_page->textList()) {
@@ -926,10 +922,10 @@ QList< Backend::Page::Box > Page::boxes()
   return retVal;
 }
 
-QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF> * wordBoxes /* = NULL */, QMap<int, QRectF> * charBoxes /* = NULL */, const bool onlyFullyEnclosed /* = false */)
+QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF> * wordBoxes /* = nullptr */, QMap<int, QRectF> * charBoxes /* = nullptr */, const bool onlyFullyEnclosed /* = false */)
 {
   QReadLocker pageLocker(_pageLock);
-  Q_ASSERT(_poppler_page != NULL);
+  Q_ASSERT(_poppler_page != nullptr);
   // Using the bounding rects of the selection polygons is almost
   // certainly wrong! However, poppler-qt4 doesn't offer any alternative AFAICS
   // (except for positioning each char in the string manually).
@@ -941,7 +937,7 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
 
   // Get a list of all boxes
   QList<Poppler::TextBox*> poppler_boxes = _poppler_page->textList();
-  Poppler::TextBox * lastPopplerBox = NULL;
+  Poppler::TextBox * lastPopplerBox = nullptr;
 
   // Filter boxes by selection
   foreach (Poppler::TextBox * poppler_box, poppler_boxes) {
@@ -965,12 +961,10 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
           include.setBit(i);
           break;
         }
-        else {
-          remainder = remainder.subtracted(p);
-          if (remainder.empty()) {
-            include.setBit(i);
-            break;
-          }
+        remainder = remainder.subtracted(p);
+        if (remainder.empty()) {
+          include.setBit(i);
+          break;
         }
       }
     }
