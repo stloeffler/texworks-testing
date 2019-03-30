@@ -24,36 +24,6 @@ inline bool operator<(const QSizeF & a, const QSizeF & b) {
     return (areaA < areaB || (areaA == areaB && a.width() < b.width()));
 }
 
-#if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
-#include "poppler-config.h"
-#include "GlobalParams.h"
-#include <QCoreApplication>
-#include <QDir>
-#include <QDebug>
-#pragma message "[[[GlobalParamsHandler]]]"
-class PopplerGlobalParamsHandler {
-public:
-  PopplerGlobalParamsHandler() {
-    qDebug() << "<PopplerGlobalParamsHandler>";
-    // for Mac, support "local" poppler-data directory
-    // (requires patched poppler-qt lib to be effective,
-    // otherwise the GlobalParams gets overwritten when a
-    // document is opened)
-    QDir popplerDataDir(QCoreApplication::applicationDirPath() + QLatin1String("/../poppler-data"));
-    qDebug() << "popplerDataDir = " << popplerDataDir;
-    if (popplerDataDir.exists()) {
-      globalParams = new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data());
-    }
-    else {
-      globalParams = new GlobalParams();
-    }
-    qDebug() << "</PopplerGlobalParamsHandler>";
-  }
-};
-static PopplerGlobalParamsHandler _popplerGlobalParamsHandler;
-#endif
-
-
 namespace QtPDF {
 
 namespace Backend {
@@ -1063,6 +1033,38 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
 } // namespace PopplerQt
 
 } // namespace Backend
+
+#if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
+#include "poppler-config.h"
+#include "GlobalParams.h"
+#include <QCoreApplication>
+#include <QDir>
+#include <QDebug>
+#endif
+
+PopplerQtBackend::PopplerQtBackend() {
+#if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
+  static bool globalParamsInitialized = false;
+
+  if (!globalParamsInitialized) {
+    globalParamsInitialized = true;
+    qDebug() << "<PopplerQtBackend()>";
+    // for Mac, support "local" poppler-data directory
+    // (requires patched poppler-qt lib to be effective,
+    // otherwise the GlobalParams gets overwritten when a
+    // document is opened)
+    QDir popplerDataDir(QCoreApplication::applicationDirPath() + QLatin1String("/../poppler-data"));
+    qDebug() << "popplerDataDir = " << popplerDataDir;
+    if (popplerDataDir.exists()) {
+      globalParams = new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data());
+    }
+    else {
+      globalParams = new GlobalParams();
+    }
+    qDebug() << "</PopplerQtBackend()>";
+  }
+#endif
+}
 
 } // namespace QtPDF
 
