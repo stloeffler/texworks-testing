@@ -28,6 +28,7 @@ inline bool operator<(const QSizeF & a, const QSizeF & b) {
 #include "poppler-config.h"
 #include "GlobalParams.h"
 #include <QCoreApplication>
+#include <QDir>
 #include <QDebug>
 #pragma message "[[[GlobalParamsHandler]]]"
 class PopplerGlobalParamsHandler {
