@@ -21,7 +21,6 @@
 #include "GlobalParams.h"
 #include <QCoreApplication>
 #include <QDir>
-#include <QDebug>
 #endif
 
 
@@ -1048,20 +1047,17 @@ PopplerQtBackend::PopplerQtBackend() {
   static bool globalParamsInitialized = false;
   if (!globalParamsInitialized) {
     globalParamsInitialized = true;
-    qDebug() << "<PopplerQtBackend()>";
     // for Mac, support "local" poppler-data directory
     // (requires patched poppler-qt lib to be effective,
     // otherwise the GlobalParams gets overwritten when a
     // document is opened)
     QDir popplerDataDir(QCoreApplication::applicationDirPath() + QLatin1String("/../poppler-data"));
-    qDebug() << "popplerDataDir = " << popplerDataDir;
     if (popplerDataDir.exists()) {
       globalParams = new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data());
     }
     else {
       globalParams = new GlobalParams();
     }
-    qDebug() << "</PopplerQtBackend()>";
   }
 #endif
 }
