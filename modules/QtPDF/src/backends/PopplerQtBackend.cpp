@@ -16,6 +16,15 @@
 #include <PDFBackend.h>
 #include <QBitArray>
 
+#if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
+#include "poppler-config.h"
+#include "GlobalParams.h"
+#include <QCoreApplication>
+#include <QDir>
+#include <QDebug>
+#endif
+
+
 // Comparison operator for QSizeF needed to use QSizeF as keys in a QMap
 // NB: Must be in the global namespace
 inline bool operator<(const QSizeF & a, const QSizeF & b) {
@@ -1034,18 +1043,9 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
 
 } // namespace Backend
 
-#if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
-#include "poppler-config.h"
-#include "GlobalParams.h"
-#include <QCoreApplication>
-#include <QDir>
-#include <QDebug>
-#endif
-
 PopplerQtBackend::PopplerQtBackend() {
 #if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
   static bool globalParamsInitialized = false;
-
   if (!globalParamsInitialized) {
     globalParamsInitialized = true;
     qDebug() << "<PopplerQtBackend()>";
