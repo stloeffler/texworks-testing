@@ -33,7 +33,7 @@ inline bool operator<(const QSizeF & a, const QSizeF & b) {
 class PopplerGlobalParamsHandler {
 public:
   PopplerGlobalParamsHandler() {
-    qDebug() << "<PopplerGlobalParamsHandler>"
+    qDebug() << "<PopplerGlobalParamsHandler>";
     // for Mac, support "local" poppler-data directory
     // (requires patched poppler-qt lib to be effective,
     // otherwise the GlobalParams gets overwritten when a
@@ -46,7 +46,7 @@ public:
     else {
       globalParams = new GlobalParams();
     }
-    qDebug() << "</PopplerGlobalParamsHandler>"
+    qDebug() << "</PopplerGlobalParamsHandler>";
   }
 };
 static PopplerGlobalParamsHandler _popplerGlobalParamsHandler;
