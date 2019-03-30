@@ -83,6 +83,7 @@ endfunction(create_qt_pro_file)
 function(qt_add_translations outfile)
   # Construct an appropriate resource file
   set(_qm_qrc "<!DOCTYPE RCC>\n<RCC version=\"1.0\">\n<qresource>\n")
+  set(_qm_files)
   foreach(_file ${ARGN})
     get_filename_component(_ext ${_file} EXT)
 
@@ -93,14 +94,21 @@ function(qt_add_translations outfile)
     elseif (_ext MATCHES "qm")
       # .qm files are taken as is
       set(_qm_file "${_file}")
+    else ()
+      message(AUTHOR_WARNING "Unrecognized translation file '${_file}'")
+      continue()
     endif()
 
     get_filename_component(_qm_filename "${_qm_file}" NAME)
     set(_qm_qrc "${_qm_qrc}<file alias=\"resfiles/translations/${_qm_filename}\">${_qm_file}</file>\n")
+    list(APPEND _qm_files ${_qm_file})
   endforeach(_file)
   set(_qm_qrc "${_qm_qrc}</qresource>\n</RCC>\n")
   set(_qm_qrc_path ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_trans.qrc)
   file(WRITE ${_qm_qrc_path} ${_qm_qrc})
+  set_source_files_properties(${_qm_qrc_path} PROPERTIES
+    OBJECT_DEPENDS "${_qm_files}"
+  )
 
   set(${outfile} ${_qm_qrc_path} PARENT_SCOPE)
 endfunction(qt_add_translations)
