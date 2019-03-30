@@ -288,7 +288,9 @@ if (NOT TARGET QtPDF::qtpdf)
   # the cache. Possible solution: port poppler-specific hacks from TeXworks to
   # QtPDF
   get_target_property(POPPLER_HAS_XPDF Poppler::poppler HAS_PRIVATE_HEADERS)
-  set(POPPLER_HAS_XPDF "${POPPLER_HAS_XPDF}" CACHE INTERNAL "Whether poppler's XPdf headers are available")
+  if (POPPLER_HAS_XPDF)
+    target_compile_definitions(qtpdf PRIVATE HAVE_POPPLER_XPDF_HEADERS)
+  endif ()
 endif ()
 
 

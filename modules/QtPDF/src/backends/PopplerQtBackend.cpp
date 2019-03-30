@@ -24,6 +24,33 @@ inline bool operator<(const QSizeF & a, const QSizeF & b) {
     return (areaA < areaB || (areaA == areaB && a.width() < b.width()));
 }
 
+#if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
+#include "poppler-config.h"
+#include "GlobalParams.h"
+#pragma message "[[[GlobalParamsHandler]]]"
+class PopplerGlobalParamsHandler {
+public:
+  PopplerGlobalParamsHandler() {
+    qDebug() << "<PopplerGlobalParamsHandler>"
+    // for Mac, support "local" poppler-data directory
+    // (requires patched poppler-qt lib to be effective,
+    // otherwise the GlobalParams gets overwritten when a
+    // document is opened)
+    QDir popplerDataDir(applicationDirPath() + QLatin1String("/../poppler-data"));
+    qDebug() << "popplerDataDir = " << popplerDataDir;
+    if (popplerDataDir.exists()) {
+      globalParams = new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data());
+    }
+    else {
+      globalParams = new GlobalParams();
+    }
+    qDebug() << "</PopplerGlobalParamsHandler>"
+  }
+};
+static GlobalParamsHandler _globalParamsHandler;
+#endif
+
+
 namespace QtPDF {
 
 namespace Backend {
