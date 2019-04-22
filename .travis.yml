@@ -30,7 +30,8 @@ matrix:
 #            - mxe-i686-w64-mingw32.static-poppler
             - mxe-i686-w64-mingw32.static-qtbase # poppler dependency
             - mxe-i686-w64-mingw32.static-qtscript
-            # mxe-i686-w64-mingw32.static-qttools, mxe-i686-w64-mingw32.static-qttranslations
+            - mxe-i686-w64-mingw32.static-qttools
+            # , mxe-i686-w64-mingw32.static-qttranslations
             - mxe-i686-w64-mingw32.static-tiff # poppler dependency
             - mxe-i686-w64-mingw32.static-zlib # poppler dependency
 
