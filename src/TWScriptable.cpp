@@ -23,6 +23,7 @@
 #include "TWScriptAPI.h"
 #include "ScriptManager.h"
 #include "TWApp.h"
+#include "TWUtils.h"
 
 #include <QSignalMapper>
 #include <QMenu>
@@ -57,8 +58,7 @@ QVariant convertValue(const QScriptValue& value)
 		}
 		return lst;
 	}
-	else
-		return value.toVariant();
+	return value.toVariant();
 }
 
 bool JSScript::execute(TWScriptAPI *tw) const
@@ -93,12 +93,9 @@ bool JSScript::execute(TWScriptAPI *tw) const
 		tw->SetResult(engine.uncaughtException().toString());
 		return false;
 	}
-	else {
-		if (!val.isUndefined()) {
-			tw->SetResult(convertValue(val));
-		}
-		return true;
-	}
+	if (!val.isUndefined())
+		tw->SetResult(convertValue(val));
+	return true;
 }
 
 TWScript* JSScriptInterface::newScript(const QString& fileName)
@@ -301,7 +298,7 @@ void TWScriptManager::addScriptsInDirectory(TWScriptList *scriptList,
 		
 		if (info.isDir()) {
 			// Only create a new sublist if a matching one doesn't already exist
-			TWScriptList *subScriptList = NULL;
+			TWScriptList *subScriptList = nullptr;
 			// Note: Using children() returns a const list; findChildren does not
 			foreach (TWScriptList * l, scriptList->findChildren<TWScriptList*>()) {
 				if (l->getName() == info.fileName()) {
@@ -312,7 +309,7 @@ void TWScriptManager::addScriptsInDirectory(TWScriptList *scriptList,
 			if(!subScriptList) subScriptList = new TWScriptList(scriptList, info.fileName());
 			
 			// Only create a new sublist if a matching one doesn't already exist
-			TWScriptList *subHookList = NULL;
+			TWScriptList *subHookList = nullptr;
 			// Note: Using children() returns a const list; findChildren does not
 			foreach (TWScriptList * l, hookList->findChildren<TWScriptList*>()) {
 				if (l->getName() == info.fileName()) {
@@ -398,9 +395,9 @@ void TWScriptManager::addScriptsInDirectory(TWScriptList *scriptList,
 	// unset parents; this effectively removes the objects from
 	// scriptList->children()
 	foreach (TWScript* childScript, childScripts)
-		childScript->setParent(NULL);
+		childScript->setParent(nullptr);
 	foreach (TWScriptList* childList, childLists)
-		childList->setParent(NULL);
+		childList->setParent(nullptr);
 	
 	// sort the sublists
 	qSort(childLists.begin(), childLists.end(), scriptListLessThan);
@@ -449,7 +446,7 @@ TWScriptManager::runScript(QObject* script, QObject * context, QVariant & result
 }
 
 void
-TWScriptManager::runHooks(const QString& hookName, QObject * context /* = NULL */)
+TWScriptManager::runHooks(const QString& hookName, QObject * context /* = nullptr */)
 {
 	foreach (TWScript *s, getHookScripts(hookName)) {
 		runScript(s, context, TWScript::ScriptHook);
@@ -457,9 +454,8 @@ TWScriptManager::runHooks(const QString& hookName, QObject * context /* = NULL *
 }
 
 TWScriptable::TWScriptable()
-	: QMainWindow(),
-	  scriptsMenu(NULL),
-	  scriptMapper(NULL),
+	: scriptsMenu(nullptr),
+	  scriptMapper(nullptr),
 	  staticScriptMenuItemCount(0)
 {
 }
@@ -565,7 +561,7 @@ TWScriptable::runScript(QObject* script, TWScript::ScriptType scriptType)
 	if (success) {
 		if (!result.isNull() and !result.toString().isEmpty()) {
 			if (scriptType == TWScript::ScriptHook)
-				statusBar()->showMessage(tr("Script \"%1\": %2").arg(s->getTitle()).arg(result.toString()), kStatusMessageDuration);
+				statusBar()->showMessage(tr("Script \"%1\": %2").arg(s->getTitle(), result.toString()), kStatusMessageDuration);
 			else
 				QMessageBox::information(this, tr("Script result"), result.toString(), QMessageBox::Ok, QMessageBox::Ok);
 		}
@@ -573,7 +569,7 @@ TWScriptable::runScript(QObject* script, TWScript::ScriptType scriptType)
 	else {
 		if (result.isNull())
 			result = tr("unknown error");
-		QMessageBox::information(this, tr("Script error"), tr("Script \"%1\": %2").arg(s->getTitle()).arg(result.toString()), QMessageBox::Ok, QMessageBox::Ok);
+		QMessageBox::information(this, tr("Script error"), tr("Script \"%1\": %2").arg(s->getTitle(), result.toString()), QMessageBox::Ok, QMessageBox::Ok);
 	}
 }
 
@@ -605,14 +601,14 @@ TWScriptable::doAboutScripts()
 			 TWApp::instance()->getScriptManager()->languages()) {
 		const TWScriptLanguageInterface * i = qobject_cast<TWScriptLanguageInterface*>(plugin);
 		if(!i) continue;
-		aboutText += QString::fromLatin1("<li><a href=\"%1\">%2</a>").arg(i->scriptLanguageURL()).arg(i->scriptLanguageName());
+		aboutText += QString::fromLatin1("<li><a href=\"%1\">%2</a>").arg(i->scriptLanguageURL(), i->scriptLanguageName());
 		if (!enableScriptsPlugins && !qobject_cast<const JSScriptInterface*>(plugin)) {
 			//: This string is appended to a script language name to indicate it is currently disabled
 			aboutText += QChar::fromLatin1(' ') + tr("(disabled in the preferences)");
 		}
 		aboutText += QLatin1String("</li>");
 	}
-	QMessageBox::about(NULL, tr("About Scripts"), aboutText);
+	QMessageBox::about(nullptr, tr("About Scripts"), aboutText);
 }
 
 void

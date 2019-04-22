@@ -20,16 +20,13 @@ function (target_add_qt_translations _TARGET)
   endif ()
 
   qt5_add_translation(_generated_qm ${_TS_FILES})
-#  add_custom_target()
-  set(_qm_qrc_path ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_trans.qrc)
 
+  set(_qm_qrc_path ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_trans.qrc)
   create_translations_resource_file(${_qm_qrc_path} ${_generated_qm} ${_QM_FILES})
 
-  message("_qm_qrc_path = ${_qm_qrc_path}")
-  message("_generated_qm = ${_generated_qm}")
-
-#  qt_add_translations(_qm ${_TS_FILES} ${_QM_FILES})
   target_sources(${_TARGET} PRIVATE ${_qm_qrc_path})
+  # Explicitly set the generated .qm files as dependencies for the autogen
+  # target to ensure they are built before AUTORCC is run
   set_target_properties(${_TARGET} PROPERTIES AUTOGEN_TARGET_DEPENDS "${_generated_qm}")
 endfunction()
 
@@ -90,7 +87,7 @@ function(create_qt_pro_file _pro_path)
   file(WRITE ${_pro_path} "${_pro_content}\n")
 endfunction(create_qt_pro_file)
 
-# qt_add_translations(<output_var> <1.qm> [<2.qm> ...])
+# create_translations_resource_file(<output_var> <1.qm> [<2.qm> ...])
 function(create_translations_resource_file outfile)
   # Construct an appropriate resource file
   set(_qm_qrc "<!DOCTYPE RCC>\n<RCC version=\"1.0\">\n<qresource>\n")

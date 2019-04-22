@@ -68,6 +68,16 @@ if(POLICY CMP0042)
   cmake_policy(SET CMP0042 NEW)
 endif()
 
+# Silence warning about ninja custom command byproducts
+if(POLICY CMP0058)
+  cmake_policy(SET CMP0058 NEW)
+endif()
+
+# Silence warning about option() treating variables differently on the first run
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
+
 SET(CMAKE_COLOR_MAKEFILE ON)
 # Always add the current source and binary directories to the header include
 # path when compiling.
@@ -78,7 +88,7 @@ SET(CMAKE_AUTOUIC TRUE)
 
 # Make the contents of `CMake/Modules` available. Among other things, this
 # directory contains scripts that locate project components such as hunspell.
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake/Modules ${CMAKE_MODULE_PATH})
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake/Modules ${PROJECT_SOURCE_DIR}/modules/QtPDF/CMake/Modules ${CMAKE_MODULE_PATH})
 
 IF(WIN32 AND MINGW)
   # Ensure that no cpp flags are passed to windres, the Windows resource compiler.
@@ -136,17 +146,11 @@ STRING(REGEX REPLACE "#define GIT_COMMIT_DATE \"([-+:0-9 Z]+)\"" "\\1" TeXworks_
 SET(TW_BUILD_ID "personal" CACHE STRING "A distribution-specific identifier for TeXworks")
 
 # Build with shared libs by default
-IF ( NOT DEFINED BUILD_SHARED_LIBS )
-  SET(BUILD_SHARED_LIBS ON)
-ENDIF ()
-OPTION(BUILD_SHARED_LIBS "Build with shared libs?" ${BUILD_SHARED_LIBS})
+OPTION(BUILD_SHARED_LIBS "Build with shared libs?" ON)
 MARK_AS_ADVANCED(BUILD_SHARED_LIBS)
 
 # Build shared plugins by default
-IF ( NOT DEFINED BUILD_SHARED_PLUGINS )
-  SET(BUILD_SHARED_PLUGINS ${BUILD_SHARED_LIBS})
-ENDIF()
-OPTION(BUILD_SHARED_PLUGINS "Build shared plugins?" ${BUILD_SHARED_PLUGINS})
+OPTION(BUILD_SHARED_PLUGINS "Build shared plugins?" ${BUILD_SHARED_LIBS})
 MARK_AS_ADVANCED(BUILD_SHARED_PLUGINS)
 
 OPTION(PREFER_BUNDLED_SYNCTEX "Use SyncTeX bundled with TeXworks even if a shared library is found?" OFF)
@@ -238,101 +242,35 @@ use_cxx11()
 # Dependency Configuration
 # ========================
 
-include(FindPackageMessage)
-MACRO(find_qt5_package pkg)
-  find_package(${pkg} QUIET)
-  if (${pkg}_FOUND)
-    set(_msg "Found ${pkg}")
-    if (${pkg}_DIR)
-      set(_msg "${_msg}: ${${pkg}_DIR}")
-    endif()
-    if (${pkg}_VERSION)
-      set(_msg "${_msg} (found version ${${pkg}_VERSION})")
-    endif()
-    FIND_PACKAGE_MESSAGE(${pkg} ${_msg} "[${${pkg_FOUND}}][${${pkg}_DIR}][${${pkg}_VERSION}]")
-  else()
-    FIND_PACKAGE_MESSAGE(${pkg} "Could not find ${pkg}" "[${${pkg_FOUND}}][${${pkg}_DIR}][${${pkg}_VERSION}]")
-  endif()
-ENDMACRO()
-
 # Check for Qt5
-find_qt5_package(Qt5Widgets QUIET)
-find_qt5_package(Qt5Gui QUIET)
-find_qt5_package(Qt5UiTools QUIET)
-find_qt5_package(Qt5Concurrent QUIET)
-find_qt5_package(Qt5Script QUIET)
-find_qt5_package(Qt5ScriptTools QUIET)
-find_qt5_package(Qt5Xml QUIET)
-find_qt5_package(Qt5LinguistTools QUIET)
-IF ( UNIX AND NOT APPLE )
-  find_qt5_package(Qt5DBus QUIET)
-ENDIF ()
-IF ( WITH_TESTS )
-  find_qt5_package(Qt5Test QUIET)
-ENDIF ( WITH_TESTS )
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets Gui UiTools Concurrent Script ScriptTools Xml LinguistTools)
+set(QT_LIBRARIES Qt5::Core Qt5::Widgets Qt5::Gui Qt5::UiTools Qt5::Concurrent Qt5::ScriptTools Qt5::Script Qt5::Xml)
 
-IF(Qt5Widgets_FOUND AND Qt5Core_FOUND AND Qt5Gui_FOUND AND Qt5UiTools_FOUND AND Qt5Concurrent_FOUND AND Qt5Script_FOUND AND Qt5ScriptTools_FOUND AND Qt5Xml_FOUND AND Qt5LinguistTools_FOUND AND (NOT UNIX OR APPLE OR Qt5DBus_FOUND) AND (NOT WITH_TESTS OR Qt5Test_FOUND))
-  SET(QT5_FOUND TRUE)
-  SET(QT_LIBRARIES Qt5::UiTools Qt5::ScriptTools Qt5::Script Qt5::Concurrent Qt5::Xml ${Qt5DBus_LIBRARIES} Qt5::Widgets Qt5::Gui Qt5::Core ${Qt5Test_LIBRARIES})
+if (UNIX AND NOT APPLE)
+  find_package(Qt5 REQUIRED COMPONENTS DBus)
+  list(APPEND QT_LIBRARIES Qt5::DBus)
+endif ()
 
-  # Note: Qt5 only sets Qt5Widgets_VERSION, etc., but not QT_VERSION_MAJOR,
-  # etc. which is used here.
-  string(REGEX REPLACE "^([0-9]+).*$" "\\1" QT_VERSION_MAJOR "${Qt5Widgets_VERSION}")
-  string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*$" "\\1" QT_VERSION_MINOR  "${Qt5Widgets_VERSION}")
-  string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" QT_VERSION_PATCH "${Qt5Widgets_VERSION}")
-ELSE()
-  SET(QT5_FOUND FALSE)
-ENDIF()
+if (WITH_TESTS)
+  find_package(Qt5 OPTIONAL_COMPONENTS Test QUIET)
+  if (NOT Qt5Test_FOUND)
+    set(WITH_TESTS OFF)
+  else ()
+    list(APPEND QT_LIBRARIES Qt5::Test)
+  endif ()
+endif ()
 
-IF( QT5_FOUND AND WIN32 AND NOT BUILD_SHARED_LIBS )
-  # For static Windows builds, we also need to pull in the Qt5 Platform
-  # support library, which is not exposed to CMake properly, unfortunately
-  GET_TARGET_PROPERTY(QT_LIB_DIR "${Qt5Widgets_LIBRARIES}" LOCATION)
-  GET_FILENAME_COMPONENT(QT_LIB_DIR "${QT_LIB_DIR}" PATH)
+if (WIN32 AND NOT BUILD_SHARED_LIBS)
+  find_package(Qt5WindowsPlatformSupport)
+  list(APPEND QT_LIBRARIES Qt5::WindowsPlatformSupport)
+endif ()
 
-  FIND_LIBRARY(Qt5QWindows_LIBRARIES qwindows
-    HINTS "${QT_LIB_DIR}/../plugins/platforms"
-  )
+# Note: Qt5 only sets Qt5Widgets_VERSION, etc., but not QT_VERSION_MAJOR,
+# etc. which is used here.
+string(REGEX REPLACE "^([0-9]+).*$" "\\1" QT_VERSION_MAJOR "${Qt5Widgets_VERSION}")
+string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*$" "\\1" QT_VERSION_MINOR  "${Qt5Widgets_VERSION}")
+string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" QT_VERSION_PATCH "${Qt5Widgets_VERSION}")
 
-  # Starting with Qt 5.8, Qt5PlatformSupport was modularized
-  if (QT_VERSION_MAJOR EQUAL 5 AND QT_VERSION_MINOR LESS 8)
-    FIND_LIBRARY(Qt5Platform_LIBRARIES Qt5PlatformSupport
-      HINTS "${QT_LIB_DIR}"
-    )
-    LIST(INSERT QT_LIBRARIES 0 ${Qt5Platform_LIBRARIES} ${Qt5QWindows_LIBRARIES})
-  else()
-    FIND_LIBRARY(Qt5FontDatabaseSupport_LIBRARIES Qt5FontDatabaseSupport
-      HINTS "${QT_LIB_DIR}"
-    )
-    FIND_LIBRARY(Qt5EventDispatcherSupport_LIBRARIES Qt5EventDispatcherSupport
-      HINTS "${QT_LIB_DIR}"
-    )
-    FIND_LIBRARY(Qt5ThemeSupport_LIBRARIES Qt5ThemeSupport
-      HINTS "${QT_LIB_DIR}"
-    )
-    LIST(INSERT QT_LIBRARIES 0 ${Qt5QWindows_LIBRARIES} ${Qt5FontDatabaseSupport_LIBRARIES} ${Qt5EventDispatcherSupport_LIBRARIES} ${Qt5ThemeSupport_LIBRARIES})
-  endif()
-  # Starting with Qt 5.11, WindowsUIAutomation was added
-  if (QT_VERSION_MAJOR EQUAL 5 AND QT_VERSION_MINOR GREATER 10)
-    FIND_LIBRARY(Qt5WindowsUIAutomation_LIBRARIES Qt5WindowsUIAutomationSupport
-      HINTS "${QT_LIB_DIR}"
-    )
-    LIST(APPEND QT_LIBRARIES ${Qt5WindowsUIAutomation_LIBRARIES})
-  endif()
-  # Starting with Qt 5.10, AccessibilitySupport was modularized
-  if (QT_VERSION_MAJOR EQUAL 5 AND QT_VERSION_MINOR GREATER 9)
-    FIND_LIBRARY(Qt5AccessibilitySupport_LIBRARIES Qt5AccessibilitySupport
-      HINTS "${QT_LIB_DIR}"
-    )
-    LIST(APPEND QT_LIBRARIES ${Qt5AccessibilitySupport_LIBRARIES})
-  endif()
-  ADD_DEFINITIONS(-DSTATIC_QT5)
-ENDIF()
-
-
-IF (NOT QT5_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find required Qt. Please install Qt (see https://www.qt.io/)")
-ENDIF()
 
 # Expose the major version number of Qt to the preprocessor. This is necessary
 # to include the correct Qt headers (as QTVERSION is not defined before any Qt
@@ -347,8 +285,6 @@ FIND_PACKAGE(Synctex QUIET)
 
 # Aggregate library names and include directories into variables for easy
 # access.
-set(TEXWORKS_ADDITIONAL_LIBS "" CACHE STRING "Additional libraries not found by CMake")
-MARK_AS_ADVANCED(TEXWORKS_ADDITIONAL_LIBS)
 
 SET(TeXworks_LIBS
   SyncTeX::synctex

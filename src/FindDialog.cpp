@@ -44,7 +44,7 @@ FindDialog::FindDialog(QTextEdit *parent)
 bool RecentStringsKeyFilter::eventFilter(QObject *obj, QEvent *event)
 {
 	if (event->type() == QEvent::KeyPress) {
-		QKeyEvent *e = static_cast<QKeyEvent*>(event);
+		QKeyEvent *e = dynamic_cast<QKeyEvent*>(event);
 		Qt::KeyboardModifiers mods = e->modifiers();
 		if ((mods & Qt::ControlModifier) != Qt::NoModifier) {
 			if (e->key() == Qt::Key_Up) {
@@ -130,7 +130,7 @@ void FindDialog::init(QTextEdit *document)
 	
 	QMenu *recentItemsMenu = new QMenu(this);
 	QStringList recentStrings = settings.value(QString::fromLatin1("recentSearchStrings")).toStringList();
-	if (recentStrings.size() == 0)
+	if (recentStrings.empty())
 		recentItemsMenu->addAction(tr("No recent search strings"))->setEnabled(false);
 	else {
 		foreach (const QString& str, recentStrings)
@@ -143,7 +143,7 @@ void FindDialog::init(QTextEdit *document)
 void FindDialog::setSearchText()
 {
 	QAction *act = qobject_cast<QAction*>(sender());
-	if (act != NULL) {
+	if (act) {
 		searchText->setText(act->text());
 		searchText->selectAll();
 	}
@@ -152,7 +152,7 @@ void FindDialog::setSearchText()
 void FindDialog::toggledAllFilesOption(bool checked)
 {
 	QTextEdit* document = qobject_cast<QTextEdit*>(parent());
-	checkBox_selection->setEnabled(document != NULL && document->textCursor().hasSelection() && !checked && !checkBox_findAll->isChecked());
+	checkBox_selection->setEnabled(document && document->textCursor().hasSelection() && !checked && !checkBox_findAll->isChecked());
 	checkBox_wrap->setEnabled(!(checkBox_selection->isEnabled() && checkBox_selection->isChecked()) && !checked && !checkBox_findAll->isChecked());
 	checkBox_backwards->setEnabled(!checked && !checkBox_findAll->isChecked());
 	checkBox_findAll->setEnabled(!checked);
@@ -161,7 +161,7 @@ void FindDialog::toggledAllFilesOption(bool checked)
 void FindDialog::toggledFindAllOption(bool checked)
 {
 	QTextEdit* document = qobject_cast<QTextEdit*>(parent());
-	checkBox_selection->setEnabled(document != NULL && document->textCursor().hasSelection() && !checked);
+	checkBox_selection->setEnabled(document && document->textCursor().hasSelection() && !checked);
 	checkBox_wrap->setEnabled(!(checkBox_selection->isEnabled() && checkBox_selection->isChecked()) && !checked);
 	checkBox_backwards->setEnabled(!checked);
 }
@@ -283,7 +283,7 @@ void ReplaceDialog::init(QTextEdit *document)
 
 	QMenu *recentItemsMenu = new QMenu(this);
 	QStringList recentStrings = settings.value(QString::fromLatin1("recentSearchStrings")).toStringList();
-	if (recentStrings.size() == 0)
+	if (recentStrings.empty())
 		recentItemsMenu->addAction(tr("No recent search strings"))->setEnabled(false);
 	else {
 		foreach (const QString& str, recentStrings)
@@ -294,7 +294,7 @@ void ReplaceDialog::init(QTextEdit *document)
 
 	recentItemsMenu = new QMenu(this);
 	recentStrings = settings.value(QString::fromLatin1("recentReplaceStrings")).toStringList();
-	if (recentStrings.size() == 0)
+	if (recentStrings.empty())
 		recentItemsMenu->addAction(tr("No recent replacement strings"))->setEnabled(false);
 	else {
 		foreach (const QString& str, recentStrings)
@@ -307,7 +307,7 @@ void ReplaceDialog::init(QTextEdit *document)
 void ReplaceDialog::setSearchText()
 {
 	QAction *act = qobject_cast<QAction*>(sender());
-	if (act != NULL) {
+	if (act) {
 		searchText->setText(act->text());
 		searchText->selectAll();
 	}
@@ -316,7 +316,7 @@ void ReplaceDialog::setSearchText()
 void ReplaceDialog::setReplaceText()
 {
 	QAction *act = qobject_cast<QAction*>(sender());
-	if (act != NULL) {
+	if (act) {
 		replaceText->setText(act->text());
 		replaceText->selectAll();
 	}
@@ -325,7 +325,7 @@ void ReplaceDialog::setReplaceText()
 void ReplaceDialog::toggledAllFilesOption(bool checked)
 {
 	QTextEdit* document = qobject_cast<QTextEdit*>(parent());
-	checkBox_selection->setEnabled(document != NULL && document->textCursor().hasSelection() && !checked);
+	checkBox_selection->setEnabled(document && document->textCursor().hasSelection() && !checked);
 	checkBox_wrap->setEnabled(!(checkBox_selection->isEnabled() && checkBox_selection->isChecked()) && !checked);
 	checkBox_backwards->setEnabled(!checked);
 	buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!checked);
@@ -375,44 +375,43 @@ ReplaceDialog::DialogCode ReplaceDialog::doReplaceDialog(QTextEdit *document)
 
 	if (result == 0)
 		return Cancel;
-	else {
-		QSETTINGS_OBJECT(settings);
-		QString str = dlg.searchText->text();
-		settings.setValue(QString::fromLatin1("searchText"), str);
-		
-		QStringList recentStrings = settings.value(QString::fromLatin1("recentSearchStrings")).toStringList();
-		recentStrings.removeAll(str);
-		recentStrings.prepend(str);
-		while (recentStrings.count() > kMaxRecentStrings)
-			recentStrings.removeLast();
-		settings.setValue(QString::fromLatin1("recentSearchStrings"), recentStrings);
-		
-		str = dlg.replaceText->text();
-		settings.setValue(QString::fromLatin1("replaceText"), str);
 
-		recentStrings = settings.value(QString::fromLatin1("recentReplaceStrings")).toStringList();
-		recentStrings.removeAll(str);
-		recentStrings.prepend(str);
-		while (recentStrings.count() > kMaxRecentStrings)
-			recentStrings.removeLast();
-		settings.setValue(QString::fromLatin1("recentReplaceStrings"), recentStrings);
-		
-		int flags = 0;
-		if (dlg.checkBox_case->isChecked())
-			flags |= QTextDocument::FindCaseSensitively;
-		if (dlg.checkBox_words->isChecked())
-			flags |= QTextDocument::FindWholeWords;
-		if (dlg.checkBox_backwards->isChecked())
-			flags |= QTextDocument::FindBackward;
-		settings.setValue(QString::fromLatin1("searchFlags"), (int)flags);
+	QSETTINGS_OBJECT(settings);
+	QString str = dlg.searchText->text();
+	settings.setValue(QString::fromLatin1("searchText"), str);
 
-		settings.setValue(QString::fromLatin1("searchRegex"), dlg.checkBox_regex->isChecked());
-		settings.setValue(QString::fromLatin1("searchWrap"), dlg.checkBox_wrap->isChecked());
-		settings.setValue(QString::fromLatin1("searchSelection"), dlg.checkBox_selection->isChecked());
-		settings.setValue(QString::fromLatin1("searchAllFiles"), dlg.checkBox_allFiles->isChecked());
+	QStringList recentStrings = settings.value(QString::fromLatin1("recentSearchStrings")).toStringList();
+	recentStrings.removeAll(str);
+	recentStrings.prepend(str);
+	while (recentStrings.count() > kMaxRecentStrings)
+		recentStrings.removeLast();
+	settings.setValue(QString::fromLatin1("recentSearchStrings"), recentStrings);
 
-		return (result == 2) ? ReplaceAll : ReplaceOne;
-	}
+	str = dlg.replaceText->text();
+	settings.setValue(QString::fromLatin1("replaceText"), str);
+
+	recentStrings = settings.value(QString::fromLatin1("recentReplaceStrings")).toStringList();
+	recentStrings.removeAll(str);
+	recentStrings.prepend(str);
+	while (recentStrings.count() > kMaxRecentStrings)
+		recentStrings.removeLast();
+	settings.setValue(QString::fromLatin1("recentReplaceStrings"), recentStrings);
+
+	int flags = 0;
+	if (dlg.checkBox_case->isChecked())
+		flags |= QTextDocument::FindCaseSensitively;
+	if (dlg.checkBox_words->isChecked())
+		flags |= QTextDocument::FindWholeWords;
+	if (dlg.checkBox_backwards->isChecked())
+		flags |= QTextDocument::FindBackward;
+	settings.setValue(QString::fromLatin1("searchFlags"), (int)flags);
+
+	settings.setValue(QString::fromLatin1("searchRegex"), dlg.checkBox_regex->isChecked());
+	settings.setValue(QString::fromLatin1("searchWrap"), dlg.checkBox_wrap->isChecked());
+	settings.setValue(QString::fromLatin1("searchSelection"), dlg.checkBox_selection->isChecked());
+	settings.setValue(QString::fromLatin1("searchAllFiles"), dlg.checkBox_allFiles->isChecked());
+
+	return (result == 2) ? ReplaceAll : ReplaceOne;
 }
 
 
@@ -550,7 +549,7 @@ void SearchResults::presentResults(const QString& searchText,
 	else {
 		resultsWindow->setAllowedAreas(Qt::NoDockWidgetArea);
 		resultsWindow->setFeatures(QDockWidget::NoDockWidgetFeatures);
-		resultsWindow->setParent(NULL);
+		resultsWindow->setParent(nullptr);
 		resultsWindow->setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint);
 	}
 	
@@ -595,12 +594,12 @@ void SearchResults::focusChanged(QWidget * old, QWidget * now)
 	if (!texDoc)
 		return;
 
-	if (old == NULL)
+	if (!old)
 		previouslyFocused = false;
 	else
 		previouslyFocused = isAncestorOf(old);
 
-	if (now == NULL)
+	if (!now)
 		nowFocused = false;
 	else
 		nowFocused = isAncestorOf(now);
@@ -657,7 +656,7 @@ void PDFFindDialog::init(PDFDocument *document)
 	
 	QMenu *recentItemsMenu = new QMenu(this);
 	QStringList recentStrings = settings.value(QString::fromLatin1("recentSearchStrings")).toStringList();
-	if (recentStrings.size() == 0)
+	if (recentStrings.empty())
 		recentItemsMenu->addAction(tr("No recent search strings"))->setEnabled(false);
 	else {
 		foreach (const QString& str, recentStrings)
@@ -713,7 +712,7 @@ QDialog::DialogCode PDFFindDialog::doFindDialog(PDFDocument *document)
 void PDFFindDialog::setSearchText()
 {
 	QAction *act = qobject_cast<QAction*>(sender());
-	if (act != NULL) {
+	if (act) {
 		searchText->setText(act->text());
 		searchText->selectAll();
 	}

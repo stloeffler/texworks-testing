@@ -22,12 +22,12 @@
 #ifndef TWScriptAPI_H
 #define TWScriptAPI_H
 
-#include "TWScript.h"
-
 #include <QObject>
 #include <QString>
 #include <QVariant>
 #include <QMessageBox>
+
+class TWScript;
 
 class TWScriptAPI : public QObject
 {
@@ -44,7 +44,7 @@ public:
 public:
 	QObject* GetApp() { return m_app; }
 	QObject* GetTarget() { return m_target; }
-	QObject* GetScript() { return m_script; }
+	QObject* GetScript();
 	QVariant& GetResult() { return m_result; }
 	
 	void SetResult(const QVariant& rval);
@@ -153,10 +153,10 @@ public:
 	
 	// functions to create windows from .ui data or files using QUiLoader
 	Q_INVOKABLE
-	QWidget * createUIFromString(const QString& uiSpec, QWidget * parent = NULL);
+	QWidget * createUIFromString(const QString& uiSpec, QWidget * parent = nullptr);
 
 	Q_INVOKABLE
-	QWidget * createUI(const QString& filename, QWidget * parent = NULL);
+	QWidget * createUI(const QString& filename, QWidget * parent = nullptr);
 	
 	// to find children of a widget
 	Q_INVOKABLE

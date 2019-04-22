@@ -23,6 +23,8 @@
 #include "TWSystemCmd.h"
 #include "TWUtils.h"
 #include "TWApp.h"
+#include "Engine.h"
+#include "TWScript.h"
 
 #include <QObject>
 #include <QString>
@@ -44,7 +46,12 @@ TWScriptAPI::TWScriptAPI(TWScript* script, QObject* twapp, QObject* ctx, QVarian
 	  m_result(res)
 {
 }
-	
+
+QObject* TWScriptAPI::GetScript()
+{
+	return m_script;
+}
+
 void TWScriptAPI::SetResult(const QVariant& rval)
 {
 	m_result = rval;
@@ -149,7 +156,7 @@ QWidget * TWScriptAPI::progressDialog(QWidget * parent)
 {
 	QProgressDialog * dlg = new QProgressDialog(parent);
 	connect(this, SIGNAL(destroyed(QObject*)), dlg, SLOT(deleteLater()));
-	dlg->setCancelButton(NULL);
+	dlg->setCancelButton(nullptr);
 	dlg->show();
 	return dlg;
 }
@@ -173,7 +180,7 @@ QWidget * TWScriptAPI::createUI(const QString& filename, QWidget * parent)
 {
 	QFileInfo fi(QFileInfo(m_script->getFilename()).absoluteDir(), filename);
 	if (!fi.isReadable())
-		return NULL;
+		return nullptr;
 	QFile file(fi.canonicalFilePath());
 	QUiLoader loader;
 	QWidget *widget = loader.load(&file, parent);
@@ -282,7 +289,6 @@ int TWScriptAPI::writeFile(const QString& filename, const QString& content) cons
 {
 	// relative paths are taken to be relative to the folder containing the
 	// executing script's file
-	QFileInfo fi(filename);
 	QDir scriptDir(QFileInfo(m_script->getFilename()).dir());
 	QString path = scriptDir.absoluteFilePath(filename);
 
@@ -312,7 +318,6 @@ QMap<QString, QVariant> TWScriptAPI::readFile(const QString& filename) const
 	retVal[QString::fromLatin1("result")] = QVariant();
 	retVal[QString::fromLatin1("message")] = QVariant();
 
-	QFileInfo fi(filename);
 	QDir scriptDir(QFileInfo(m_script->getFilename()).dir());
 	QString path = scriptDir.absoluteFilePath(filename);
 
@@ -340,7 +345,6 @@ QMap<QString, QVariant> TWScriptAPI::readFile(const QString& filename) const
 
 int TWScriptAPI::fileExists(const QString& filename) const
 {
-	QFileInfo fi(filename);
 	QDir scriptDir(QFileInfo(m_script->getFilename()).dir());
 	QString path = scriptDir.absoluteFilePath(filename);
 
