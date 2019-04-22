@@ -14,7 +14,7 @@ matrix:
         apt:
           sources:
             - sourceline: deb https://pkg.mxe.cc/repos/apt xenial main
-              key_url: https://pkg.mxe.cc/repos/apt/client-conf/mxeapt.gpg
+              key_url: http://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0xC6BF758A33A3A276
           packages:
             - mxe-i686-w64-mingw32.static-cairo # poppler dependency
             - mxe-i686-w64-mingw32.static-curl # poppler dependency
