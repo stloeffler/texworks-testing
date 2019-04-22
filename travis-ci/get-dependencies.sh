@@ -17,7 +17,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		exit 1
 	fi
 
-	MXEDIR="/opt/mxe"
+	MXEDIR="/usr/lib/mxe"
 	MXETARGET="i686-w64-mingw32.static"
 
 	echo "MXEDIR=\"${MXEDIR}\"" >> travis-ci/defs.sh
@@ -30,9 +30,9 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 
 	JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
 
-	print_info "Fetching MXE from docker"
-	echo_and_run "docker create --name mxe stloeffler/mxe-tw"
-	echo_and_run "docker cp mxe:${MXEDIR} ${MXEDIR}"
+#	print_info "Fetching MXE from docker"
+#	echo_and_run "docker create --name mxe stloeffler/mxe-tw"
+#	echo_and_run "docker cp mxe:${MXEDIR} ${MXEDIR}"
 
 	cd travis-ci/mxe
 
