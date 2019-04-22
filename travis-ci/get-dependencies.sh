@@ -33,10 +33,6 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 
 	JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
 
-#	print_info "Fetching MXE from docker"
-#	echo_and_run "docker create --name mxe stloeffler/mxe-tw"
-#	echo_and_run "docker cp mxe:${MXEDIR} ${MXEDIR}"
-
 	cd travis-ci/mxe
 
 	print_info "Building poppler (using ${JOBS} jobs)"
