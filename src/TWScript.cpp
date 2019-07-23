@@ -20,14 +20,10 @@
 */
 
 #include "TWScript.h"
-#include "TWScriptAPI.h"
-#include "ConfigurableApp.h"
-#include "DefaultPrefs.h"
 
 #include <QTextStream>
 #include <QMetaObject>
 #include <QMetaMethod>
-#include <QApplication>
 #include <QTextCodec>
 #include <QDir>
 
@@ -39,10 +35,9 @@ TWScript::TWScript(QObject * plugin, const QString& fileName)
 		m_Codec = QTextCodec::codecForLocale();
 }
 
-bool TWScript::run(QObject *context, QVariant& result)
+bool TWScript::run(Tw::Scripting::ScriptAPIInterface & api)
 {
-	TWScriptAPI tw(this, qApp, context, result);
-	return execute(&tw);
+	return execute(&api);
 }
 
 bool TWScript::hasChanged() const
@@ -413,61 +408,3 @@ void TWScript::globalDestroyed(QObject * obj)
 		}
 	}
 }
-
-
-bool TWScript::mayExecuteSystemCommand(const QString& cmd, QObject * context) const
-{
-	Q_UNUSED(cmd)
-	Q_UNUSED(context)
-	
-	// cmd may be a true command line, or a single file/directory to run or open
-	QSETTINGS_OBJECT(settings);
-	return settings.value(QString::fromLatin1("allowSystemCommands"), false).toBool();
-}
-
-bool TWScript::mayWriteFile(const QString& filename, QObject * context) const
-{
-	Q_UNUSED(filename)
-	Q_UNUSED(context)
-	
-	QSETTINGS_OBJECT(settings);
-	return settings.value(QString::fromLatin1("allowScriptFileWriting"), false).toBool();
-}
-
-bool TWScript::mayReadFile(const QString& filename, QObject * context) const
-{
-	QSETTINGS_OBJECT(settings);
-	QDir scriptDir(QFileInfo(m_Filename).absoluteDir());
-	QVariant targetFile;
-	QDir targetDir;
-	
-	if (settings.value(QString::fromLatin1("allowScriptFileReading"), kDefault_AllowScriptFileReading).toBool())
-		return true;
-	
-	// even if global reading is disallowed, some exceptions may apply
-	QFileInfo fi(QDir::cleanPath(filename));
-
-	// reading in subdirectories of the script file's directory is always allowed
-	if (!scriptDir.relativeFilePath(fi.absolutePath()).startsWith(QLatin1String("..")))
-		return true;
-
-	if (context) {
-		// reading subdirectories of the current file is always allowed
-		targetFile = context->property("fileName");
-		if (targetFile.isValid() && !targetFile.toString().isEmpty()) {
-			targetDir = QFileInfo(targetFile.toString()).absoluteDir();
-			if (!targetDir.relativeFilePath(fi.absolutePath()).startsWith(QLatin1String("..")))
-				return true;
-		}
-		// reading subdirectories of the root file is always allowed
-		targetFile = context->property("rootFileName");
-		if (targetFile.isValid() && !targetFile.toString().isEmpty()) {
-			targetDir = QFileInfo(targetFile.toString()).absoluteDir();
-			if (!targetDir.relativeFilePath(fi.absolutePath()).startsWith(QLatin1String("..")))
-				return true;
-		}
-	}
-	
-	return false;
-}
-
