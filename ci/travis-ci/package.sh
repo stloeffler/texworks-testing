@@ -77,6 +77,7 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		# Set up key for ssh (sftp) authentication
 		openssl aes-256-cbc -K $encrypted_6a8dc39105f1_key -iv $encrypted_6a8dc39105f1_iv -in "${TRAVIS_BUILD_DIR}/ci/travis-ci/launchpad/id_rsa_texworks.enc" -out "${TRAVIS_BUILD_DIR}/ci/travis-ci/launchpad/id_rsa_texworks" -d
 		chmod 0600 "${TRAVIS_BUILD_DIR}/ci/travis-ci/launchpad/id_rsa_texworks"
+		print_info "Creating ~/.ssh/config"
 		echo """Host ppa.launchpad.net
 	IdentityFile ${TRAVIS_BUILD_DIR}/ci/travis-ci/launchpad/id_rsa_texworks
 	User st.loeffler

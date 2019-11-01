@@ -9,19 +9,18 @@ SOURCES = \
   "../src/ClosableTabWidget.cpp" \
   "../src/CommandlineParser.cpp" \
   "../src/CompletingEdit.cpp" \
-  "../src/ConfigurableApp.cpp" \
   "../src/ConfirmDelete.cpp" \
   "../src/Engine.cpp" \
   "../src/FindDialog.cpp" \
   "../src/HardWrapDialog.cpp" \
+  "../src/InterProcessCommunicatorDBus.cpp" \
   "../src/PDFDocument.cpp" \
   "../src/PrefsDialog.cpp" \
   "../src/ResourcesDialog.cpp" \
   "../src/ScreenCalibrationWidget.cpp" \
   "../src/ScriptManager.cpp" \
+  "../src/Settings.cpp" \
   "../src/TWApp.cpp" \
-  "../src/TWScript.cpp" \
-  "../src/TWScriptAPI.cpp" \
   "../src/TWScriptable.cpp" \
   "../src/TWSynchronizer.cpp" \
   "../src/TWSystemCmd.cpp" \
@@ -31,9 +30,14 @@ SOURCES = \
   "../src/TeXDocument.cpp" \
   "../src/TeXHighlighter.cpp" \
   "../src/TemplateDialog.cpp" \
+  "../src/document/SpellChecker.cpp" \
   "../src/main.cpp" \
   "../src/scripting/JSScript.cpp" \
-  "../src/scripting/JSScriptInterface.cpp"
+  "../src/scripting/JSScriptInterface.cpp" \
+  "../src/scripting/Script.cpp" \
+  "../src/scripting/ScriptAPI.cpp" \
+  "../src/ui/LineNumberWidget.cpp" \
+  "../src/utils/FileVersionDatabase.cpp"
 
 HEADERS = \
   "../src/BibTeXFile.h" \
@@ -42,7 +46,6 @@ HEADERS = \
   "../src/ClosableTabWidget.h" \
   "../src/CommandlineParser.h" \
   "../src/CompletingEdit.h" \
-  "../src/ConfigurableApp.h" \
   "../src/ConfirmDelete.h" \
   "../src/DefaultBinaryPaths.h" \
   "../src/DefaultPrefs.h" \
@@ -50,14 +53,14 @@ HEADERS = \
   "../src/FindDialog.h" \
   "../src/GitRev.h" \
   "../src/HardWrapDialog.h" \
+  "../src/InterProcessCommunicator.h" \
   "../src/PDFDocument.h" \
   "../src/PrefsDialog.h" \
   "../src/ResourcesDialog.h" \
   "../src/ScreenCalibrationWidget.h" \
   "../src/ScriptManager.h" \
+  "../src/Settings.h" \
   "../src/TWApp.h" \
-  "../src/TWScript.h" \
-  "../src/TWScriptAPI.h" \
   "../src/TWScriptable.h" \
   "../src/TWSynchronizer.h" \
   "../src/TWSystemCmd.h" \
@@ -68,9 +71,15 @@ HEADERS = \
   "../src/TeXDocument.h" \
   "../src/TeXHighlighter.h" \
   "../src/TemplateDialog.h" \
+  "../src/document/SpellChecker.h" \
   "../src/scripting/JSScript.h" \
   "../src/scripting/JSScriptInterface.h" \
-  "../src/scripting/ScriptAPIInterface.h"
+  "../src/scripting/Script.h" \
+  "../src/scripting/ScriptAPI.h" \
+  "../src/scripting/ScriptAPIInterface.h" \
+  "../src/scripting/ScriptLanguageInterface.h" \
+  "../src/ui/LineNumberWidget.h" \
+  "../src/utils/FileVersionDatabase.h"
 
 FORMS = \
   "../src/CitationSelectDialog.ui" \

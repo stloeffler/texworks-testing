@@ -19,8 +19,8 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#ifndef TWScriptAPI_H
-#define TWScriptAPI_H
+#ifndef ScriptAPI_H
+#define ScriptAPI_H
 
 #include <QObject>
 #include <QString>
@@ -29,9 +29,12 @@
 
 #include "scripting/ScriptAPIInterface.h"
 
-class TWScript;
+namespace Tw {
+namespace Scripting {
 
-class TWScriptAPI : public QObject, public Tw::Scripting::ScriptAPIInterface
+class Script;
+
+class ScriptAPI : public QObject, public ScriptAPIInterface
 {
 	Q_OBJECT
 	
@@ -41,7 +44,7 @@ class TWScriptAPI : public QObject, public Tw::Scripting::ScriptAPIInterface
 	Q_PROPERTY(QObject * script READ GetScript)
 	
 public:
-	TWScriptAPI(TWScript* script, QObject* twapp, QObject* ctx, QVariant& res);
+	ScriptAPI(Script* script, QObject* twapp, QObject* ctx, QVariant& res);
 
 	virtual QObject* self() { return this; }
 	
@@ -190,10 +193,13 @@ public:
 	bool mayReadFile(const QString& filename, QObject * context) const;
 
 protected:
-	TWScript* m_script;
+	Script* m_script;
 	QObject* m_app;
 	QObject* m_target;
 	QVariant& m_result;
 };
 
-#endif /* TWScriptAPI_H */
+} // namespace Scripting
+} // namespace Tw
+
+#endif /* ScriptAPI_H */

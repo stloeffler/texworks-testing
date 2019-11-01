@@ -22,14 +22,14 @@
 #ifndef TEX_HIGHLIGHTER_H
 #define TEX_HIGHLIGHTER_H
 
+#include "document/SpellChecker.h"
+
 #include <QSyntaxHighlighter>
 
 #include <QTextLayout>
 #include <QTextCharFormat>
-
+#include <QRegularExpression>
 #include <QTimer>
-
-#include <hunspell.h>
 
 class QTextDocument;
 class QTextCodec;
@@ -103,7 +103,7 @@ public:
 	TeXHighlighter(QTextDocument *parent, TeXDocument *texDocument = nullptr);
 	void setActiveIndex(int index);
 
-	void setSpellChecker(Hunhandle *h, QTextCodec *codec);
+	void setSpellChecker(Tw::Document::SpellChecker::Dictionary * dictionary);
 
 	QString getSyntaxMode() const {
 		return (highlightIndex >= 0 && highlightIndex < syntaxOptions().size())
@@ -113,7 +113,7 @@ public:
 	static QStringList syntaxOptions();
 
 protected:
-	void highlightBlock(const QString &text);
+	virtual void highlightBlock(const QString &text) override;
 
 	void spellCheckRange(const QString &text, int index, int limit, const QTextCharFormat &spellFormat);
 
@@ -121,7 +121,7 @@ private:
 	static void loadPatterns();
 
 	struct HighlightingRule {
-		QRegExp pattern;
+		QRegularExpression pattern;
 		QTextCharFormat format;
 		QTextCharFormat	spellFormat;
 		bool spellCheck;
@@ -136,7 +136,7 @@ private:
 	QTextCharFormat spellFormat;
 
 	struct TagPattern {
-		QRegExp pattern;
+		QRegularExpression pattern;
 		unsigned int level;
 	};
 	static QList<TagPattern> *tagPatterns;
@@ -146,8 +146,7 @@ private:
 	int highlightIndex;
 	bool isTagging;
 
-	Hunhandle	*pHunspell;
-	QTextCodec	*spellingCodec;
+	Tw::Document::SpellChecker::Dictionary * _dictionary;
 
 	QTextDocument * textDoc;
 };

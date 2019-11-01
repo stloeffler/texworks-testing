@@ -21,8 +21,9 @@
 
 #include "ScriptManager.h"
 #include "TWApp.h"
-#include "TWScript.h"
+#include "scripting/Script.h"
 #include "TWScriptable.h"
+#include "scripting/ScriptLanguageInterface.h"
 
 #include <QLabel>
 #include <QCloseEvent>
@@ -106,8 +107,8 @@ void ScriptManager::populateTree(QTreeWidget * tree, QTreeWidgetItem * parentIte
 	QTreeWidgetItem * item;
 
 	foreach (QObject * obj, scripts->children()) {
-		TWScript * script = qobject_cast<TWScript*>(obj);
-		if (script && script->getType() != TWScript::ScriptUnknown) {
+		Tw::Scripting::Script * script = qobject_cast<Tw::Scripting::Script*>(obj);
+		if (script && script->getType() != Tw::Scripting::Script::ScriptUnknown) {
 			QStringList strList(script->getTitle());
 			item = parentItem ? new QTreeWidgetItem(parentItem, strList, kScriptType) : new QTreeWidgetItem(tree, strList, kScriptType);
 			item->setData(0, Qt::UserRole, qVariantFromValue((void*)script));
@@ -130,7 +131,7 @@ void ScriptManager::populateTree(QTreeWidget * tree, QTreeWidgetItem * parentIte
 void ScriptManager::treeItemClicked(QTreeWidgetItem * item, int /*column*/)
 {
 	if (item->type() == kScriptType) {
-		TWScript * s = static_cast<TWScript*>(item->data(0, Qt::UserRole).value<void*>());
+		Tw::Scripting::Script * s = static_cast<Tw::Scripting::Script*>(item->data(0, Qt::UserRole).value<void*>());
 		if (s) {
 			s->setEnabled(item->checkState(0) == Qt::Checked);
 			setFolderCheckedState(item->parent());
@@ -165,7 +166,7 @@ void ScriptManager::setFolderCheckedState(QTreeWidgetItem * item)
 void ScriptManager::treeItemActivated(QTreeWidgetItem * item, int /*column*/)
 {
 	if (item->type() == kScriptType) {
-		TWScript * s = static_cast<TWScript*>(item->data(0, Qt::UserRole).value<void*>());
+		Tw::Scripting::Script * s = static_cast<Tw::Scripting::Script*>(item->data(0, Qt::UserRole).value<void*>());
 		if (s)
 			QDesktopServices::openUrl(QUrl::fromLocalFile(s->getFilename()));
 	}
@@ -183,7 +184,7 @@ void ScriptManager::treeSelectionChanged()
 	if (selection[0]->type() != kScriptType)
 		return;
 	
-	TWScript * s = static_cast<TWScript*>(selection[0]->data(0, Qt::UserRole).value<void*>());
+	Tw::Scripting::Script * s = static_cast<Tw::Scripting::Script*>(selection[0]->data(0, Qt::UserRole).value<void*>());
 	if (!s)
 		return;
 
@@ -196,7 +197,7 @@ void ScriptManager::treeSelectionChanged()
 	addDetailsRow(rows, tr("Shortcut: "), s->getKeySequence().toString());
 	addDetailsRow(rows, tr("File: "), QFileInfo(s->getFilename()).fileName());
 	
-	const TWScriptLanguageInterface * sli = qobject_cast<TWScriptLanguageInterface*>(s->getScriptLanguagePlugin());
+	const Tw::Scripting::ScriptLanguageInterface * sli = qobject_cast<Tw::Scripting::ScriptLanguageInterface*>(s->getScriptLanguagePlugin());
 	if(sli) {
 		QString url = sli->scriptLanguageURL();
 		QString str = sli->scriptLanguageName();
@@ -205,7 +206,7 @@ void ScriptManager::treeSelectionChanged()
 		addDetailsRow(rows, tr("Language: "), str);
 	}
 
-	if (s->getType() == TWScript::ScriptHook)
+	if (s->getType() == Tw::Scripting::Script::ScriptHook)
 		addDetailsRow(rows, tr("Hook: "), s->getHook());
 
 	details->setHtml(QString::fromLatin1("<table>%1</table").arg(rows));

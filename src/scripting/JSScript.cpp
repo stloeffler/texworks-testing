@@ -20,12 +20,15 @@
 */
 
 #include "scripting/JSScript.h"
-#include "TWApp.h"
+#include "Settings.h"
 
 #include <QScriptEngine>
 #include <QScriptEngineDebugger>
 #include <QScriptValue>
 #include <QTextStream>
+
+namespace Tw {
+namespace Scripting {
 
 static
 QVariant convertValue(const QScriptValue& value)
@@ -42,7 +45,7 @@ QVariant convertValue(const QScriptValue& value)
 	return value.toVariant();
 }
 
-bool JSScript::execute(Tw::Scripting::ScriptAPIInterface * tw) const
+bool JSScript::execute(ScriptAPIInterface * tw) const
 {
 	QFile scriptFile(m_Filename);
 	if (!scriptFile.open(QIODevice::ReadOnly)) {
@@ -60,7 +63,7 @@ bool JSScript::execute(Tw::Scripting::ScriptAPIInterface * tw) const
 
 	QScriptValue val;
 
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	if (settings.value(QString::fromLatin1("scriptDebugger"), false).toBool()) {
 		QScriptEngineDebugger debugger;
 		debugger.attachTo(&engine);
@@ -78,3 +81,6 @@ bool JSScript::execute(Tw::Scripting::ScriptAPIInterface * tw) const
 		tw->SetResult(convertValue(val));
 	return true;
 }
+
+} // namespace Scripting
+} // namespace Tw

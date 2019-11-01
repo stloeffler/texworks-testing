@@ -15,7 +15,6 @@ set(TEXWORKS_SRCS BibTeXFile.cpp
                   ClosableTabWidget.cpp
                   CommandlineParser.cpp
                   CompletingEdit.cpp
-                  ConfigurableApp.cpp
                   ConfirmDelete.cpp
                   Engine.cpp
                   FindDialog.cpp
@@ -26,20 +25,25 @@ set(TEXWORKS_SRCS BibTeXFile.cpp
                   ResourcesDialog.cpp
                   ScreenCalibrationWidget.cpp
                   ScriptManager.cpp
+                  Settings.cpp
                   TemplateDialog.cpp
                   TeXDocks.cpp
                   TeXDocument.cpp
                   TeXHighlighter.cpp
                   TWApp.cpp
                   TWScriptable.cpp
-                  TWScriptAPI.cpp
-                  TWScript.cpp
                   TWSynchronizer.cpp
                   TWSystemCmd.cpp
                   TWTextCodecs.cpp
                   TWUtils.cpp
+                  document/SpellChecker.cpp
                   scripting/JSScriptInterface.cpp
-                  scripting/JSScript.cpp)
+                  scripting/ScriptAPI.cpp
+                  scripting/Script.cpp
+                  scripting/JSScript.cpp
+                  ui/LineNumberWidget.cpp
+                  utils/FileVersionDatabase.cpp
+                  )
 
 set(TEXWORKS_HDRS BibTeXFile.h
                   CitationSelectDialog.h
@@ -47,7 +51,6 @@ set(TEXWORKS_HDRS BibTeXFile.h
                   ClosableTabWidget.h
                   CommandlineParser.h
                   CompletingEdit.h
-                  ConfigurableApp.h
                   ConfirmDelete.h
                   DefaultPrefs.h
                   Engine.h
@@ -59,27 +62,36 @@ set(TEXWORKS_HDRS BibTeXFile.h
                   ResourcesDialog.h
                   ScreenCalibrationWidget.h
                   ScriptManager.h
+                  Settings.h
                   TemplateDialog.h
                   TeXDocks.h
                   TeXDocument.h
                   TeXHighlighter.h
                   TWApp.h
                   TWScriptable.h
-                  TWScriptAPI.h
-                  TWScript.h
                   TWSynchronizer.h
                   TWSystemCmd.h
                   TWTextCodecs.h
                   TWUtils.h
                   TWVersion.h
+                  InterProcessCommunicator.h
+                  document/SpellChecker.h
                   scripting/ScriptAPIInterface.h
+                  scripting/ScriptLanguageInterface.h
+                  scripting/ScriptAPI.h
+                  scripting/Script.h
                   scripting/JSScriptInterface.h
-                  scripting/JSScript.h)
+                  scripting/JSScript.h
+                  ui/LineNumberWidget.h
+                  utils/FileVersionDatabase.h
+                  )
 
 if (WIN32)
   list(APPEND TEXWORKS_HDRS DefaultBinaryPathsWin.h)
+  list(APPEND TEXWORKS_SRCS InterProcessCommunicatorWin.cpp)
 else ()
   list(APPEND TEXWORKS_HDRS DefaultBinaryPaths.h)
+  list(APPEND TEXWORKS_SRCS InterProcessCommunicatorDBus.cpp)
 endif ()
 
 set(TEXWORKS_UIS CitationSelectDialog.ui
@@ -112,16 +124,16 @@ ENDIF ( WIN32 )
 # `PARENT_SCOPE` (top level CMake file) so that they will be available to the
 # build processes of the scripting language plugins.
 SET(TeXworks_SCRIPT_API
-  ${CMAKE_CURRENT_SOURCE_DIR}/TWScript.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/TWScriptAPI.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/scripting/Script.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptAPI.cpp
   PARENT_SCOPE
 )
 
 SET(TeXworks_SCRIPT_API_H
-  ${CMAKE_CURRENT_SOURCE_DIR}/TWScript.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/TWScriptAPI.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/scripting/Script.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/scripting/ScriptAPI.h
   ${CMAKE_CURRENT_SOURCE_DIR}/TWSystemCmd.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/ConfigurableApp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/Settings.h
   PARENT_SCOPE
 )
 

@@ -37,7 +37,6 @@ class QMainWindow;
 class QCompleter;
 class TeXDocument;
 class PDFDocument;
-struct Hunhandle;
 
 // static utility methods
 class TWUtils
@@ -50,6 +49,8 @@ public:
 
 	// return the path to our "library" folder for resources like templates, completion lists, etc
 	static const QString getLibraryPath(const QString& subdir, const bool updateOnDisk = true);
+	// same as getLibraryPath(), but splits the return value by PATH_LIST_SEP
+	static const QStringList getLibraryPaths(const QString& subdir, const bool updateOnDisk = true);
 	static void updateLibraryResources(const QDir& srcRootDir, const QDir& destRootDir, const QString& libPath);
 
 	static void insertHelpMenuItems(QMenu* helpMenu);
@@ -60,19 +61,6 @@ public:
 	// get list of available translations
 	static QStringList *getTranslationList();
 	
-	// get list of available dictionaries
-	static QHash<QString, QString> *getDictionaryList(const bool forceReload = false);
-	
-	// get dictionary for a given language
-	static Hunhandle *getDictionary(const QString& language);
-	// get language for a given dictionary
-	static QString getLanguageForDictionary(const Hunhandle * pHunspell);
-	// deallocates all dictionaries
-	// WARNING: Don't call this while some window is using a dictionary (holds a
-	// Hunhandle*) as that window won't be notified; deactivate spell checking
-	// in all windows first (see TWApp::reloadSpellchecker())
-	static void clearDictionaries();
-
 	// list of filename filters for the Open/Save dialogs
 	static QStringList* filterList();
 	static void setDefaultFilters();
@@ -127,10 +115,7 @@ private:
 	TWUtils();
 
 	static QList<QTextCodec*>		*codecList;
-	static QHash<QString, QString>	*dictionaryList;
 	static QStringList				*translationList;
-
-	static QHash<const QString,Hunhandle*>	*dictionaries;
 
 	static QStringList			*filters;
 
@@ -169,32 +154,5 @@ private:
 	static CmdKeyFilter *filterObj;
 };
 
-
-class FileVersionDatabase
-{
-public:
-	struct Record {
-		QFileInfo filePath;
-		QString version;
-		QByteArray hash;
-	};
-	
-	FileVersionDatabase() { }
-	virtual ~FileVersionDatabase() { }
-
-	static QByteArray hashForFile(const QString & path);
-
-	static FileVersionDatabase load(const QString & path);
-	bool save(const QString & path) const;
-	
-	void addFileRecord(const QFileInfo & file, const QByteArray & hash, const QString & version);
-	bool hasFileRecord(const QFileInfo & file) const;
-	Record getFileRecord(const QFileInfo & file) const;
-	const QList<Record> & getFileRecords() const { return m_records; }
-	QList<Record> & getFileRecords() { return m_records; }
-	
-private:
-	QList<Record> m_records;
-};
 
 #endif

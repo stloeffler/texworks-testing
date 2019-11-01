@@ -21,11 +21,13 @@
 
 #include "PrefsDialog.h"
 #include "DefaultPrefs.h"
+#include "Settings.h"
 #include "TWApp.h"
 #include "PDFDocument.h"
 #include "TeXHighlighter.h"
 #include "CompletingEdit.h"
 #include "TWUtils.h"
+#include "document/SpellChecker.h"
 
 #include <QFontDatabase>
 #include <QTextCodec>
@@ -468,11 +470,11 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 	dlg.smartQuotes->addItems(quotesModes);
 
 	QList< DictPair > dictList;
-	foreach (const QString& dictKey, TWUtils::getDictionaryList()->uniqueKeys()) {
+	foreach (const QString& dictKey, Tw::Document::SpellChecker::getDictionaryList()->uniqueKeys()) {
 		QString dict, label;
 		QLocale loc;
 
-		foreach (dict, TWUtils::getDictionaryList()->values(dictKey)) {
+		foreach (dict, Tw::Document::SpellChecker::getDictionaryList()->values(dictKey)) {
 			loc = QLocale(dict);
 			if (loc.language() != QLocale::C) break;
 		}
@@ -493,7 +495,7 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 	foreach (const DictPair& dict, dictList)
 		dlg.language->addItem(dict.first, dict.second);
 		
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	// initialize controls based on the current settings
 	
 	// General

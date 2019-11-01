@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2008-2013  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2010-2019  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,27 +19,36 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include "ConfigurableApp.h"
+#include "LuaScriptInterface.h"
+#include "LuaScript.h"
 
-ConfigurableApp::ConfigurableApp(int &argc, char **argv)
-: QApplication(argc, argv)
-, settingsFormat(QSettings::NativeFormat)
+#include <QTextStream>
+#include <QtPlugin>
+#include <QMetaObject>
+#include <QStringList>
+
+namespace Tw {
+namespace Scripting {
+
+LuaScriptInterface::LuaScriptInterface()
 {
+	// Initialize lua state
+	luaState = luaL_newstate();
+	if (luaState) {
+		luaL_openlibs(luaState);
+	}
 }
 
-// static
-ConfigurableApp * ConfigurableApp::instance()
+LuaScriptInterface::~LuaScriptInterface()
 {
-	return qobject_cast<ConfigurableApp*>(QApplication::instance());
+	if (luaState)
+		lua_close(luaState);
 }
 
-QSettings::Format ConfigurableApp::getSettingsFormat() const
+Script* LuaScriptInterface::newScript(const QString& fileName)
 {
-	return settingsFormat;
+	return new LuaScript(this, fileName);
 }
 
-void ConfigurableApp::setSettingsFormat(QSettings::Format fmt)
-{
-	settingsFormat = fmt;
-}
-
+} // namespace Scripting
+} // namespace Tw

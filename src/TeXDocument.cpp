@@ -24,6 +24,7 @@
 #include "TeXDocks.h"
 #include "FindDialog.h"
 #include "TemplateDialog.h"
+#include "Settings.h"
 #include "TWApp.h"
 #include "TWUtils.h"
 #include "PDFDocument.h"
@@ -33,7 +34,7 @@
 #include "CitationSelectDialog.h"
 #include "Engine.h"
 #include "ClickableLabel.h"
-#include "TWScriptAPI.h"
+#include "scripting/ScriptAPI.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -47,7 +48,6 @@
 #include <QStringList>
 #include <QUrl>
 #include <QComboBox>
-#include <QRegExp>
 #include <QProcess>
 #include <QAbstractItemView>
 #include <QScrollBar>
@@ -73,8 +73,6 @@
 #define kLineEnd_Flags_Mask  0xFF00
 #define kLineEnd_Mixed       0x0100
 
-const int kHardWrapDefaultWidth = 64;
-
 QList<TeXDocument*> TeXDocument::docList;
 
 TeXDocument::TeXDocument()
@@ -93,7 +91,7 @@ TeXDocument::TeXDocument()
 	, keepConsoleOpen(false)
 	, showPdfWhenFinished(true)
 	, userInterrupt(false)
-	, pHunspell(nullptr)
+	, _dictionary(nullptr)
 	, watcher(nullptr)
 	, deferTagListChanges(false)
 	, tagListChanged(false)
@@ -118,7 +116,7 @@ TeXDocument::TeXDocument(const QString &fileName, bool asTemplate)
 	, keepConsoleOpen(false)
 	, showPdfWhenFinished(true)
 	, userInterrupt(false)
-	, pHunspell(nullptr)
+	, _dictionary(nullptr)
 	, watcher(nullptr)
 	, deferTagListChanges(false)
 	, tagListChanged(false)
@@ -143,7 +141,7 @@ void TeXDocument::init()
 	pdfDoc = nullptr;
 	process = nullptr;
 	highlighter = nullptr;
-	pHunspell = nullptr;
+	_dictionary = nullptr;
 	utf8BOM = false;
 #if defined(Q_OS_WIN)
 	lineEndings = kLineEnd_CRLF;
@@ -152,9 +150,6 @@ void TeXDocument::init()
 #endif
 	
 	setupUi(this);
-#if defined(Q_OS_WIN)
-	TWApp::instance()->createMessageTarget(this);
-#endif
 
 	setAttribute(Qt::WA_DeleteOnClose, true);
 	setAttribute(Qt::WA_MacNoClickThrough, true);
@@ -292,7 +287,7 @@ void TeXDocument::init()
 
 	connect(inputLine, SIGNAL(returnPressed()), this, SLOT(acceptInputLine()));
 
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	TWUtils::applyToolbarOptions(this, settings.value(QString::fromLatin1("toolBarIconSize"), 2).toInt(), settings.value(QString::fromLatin1("toolBarShowText"), false).toBool());
 
 	QFont font = textEdit->font();
@@ -408,7 +403,7 @@ void TeXDocument::init()
 	group->addAction(actionNone);
 
 	reloadSpellcheckerMenu();
-	connect(TWApp::instance(), SIGNAL(dictionaryListChanged()), this, SLOT(reloadSpellcheckerMenu()));
+	connect(Tw::Document::SpellChecker::instance(), SIGNAL(dictionaryListChanged()), this, SLOT(reloadSpellcheckerMenu()));
 
 	menuShow->addAction(toolBar_run->toggleViewAction());
 	menuShow->addAction(toolBar_edit->toggleViewAction());
@@ -461,24 +456,18 @@ void TeXDocument::setLangInternal(const QString& lang)
 	// called internally by the spelling menu actions;
 	// not for use from scripts as it won't update the menu
 	QTextCodec *spellingCodec;
-	Hunhandle* pOldHunspell = pHunspell;
-	pHunspell = TWUtils::getDictionary(lang);
+	Tw::Document::SpellChecker::Dictionary * oldDictionary = _dictionary;
+	_dictionary = Tw::Document::SpellChecker::getDictionary(lang);
 	// if the dictionary hasn't change, don't reset the spell checker as that
 	// can result in a serious delay for long documents
-	// NB: Don't delete the hunspell handles; the pointers are kept by TWUtils
-	if (pOldHunspell == pHunspell)
+	// NB: Don't delete the dictionaries; the pointers are kept by
+	// Tw::Document::SpellChecker
+	if (oldDictionary == _dictionary)
 		return;
 	
-	if (pHunspell) {
-		spellingCodec = QTextCodec::codecForName(Hunspell_get_dic_encoding(pHunspell));
-		if (!spellingCodec)
-			spellingCodec = QTextCodec::codecForLocale(); // almost certainly wrong, if we couldn't find the actual name!
-	}
-	else
-		spellingCodec = nullptr;
-	textEdit->setSpellChecker(pHunspell, spellingCodec);
+	textEdit->setSpellChecker(_dictionary);
 	if (highlighter)
-		highlighter->setSpellChecker(pHunspell, spellingCodec);
+		highlighter->setSpellChecker(_dictionary);
 }
 
 void TeXDocument::setSpellcheckLanguage(const QString& lang)
@@ -488,9 +477,9 @@ void TeXDocument::setSpellcheckLanguage(const QString& lang)
 	
 	// Determine all aliases for the specified lang
 	QList<QString> langAliases;
-	foreach (const QString& dictKey, TWUtils::getDictionaryList()->uniqueKeys()) {
-		if(TWUtils::getDictionaryList()->values(dictKey).contains(lang))
-			langAliases += TWUtils::getDictionaryList()->values(dictKey);
+	foreach (const QString& dictKey, Tw::Document::SpellChecker::getDictionaryList()->uniqueKeys()) {
+		if(Tw::Document::SpellChecker::getDictionaryList()->values(dictKey).contains(lang))
+			langAliases += Tw::Document::SpellChecker::getDictionaryList()->values(dictKey);
 	}
 	langAliases.removeAll(lang);
 	langAliases.prepend(lang);
@@ -514,7 +503,8 @@ void TeXDocument::setSpellcheckLanguage(const QString& lang)
 
 QString TeXDocument::spellcheckLanguage() const
 {
-	return TWUtils::getLanguageForDictionary(pHunspell);
+	if (!_dictionary) return QString();
+	return _dictionary->getLanguage();
 }
 
 void TeXDocument::reloadSpellcheckerMenu()
@@ -539,11 +529,11 @@ void TeXDocument::reloadSpellcheckerMenu()
 	}
 	
 	QList<QAction*> dictActions;
-	foreach (const QString& dictKey, TWUtils::getDictionaryList()->uniqueKeys()) {
+	foreach (const QString& dictKey, Tw::Document::SpellChecker::getDictionaryList()->uniqueKeys()) {
 		QString dict, label;
 		QLocale loc;
 
-		foreach (dict, TWUtils::getDictionaryList()->values(dictKey)) {
+		foreach (dict, Tw::Document::SpellChecker::getDictionaryList()->values(dictKey)) {
 			loc = QLocale(dict);
 
 			if (loc.language() == QLocale::C)
@@ -630,7 +620,7 @@ void TeXDocument::open()
 #elif defined(Q_OS_WIN)
 	if(TWApp::GetWindowsVersion() < 0x06000000) options |= QFileDialog::DontUseNativeDialog;
 #endif
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	QString lastOpenDir = settings.value(QString::fromLatin1("openDialogDir")).toString();
 	if (lastOpenDir.isEmpty())
 		lastOpenDir = QDir::homePath();
@@ -820,7 +810,7 @@ bool TeXDocument::saveAs()
 	QString selectedFilter = TWUtils::chooseDefaultFilter(curFile, *(TWUtils::filterList()));;
 
 	// for untitled docs, default to the last dir used, or $HOME if no saved value
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	QString lastSaveDir = settings.value(QString::fromLatin1("saveDialogDir")).toString();
 	if (lastSaveDir.isEmpty() || !QDir(lastSaveDir).exists())
 		lastSaveDir = QDir::homePath();
@@ -835,9 +825,10 @@ bool TeXDocument::saveAs()
 	saveRecentFileInfo();
 
 	// add extension from the selected filter, if unique and not already present
-	QRegExp re(QString::fromLatin1("\\(\\*(\\.[^ *]+)\\)"));
-	if (re.indexIn(selectedFilter) >= 0) {
-		QString ext = re.cap(1);
+	QRegularExpression re(QStringLiteral("\\(\\*(\\.[^ *]+)\\)"));
+	QRegularExpressionMatch m = re.match(selectedFilter);
+	if (m.capturedStart() >= 0) {
+		QString ext = m.captured(1);
 		if (!fileName.endsWith(ext, Qt::CaseInsensitive) && !fileName.endsWith(QChar::fromLatin1('.')))
 			fileName.append(ext);
 	}
@@ -869,7 +860,7 @@ bool TeXDocument::maybeSave()
 						   this);
 		msgBox.button(QMessageBox::Discard)->setShortcut(QKeySequence(tr("Ctrl+D", "shortcut: Don't Save")));
 		msgBox.setWindowModality(Qt::WindowModal);
-		ret = (QMessageBox::StandardButton)msgBox.exec();
+		ret = static_cast<QMessageBox::StandardButton>(msgBox.exec());
 		if (ret == QMessageBox::Save)
 			return save();
 		if (ret == QMessageBox::Cancel)
@@ -943,18 +934,18 @@ static const char* texshopSynonyms[] = {
 //	"GBK",				"",
 //	"GB 2312",			"",
 	"GB 18030",			"GB18030-0",
-	NULL
+	nullptr
 };
 
 QTextCodec *TeXDocument::scanForEncoding(const QString &peekStr, bool &hasMetadata, QString &reqName)
 {
 	// peek at the file for %!TEX encoding = ....
-	QRegExp re(QString::fromLatin1("% *!TEX +encoding *= *([^\\r\\n\\x2029]+)[\\r\\n\\x2029]"), Qt::CaseInsensitive);
-	int pos = re.indexIn(peekStr);
+	QRegularExpression re(QStringLiteral(u"% *!TEX +encoding *= *([^\r\n\x2029]+)[\r\n\x2029]"), QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionMatch m = re.match(peekStr);
 	QTextCodec *reqCodec = nullptr;
-	if (pos > -1) {
+	if (m.hasMatch()) {
 		hasMetadata = true;
-		reqName = re.cap(1).trimmed();
+		reqName = m.captured(1).trimmed();
 		reqCodec = QTextCodec::codecForName(reqName.toLatin1());
 		if (!reqCodec) {
 			static QHash<QString,QString> *synonyms = nullptr;
@@ -1029,8 +1020,13 @@ QString TeXDocument::readFile(const QString &fileName,
 	if ((*codecUsed)->mibEnum() == 106 && peekBytes.size() >= 3 && peekBytes[0] == '\xEF' && peekBytes[1] == '\xBB' && peekBytes[2] == '\xBF')
 		utf8BOM = true;
 	
+	// If the file is empty (we're already at the end), don't try to read
+	// anything using QTextStream below as that would return a Null-String
+	// (QString()) rather than an empty string (QString("")). Instead, return
+	// an empty string right away.
 	if (file.atEnd())
-		return QString();
+		return QStringLiteral("");
+
 	QTextStream in(&file);
 	in.setCodec(*codecUsed);
 	QString text = in.readAll();
@@ -1124,7 +1120,7 @@ void TeXDocument::loadFile(const QString &fileName, bool asTemplate /* = false *
 	else {
 		setCurrentFile(fileName);
 		if (!reload) {
-			QSETTINGS_OBJECT(settings);
+			Tw::Settings settings;
 			if (!inBackground && settings.value(QString::fromLatin1("openPDFwithTeX"), kDefault_OpenPDFwithTeX).toBool()) {
 				openPdfIfAvailable(false);
 				// Note: openPdfIfAvailable() enables/disables actionGo_to_Preview
@@ -1202,7 +1198,7 @@ void TeXDocument::loadFile(const QString &fileName, bool asTemplate /* = false *
 void TeXDocument::delayedInit()
 {
 	if (!highlighter) {
-		QSETTINGS_OBJECT(settings);
+		Tw::Settings settings;
 
 		highlighter = new TeXHighlighter(textEdit->document(), this);
 		connect(textEdit, SIGNAL(rehighlight()), highlighter, SLOT(rehighlight()));
@@ -1966,7 +1962,7 @@ void TeXDocument::doHardWrapDialog()
 	dlg.show();
 	if (dlg.exec()) {
 		dlg.saveSettings();
-		doHardWrap(dlg.mode(), dlg.lineWidth(), dlg.rewrap());
+		doHardWrap(dlg.mode(), static_cast<int>(dlg.lineWidth()), dlg.rewrap());
 	}
 }
 
@@ -1990,16 +1986,16 @@ void TeXDocument::doInsertCitationsDialog()
 	// TODO: Be able to figure out bib files from \bibliography and
 	//       \nobibliography commands or from aux files
 	// TODO: Be able to parse thebibliography environments
-	QRegExp reBib(QString::fromLatin1("% *!TEX +bibfiles? *= *([^\\x2029]+)\\x2029"), Qt::CaseInsensitive);
-	int pos = reBib.indexIn(peekStr);
+	QRegularExpression reBib(QStringLiteral(u"% *!TEX +bibfiles? *= *([^\r\n\x2029]+)[\r\n\x2029]"), QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionMatch mBib = reBib.match(peekStr);
 
-	if (pos < 0) {
+	if (!mBib.hasMatch()) {
 		emit asyncFlashStatusBarMessage(tr("No '%!TEX bibfile' modline found"), kStatusMessageDuration);
 		return;
 	}
 
 	// Load the bibfiles
-	Q_FOREACH(QString bibFile, reBib.cap(1).split(QLatin1Char(','), QString::SkipEmptyParts)) {
+	Q_FOREACH(QString bibFile, mBib.captured(1).split(QLatin1Char(','), QString::SkipEmptyParts)) {
 		bibFile = bibFile.trimmed();
 		if (bibFile.isEmpty()) continue;
 		// Assume relative paths are given with respect to the current file's
@@ -2030,7 +2026,7 @@ void TeXDocument::doInsertCitationsDialog()
 
 	QString pattern = QString::fromLatin1("\\\\(");
 	Q_FOREACH(QString citeCmd, citeCmds)
-		pattern += QRegExp::escape(citeCmd) + QString::fromLatin1("|");
+		pattern += QRegularExpression::escape(citeCmd) + QString::fromLatin1("|");
 	pattern.chop(1);
 	pattern += QLatin1String(")\\*?\\s*(\\[[^\\]]*\\])?\\s*\\{([^}]*)\\}");
 
@@ -2045,12 +2041,19 @@ void TeXDocument::doInsertCitationsDialog()
 	curs.endEditBlock();
 
 	peekStr = curs.selectedText();
-	QRegExp reCmd(pattern);
+	QRegularExpression reCmd(pattern);
+	QRegularExpressionMatch mCmd;
 
-	reCmd.lastIndexIn(peekStr, peekFront);
-	bool updateExisting = reCmd.pos() < peekFront && reCmd.pos() + reCmd.matchedLength() > peekFront;
+#if QT_VERSION >= 0x050500
+	peekStr.lastIndexOf(reCmd, peekFront, &mCmd);
+#else
+	int pos = peekStr.lastIndexOf(reCmd, peekFront);
+	if (pos >= 0)
+		mCmd= reCmd.match(peekStr, pos);
+#endif
+	bool updateExisting = mCmd.hasMatch() && mCmd.capturedStart() < peekFront && mCmd.capturedEnd() > peekFront;
 	if (updateExisting)
-		dlg.setInitialKeys(reCmd.cap(3).split(QLatin1Char(',')));
+		dlg.setInitialKeys(mCmd.captured(3).split(QLatin1Char(',')));
 
 	// Run the dialog
 	if (dlg.exec()) {
@@ -2071,9 +2074,9 @@ void TeXDocument::doInsertCitationsDialog()
 			// captures pos() returns -1 according to the documentation; in that
 			// case, use the fact that cap(0) is not empty and we know that the
 			// argument is followed by "}"
-			curs.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, (reCmd.pos(3) >= 0 ? reCmd.pos(3) : reCmd.pos(0) + reCmd.cap(0).length() - 1));
+			curs.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, (mCmd.capturedStart(3) >= 0 ? mCmd.capturedStart(3) : mCmd.capturedEnd(0) - 1));
 			// select the cite argument (until just before '}')
-			curs.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, reCmd.cap(3).length());
+			curs.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, mCmd.capturedLength(3));
 			// replace the text
 			curs.insertText(dlg.getSelectedKeys().join(QLatin1String(",")));
 			curs.endEditBlock();
@@ -2118,7 +2121,7 @@ void TeXDocument::doHardWrap(int mode, int lineWidth, bool rewrap)
 	cur.setPosition(selEnd, QTextCursor::KeepAnchor);
 	
 	QString oldText = cur.selectedText();
-	QRegExp breakPattern(QString::fromLatin1("\\s+"));
+	QRegularExpression breakPattern(QStringLiteral("\\s+"));
 	QString newText;
 	
 	while (!oldText.isEmpty()) {
@@ -2156,8 +2159,9 @@ void TeXDocument::doHardWrap(int mode, int lineWidth, bool rewrap)
 
 		int curLength = 0;
 		while (!line.isEmpty()) {
-			int breakPoint = line.indexOf(breakPattern);
-			int matchLen = breakPattern.matchedLength();
+			QRegularExpressionMatch breakMatch = breakPattern.match(line);
+			int breakPoint = breakMatch.capturedStart();
+			int matchLen = breakMatch.capturedLength();
 			if (breakPoint == -1) {
 				breakPoint = line.length();
 				matchLen = 0;
@@ -2253,17 +2257,16 @@ void TeXDocument::setAutoIndentMode(const QString& mode)
 
 void TeXDocument::doFindAgain(bool fromDialog)
 {
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	QString	searchText = settings.value(QString::fromLatin1("searchText")).toString();
 	if (searchText.isEmpty())
 		return;
 
-	QTextDocument::FindFlags flags = (QTextDocument::FindFlags)settings.value(QString::fromLatin1("searchFlags")).toInt();
+	QTextDocument::FindFlags flags = static_cast<QTextDocument::FindFlags>(settings.value(QString::fromLatin1("searchFlags")).toInt());
 
-	QRegExp	*regex = nullptr;
+	QRegularExpression *regex = nullptr;
 	if (settings.value(QString::fromLatin1("searchRegex")).toBool()) {
-		regex = new QRegExp(searchText, ((flags & QTextDocument::FindCaseSensitively) != 0)
-										? Qt::CaseSensitive : Qt::CaseInsensitive);
+		regex = new QRegularExpression(searchText, ((flags & QTextDocument::FindCaseSensitively) != 0) ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption);
 		if (!regex->isValid()) {
 			qApp->beep();
 			statusBar()->showMessage(tr("Invalid regular expression"), kStatusMessageDuration);
@@ -2365,18 +2368,17 @@ void TeXDocument::doReplaceAgain()
 
 void TeXDocument::doReplace(ReplaceDialog::DialogCode mode)
 {
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	
 	QString	searchText = settings.value(QString::fromLatin1("searchText")).toString();
 	if (searchText.isEmpty())
 		return;
 	
-	QTextDocument::FindFlags flags = (QTextDocument::FindFlags)settings.value(QString::fromLatin1("searchFlags")).toInt();
+	QTextDocument::FindFlags flags = static_cast<QTextDocument::FindFlags>(settings.value(QString::fromLatin1("searchFlags")).toInt());
 
-	QRegExp	*regex = nullptr;
+	QRegularExpression *regex = nullptr;
 	if (settings.value(QString::fromLatin1("searchRegex")).toBool()) {
-		regex = new QRegExp(searchText, ((flags & QTextDocument::FindCaseSensitively) != 0)
-										? Qt::CaseSensitive : Qt::CaseInsensitive);
+		regex = new QRegularExpression(searchText, ((flags & QTextDocument::FindCaseSensitively) != 0) ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption);
 		if (!regex->isValid()) {
 			qApp->beep();
 			statusBar()->showMessage(tr("Invalid regular expression"), kStatusMessageDuration);
@@ -2387,13 +2389,15 @@ void TeXDocument::doReplace(ReplaceDialog::DialogCode mode)
 
 	QString	replacement = settings.value(QString::fromLatin1("replaceText")).toString();
 	if (regex) {
-		QRegExp escapedChar(QString::fromLatin1("\\\\([nt\\\\]|x([0-9A-Fa-f]{4}))"));
+		QRegularExpression escapedChar(QStringLiteral("\\\\([nt\\\\]|x([0-9A-Fa-f]{4}))"));
 		int index = -1;
-		while ((index = replacement.indexOf(escapedChar, index + 1)) >= 0) {
+		QRegularExpressionMatch escapeMatch;
+		while ((escapeMatch = escapedChar.match(replacement, index + 1)).hasMatch()) {
+			index = escapeMatch.capturedStart();
 			QChar ch;
-			if (escapedChar.cap(1).length() == 1) {
+			if (escapeMatch.capturedLength(1) == 1) {
 				// single-char escape code newline/tab/backslash
-				ch = escapedChar.cap(1)[0];
+				ch = escapeMatch.captured(1)[0];
 				switch (ch.unicode()) {
 					case 'n':
 					    ch = QChar::fromLatin1('\n');
@@ -2412,9 +2416,9 @@ void TeXDocument::doReplace(ReplaceDialog::DialogCode mode)
 			else {
 				// Unicode char number \xHHHH
 				bool ok;
-				ch = (QChar)escapedChar.cap(2).toUInt(&ok, 16);
+				ch = QChar(escapeMatch.captured(2).toUInt(&ok, 16));
 			}
-			replacement.replace(index, escapedChar.matchedLength(), ch);
+			replacement.replace(index, escapeMatch.capturedLength(), ch);
 		}
 	}
 	
@@ -2505,7 +2509,7 @@ void TeXDocument::doReplace(ReplaceDialog::DialogCode mode)
 	delete regex;
 }
 
-int TeXDocument::doReplaceAll(const QString& searchText, QRegExp* regex, const QString& replacement,
+int TeXDocument::doReplaceAll(const QString& searchText, QRegularExpression * regex, const QString& replacement,
 								QTextDocument::FindFlags flags, int rangeStart, int rangeEnd)
 {
 	QTextCursor searchRange = textCursor();
@@ -2553,7 +2557,7 @@ int TeXDocument::doReplaceAll(const QString& searchText, QRegExp* regex, const Q
 	return replacements;
 }
 
-QTextCursor TeXDocument::doSearch(QTextDocument *theDoc, const QString& searchText, const QRegExp *regex, QTextDocument::FindFlags flags, int s, int e)
+QTextCursor TeXDocument::doSearch(QTextDocument *theDoc, const QString& searchText, const QRegularExpression * regex, QTextDocument::FindFlags flags, int s, int e)
 {
 	QTextCursor curs;
 	const QString& docText = theDoc->toPlainText();
@@ -2562,13 +2566,27 @@ QTextCursor TeXDocument::doSearch(QTextDocument *theDoc, const QString& searchTe
 		if (regex) {
 			// this doesn't seem to match \n or even \x2029 for newline
 			// curs = theDoc->find(*regex, e, flags);
-			int offset = regex->lastIndexIn(docText, e, QRegExp::CaretAtZero);
-			while (offset >= s && offset + regex->matchedLength() > e)
-				offset = regex->lastIndexIn(docText, offset - 1, QRegExp::CaretAtZero);
+			QRegularExpressionMatch m;
+#if QT_VERSION >= 0x050500
+			int offset = docText.lastIndexOf(*regex, e, &m);
+#else
+			int offset = docText.lastIndexOf(*regex, e);
+			if (offset >= 0)
+				m = regex->match(docText, offset);
+#endif
+			while (offset >= s && m.capturedEnd() > e) {
+#if QT_VERSION >= 0x050500
+				offset = docText.lastIndexOf(*regex, offset - 1, &m);
+#else
+				offset = docText.lastIndexOf(*regex, offset - 1);
+				if (offset >= 0)
+					m = regex->match(docText, offset);
+#endif
+			}
 			if (offset >= s) {
 				curs = QTextCursor(theDoc);
-				curs.setPosition(offset);
-				curs.setPosition(offset + regex->matchedLength(), QTextCursor::KeepAnchor);
+				curs.setPosition(m.capturedStart());
+				curs.setPosition(m.capturedEnd(), QTextCursor::KeepAnchor);
 			}
 		}
 		else {
@@ -2585,11 +2603,11 @@ QTextCursor TeXDocument::doSearch(QTextDocument *theDoc, const QString& searchTe
 		if (regex) {
 			// this doesn't seem to match \n or even \x2029 for newline
 			// curs = theDoc->find(*regex, s, flags);
-			int offset = regex->indexIn(docText, s, QRegExp::CaretAtZero);
-			if (offset >= 0) {
+			QRegularExpressionMatch m = regex->match(docText, s);
+			if (m.hasMatch()) {
 				curs = QTextCursor(theDoc);
-				curs.setPosition(offset);
-				curs.setPosition(offset + regex->matchedLength(), QTextCursor::KeepAnchor);
+				curs.setPosition(m.capturedStart());
+				curs.setPosition(m.capturedEnd(), QTextCursor::KeepAnchor);
 			}
 		}
 		else {
@@ -2606,7 +2624,7 @@ void TeXDocument::copyToFind()
 	if (textEdit->textCursor().hasSelection()) {
 		QString searchText = textEdit->textCursor().selectedText();
 		searchText.replace(QChar(0x2029), QChar::fromLatin1('\n'));
-		QSETTINGS_OBJECT(settings);
+		Tw::Settings settings;
 		// Note: To search for multi-line strings, we currently need regex
 		// enabled (since we only have a single search line). If it was not
 		// enabled, we also need to ensure that the replaceText is escaped
@@ -2614,13 +2632,13 @@ void TeXDocument::copyToFind()
 		bool isMultiLine = searchText.contains(QChar::fromLatin1('\n'));
 		if (isMultiLine && !settings.value(QString::fromLatin1("searchRegex")).toBool()) {
 			settings.setValue(QString::fromLatin1("searchRegex"), true);
-			settings.setValue(QString::fromLatin1("replaceText"), QRegExp::escape(settings.value(QString::fromLatin1("replaceText")).toString()));
+			settings.setValue(QString::fromLatin1("replaceText"), QRegularExpression::escape(settings.value(QString::fromLatin1("replaceText")).toString()));
 		}
 		if (settings.value(QString::fromLatin1("searchRegex")).toBool()) {
 			if (isMultiLine)
-				settings.setValue(QString::fromLatin1("searchText"), QRegExp::escape(searchText).replace(QChar::fromLatin1('\n'), QLatin1String("\\n")));
+				settings.setValue(QString::fromLatin1("searchText"), QRegularExpression::escape(searchText).replace(QChar::fromLatin1('\n'), QLatin1String("\\n")));
 			else
-				settings.setValue(QString::fromLatin1("searchText"), QRegExp::escape(searchText));
+				settings.setValue(QString::fromLatin1("searchText"), QRegularExpression::escape(searchText));
 		}
 		else
 			settings.setValue(QString::fromLatin1("searchText"), searchText);
@@ -2632,20 +2650,20 @@ void TeXDocument::copyToReplace()
 	if (textEdit->textCursor().hasSelection()) {
 		QString replaceText = textEdit->textCursor().selectedText();
 		replaceText.replace(QChar(0x2029), QChar::fromLatin1('\n'));
-		QSETTINGS_OBJECT(settings);
+		Tw::Settings settings;
 		// Note: To do multi-line replacements, we currently need regex enabled
 		// (since we only have a single replace line). If it was not enabled, we
 		// also need to ensure that the searchText is escaped properly
 		bool isMultiLine = replaceText.contains(QChar::fromLatin1('\n'));
 		if (isMultiLine && !settings.value(QString::fromLatin1("searchRegex")).toBool()) {
 			settings.setValue(QString::fromLatin1("searchRegex"), true);
-			settings.setValue(QString::fromLatin1("searchText"), QRegExp::escape(settings.value(QString::fromLatin1("searchText")).toString()));
+			settings.setValue(QString::fromLatin1("searchText"), QRegularExpression::escape(settings.value(QString::fromLatin1("searchText")).toString()));
 		}
 		if (settings.value(QString::fromLatin1("searchRegex")).toBool()) {
 			if (isMultiLine)
-				settings.setValue(QString::fromLatin1("replaceText"), QRegExp::escape(replaceText).replace(QChar::fromLatin1('\n'), QLatin1String("\\n")));
+				settings.setValue(QString::fromLatin1("replaceText"), QRegularExpression::escape(replaceText).replace(QChar::fromLatin1('\n'), QLatin1String("\\n")));
 			else
-				settings.setValue(QString::fromLatin1("replaceText"), QRegExp::escape(replaceText));
+				settings.setValue(QString::fromLatin1("replaceText"), QRegularExpression::escape(replaceText));
 		}
 		else
 			settings.setValue(QString::fromLatin1("replaceText"), replaceText);
@@ -2855,7 +2873,7 @@ void TeXDocument::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 
 	executeAfterTypesetHooks();
 	
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	
 	bool shouldHideConsole = false;
 	QVariant hideConsoleSetting = settings.value(QString::fromLatin1("autoHideConsole"), kDefault_HideConsole);
@@ -2895,9 +2913,9 @@ void TeXDocument::executeAfterTypesetHooks()
 	for (int i = consoleTabs->count() - 1; i > 0; --i)
 		consoleTabs->removeTab(i);
 	
-	foreach (TWScript *s, scriptManager->getHookScripts(QString::fromLatin1("AfterTypeset"))) {
+	foreach (Tw::Scripting::Script *s, scriptManager->getHookScripts(QString::fromLatin1("AfterTypeset"))) {
 		QVariant result;
-		TWScriptAPI api(s, qApp, this, result);
+		Tw::Scripting::ScriptAPI api(s, qApp, this, result);
 		bool success = s->run(api);
 		if (success && !result.isNull()) {
 			QString res = result.toString();
@@ -2927,7 +2945,7 @@ void TeXDocument::anchorClicked(const QUrl& url)
 	if (url.scheme() == QString::fromLatin1("texworks")) {
 		int line = 0;
 		if (url.hasFragment()) {
-			line = url.fragment().toLong();
+			line = url.fragment().toInt();
 		}
 		TeXDocument * target = openDocument(QFileInfo(getRootFilePath()).absoluteDir().filePath(url.path()), true, true, line);
 		if (target)
@@ -3018,7 +3036,6 @@ void TeXDocument::syncClick(int lineNo, int col)
 void TeXDocument::contentsChanged(int position, int /*charsRemoved*/, int /*charsAdded*/)
 {
 	if (position < PEEK_LENGTH) {
-		int pos;
 		QTextCursor curs(textEdit->document());
 		// (begin|end)EditBlock() is a workaround for QTBUG-24718 that causes
 		// movePosition() to crash the program under some circumstances.
@@ -3031,10 +3048,10 @@ void TeXDocument::contentsChanged(int position, int /*charsRemoved*/, int /*char
 		QString peekStr = curs.selectedText();
 		
 		/* Search for engine specification */
-		QRegExp re(QString::fromLatin1("% *!TEX +(?:TS-)?program *= *([^\\x2029]+)\\x2029"), Qt::CaseInsensitive);
-		pos = re.indexIn(peekStr);
-		if (pos > -1) {
-			QString name = re.cap(1).trimmed();
+		QRegularExpression re(QStringLiteral(u"% *!TEX +(?:TS-)?program *= *([^\r\n\x2029]+)[\r\n\x2029]"), QRegularExpression::CaseInsensitiveOption);
+		QRegularExpressionMatch m = re.match(peekStr);
+		if (m.hasMatch()) {
+			QString name = m.captured(1).trimmed();
 			int index = engine->findText(name, Qt::MatchFixedString);
 			if (index > -1) {
 				if (index != engine->currentIndex()) {
@@ -3057,10 +3074,10 @@ void TeXDocument::contentsChanged(int position, int /*charsRemoved*/, int /*char
 		}
 		
 		/* Search for spellcheck specification */
-		QRegExp reSpell(QString::fromLatin1("% *!TEX +spellcheck *= *([^\\x2029]+)\\x2029"), Qt::CaseInsensitive);
-		pos = reSpell.indexIn(peekStr);
-		if (pos > -1) {
-			QString lang = reSpell.cap(1).trimmed();
+		QRegularExpression reSpell(QStringLiteral(u"% *!TEX +spellcheck *= *([^\r\n\x2029]+)[\r\n\x2029]"), QRegularExpression::CaseInsensitiveOption);
+		QRegularExpressionMatch mSpell = reSpell.match(peekStr);
+		if (mSpell.hasMatch()) {
+			QString lang = mSpell.captured(1).trimmed();
 			setSpellcheckLanguage(lang);
 		}
 	}
@@ -3077,10 +3094,10 @@ void TeXDocument::findRootFilePath()
 	QTextCursor curs(textEdit->document());
 	curs.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, PEEK_LENGTH);
 	QString peekStr = curs.selectedText();
-	QRegExp re(QString::fromLatin1("% *!TEX +root *= *([^\\x2029]+)\\x2029"), Qt::CaseInsensitive);
-	int pos = re.indexIn(peekStr);
-	if (pos > -1) {
-		rootName = re.cap(1).trimmed();
+	QRegularExpression re(QStringLiteral(u"% *!TEX +root *= *([^\r\n\x2029]+)[\r\n\x2029]"), QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionMatch m = re.match(peekStr);
+	if (m.hasMatch()) {
+		rootName = m.captured(1).trimmed();
 		QFileInfo rootFileInfo(fileInfo.canonicalPath() + QChar::fromLatin1('/') + rootName);
 		if (rootFileInfo.exists())
 			rootFilePath = rootFileInfo.canonicalFilePath();
@@ -3142,7 +3159,7 @@ void TeXDocument::removeAuxFiles()
 	QString jobname = fileInfo.completeBaseName();
 	QDir dir(fileInfo.dir());
 	
-	QStringList filterList = TWUtils::cleanupPatterns().split(QRegExp(QString::fromLatin1("\\s+")));
+	QStringList filterList = TWUtils::cleanupPatterns().split(QRegularExpression(QStringLiteral("\\s+")));
 	if (filterList.count() == 0)
 		return;
 	for (int i = 0; i < filterList.count(); ++i)

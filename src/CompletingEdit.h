@@ -22,18 +22,19 @@
 #ifndef COMPLETING_EDIT_H
 #define COMPLETING_EDIT_H
 
+#include "document/SpellChecker.h"
+#include "ui/LineNumberWidget.h"
+
 #include <QTextEdit>
 #include <QHash>
 #include <QTimer>
 #include <QDrag>
 #include <QMimeData>
-
-#include <hunspell.h>
+#include <QRegularExpression>
 
 class QCompleter;
 class QStandardItemModel;
 class QTextCodec;
-class LineNumberArea;
 
 class CompletingEdit : public QTextEdit
 {
@@ -43,14 +44,11 @@ public:
 	CompletingEdit(QWidget *parent = nullptr);
 	~CompletingEdit();
 
-	void setSpellChecker(Hunhandle *h, QTextCodec *codec);
+	void setSpellChecker(Tw::Document::SpellChecker::Dictionary * dictionary);
 
 	bool selectWord(QTextCursor& cursor);
 
 	void setLineNumberDisplay(bool displayNumbers);
-	void lineNumberAreaPaintEvent(QPaintEvent *event);
-	int lineNumberAreaWidth();
-
 	bool getLineNumbersVisible() const;
 
 	QString getIndentMode() const {
@@ -163,8 +161,8 @@ private:
 	static void loadIndentModes();
 
 	struct IndentMode {
-		QString	name;
-		QRegExp	regex;
+		QString name;
+		QRegularExpression regex;
 	};
 	static QList<IndentMode> *indentModes;
 	int autoIndentMode;
@@ -190,12 +188,12 @@ private:
 	int prevRow;
 
 	QTextCursor currentWord;
-	Hunhandle *pHunspell;
-	QTextCodec *spellingCodec;
+
+	Tw::Document::SpellChecker::Dictionary * _dictionary;
 
 	QTextCursor	currentCompletionRange;
 
-	LineNumberArea *lineNumberArea;
+	Tw::UI::LineNumberWidget * lineNumberArea;
 
 	static QTextCharFormat	*currentCompletionFormat;
 	static QTextCharFormat	*braceMatchingFormat;
@@ -205,32 +203,6 @@ private:
 	
 	static bool highlightCurrentLine;
 	static bool autocompleteEnabled;
-};
-
-class LineNumberArea : public QWidget
-{
-public:
-	LineNumberArea(CompletingEdit *e)
-		: QWidget(e)
-	{
-		editor = e;
-	}
-	
-	QSize sizeHint() const {
-		return QSize(editor->lineNumberAreaWidth(), 0);
-	}
-	
-	QColor bgColor() const { return _bgColor; }
-	void setBgColor(const QColor color) { _bgColor = color; }
-	
-protected:
-	void paintEvent(QPaintEvent *event) {
-		editor->lineNumberAreaPaintEvent(event);
-	}
-	
-private:
-	CompletingEdit *editor;
-	QColor _bgColor;
 };
 
 #endif // COMPLETING_EDIT_H

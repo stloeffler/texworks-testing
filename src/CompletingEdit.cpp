@@ -22,6 +22,7 @@
 #include "CompletingEdit.h"
 #include "TWUtils.h"
 #include "TWApp.h"
+#include "Settings.h"
 
 #include <QCompleter>
 #include <QKeyEvent>
@@ -59,8 +60,7 @@ CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
 	  c(nullptr),
 	  itemIndex(0),
 	  prevRow(-1),
-	  pHunspell(nullptr),
-	  spellingCodec(nullptr)
+	  _dictionary(nullptr)
 {
 	if (!sharedCompleter) { // initialize shared (static) members
 		sharedCompleter = new QCompleter(qApp);
@@ -72,7 +72,7 @@ CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
 		braceMatchingFormat = new QTextCharFormat;
 		currentLineFormat = new QTextCharFormat;
 
-		QSETTINGS_OBJECT(settings);
+		Tw::Settings settings;
 		highlightCurrentLine = settings.value(QString::fromLatin1("highlightCurrentLine"), true).toBool();
 		autocompleteEnabled = settings.value(QString::fromLatin1("autocompleteEnabled"), true).toBool();
 	}
@@ -83,7 +83,7 @@ CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedSlot()));
 	connect(this, SIGNAL(selectionChanged()), this, SLOT(cursorPositionChangedSlot()));
 
-	lineNumberArea = new LineNumberArea(this);
+	lineNumberArea = new Tw::UI::LineNumberWidget(this);
 	
 	connect(document(), SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
 	connect(this, SIGNAL(updateRequest(const QRect&, int)), this, SLOT(updateLineNumberArea(const QRect&, int)));
@@ -593,7 +593,7 @@ void CompletingEdit::handleReturn(QKeyEvent *e)
 	QString prefix;
 	// Check if auto indent is on and applicable
 	if (autoIndentMode >= 0 && autoIndentMode < indentModes->count() && e->modifiers() == Qt::NoModifier) {
-		QRegExp &re = (*indentModes)[autoIndentMode].regex;
+		const QRegularExpression &re = (*indentModes)[autoIndentMode].regex;
 		// Only apply prefix recognition to characters in front of the cursor.
 		// Otherwise, we would accumulate characters if the cursor is inside the
 		// region matched by the regexp.
@@ -607,8 +607,9 @@ void CompletingEdit::handleReturn(QKeyEvent *e)
 		curs.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
 		QString blockText = curs.selectedText();
 		// Check if the prefix matches the regexp of the current auto indent mode
-		if (blockText.indexOf(re) == 0 && re.matchedLength() > 0)
-			prefix = blockText.left(re.matchedLength());
+		QRegularExpressionMatch m = re.match(blockText);
+		if (m.capturedStart() == 0 && m.capturedLength() > 0)
+			prefix = m.captured();
 	}
 	// Propagate the key press event to the base class so that the text is
 	// actually modified
@@ -712,8 +713,8 @@ void CompletingEdit::loadSmartQuotesModes()
 		quotesModes = new QList<QuotesMode>;
 		QFile quotesModesFile(configDir.filePath(QString::fromLatin1("smart-quotes-modes.txt")));
 		if (quotesModesFile.open(QIODevice::ReadOnly)) {
-			QRegExp modeName(QString::fromLatin1("\\[([^]]+)\\]"));
-			QRegExp quoteLine(QString::fromLatin1("([^ \\t])\\s+([^ \\t]+)\\s+([^ \\t]+)"));
+			QRegularExpression modeName(QStringLiteral("^\\[([^]]+)\\]$"));
+			QRegularExpression quoteLine(QStringLiteral("^([^ \\t])\\s+([^ \\t]+)\\s+([^ \\t]+)$"));
 			QuotesMode newMode;
 			while (true) {
 				QByteArray ba = quotesModesFile.readLine();
@@ -722,18 +723,20 @@ void CompletingEdit::loadSmartQuotesModes()
 				if (ba[0] == '#' || ba[0] == '\n')
 					continue;
 				QString line = QString::fromUtf8(ba.data(), ba.size()).trimmed();
-				if (modeName.exactMatch(line)) {
+				QRegularExpressionMatch modeNameMatch = modeName.match(line);
+				if (modeNameMatch.hasMatch()) {
 					if (newMode.mappings.count() > 0) {
 						quotesModes->append(newMode);
 						newMode.mappings.clear();
 					}
-					newMode.name = modeName.cap(1);
+					newMode.name = modeNameMatch.captured(1);
 					continue;
 				}
-				if (quoteLine.exactMatch(line) && newMode.name.length() > 0) {
-					QChar key = quoteLine.cap(1)[0];
-					const QString& open = quoteLine.cap(2);
-					const QString& close = quoteLine.cap(3);
+				QRegularExpressionMatch quoteLineMatch = quoteLine.match(line);
+				if (quoteLineMatch.hasMatch() && newMode.name.length() > 0) {
+					QChar key = quoteLineMatch.captured(1)[0];
+					const QString& open = quoteLineMatch.captured(2);
+					const QString& close = quoteLineMatch.captured(3);
 					newMode.mappings[key] = QuotePair(open,close);
 					continue;
 				}
@@ -1074,22 +1077,19 @@ void CompletingEdit::contextMenuEvent(QContextMenuEvent *event)
 	menu->insertSeparator(menu->actions().first());
 	menu->insertAction(menu->actions().first(), act);
 	
-	if (pHunspell) {
+	if (_dictionary) {
 		currentWord = cursorForPosition(event->pos());
 		currentWord.setPosition(currentWord.position());
 		if (selectWord(currentWord)) {
-			QByteArray word = spellingCodec->fromUnicode(currentWord.selectedText());
-			int spellResult = Hunspell_spell(pHunspell, word.data());
-			if (spellResult == 0) {
-				char **suggestionList;
-				int count = Hunspell_suggest(pHunspell, &suggestionList, word.data());
+			if (!_dictionary->isWordCorrect(currentWord.selectedText())) {
 				QAction *sep = menu->insertSeparator(menu->actions().first());
-				if (count == 0)
+
+				QList<QString> suggestions = _dictionary->suggestionsForWord(currentWord.selectedText());
+				if (suggestions.size() == 0)
 					menu->insertAction(sep, new QAction(tr("No suggestions"), menu));
 				else {
 					QSignalMapper *mapper = new QSignalMapper(menu);
-					for (int i = 0; i < count; ++i) {
-						QString str = spellingCodec->toUnicode(suggestionList[i]);
+					foreach(const QString & str, suggestions) {
 						act = new QAction(str, menu);
 						connect(act, SIGNAL(triggered()), mapper, SLOT(map()));
 						mapper->setMapping(act, str);
@@ -1097,7 +1097,6 @@ void CompletingEdit::contextMenuEvent(QContextMenuEvent *event)
 						if (!defaultAction)
 							defaultAction = act;
 					}
-					Hunspell_free_list(pHunspell, &suggestionList, count);
 					connect(mapper, SIGNAL(mapped(const QString&)), this, SLOT(correction(const QString&)));
 				}
 				sep = menu->insertSeparator(menu->actions().first());
@@ -1115,10 +1114,9 @@ void CompletingEdit::contextMenuEvent(QContextMenuEvent *event)
 	delete menu;
 }
 
-void CompletingEdit::setSpellChecker(Hunhandle* h, QTextCodec *codec)
+void CompletingEdit::setSpellChecker(Tw::Document::SpellChecker::Dictionary * dictionary)
 {
-	pHunspell = h;
-	spellingCodec = codec;
+	_dictionary = dictionary;
 }
 
 void CompletingEdit::setAutoIndentMode(int index)
@@ -1140,8 +1138,7 @@ void CompletingEdit::addToDictionary()
 void CompletingEdit::ignoreWord()
 {
 	// note that this is not persistent after quitting TW
-	QByteArray word = spellingCodec->fromUnicode(currentWord.selectedText());
-	(void)Hunspell_add(pHunspell, word.data());
+	_dictionary->ignoreWord(currentWord.selectedText());
 	emit rehighlight();
 }
 
@@ -1152,7 +1149,7 @@ void CompletingEdit::loadIndentModes()
 		indentModes = new QList<IndentMode>;
 		QFile indentPatternFile(configDir.filePath(QString::fromLatin1("auto-indent-patterns.txt")));
 		if (indentPatternFile.open(QIODevice::ReadOnly)) {
-			QRegExp re(QString::fromLatin1("\"([^\"]+)\"\\s+(.+)"));
+			QRegularExpression re(QStringLiteral("^\"([^\"]+)\"\\s+(.+)$"));
 			while (true) {
 				QByteArray ba = indentPatternFile.readLine();
 				if (ba.size() == 0)
@@ -1160,10 +1157,11 @@ void CompletingEdit::loadIndentModes()
 				if (ba[0] == '#' || ba[0] == '\n')
 					continue;
 				QString line = QString::fromUtf8(ba.data(), ba.size()).trimmed();
-				if (re.exactMatch(line)) {
+				QRegularExpressionMatch m = re.match(line);
+				if (m.hasMatch()) {
 					IndentMode mode;
-					mode.name = re.cap(1);
-					mode.regex = QRegExp(re.cap(2).trimmed());
+					mode.name = m.captured(1);
+					mode.regex = QRegularExpression(m.captured(2).trimmed());
 					if (!mode.name.isEmpty() && mode.regex.isValid())
 						indentModes->append(mode);
 				}
@@ -1229,20 +1227,6 @@ void CompletingEdit::setLineNumberDisplay(bool displayNumbers)
 	updateLineNumberAreaWidth(0);
 }
 
-int CompletingEdit::lineNumberAreaWidth()
-{
-	int digits = 1;
-	int max = qMax(1, document()->blockCount());
-	while (max >= 10) {
-		max /= 10;
-		++digits;
-	}
-	
-	int space = 3 + fontMetrics().width(QChar::fromLatin1('9')) * digits;
-	
-	return space;
-}
-
 bool CompletingEdit::getLineNumbersVisible() const
 {
 	return lineNumberArea->isVisible();
@@ -1251,7 +1235,7 @@ bool CompletingEdit::getLineNumbersVisible() const
 void CompletingEdit::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
 	if (lineNumberArea->isVisible()) {
-		setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+		setViewportMargins(lineNumberArea->sizeHint().width(), 0, 0, 0);
 		lineNumberArea->update();
 	}
 	else {
@@ -1275,7 +1259,7 @@ void CompletingEdit::resizeEvent(QResizeEvent *e)
 	QTextEdit::resizeEvent(e);
 	
 	QRect cr = contentsRect();
-	lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+	lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberArea->sizeHint().width(), cr.height()));
 }
 
 void CompletingEdit::wheelEvent(QWheelEvent *e)
@@ -1298,36 +1282,6 @@ void CompletingEdit::wheelEvent(QWheelEvent *e)
 	}
 
 	QTextEdit::wheelEvent(e);
-}
-
-void CompletingEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
-{
-	Q_ASSERT(lineNumberArea);
-
-	QPainter painter(lineNumberArea);
-	painter.fillRect(event->rect(), lineNumberArea->bgColor());
-	
-	QTextBlock block = document()->begin();
-	int blockNumber = 1;
-
-	QAbstractTextDocumentLayout *layout = document()->documentLayout();
-	int top = layout->blockBoundingRect(block).top() - verticalScrollBar()->value();
-	int bottom = top + layout->blockBoundingRect(block).height();
-	
-	while (block.isValid() && top <= event->rect().bottom()) {
-		if (bottom >= event->rect().top()) {
-			QString number = QString::number(blockNumber);
-			painter.drawText(0, top, lineNumberArea->width() - 1, fontMetrics().height(),
-							 Qt::AlignRight, number);
-		}
-
-		block = block.next();
-		if (block == document()->end())
-			break;
-		top = bottom;
-		bottom = top + (int)layout->blockBoundingRect(block).height();
-		++blockNumber;
-	}
 }
 
 void CompletingEdit::setTextCursor(const QTextCursor & cursor)

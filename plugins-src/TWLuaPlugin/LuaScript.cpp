@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2010-2018  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2010-2019  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,35 +19,17 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include "TWLuaPlugin.h"
+#include "LuaScript.h"
 
 #include <QTextStream>
 #include <QtPlugin>
 #include <QMetaObject>
 #include <QStringList>
 
-TWLuaPlugin::TWLuaPlugin()
-{
-	// Initialize lua state
-	luaState = luaL_newstate();
-	if (luaState) {
-		luaL_openlibs(luaState);
-	}
-}
+namespace Tw {
+namespace Scripting {
 
-TWLuaPlugin::~TWLuaPlugin()
-{
-	if (luaState)
-		lua_close(luaState);
-}
-
-TWScript* TWLuaPlugin::newScript(const QString& fileName)
-{
-	return new LuaScript(this, fileName);
-}
-
-
-bool LuaScript::execute(Tw::Scripting::ScriptAPIInterface *tw) const
+bool LuaScript::execute(ScriptAPIInterface * tw) const
 {
 	int status;
 	lua_State * L = m_LuaPlugin->getLuaState();
@@ -421,7 +403,7 @@ QVariant LuaScript::getLuaStackValue(lua_State * L, int idx, const bool throwErr
 					// duplicate the key. If we didn't, lua_tostring could
 					// convert it, thereby confusing lua_next later on
 					lua_pushvalue(L, -2);
-					vm.insert(QString::fromUtf8(lua_tostring(L, -2)), LuaScript::getLuaStackValue(L, -1));
+					vm.insert(QString::fromUtf8(lua_tostring(L, -1)), LuaScript::getLuaStackValue(L, -2));
 					lua_pop(L, 2);
 				}
 				return vm;
@@ -443,3 +425,6 @@ QVariant LuaScript::getLuaStackValue(lua_State * L, int idx, const bool throwErr
 	}
 	return QVariant();
 }
+
+} // namespace Scripting
+} // namespace Tw

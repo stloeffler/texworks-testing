@@ -25,6 +25,8 @@
 #include "PDFDocument.h"
 #include "TWVersion.h"
 #include "GitRev.h"
+#include "Settings.h"
+#include "utils/FileVersionDatabase.h"
 
 #include <QFileDialog>
 #include <QString>
@@ -39,11 +41,7 @@
 #include <QFile>
 #include <QDirIterator>
 #include <QSignalMapper>
-#include <QCryptographicHash>
-#include <QTextStream>
 #include <QDateTime>
-
-#include <hunspell.h>
 
 #pragma mark === TWUtils ===
 
@@ -113,6 +111,11 @@ const QString TWUtils::getLibraryPath(const QString& subdir, const bool updateOn
 	return libPath;
 }
 
+const QStringList TWUtils::getLibraryPaths(const QString & subdir, const bool updateOnDisk)
+{
+	return getLibraryPath(subdir, updateOnDisk).split(QStringLiteral(PATH_LIST_SEP));
+}
+
 /*static*/
 void TWUtils::updateLibraryResources(const QDir& srcRootDir, const QDir& destRootDir, const QString& subdir)
 {
@@ -131,7 +134,7 @@ void TWUtils::updateLibraryResources(const QDir& srcRootDir, const QDir& destRoo
 	if (subdir == QString::fromLatin1("translations")) // don't copy the built-in translations
 		return;
 	
-	FileVersionDatabase fvdb = FileVersionDatabase::load(destRootDir.absoluteFilePath(QString::fromLatin1("TwFileVersions.db")));
+	Tw::Utils::FileVersionDatabase fvdb = Tw::Utils::FileVersionDatabase::load(destRootDir.absoluteFilePath(QString::fromLatin1("TwFileVersions.db")));
 	
 	QDirIterator iter(srcDir, QDirIterator::Subdirectories);
 	while (iter.hasNext()) {
@@ -146,15 +149,15 @@ void TWUtils::updateLibraryResources(const QDir& srcRootDir, const QDir& destRoo
 
 		// Check if the file is in the database
 		if (fvdb.hasFileRecord(destPath)) {
-			FileVersionDatabase::Record rec = fvdb.getFileRecord(destPath);
+			Tw::Utils::FileVersionDatabase::Record rec = fvdb.getFileRecord(destPath);
 			// If the file no longer exists on the disk, the user has deleted it
 			// Hence we won't recreate it, but we keep the database record to
 			// remember that this file was deleted by the user
 			if (!QFileInfo(destPath).exists())
 				continue;
 			
-			QByteArray srcHash = FileVersionDatabase::hashForFile(srcPath);
-			QByteArray destHash = FileVersionDatabase::hashForFile(destPath);
+			QByteArray srcHash = Tw::Utils::FileVersionDatabase::hashForFile(srcPath);
+			QByteArray destHash = Tw::Utils::FileVersionDatabase::hashForFile(destPath);
 			// If the file was modified, don't do anything, either
 			if (destHash != rec.hash) {
 				// The only exception is if the file on the disk matches the
@@ -181,7 +184,7 @@ void TWUtils::updateLibraryResources(const QDir& srcRootDir, const QDir& destRoo
 			}
 		}
 		else {
-			QByteArray srcHash = FileVersionDatabase::hashForFile(srcPath);
+			QByteArray srcHash = Tw::Utils::FileVersionDatabase::hashForFile(srcPath);
 			// If the file is not in the database, we add it - unless a file
 			// with the name already exists
 			if (!QFileInfo(destPath).exists()) {
@@ -196,7 +199,7 @@ void TWUtils::updateLibraryResources(const QDir& srcRootDir, const QDir& destRoo
 				// If it happens to be identical with the version we would install
 				// we do take ownership, however, and register it in the
 				// database so that future updates are applied
-				QByteArray destHash = FileVersionDatabase::hashForFile(destPath);
+				QByteArray destHash = Tw::Utils::FileVersionDatabase::hashForFile(destPath);
 				if (srcHash == destHash)
 					fvdb.addFileRecord(destPath, destHash, gitCommitHash());
 			}
@@ -205,9 +208,9 @@ void TWUtils::updateLibraryResources(const QDir& srcRootDir, const QDir& destRoo
 
 	// Now, remove all files that are unmodified on disk and were
 	// removed upstream
-	QMutableListIterator<FileVersionDatabase::Record> recIt(fvdb.getFileRecords());
+	QMutableListIterator<Tw::Utils::FileVersionDatabase::Record> recIt(fvdb.getFileRecords());
 	while (recIt.hasNext()) {
-		const FileVersionDatabase::Record & rec = recIt.next();
+		const Tw::Utils::FileVersionDatabase::Record & rec = recIt.next();
 
 		QString destPath = rec.filePath.filePath();
 		QString path = destRootDir.relativeFilePath(destPath);
@@ -219,7 +222,7 @@ void TWUtils::updateLibraryResources(const QDir& srcRootDir, const QDir& destRoo
 		
 		// If the source file no longer exists but the file on disk is up to
 		// date, remove it
-		if (rec.filePath.exists() && FileVersionDatabase::hashForFile(destPath) == rec.hash) {
+		if (rec.filePath.exists() && Tw::Utils::FileVersionDatabase::hashForFile(destPath) == rec.hash) {
 			QFile(destPath).remove();
 			recIt.remove();
 		}
@@ -285,7 +288,7 @@ void TWUtils::insertHelpMenuItems(QMenu* helpMenu)
 	if (!helpPath.isEmpty())
 		helpDir.cd(QString(helpPath));
 
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	QString loc = settings.value(QString::fromLatin1("locale")).toString();
 	if (loc.isEmpty())
 		loc = QLocale::system().name();
@@ -336,17 +339,18 @@ QList<QTextCodec*> *TWUtils::findCodecs()
 
 	codecList = new QList<QTextCodec*>;
 	QMap<QString, QTextCodec*> codecMap;
-	QRegExp iso8859RegExp(QString::fromLatin1("ISO[- ]8859-([0-9]+).*"));
+	QRegularExpression iso8859RegExp(QStringLiteral("^ISO[- ]8859-([0-9]+)"));
 	foreach (int mib, QTextCodec::availableMibs()) {
 		QTextCodec *codec = QTextCodec::codecForMib(mib);
 		QString sortKey = QString::fromUtf8(codec->name().constData()).toUpper();
+		QRegularExpressionMatch iso8859Match = iso8859RegExp.match(sortKey);
 		int rank;
 		if (sortKey.startsWith(QLatin1String("UTF-8")))
 			rank = 1;
 		else if (sortKey.startsWith(QLatin1String("UTF-16")))
 			rank = 2;
-		else if (iso8859RegExp.exactMatch(sortKey)) {
-			if (iso8859RegExp.cap(1).size() == 1)
+		else if (iso8859Match.hasMatch()) {
+			if (iso8859Match.captured(1).size() == 1)
 				rank = 3;
 			else
 				rank = 4;
@@ -391,82 +395,6 @@ QStringList* TWUtils::getTranslationList()
 	translationList->prepend(QString::fromLatin1("en"));
 	
 	return translationList;
-}
-
-QHash<QString, QString>* TWUtils::dictionaryList = nullptr;
-
-QHash<QString, QString>* TWUtils::getDictionaryList(const bool forceReload /* = false */)
-{
-	if (dictionaryList) {
-		if (!forceReload)
-			return dictionaryList;
-		delete dictionaryList;
-	}
-
-	dictionaryList = new QHash<QString, QString>();
-	foreach (QDir dicDir, TWUtils::getLibraryPath(QString::fromLatin1("dictionaries")).split(QLatin1String(PATH_LIST_SEP))) {
-		foreach (QFileInfo dicFileInfo, dicDir.entryInfoList(QStringList(QString::fromLatin1("*.dic")),
-					QDir::Files | QDir::Readable, QDir::Name | QDir::IgnoreCase)) {
-			QFileInfo affFileInfo(dicFileInfo.dir(), dicFileInfo.completeBaseName() + QLatin1String(".aff"));
-			if (affFileInfo.isReadable())
-				dictionaryList->insertMulti(dicFileInfo.canonicalFilePath(), dicFileInfo.completeBaseName());
-		}
-	}
-	
-	TWApp::instance()->notifyDictionaryListChanged();
-	return dictionaryList;
-}
-
-QHash<const QString,Hunhandle*> *TWUtils::dictionaries = nullptr;
-
-Hunhandle* TWUtils::getDictionary(const QString& language)
-{
-	if (language.isEmpty())
-		return nullptr;
-	
-	if (!dictionaries)
-		dictionaries = new QHash<const QString,Hunhandle*>;
-	
-	if (dictionaries->contains(language))
-		return dictionaries->value(language);
-	
-	Hunhandle *h = nullptr;
-	foreach (QDir dicDir, TWUtils::getLibraryPath(QString::fromLatin1("dictionaries")).split(QLatin1String(PATH_LIST_SEP))) {
-		QFileInfo affFile(dicDir, language + QLatin1String(".aff"));
-		QFileInfo dicFile(dicDir, language + QLatin1String(".dic"));
-		if (affFile.isReadable() && dicFile.isReadable()) {
-			h = Hunspell_create(affFile.canonicalFilePath().toLocal8Bit().data(),
-			                    dicFile.canonicalFilePath().toLocal8Bit().data());
-			(*dictionaries)[language] = h;
-			return h;
-		}
-	}
-	return nullptr;
-}
-
-QString TWUtils::getLanguageForDictionary(const Hunhandle * pHunspell)
-{
-	if (!pHunspell || !dictionaries)
-		return QString();
-	
-	for (QHash<const QString,Hunhandle*>::const_iterator it = dictionaries->cbegin(); it != dictionaries->cend(); ++it) {
-		if (it.value() == pHunspell)
-			return it.key();
-	}
-	return QString();
-}
-
-void TWUtils::clearDictionaries()
-{
-	if (!dictionaries)
-		return;
-	
-	for (QHash<const QString,Hunhandle*>::iterator it = dictionaries->begin(); it != dictionaries->end(); ++it) {
-		if (it.value())
-			Hunspell_destroy(it.value());
-	}
-	delete dictionaries;
-	dictionaries = nullptr;
 }
 
 QStringList* TWUtils::filters;
@@ -548,7 +476,7 @@ QStringList TWUtils::constructUniqueFileLabels(const QStringList & fileList)
 
 void TWUtils::updateRecentFileActions(QObject *parent, QList<QAction*> &actions, QMenu *menu, QAction * clearAction) /* static */
 {
-	QSETTINGS_OBJECT(settings);
+	Tw::Settings settings;
 	QStringList fileList, labelList;
 	if (settings.contains(QString::fromLatin1("recentFiles"))) {
 		QList<QVariant> files = settings.value(QString::fromLatin1("recentFiles")).toList();
@@ -737,7 +665,7 @@ void TWUtils::zoomToHalfScreen(QWidget *window, bool rhs)
 			// hacking the config files.
 			// (Note: this should only be necessary in some special cases, e.g.
 			// on X11 systems with special effects enabled)
-			QSETTINGS_OBJECT(settings);
+			Tw::Settings settings;
 			wDiff = qMax(0, settings.value(QString::fromLatin1("windowWDiff"), 0).toInt());
 			hDiff = qMax(0, settings.value(QString::fromLatin1("windowHDiff"), 0).toInt());
 		}
@@ -1045,7 +973,7 @@ void TWUtils::readConfig()
 	pairClosers.clear();
 
 	QDir configDir(TWUtils::getLibraryPath(QString::fromLatin1("configuration")));
-	QRegExp pair(QString::fromLatin1("([^\\s])\\s+([^\\s])\\s*(?:#.*)?"));
+	QRegularExpression pair(QString::fromLatin1("^([^\\s])\\s+([^\\s])\\s*(?:#.*)?$"));
 
 	QFile pairsFile(configDir.filePath(QString::fromLatin1("delimiter-pairs.txt")));
 	if (pairsFile.open(QIODevice::ReadOnly)) {
@@ -1057,9 +985,10 @@ void TWUtils::readConfig()
 				continue;
 			ba.chop(1);
 			QString line = QString::fromUtf8(ba.data(), ba.size());
-			if (pair.exactMatch(line)) {
-				pairClosers[pair.cap(1).at(0)] = pair.cap(2).at(0);
-				pairOpeners[pair.cap(2).at(0)] = pair.cap(1).at(0);
+			QRegularExpressionMatch pairMatch = pair.match(line);
+			if (pairMatch.hasMatch()) {
+				pairClosers[pairMatch.captured(1).at(0)] = pairMatch.captured(2).at(0);
+				pairOpeners[pairMatch.captured(2).at(0)] = pairMatch.captured(1).at(0);
 			}
 		}
 	}
@@ -1076,7 +1005,7 @@ void TWUtils::readConfig()
 	
 	QFile configFile(configDir.filePath(QString::fromLatin1("texworks-config.txt")));
 	if (configFile.open(QIODevice::ReadOnly)) {
-		QRegExp keyVal(QString::fromLatin1("([-a-z]+):\\s*([^ \\t].+)"));
+		QRegularExpression keyVal(QStringLiteral("^([-a-z]+):\\s*([^ \\t].+)$"));
 			// looking for keyword, colon, optional whitespace, value
 		while (true) {
 			QByteArray ba = configFile.readLine();
@@ -1085,10 +1014,11 @@ void TWUtils::readConfig()
 			if (ba[0] == '#' || ba[0] == '\n')
 				continue;
 			QString	line = QString::fromUtf8(ba.data(), ba.size());
-			if (keyVal.exactMatch(line)) {
+			QRegularExpressionMatch keyValMatch = keyVal.match(line);
+			if (keyValMatch.hasMatch()) {
 				// if that matched, keyVal.cap(1) is the keyword, cap(2) is the value
-				const QString& keyword = keyVal.cap(1);
-				QString value = keyVal.cap(2).trimmed();
+				const QString& keyword = keyValMatch.captured(1);
+				QString value = keyValMatch.captured(2).trimmed();
 				if (keyword == QString::fromLatin1("include-text")) {
 					sIncludeTextCommand = value.replace(QString::fromLatin1("#RET#"), QChar::fromLatin1('\n'));
 					continue;
@@ -1262,114 +1192,3 @@ bool CmdKeyFilter::eventFilter(QObject *obj, QEvent *event)
 	return QObject::eventFilter(obj, event);
 }
 
-/*static*/
-FileVersionDatabase FileVersionDatabase::load(const QString & path)
-{
-	QFile fin(path);
-	FileVersionDatabase retVal;
-	QDir rootDir(QFileInfo(path).absoluteDir());
-	
-	if (!fin.open(QIODevice::ReadOnly | QIODevice::Text))
-		return retVal;
-
-	QTextStream strm(&fin);
-	
-	while (!strm.atEnd()) {
-		FileVersionDatabase::Record rec;
-		QString line = strm.readLine().trimmed();
-		
-		// ignore comments
-		if (line.startsWith(QChar::fromLatin1('#'))) continue;
-		
-		rec.version = line.section(QChar::fromLatin1(' '), 0, 0);
-		rec.hash = QByteArray::fromHex(line.section(QChar::fromLatin1(' '), 1, 1).toLatin1());
-		rec.filePath = line.section(QChar::fromLatin1(' '), 2).trimmed();
-		rec.filePath = rootDir.absoluteFilePath(rec.filePath.filePath());
-		retVal.m_records.append(rec);
-	}
-	
-	fin.close();
-	
-	return retVal;
-}
-
-bool FileVersionDatabase::save(const QString & path) const
-{
-	QFile fout(path);
-	QDir rootDir(QFileInfo(path).absoluteDir());
-	
-	if (!fout.open(QIODevice::WriteOnly | QIODevice::Text))
-		return false;
-	
-	QTextStream strm(&fout);
-
-	foreach (FileVersionDatabase::Record rec, m_records) {
-		QString filePath = rec.filePath.absoluteFilePath();
-		strm << rec.version << " " << rec.hash.toHex() << " " << rootDir.relativeFilePath(filePath) << endl;
-	}
-	
-	fout.close();
-	return true;
-}
-
-void FileVersionDatabase::addFileRecord(const QFileInfo & file, const QByteArray & md5Hash, const QString & version)
-{
-	// remove all existing entries for this file
-	QMutableListIterator<FileVersionDatabase::Record> it(m_records);
-	
-	while (it.hasNext()) {
-		const FileVersionDatabase::Record rec = it.next();
-		if (file.absoluteFilePath() == rec.filePath.absoluteFilePath()) {
-			it.remove();
-		}
-	}
-	
-	// add the new data
-	FileVersionDatabase::Record rec;
-	rec.filePath = file;
-	rec.version = version;
-	rec.hash = md5Hash;
-	m_records.append(rec);
-}
-
-bool FileVersionDatabase::hasFileRecord(const QFileInfo & file) const
-{
-	QListIterator<FileVersionDatabase::Record> it(m_records);
-	
-	while (it.hasNext()) {
-		const FileVersionDatabase::Record rec = it.next();
-		if (file.filePath() == rec.filePath.filePath())
-			return true;
-	}
-	return false;
-}
-
-FileVersionDatabase::Record FileVersionDatabase::getFileRecord(const QFileInfo & file) const
-{
-	QListIterator<FileVersionDatabase::Record> it(m_records);
-	
-	while (it.hasNext()) {
-		const FileVersionDatabase::Record rec = it.next();
-		if (file == rec.filePath)
-			return rec;
-	}
-
-	FileVersionDatabase::Record retVal;
-	retVal.version = QString();
-	retVal.hash = QByteArray::fromHex("d41d8cd98f00b204e9800998ecf8427e"); // hash for the zero-length string
-	return retVal;
-}
-
-/*static*/
-QByteArray FileVersionDatabase::hashForFile(const QString & path)
-{
-	QByteArray retVal = QByteArray::fromHex("d41d8cd98f00b204e9800998ecf8427e"); // hash for the zero-length string;
-	QFile fin(path);
-	
-	if (!fin.open(QIODevice::ReadOnly))
-		return retVal;
-	
-	retVal = QCryptographicHash::hash(fin.readAll(), QCryptographicHash::Md5);
-	fin.close();
-	return retVal;
-}

@@ -22,21 +22,27 @@
 #ifndef JSScript_H
 #define JSScript_H
 
-#include "TWScript.h"
+#include "scripting/Script.h"
 
-class JSScript : public TWScript
+namespace Tw {
+namespace Scripting {
+
+class JSScript : public Script
 {
 	Q_OBJECT
-	Q_INTERFACES(TWScript)
+	Q_INTERFACES(Tw::Scripting::Script)
 
 public:
 	JSScript(QObject * plugin, const QString& filename)
-		: TWScript(plugin, filename) { }
+		: Tw::Scripting::Script(plugin, filename) { }
 
 	virtual bool parseHeader() { return doParseHeader(QString(), QString(), QString::fromLatin1("//")); }
 
 protected:
-	virtual bool execute(Tw::Scripting::ScriptAPIInterface *tw) const;
+	virtual bool execute(ScriptAPIInterface *tw) const;
 };
+
+} // namespace Scripting
+} // namespace Tw
 
 #endif // !defined(JSScript_H)
