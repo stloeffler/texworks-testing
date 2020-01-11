@@ -19,11 +19,12 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#ifndef TeXDocument_H
-#define TeXDocument_H
+#ifndef TeXDocumentWindow_H
+#define TeXDocumentWindow_H
 
-#include "TWScriptable.h"
+#include "TWScriptableWindow.h"
 #include "document/SpellChecker.h"
+#include "document/TeXDocument.h"
 
 #include <QList>
 #include <QRegularExpression>
@@ -32,7 +33,7 @@
 #include <QSignalMapper>
 #include <QMouseEvent>
 
-#include "ui_TeXDocument.h"
+#include "ui_TeXDocumentWindow.h"
 
 #include "FindDialog.h"
 
@@ -46,40 +47,49 @@ class QActionGroup;
 class QTextCodec;
 class QFileSystemWatcher;
 
-class TeXHighlighter;
-class PDFDocument;
+class PDFDocumentWindow;
 class ClickableLabel;
 
 const int kTeXWindowStateVersion = 1; // increment this if we add toolbars/docks/etc
 
-class TeXDocument : public TWScriptable, private Ui::TeXDocument
+#define kLineEnd_Mask   0x00FF
+#define kLineEnd_LF     0x0000
+#define kLineEnd_CRLF   0x0001
+#define kLineEnd_CR     0x0002
+
+#define kLineEnd_Flags_Mask  0xFF00
+#define kLineEnd_Mixed       0x0100
+
+class TeXDocumentWindow : public TWScriptableWindow, private Ui::TeXDocumentWindow
 {
 	Q_OBJECT
 
 public:
-	TeXDocument();
-	TeXDocument(const QString &fileName, bool asTemplate = false);
+	explicit TeXDocumentWindow();
+	explicit TeXDocumentWindow(const QString & fileName, bool asTemplate = false);
 
-	virtual ~TeXDocument();
+	~TeXDocumentWindow() override;
 
-	static TeXDocument *findDocument(const QString &fileName);
-	static QList<TeXDocument*> documentList()
+	static TeXDocumentWindow *findDocument(const QString &fileName);
+	static QList<TeXDocumentWindow*> documentList()
 		{
 			return docList;
 		}
-	static TeXDocument *openDocument(const QString &fileName, bool activate = true, bool raiseWindow = true,
+	static TeXDocumentWindow *openDocument(const QString &fileName, bool activate = true, bool raiseWindow = true,
 									 int lineNo = 0, int selStart = -1, int selEnd = -1);
 
-	TeXDocument *open(const QString &fileName);
+	TeXDocumentWindow *open(const QString &fileName);
 	void makeUntitled();
-	bool untitled()
-		{ return isUntitled; }
+	bool untitled() const
+		{ return !textDoc()->isStoredInFilesystem(); }
 	QString fileName() const
-		{ return curFile; }
+		{ return textDoc()->getFileInfo().filePath(); }
 	QTextCursor textCursor() const
 		{ return textEdit->textCursor(); }
-	QTextDocument* textDoc()
-		{ return textEdit->document(); }
+	Tw::Document::TeXDocument* textDoc()
+		{ return _texDoc; }
+	const Tw::Document::TeXDocument* textDoc() const
+		{ return _texDoc; }
 	QString getLineText(int lineNo) const;
 	CompletingEdit* editor()
 		{ return textEdit; }
@@ -91,27 +101,13 @@ public:
 	
 	QString spellcheckLanguage() const;
 
-	PDFDocument* pdfDocument()
+	PDFDocumentWindow* pdfDocument()
 		{ return pdfDoc; }
 
-	void addTag(const QTextCursor& cursor, int level, const QString& text);
-	int removeTags(int offset, int len);
 	void goToTag(int index);
-	void tagsChanged();
 
 	bool isModified() const { return textEdit->document()->isModified(); }
 	void setModified(const bool m = true) { textEdit->document()->setModified(m); }
-
-	class Tag {
-	public:
-		QTextCursor	cursor;
-		int			level;
-		QString		text;
-		Tag(const QTextCursor& curs, int lvl, const QString& txt)
-			: cursor(curs), level(lvl), text(txt) { }
-	};
-	const QList<Tag> getTags() const
-		{ return tags; }
 
 	Q_PROPERTY(int cursorPosition READ cursorPosition STORED false)
 	Q_PROPERTY(QString selection READ selectedText STORED false)
@@ -130,17 +126,18 @@ public:
 signals:
 	void syncFromSource(const QString& sourceFile, int lineNo, int col, bool activatePreview);
 	void activatedWindow(QWidget*);
-	void tagListUpdated();
 	void asyncFlashStatusBarMessage(const QString & msg, const int timeout = 0);
 
 protected:
-	virtual void changeEvent(QEvent *event);
-	virtual void closeEvent(QCloseEvent *event);
-	virtual bool event(QEvent *event);
-	virtual void dragEnterEvent(QDragEnterEvent *event);
-	virtual void dragMoveEvent(QDragMoveEvent *event);
-	virtual void dragLeaveEvent(QDragLeaveEvent *event);
-	virtual void dropEvent(QDropEvent *event);
+	void changeEvent(QEvent *event) override;
+	void closeEvent(QCloseEvent *event) override;
+	bool event(QEvent *event) override;
+	void dragEnterEvent(QDragEnterEvent *event) override;
+	void dragMoveEvent(QDragMoveEvent *event) override;
+	void dragLeaveEvent(QDragLeaveEvent *event) override;
+	void dropEvent(QDropEvent *event) override;
+
+	QString scriptContext() const override { return QStringLiteral("TeXDocument"); }
 
 public slots:
 	void typeset();
@@ -209,7 +206,7 @@ private slots:
 	void acceptInputLine();
 	void selectedEngine(QAction* engineAction);
 	void selectedEngine(const QString& name);
-	void contentsChanged(int position, int charsRemoved, int charsAdded);
+	void handleModelineChange(QStringList changedKeys, QStringList removedKeys);
 	void reloadIfChangedOnDisk();
 	void setupFileWatcher();
 	void lineEndingPopup(const QPoint loc);
@@ -226,10 +223,10 @@ private:
 	bool saveFilesHavingRoot(const QString& aRootFile);
 	void clearFileWatcher();
 	QTextCodec *scanForEncoding(const QString &peekStr, bool &hasMetadata, QString &reqName);
-	QString readFile(const QString &fileName, QTextCodec **codecUsed, int *lineEndings = nullptr, QTextCodec * forceCodec = nullptr);
-	void loadFile(const QString &fileName, bool asTemplate = false, bool inBackground = false, bool reload = false, QTextCodec * forceCodec = nullptr);
-	bool saveFile(const QString &fileName);
-	void setCurrentFile(const QString &fileName);
+	QString readFile(const QFileInfo & fileInfo, QTextCodec **codecUsed, int *lineEndings = nullptr, QTextCodec * forceCodec = nullptr);
+	void loadFile(const QFileInfo & fileInfo, bool asTemplate = false, bool inBackground = false, bool reload = false, QTextCodec * forceCodec = nullptr);
+	bool saveFile(const QFileInfo & fileInfo);
+	void setCurrentFile(const QFileInfo & fileInfo);
 	void saveRecentFileInfo();
 	bool getPreviewFileName(QString &pdfName);
 	bool openPdfIfAvailable(bool show);
@@ -256,49 +253,41 @@ private:
 	QString consoleText() { return textEdit_console->toPlainText(); }
 	QString text() { return textEdit->toPlainText(); }
 	
-	TeXHighlighter *highlighter;
-	PDFDocument *pdfDoc;
+	Tw::Document::TeXDocument * _texDoc;
+	PDFDocumentWindow * pdfDoc{nullptr};
 
-	QTextCodec *codec;
+	QTextCodec * codec{nullptr};
 	// When using the UTF-8 codec, byte order marks (BOMs) are ignored during 
 	// reading and not produced when writing. To keep them in files that have
 	// them, we need to keep track of them ourselves.
-	bool utf8BOM;
-	int lineEndings;
-	QString curFile;
+	bool utf8BOM{false};
+	int lineEndings{kLineEnd_LF};
 	QString rootFilePath;
-	bool isUntitled;
 	QDateTime lastModified;
 
-	ClickableLabel *lineNumberLabel;
-	ClickableLabel *encodingLabel;
-	ClickableLabel *lineEndingLabel;
+	ClickableLabel * lineNumberLabel{nullptr};
+	ClickableLabel * encodingLabel{nullptr};
+	ClickableLabel * lineEndingLabel{nullptr};
 
-	QActionGroup *engineActions;
+	QActionGroup *engineActions{nullptr};
 	QString engineName;
 	
 	QSignalMapper dictSignalMapper;
 
-	QComboBox *engine;
-	QProcess *process;
-	bool keepConsoleOpen;
-	bool showPdfWhenFinished;
-	bool userInterrupt;
+	QComboBox * engine{nullptr};
+	QProcess * process{nullptr};
+	bool keepConsoleOpen{false};
+	bool showPdfWhenFinished{true};
+	bool userInterrupt{false};
 	QDateTime oldPdfTime;
 
 	QList<QAction*> recentFileActions;
 
-	Tw::Document::SpellChecker::Dictionary * _dictionary;
-
-	QFileSystemWatcher *watcher;
-	
-	QList<Tag>	tags;
-	bool deferTagListChanges;
-	bool tagListChanged;
+	QFileSystemWatcher * watcher{nullptr};
 
 	QTextCursor	dragSavedCursor;
 
-	static QList<TeXDocument*> docList;
+	static QList<TeXDocumentWindow*> docList;
 };
 
-#endif
+#endif // !defined(TeXDocumentWindow_H)

@@ -11,8 +11,8 @@ class ScreenCalibrationWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	ScreenCalibrationWidget(QWidget *parent = 0);
-	virtual ~ScreenCalibrationWidget() { }
+	ScreenCalibrationWidget(QWidget * parent = nullptr);
+	~ScreenCalibrationWidget() override = default;
 
 	double dpi() const;
 
@@ -29,19 +29,19 @@ protected slots:
 	void repositionSpinBox();
 
 protected:
-	virtual void paintEvent(QPaintEvent * event);
-	virtual void resizeEvent(QResizeEvent * event);
-	virtual void mousePressEvent(QMouseEvent * event);
-	virtual void mouseMoveEvent(QMouseEvent * event);
-	virtual void mouseReleaseEvent(QMouseEvent * event);
-	virtual void changeEvent(QEvent * event);
-	virtual void contextMenuEvent(QContextMenuEvent * event);
-	virtual bool eventFilter(QObject * object, QEvent * event);
+	void paintEvent(QPaintEvent * event) override;
+	void resizeEvent(QResizeEvent * event) override;
+	void mousePressEvent(QMouseEvent * event) override;
+	void mouseMoveEvent(QMouseEvent * event) override;
+	void mouseReleaseEvent(QMouseEvent * event) override;
+	void changeEvent(QEvent * event) override;
+	void contextMenuEvent(QContextMenuEvent * event) override;
+	bool eventFilter(QObject * object, QEvent * event) override;
 
 
 	QDoubleSpinBox * _sbDPI;
 	QRect _rulerRect;
-	unsigned int _majorTickHeight, _mediumTickHeight, _minorTickHeight, _paperTickHeight;
+	int _majorTickHeight{20}, _mediumTickHeight{10}, _minorTickHeight{5}, _paperTickHeight{40};
 	QMenu _contextMenu;
 	QActionGroup _contextMenuActionGroup;
 	QSignalMapper _unitSignalMapper;
@@ -60,12 +60,12 @@ protected:
 		bool visible;
 	};
 	QList<paperSize> _paperSizes;
-	unsigned int _curUnit;
-	int _hSpace;
+	int _curUnit;
+	int _hSpace{0};
 
 	QPoint _mouseDownPos;
-	float _mouseDownInches;
-	bool _isDragging;
+	double _mouseDownInches{0};
+	bool _isDragging{false};
 };
 
 #endif // SCREENCALIBRATIONWIDGET_H

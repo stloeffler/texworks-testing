@@ -3,11 +3,6 @@
 
 #include <QDir>
 
-Engine::Engine()
-	: _showPdf(false)
-{
-}
-
 Engine::Engine(const QString& name, const QString& program, const QStringList & arguments, bool showPdf)
 	: _name(name), _program(program), _arguments(arguments), _showPdf(showPdf)
 {

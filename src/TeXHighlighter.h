@@ -26,14 +26,19 @@
 
 #include <QSyntaxHighlighter>
 
+#include <QTextDocument>
 #include <QTextLayout>
 #include <QTextCharFormat>
 #include <QRegularExpression>
 #include <QTimer>
 
-class QTextDocument;
-class QTextCodec;
+namespace Tw {
+namespace Document {
+
 class TeXDocument;
+
+} // namespace Document
+} // namespace Tw
 
 // This class implements a non-blocking syntax highlighter that is a rewrite/
 // replacement of QSyntaxHighlighter. It queues all highlight requests and
@@ -45,8 +50,8 @@ class NonblockingSyntaxHighlighter : public QObject
 	Q_OBJECT
 
 public:
-	NonblockingSyntaxHighlighter(QTextDocument * parent) : _processingPending(false), _parent(nullptr), MAX_TIME_MSECS(5), IDLE_DELAY_TIME(40) { setDocument(parent); }
-	virtual ~NonblockingSyntaxHighlighter() { setDocument(nullptr); }
+	NonblockingSyntaxHighlighter(QTextDocument * parent) : QObject(parent), _processingPending(false), _parent(nullptr), MAX_TIME_MSECS(5), IDLE_DELAY_TIME(40) { setDocument(parent); }
+	~NonblockingSyntaxHighlighter() override { setDocument(nullptr); }
 
 	QTextDocument * document() const { return _parent; }
 	void setDocument(QTextDocument * doc);
@@ -100,10 +105,11 @@ class TeXHighlighter : public NonblockingSyntaxHighlighter
 	Q_OBJECT
 
 public:
-	TeXHighlighter(QTextDocument *parent, TeXDocument *texDocument = nullptr);
+	explicit TeXHighlighter(Tw::Document::TeXDocument * parent);
 	void setActiveIndex(int index);
 
 	void setSpellChecker(Tw::Document::SpellChecker::Dictionary * dictionary);
+	Tw::Document::SpellChecker::Dictionary * getSpellChecker() const { return _dictionary; }
 
 	QString getSyntaxMode() const {
 		return (highlightIndex >= 0 && highlightIndex < syntaxOptions().size())
@@ -113,7 +119,7 @@ public:
 	static QStringList syntaxOptions();
 
 protected:
-	virtual void highlightBlock(const QString &text) override;
+	void highlightBlock(const QString &text) override;
 
 	void spellCheckRange(const QString &text, int index, int limit, const QTextCharFormat &spellFormat);
 
@@ -141,14 +147,12 @@ private:
 	};
 	static QList<TagPattern> *tagPatterns;
 
-	TeXDocument	*texDoc;
-
 	int highlightIndex;
 	bool isTagging;
 
 	Tw::Document::SpellChecker::Dictionary * _dictionary;
 
-	QTextDocument * textDoc;
+	Tw::Document::TeXDocument * texDoc;
 };
 
 #endif

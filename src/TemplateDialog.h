@@ -36,7 +36,7 @@ class TemplateDialog : public QDialog, private Ui::TemplateDialog
 
 public:
 	TemplateDialog();
-	virtual ~TemplateDialog();
+	~TemplateDialog() override = default;
 
 	static QString doTemplateDialog();
 
@@ -47,7 +47,7 @@ private slots:
 private:
 	void init();
 
-	QDirModel *model;
+	QDirModel * model{nullptr};
 };
 
 #endif

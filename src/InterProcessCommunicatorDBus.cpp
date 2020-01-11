@@ -38,9 +38,9 @@ class InterProcessCommunicatorPrivate : public QDBusAbstractAdaptor {
 	bool objectRegistered;
 	QDBusInterface * interface;
 
-	InterProcessCommunicatorPrivate(InterProcessCommunicator * q) : QDBusAbstractAdaptor(q), q_ptr(q), serviceRegistered(false), objectRegistered(false), interface(nullptr) { }
+	explicit InterProcessCommunicatorPrivate(InterProcessCommunicator * q) : QDBusAbstractAdaptor(q), q_ptr(q), serviceRegistered(false), objectRegistered(false), interface(nullptr) { }
 public:
-	~InterProcessCommunicatorPrivate() = default;
+	~InterProcessCommunicatorPrivate() override = default;
 
 public slots:
 	Q_NOREPLY void openFile(QString fileName, int position = -1) {

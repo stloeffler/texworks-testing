@@ -23,7 +23,7 @@
 #include "DefaultPrefs.h"
 #include "Settings.h"
 #include "TWApp.h"
-#include "PDFDocument.h"
+#include "PDFDocumentWindow.h"
 #include "TeXHighlighter.h"
 #include "CompletingEdit.h"
 #include "TWUtils.h"
@@ -328,6 +328,7 @@ void PrefsDialog::restoreDefaults()
 			encoding->setCurrentIndex(encoding->findText(QString::fromLatin1("UTF-8")));
 			highlightCurrentLine->setChecked(kDefault_HighlightCurrentLine);
 			autocompleteEnabled->setChecked(kDefault_AutocompleteEnabled);
+			autoFollowFocusEnabled->setChecked(kDefault_AutoFollowFocusEnabled);
 			break;
 	
 		case 2:
@@ -578,6 +579,7 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 	dlg.encoding->setCurrentIndex(nameList.indexOf(QString::fromUtf8(TWApp::instance()->getDefaultCodec()->name().constData())));
 	dlg.highlightCurrentLine->setChecked(settings.value(QString::fromLatin1("highlightCurrentLine"), kDefault_HighlightCurrentLine).toBool());
 	dlg.autocompleteEnabled->setChecked(settings.value(QString::fromLatin1("autocompleteEnabled"), kDefault_AutocompleteEnabled).toBool());
+	dlg.autoFollowFocusEnabled->setChecked(settings.value(QStringLiteral("autoFollowFocusEnabled"), kDefault_AutoFollowFocusEnabled).toBool());
 
 	QString defDict = settings.value(QString::fromLatin1("language"), QString::fromLatin1("None")).toString();
 	int i = dlg.language->findData(defDict);
@@ -669,7 +671,7 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 	
 	dlg.show();
 
-	DialogCode	result = (DialogCode)dlg.exec();
+	DialogCode result = static_cast<DialogCode>(dlg.exec());
 
 	if (result == Accepted) {
 		sCurrentTab = dlg.tabWidget->currentIndex();
@@ -747,6 +749,8 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 		settings.setValue(QString::fromLatin1("autocompleteEnabled"), autocompleteEnabled);
 		CompletingEdit::setAutocompleteEnabled(autocompleteEnabled);
 
+		settings.setValue(QStringLiteral("autoFollowFocusEnabled"), dlg.autoFollowFocusEnabled->isChecked());
+
 		// Since the tab width can't be set by any other means, forcibly update
 		// all windows now
 		foreach (QWidget* widget, TWApp::instance()->allWidgets()) {
@@ -782,7 +786,7 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 		if (resolution != oldResolution) {
 			settings.setValue(QString::fromLatin1("previewResolution"), resolution);
 			foreach (QWidget *widget, qApp->topLevelWidgets()) {
-				PDFDocument *thePdfDoc = qobject_cast<PDFDocument*>(widget);
+				PDFDocumentWindow *thePdfDoc = qobject_cast<PDFDocumentWindow*>(widget);
 				if (thePdfDoc)
 					thePdfDoc->setResolution(resolution);
 			}
@@ -806,7 +810,7 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 		settings.setValue(QString::fromLatin1("circularMagnifier"), circular);
 		if (oldMagSize != magSize || oldCircular != circular) {
 			foreach (QWidget *widget, qApp->topLevelWidgets()) {
-				PDFDocument *thePdfDoc = qobject_cast<PDFDocument*>(widget);
+				PDFDocumentWindow *thePdfDoc = qobject_cast<PDFDocumentWindow*>(widget);
 				if (thePdfDoc)
 					thePdfDoc->resetMagnifier();
 			}
@@ -939,7 +943,7 @@ QDialog::DialogCode ToolConfig::doToolConfig(QWidget *parent, Engine &engine)
 	
 	dlg.show();
 
-	DialogCode	result = (DialogCode)dlg.exec();
+	DialogCode result = static_cast<DialogCode>(dlg.exec());
 	if (result == Accepted) {
 		dlg.arguments->setCurrentItem(nullptr); // ensure editing is terminated
 		engine.setName(dlg.toolName->text());

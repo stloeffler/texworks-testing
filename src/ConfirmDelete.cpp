@@ -32,10 +32,6 @@ ConfirmDelete::ConfirmDelete(QWidget *parent)
 	init();
 }
 
-ConfirmDelete::~ConfirmDelete()
-{
-}
-
 void ConfirmDelete::init()
 {
 	setupUi(this);
@@ -56,7 +52,7 @@ void ConfirmDelete::doConfirmDelete(const QDir& dir, const QStringList& fileList
 		dlg.listWidget->item(i)->setCheckState(Qt::Checked);
 
 	dlg.show();
-	DialogCode	result = (DialogCode)dlg.exec();
+	DialogCode result = static_cast<DialogCode>(dlg.exec());
 
 	if (result == Accepted) {
 		bool failed = false;

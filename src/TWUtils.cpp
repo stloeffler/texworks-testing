@@ -21,8 +21,8 @@
 
 #include "TWUtils.h"
 #include "TWApp.h"
-#include "TeXDocument.h"
-#include "PDFDocument.h"
+#include "TeXDocumentWindow.h"
+#include "PDFDocumentWindow.h"
 #include "TWVersion.h"
 #include "GitRev.h"
 #include "Settings.h"
@@ -42,8 +42,6 @@
 #include <QDirIterator>
 #include <QSignalMapper>
 #include <QDateTime>
-
-#pragma mark === TWUtils ===
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 // compile-time default paths - customize by defining in the .pro file
@@ -551,9 +549,9 @@ void TWUtils::updateWindowMenu(QWidget *window, QMenu *menu) /* static */
 	while (!menu->actions().isEmpty() && menu->actions().last()->isSeparator())
 		menu->removeAction(menu->actions().last());
 	
-	QList<TeXDocument *> texDocList;
+	QList<TeXDocumentWindow *> texDocList;
 	QStringList fileList, labelList;
-	Q_FOREACH(TeXDocument * texDoc, TeXDocument::documentList()) {
+	Q_FOREACH(TeXDocumentWindow * texDoc, TeXDocumentWindow::documentList()) {
 		texDocList.append(texDoc);
 		fileList.append(texDoc->fileName());
 	}
@@ -562,7 +560,7 @@ void TWUtils::updateWindowMenu(QWidget *window, QMenu *menu) /* static */
 	// append an item for each TeXDocument
 	bool first = true;
 	for (int i = 0; i < texDocList.size(); ++i) {
-		TeXDocument * texDoc = texDocList[i];
+		TeXDocumentWindow * texDoc = texDocList[i];
 		if (first && !menu->actions().isEmpty())
 			menu->addSeparator();
 		first = false;
@@ -572,7 +570,7 @@ void TWUtils::updateWindowMenu(QWidget *window, QMenu *menu) /* static */
 			f.setItalic(true);
 			selWin->setFont(f);
 		}
-		if (texDoc == qobject_cast<TeXDocument*>(window)) {
+		if (texDoc == qobject_cast<TeXDocumentWindow*>(window)) {
 			selWin->setCheckable(true);
 			selWin->setChecked(true);
 		}
@@ -580,10 +578,10 @@ void TWUtils::updateWindowMenu(QWidget *window, QMenu *menu) /* static */
 		menu->addAction(selWin);
 	}
 
-	QList<PDFDocument *> pdfDocList;
+	QList<PDFDocumentWindow *> pdfDocList;
 	fileList.clear();
 	labelList.clear();
-	Q_FOREACH(PDFDocument * pdfDoc, PDFDocument::documentList()) {
+	Q_FOREACH(PDFDocumentWindow * pdfDoc, PDFDocumentWindow::documentList()) {
 		pdfDocList.append(pdfDoc);
 		fileList.append(pdfDoc->fileName());
 	}
@@ -592,12 +590,12 @@ void TWUtils::updateWindowMenu(QWidget *window, QMenu *menu) /* static */
 	// append an item for each PDFDocument
 	first = true;
 	for (int i = 0; i < pdfDocList.size(); ++i) {
-		PDFDocument * pdfDoc = pdfDocList[i];
+		PDFDocumentWindow * pdfDoc = pdfDocList[i];
 		if (first && !menu->actions().isEmpty())
 			menu->addSeparator();
 		first = false;
 		SelWinAction *selWin = new SelWinAction(menu, fileList[i], labelList[i]);
-		if (pdfDoc == qobject_cast<PDFDocument*>(window)) {
+		if (pdfDoc == qobject_cast<PDFDocumentWindow*>(window)) {
 			selWin->setCheckable(true);
 			selWin->setChecked(true);
 		}
@@ -1148,8 +1146,6 @@ QDateTime TWUtils::gitCommitDate()
 	return QDateTime::fromString(QString::fromLatin1(GIT_COMMIT_DATE), Qt::ISODate).toUTC();
 }
 
-#pragma mark === SelWinAction ===
-
 // action subclass used for dynamic window-selection items in the Window menu
 
 SelWinAction::SelWinAction(QObject *parent, const QString &fileName, const QString &label)
@@ -1158,8 +1154,6 @@ SelWinAction::SelWinAction(QObject *parent, const QString &fileName, const QStri
 	setText(label);
 	setData(fileName);
 }
-
-#pragma mark === CmdKeyFilter ===
 
 // on OS X only, the singleton CmdKeyFilter object is attached to all TeXDocument editor widgets
 // to stop Command-keys getting inserted into edit text items

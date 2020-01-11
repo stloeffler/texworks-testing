@@ -47,7 +47,7 @@ public:
 	}
 
 private:
-	InterProcessCommunicatorPrivate(InterProcessCommunicator * q) : hMutex(NULL), msgTarget(NULL), q_ptr(q) {}
+	explicit InterProcessCommunicatorPrivate(InterProcessCommunicator * q) : hMutex(NULL), msgTarget(NULL), q_ptr(q) {}
 
 	friend LRESULT CALLBACK TW_HiddenWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -110,7 +110,7 @@ private:
 		msgTarget = CreateWindowA(TW_HIDDEN_WINDOW_CLASS, "TeXworks", WS_OVERLAPPEDWINDOW,
 						CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 						HWND_MESSAGE, NULL, hInstance, NULL);
-		SetWindowLongPtr(msgTarget, GWLP_USERDATA, reinterpret_cast<LONG>(this));
+		SetWindowLongPtr(msgTarget, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 	}
 
 	// The mutex is handled exclusively by the InterProcessCommunicator
@@ -136,7 +136,6 @@ LRESULT CALLBACK TW_HiddenWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 
 InterProcessCommunicator::InterProcessCommunicator()
 	: _private(new InterProcessCommunicatorPrivate(this))
-	, _isFirstInstance(true)
 {
 	Q_D(InterProcessCommunicator);
 	d->hMutex = CreateMutexA(NULL, FALSE, TW_MUTEX_NAME);

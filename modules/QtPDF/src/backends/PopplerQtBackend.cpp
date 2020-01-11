@@ -21,6 +21,7 @@
 #include "GlobalParams.h"
 #include <QCoreApplication>
 #include <QDir>
+#include <memory>
 #endif
 
 
@@ -798,7 +799,7 @@ QList<SearchResult> Page::search(const QString & searchText, const SearchFlags &
   if (!_parent)
     return results;
 
-  result.pageNum = _n;
+  result.pageNum = static_cast<unsigned int>(_n);
 
   QMutexLocker popplerDocLock(dynamic_cast<Document *>(_parent)->_poppler_docLock);
 
@@ -1042,6 +1043,7 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
 
 } // namespace Backend
 
+// NOLINTNEXTLINE(modernize-use-equals-default)
 PopplerQtBackend::PopplerQtBackend() {
 #if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
   static bool globalParamsInitialized = false;
@@ -1053,10 +1055,18 @@ PopplerQtBackend::PopplerQtBackend() {
     // document is opened)
     QDir popplerDataDir(QCoreApplication::applicationDirPath() + QLatin1String("/../poppler-data"));
     if (popplerDataDir.exists()) {
+#if defined(POPPLER_GLOBALPARAMS_IS_UNIQUE)
+      globalParams = std::move(std::unique_ptr<GlobalParams>(new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data())));
+#else
       globalParams = new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data());
+#endif
     }
     else {
+#if defined(POPPLER_GLOBALPARAMS_IS_UNIQUE)
+      globalParams = std::move(std::unique_ptr<GlobalParams>(new GlobalParams()));
+#else
       globalParams = new GlobalParams();
+#endif
     }
   }
 #endif

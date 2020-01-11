@@ -19,39 +19,31 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#ifndef TWScriptable_H
-#define TWScriptable_H
+#ifndef TWScriptManager_H
+#define TWScriptManager_H
 
 #include "scripting/Script.h"
 
-#include <QMainWindow>
 #include <QList>
+#include <QObject>
 #include <QString>
-#include <QFileInfo>
-#include <QDir>
-#include <QProcess>
-
-class QMenu;
-class QAction;
-class QSignalMapper;
 
 class TWScriptList : public QObject
 {
 	Q_OBJECT
 
 public:
-	TWScriptList()
-	{ }
-	
-	TWScriptList(const TWScriptList& orig)
+	TWScriptList() = default;
+
+	explicit TWScriptList(const TWScriptList & orig)
 	: QObject(orig.parent())
 	, name(orig.name)
 	{ }
-	
-	TWScriptList(QObject* parent, const QString& str = QString())
+
+	explicit TWScriptList(QObject * parent, const QString & str = QString())
 	: QObject(parent), name(str)
 	{ }
-	
+
 	const QString& getName() const { return name; }
 
 private:
@@ -63,14 +55,14 @@ class TWScriptManager
 {
 public:
 	TWScriptManager();
-	virtual ~TWScriptManager() {}
-	
+	virtual ~TWScriptManager() = default;
+
 	bool addScript(QObject* scriptList, Tw::Scripting::Script* script);
 	void addScriptsInDirectory(const QDir& dir, const QStringList& disabled, const QStringList& ignore = QStringList()) {
 		addScriptsInDirectory(&m_Scripts, &m_Hooks, dir, disabled, ignore);
 	}
 	void clear();
-		
+
 	TWScriptList* getScripts() { return &m_Scripts; }
 	TWScriptList* getHookScripts() { return &m_Hooks; }
 	QList<Tw::Scripting::Script*> getHookScripts(const QString& hook) const;
@@ -96,7 +88,7 @@ protected:
 							   const QStringList& ignore);
 	void loadPlugins();
 	void reloadScriptsInList(TWScriptList * list, QStringList & processed);
-	
+
 private:
 	TWScriptList m_Scripts; // hierarchical list of standalone scripts
 	TWScriptList m_Hooks; // hierarchical list of hook scripts
@@ -104,52 +96,4 @@ private:
 	QList<QObject*> scriptLanguages;
 };
 
-// parent class for document windows (i.e. both the source and PDF window types);
-// handles the Scripts menu and other common functionality
-class TWScriptable : public QMainWindow
-{
-	Q_OBJECT
-
-public:
-	TWScriptable();
-	virtual ~TWScriptable() { }
-	
-public slots:
-	void updateScriptsMenu();
-	void runScript(QObject * script, Tw::Scripting::Script::ScriptType scriptType = Tw::Scripting::Script::ScriptStandalone);
-	void runHooks(const QString& hookName);
-	
-	void selectWindow(bool activate = true);
-	void placeOnLeft();
-	void placeOnRight();
-
-private slots:
-	void doManageScripts();
-	void doAboutScripts();
-	
-	void hideFloatersUnlessThis(QWidget* currWindow);
-	
-protected slots:
-	void scriptDeleted(QObject * obj);
-	
-protected:
-	void initScriptable(QMenu* scriptsMenu,
-						QAction* aboutScriptsAction,
-						QAction* manageScriptsAction,
-						QAction* updateScriptsAction,
-						QAction* showScriptsFolderAction);
-
-	int addScriptsToMenu(QMenu *menu, TWScriptList *scripts);
-	void removeScriptsFromMenu(QMenu *menu, int startIndex = 0);
-
-	void showFloaters();
-
-private:
-	QMenu* scriptsMenu;
-	QSignalMapper* scriptMapper;
-	int staticScriptMenuItemCount;
-
-	QList<QWidget*> latentVisibleWidgets;
-};
-
-#endif
+#endif // !defined(TWScriptManager)

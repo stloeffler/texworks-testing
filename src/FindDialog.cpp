@@ -20,8 +20,8 @@
 */
 
 #include "FindDialog.h"
-#include "TeXDocument.h"
-#include "PDFDocument.h"
+#include "TeXDocumentWindow.h"
+#include "PDFDocumentWindow.h"
 #include "TWApp.h"
 #include "Settings.h"
 
@@ -112,7 +112,7 @@ void FindDialog::init(QTextEdit *document)
 	checkBox_findAll->setChecked(findAll);
 	
 	bool allFiles = settings.value(QString::fromLatin1("searchAllFiles")).toBool();
-	checkBox_allFiles->setEnabled(TeXDocument::documentList().count() > 1);
+	checkBox_allFiles->setEnabled(TeXDocumentWindow::documentList().count() > 1);
 	checkBox_allFiles->setChecked(allFiles && checkBox_allFiles->isEnabled());
 
 	bool selectionOption = settings.value(QString::fromLatin1("searchSelection")).toBool();
@@ -123,7 +123,7 @@ void FindDialog::init(QTextEdit *document)
 	checkBox_wrap->setEnabled(!(checkBox_selection->isEnabled() && checkBox_selection->isChecked()) && !findAll);
 	checkBox_wrap->setChecked(wrapOption);
 
-	QTextDocument::FindFlags flags = (QTextDocument::FindFlags)settings.value(QString::fromLatin1("searchFlags")).toInt();
+	QTextDocument::FindFlags flags = static_cast<QTextDocument::FindFlags>(settings.value(QString::fromLatin1("searchFlags")).toInt());
 	checkBox_case->setChecked((flags & QTextDocument::FindCaseSensitively) != 0);
 	checkBox_words->setChecked((flags & QTextDocument::FindWholeWords) != 0);
 	checkBox_backwards->setChecked((flags & QTextDocument::FindBackward) != 0);
@@ -197,7 +197,7 @@ QDialog::DialogCode FindDialog::doFindDialog(QTextEdit *document)
 	FindDialog dlg(document);
 
 	dlg.show();
-	DialogCode	result = (DialogCode)dlg.exec();
+	DialogCode result = static_cast<DialogCode>(dlg.exec());
 	
 	if (result == Accepted) {
 		Tw::Settings settings;
@@ -218,7 +218,7 @@ QDialog::DialogCode FindDialog::doFindDialog(QTextEdit *document)
 			flags |= QTextDocument::FindWholeWords;
 		if (dlg.checkBox_backwards->isChecked())
 			flags |= QTextDocument::FindBackward;
-		settings.setValue(QString::fromLatin1("searchFlags"), (int)flags);
+		settings.setValue(QString::fromLatin1("searchFlags"), static_cast<int>(flags));
 
 		settings.setValue(QString::fromLatin1("searchRegex"), dlg.checkBox_regex->isChecked());
 		settings.setValue(QString::fromLatin1("searchWrap"), dlg.checkBox_wrap->isChecked());
@@ -266,7 +266,7 @@ void ReplaceDialog::init(QTextEdit *document)
 	checkBox_words->setEnabled(!regexOption);
 
 	bool allFiles = settings.value(QString::fromLatin1("searchAllFiles")).toBool();
-	checkBox_allFiles->setEnabled(TeXDocument::documentList().count() > 1);
+	checkBox_allFiles->setEnabled(TeXDocumentWindow::documentList().count() > 1);
 	checkBox_allFiles->setChecked(allFiles && checkBox_allFiles->isEnabled());
 
 	bool selectionOption = settings.value(QString::fromLatin1("searchSelection")).toBool();
@@ -277,7 +277,7 @@ void ReplaceDialog::init(QTextEdit *document)
 	checkBox_wrap->setEnabled(!(checkBox_selection->isEnabled() && checkBox_selection->isChecked()));
 	checkBox_wrap->setChecked(wrapOption);
 
-	QTextDocument::FindFlags flags = (QTextDocument::FindFlags)settings.value(QString::fromLatin1("searchFlags")).toInt();
+	QTextDocument::FindFlags flags = static_cast<QTextDocument::FindFlags>(settings.value(QString::fromLatin1("searchFlags")).toInt());
 	checkBox_case->setChecked((flags & QTextDocument::FindCaseSensitively) != 0);
 	checkBox_words->setChecked((flags & QTextDocument::FindWholeWords) != 0);
 	checkBox_backwards->setChecked((flags & QTextDocument::FindBackward) != 0);
@@ -405,7 +405,7 @@ ReplaceDialog::DialogCode ReplaceDialog::doReplaceDialog(QTextEdit *document)
 		flags |= QTextDocument::FindWholeWords;
 	if (dlg.checkBox_backwards->isChecked())
 		flags |= QTextDocument::FindBackward;
-	settings.setValue(QString::fromLatin1("searchFlags"), (int)flags);
+	settings.setValue(QString::fromLatin1("searchFlags"), static_cast<int>(flags));
 
 	settings.setValue(QString::fromLatin1("searchRegex"), dlg.checkBox_regex->isChecked());
 	settings.setValue(QString::fromLatin1("searchWrap"), dlg.checkBox_wrap->isChecked());
@@ -428,8 +428,6 @@ SearchResults::SearchResults(QWidget* parent)
 	sc = new QShortcut(Qt::Key_Escape, table);
 	sc->setContext(Qt::WidgetShortcut);
 	connect(sc, SIGNAL(activated()), this, SLOT(goToSourceAndClose()));
-	
-	connect(TWApp::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)), this, SLOT(focusChanged(QWidget*,QWidget*)));
 }
 
 void SearchResults::goToSource()
@@ -445,7 +443,7 @@ void SearchResults::goToSource()
 	fileName = item->toolTip();
 	
 	if (!fileName.isEmpty()) {
-		QWidget *theDoc = TeXDocument::openDocument(fileName);
+		QWidget *theDoc = TeXDocumentWindow::openDocument(fileName);
 		if (theDoc) {
 			QTextEdit *editor = theDoc->findChild<QTextEdit*>(QString::fromLatin1("textEdit"));
 			if (editor)
@@ -572,7 +570,7 @@ void SearchResults::showEntry(QTableWidgetItem * item)
 	int selEnd = item->text().toInt();
 
 	if (!fileName.isEmpty())
-		TeXDocument::openDocument(fileName, false, true, lineNo, selStart, selEnd);
+		TeXDocumentWindow::openDocument(fileName, false, true, lineNo, selStart, selEnd);
 }
 
 void SearchResults::showSelectedEntry()
@@ -587,32 +585,13 @@ void SearchResults::showSelectedEntry()
 	showEntry(item);
 }
 
-void SearchResults::focusChanged(QWidget * old, QWidget * now)
-{
-	bool previouslyFocused, nowFocused;
-	TeXDocument * texDoc = qobject_cast<TeXDocument*>(parent());
-
-	if (!texDoc)
-		return;
-
-	if (!old)
-		previouslyFocused = false;
-	else
-		previouslyFocused = isAncestorOf(old);
-
-	if (!now)
-		nowFocused = false;
-	else
-		nowFocused = isAncestorOf(now);
-}
-
-PDFFindDialog::PDFFindDialog(PDFDocument *document)
+PDFFindDialog::PDFFindDialog(PDFDocumentWindow *document)
 	: QDialog(document)
 {
 	init(document);
 }
 
-void PDFFindDialog::init(PDFDocument *document)
+void PDFFindDialog::init(PDFDocumentWindow *document)
 {
 	setupUi(this);
 
@@ -642,7 +621,7 @@ void PDFFindDialog::init(PDFDocument *document)
 	checkBox_wrap->setEnabled(!findAll);
 	checkBox_wrap->setChecked(wrapOption);
 
-	QTextDocument::FindFlags flags = (QTextDocument::FindFlags)settings.value(QString::fromLatin1("searchFlags")).toInt();
+	QTextDocument::FindFlags flags = static_cast<QTextDocument::FindFlags>(settings.value(QString::fromLatin1("searchFlags")).toInt());
 	checkBox_case->setChecked((flags & QTextDocument::FindCaseSensitively) != 0);
 //	checkBox_words->setChecked((flags & QTextDocument::FindWholeWords) != 0);
 //	checkBox_backwards->setChecked((flags & QTextDocument::FindBackward) != 0);
@@ -667,12 +646,12 @@ void PDFFindDialog::init(PDFDocument *document)
 	searchText->installEventFilter(new RecentStringsKeyFilter(this, recentStrings));
 }
 
-QDialog::DialogCode PDFFindDialog::doFindDialog(PDFDocument *document)
+QDialog::DialogCode PDFFindDialog::doFindDialog(PDFDocumentWindow *document)
 {
 	PDFFindDialog dlg(document);
 
 	dlg.show();
-	DialogCode	result = (DialogCode)dlg.exec();
+	DialogCode result = static_cast<DialogCode>(dlg.exec());
 
 	if (result == Accepted) {
 		Tw::Settings settings;
@@ -686,7 +665,7 @@ QDialog::DialogCode PDFFindDialog::doFindDialog(PDFDocument *document)
 			recentStrings.removeLast();
 		settings.setValue(QString::fromLatin1("recentSearchStrings"), recentStrings);
 
-		QTextDocument::FindFlags oldFlags = (QTextDocument::FindFlags)settings.value(QString::fromLatin1("searchFlags")).toInt();
+		QTextDocument::FindFlags oldFlags = static_cast<QTextDocument::FindFlags>(settings.value(QString::fromLatin1("searchFlags")).toInt());
 		int flags = 0;
 		if (dlg.checkBox_case->isChecked())
 			flags |= QTextDocument::FindCaseSensitively;
@@ -696,8 +675,8 @@ QDialog::DialogCode PDFFindDialog::doFindDialog(PDFDocument *document)
 //		if (dlg.checkBox_backwards->isChecked())
 //			flags |= QTextDocument::FindBackward;
 		flags |= (oldFlags & QTextDocument::FindBackward);
-		
-		settings.setValue(QString::fromLatin1("searchFlags"), (int)flags);
+
+		settings.setValue(QString::fromLatin1("searchFlags"), static_cast<int>(flags));
 
 //		settings.setValue(QString::fromLatin1("searchRegex"), dlg.checkBox_regex->isChecked());
 		settings.setValue(QString::fromLatin1("searchWrap"), dlg.checkBox_wrap->isChecked());

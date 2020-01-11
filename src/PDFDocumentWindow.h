@@ -22,7 +22,7 @@
 #ifndef PDFDocument_H
 #define PDFDocument_H
 
-#include "TWScriptable.h"
+#include "TWScriptableWindow.h"
 
 #include <QImage>
 #include <QLabel>
@@ -37,7 +37,7 @@
 #include "../modules/QtPDF/src/PDFDocumentWidget.h"
 #include "TWSynchronizer.h"
 
-#include "ui_PDFDocument.h"
+#include "ui_PDFDocumentWindow.h"
 
 const int kDefault_MagnifierSize = 2;
 const bool kDefault_CircularMagnifier = true;
@@ -51,7 +51,7 @@ class QAction;
 class QMenu;
 class QToolBar;
 class QScrollArea;
-class TeXDocument;
+class TeXDocumentWindow;
 class QShortcut;
 
 class FullscreenManager : public QObject
@@ -59,7 +59,7 @@ class FullscreenManager : public QObject
 	Q_OBJECT
 public:
 	FullscreenManager(QMainWindow * parent);
-	virtual ~FullscreenManager();
+	~FullscreenManager() override;
 
 	void setFullscreen(const bool fullscreen = true);
 	bool isFullscreen() const;
@@ -91,17 +91,17 @@ protected:
 	QTimer _menuBarTimer;
 };
 
-class PDFDocument : public TWScriptable, private Ui::PDFDocument
+class PDFDocumentWindow : public TWScriptableWindow, private Ui::PDFDocumentWindow
 {
 	Q_OBJECT
     Q_PROPERTY(QString fileName READ fileName)
 
 public:
-	PDFDocument(const QString &fileName, TeXDocument *sourceDoc = nullptr);
-	virtual ~PDFDocument();
+	PDFDocumentWindow(const QString &fileName, TeXDocumentWindow *sourceDoc = nullptr);
+	~PDFDocumentWindow() override;
 
-	static PDFDocument *findDocument(const QString &fileName);
-	static QList<PDFDocument*> documentList()
+	static PDFDocumentWindow *findDocument(const QString &fileName);
+	static QList<PDFDocumentWindow*> documentList()
 		{
 			return docList;
 		}
@@ -116,22 +116,24 @@ public:
 	void resetMagnifier();
 	void enableTypesetAction(bool enabled);
 	void updateTypesettingAction(bool processRunning);
-	void linkToSource(TeXDocument *texDoc);
+	void linkToSource(TeXDocumentWindow *texDoc);
 	bool hasSyncData() const { return _synchronizer != nullptr; }
 
 	QtPDF::PDFDocumentWidget * widget() { return pdfWidget; }
 
 protected:
-	virtual void changeEvent(QEvent *event);
-	virtual bool event(QEvent *event);
-	virtual void closeEvent(QCloseEvent *event);
-	virtual void dragEnterEvent(QDragEnterEvent *event);
-	virtual void dropEvent(QDropEvent *event);
-	virtual void contextMenuEvent(QContextMenuEvent *event);
-	virtual void mouseMoveEvent(QMouseEvent *event);
+	void changeEvent(QEvent *event) override;
+	bool event(QEvent *event) override;
+	void closeEvent(QCloseEvent *event) override;
+	void dragEnterEvent(QDragEnterEvent *event) override;
+	void dropEvent(QDropEvent *event) override;
+	void contextMenuEvent(QContextMenuEvent *event) override;
+	void mouseMoveEvent(QMouseEvent *event) override;
+
+	QString scriptContext() const override { return QStringLiteral("PDFDocument"); }
 
 public slots:
-	void texActivated(TeXDocument * texDoc);
+	void texActivated(TeXDocumentWindow * texDoc);
 	void texClosed(QObject *obj);
 	void reload();
 	void retypeset();
@@ -189,7 +191,7 @@ private:
 	QScrollArea	*scrollArea;
 	QButtonGroup	*toolButtonGroup;
 
-	QLinkedList<TeXDocument*> sourceDocList;
+	QLinkedList<TeXDocumentWindow*> sourceDocList;
 
 	QLabel *pageLabel;
 	QLabel *scaleLabel;
@@ -205,7 +207,7 @@ private:
 
 	bool openedManually;
 	
-	static QList<PDFDocument*> docList;
+	static QList<PDFDocumentWindow*> docList;
 
 	TWSyncTeXSynchronizer * _synchronizer;
 };

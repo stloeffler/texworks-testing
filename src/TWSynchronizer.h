@@ -51,8 +51,8 @@ public:
     QList<QRectF> rects;
   };
 
-  TWSynchronizer() { }
-  virtual ~TWSynchronizer() { }
+  TWSynchronizer() = default;
+  virtual ~TWSynchronizer() = default;
   virtual PDFSyncPoint syncFromTeX(const TeXSyncPoint & src, const Resolution resolution) const = 0;
   virtual TeXSyncPoint syncFromPDF(const PDFSyncPoint & src, const Resolution resolution) const = 0;
 };
@@ -61,16 +61,16 @@ public:
 class TWSyncTeXSynchronizer : public TWSynchronizer
 {
 public:
-  TWSyncTeXSynchronizer(const QString & filename);
-  virtual ~TWSyncTeXSynchronizer();
+  explicit TWSyncTeXSynchronizer(const QString & filename);
+  ~TWSyncTeXSynchronizer() override;
 
   bool isValid() const;
 
   QString syncTeXFilename() const;
   QString pdfFilename() const;
 
-  virtual PDFSyncPoint syncFromTeX(const TeXSyncPoint & src, const Resolution resolution) const;
-  virtual TeXSyncPoint syncFromPDF(const PDFSyncPoint & src, const Resolution resolution) const;
+  PDFSyncPoint syncFromTeX(const TeXSyncPoint & src, const Resolution resolution) const override;
+  TeXSyncPoint syncFromPDF(const PDFSyncPoint & src, const Resolution resolution) const override;
 
 protected:
   void _syncFromTeXFine(const TeXSyncPoint & src, PDFSyncPoint & dest, const Resolution resolution) const;

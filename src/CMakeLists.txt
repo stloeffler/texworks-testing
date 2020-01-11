@@ -20,23 +20,26 @@ set(TEXWORKS_SRCS BibTeXFile.cpp
                   FindDialog.cpp
                   HardWrapDialog.cpp
                   main.cpp
-                  PDFDocument.cpp
+                  PDFDocumentWindow.cpp
                   PrefsDialog.cpp
                   ResourcesDialog.cpp
                   ScreenCalibrationWidget.cpp
-                  ScriptManager.cpp
+                  ScriptManagerWidget.cpp
                   Settings.cpp
                   TemplateDialog.cpp
                   TeXDocks.cpp
-                  TeXDocument.cpp
+                  TeXDocumentWindow.cpp
                   TeXHighlighter.cpp
                   TWApp.cpp
-                  TWScriptable.cpp
+                  TWScriptableWindow.cpp
+                  TWScriptManager.cpp
                   TWSynchronizer.cpp
                   TWSystemCmd.cpp
                   TWTextCodecs.cpp
                   TWUtils.cpp
                   document/SpellChecker.cpp
+                  document/TextDocument.cpp
+                  document/TeXDocument.cpp
                   scripting/JSScriptInterface.cpp
                   scripting/ScriptAPI.cpp
                   scripting/Script.cpp
@@ -57,25 +60,29 @@ set(TEXWORKS_HDRS BibTeXFile.h
                   FindDialog.h
                   GitRev.h
                   HardWrapDialog.h
-                  PDFDocument.h
+                  PDFDocumentWindow.h
                   PrefsDialog.h
                   ResourcesDialog.h
                   ScreenCalibrationWidget.h
-                  ScriptManager.h
+                  ScriptManagerWidget.h
                   Settings.h
                   TemplateDialog.h
                   TeXDocks.h
-                  TeXDocument.h
+                  TeXDocumentWindow.h
                   TeXHighlighter.h
                   TWApp.h
-                  TWScriptable.h
+                  TWScriptableWindow.h
+                  TWScriptManager.h
                   TWSynchronizer.h
                   TWSystemCmd.h
                   TWTextCodecs.h
                   TWUtils.h
                   TWVersion.h
                   InterProcessCommunicator.h
+                  document/Document.h
                   document/SpellChecker.h
+                  document/TextDocument.h
+                  document/TeXDocument.h
                   scripting/ScriptAPIInterface.h
                   scripting/ScriptLanguageInterface.h
                   scripting/ScriptAPI.h
@@ -98,18 +105,19 @@ else ()
 endif ()
 
 set(TEXWORKS_UIS CitationSelectDialog.ui
+                 CompletingEdit.ui
                  ConfirmDelete.ui
                  Find.ui
                  HardWrapDialog.ui
-                 PDFDocument.ui
+                 PDFDocumentWindow.ui
                  PDFFind.ui
                  PrefsDialog.ui
                  Replace.ui
                  ResourcesDialog.ui
-                 ScriptManager.ui
+                 ScriptManagerWidget.ui
                  SearchResults.ui
                  TemplateDialog.ui
-                 TeXDocument.ui
+                 TeXDocumentWindow.ui
                  ToolConfig.ui)
 
 set(TEXWORKS_RCS ${TeXworks_SOURCE_DIR}/res/resfiles.qrc
@@ -188,6 +196,9 @@ if (UNIX AND NOT APPLE)
   )
 endif ()
 
+target_compile_options(TeXworks PRIVATE ${WARNING_OPTIONS})
+
+
 # Add translations
 target_add_qt_translations(TeXworks
   PRO_FILE "${CMAKE_SOURCE_DIR}/trans/${PROJECT_NAME}_trans.pro"
@@ -257,7 +268,10 @@ else ()
 endif ()
 
 IF ( UNIX AND NOT APPLE )
-  INSTALL(FILES ${TeXworks_SOURCE_DIR}/res/images/TeXworks.png DESTINATION ${CMAKE_INSTALL_PREFIX}/${TeXworks_ICON_DIR})
+  INSTALL(FILES ${TeXworks_SOURCE_DIR}/res/images/TeXworks.png DESTINATION ${CMAKE_INSTALL_PREFIX}/${TeXworks_ICON_DIR}/512x512/apps)
+  INSTALL(FILES ${TeXworks_SOURCE_DIR}/res/images/TeXworks-128.png DESTINATION ${CMAKE_INSTALL_PREFIX}/${TeXworks_ICON_DIR}/128x128/apps RENAME TeXworks.png)
+  INSTALL(FILES ${TeXworks_SOURCE_DIR}/res/images/TeXworks-64.png DESTINATION ${CMAKE_INSTALL_PREFIX}/${TeXworks_ICON_DIR}/64x64/apps RENAME TeXworks.png)
+  INSTALL(FILES ${TeXworks_SOURCE_DIR}/res/images/TeXworks-48.png DESTINATION ${CMAKE_INSTALL_PREFIX}/${TeXworks_ICON_DIR}/48x48/apps RENAME TeXworks.png)
   INSTALL(FILES
     ${TeXworks_SOURCE_DIR}/COPYING
     ${TeXworks_SOURCE_DIR}/README.md

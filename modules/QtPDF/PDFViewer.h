@@ -14,7 +14,7 @@ class PDFViewer : public QMainWindow {
   QToolBar * _toolBar;
 
 public:
-  PDFViewer(const QString & pdf_doc = QString(), QWidget *parent = 0, Qt::WindowFlags flags = 0);
+  PDFViewer(const QString & pdf_doc = QString(), QWidget * parent = Q_NULLPTR, Qt::WindowFlags flags = Q_NULLPTR);
 
 public slots:
   void open();
@@ -42,10 +42,10 @@ class SearchLineEdit : public QLineEdit
   Q_OBJECT
 
 public:
-  SearchLineEdit(QWidget *parent = 0);
+  SearchLineEdit(QWidget * parent = Q_NULLPTR);
 
 protected:
-  void resizeEvent(QResizeEvent *);
+  void resizeEvent(QResizeEvent *) override;
 
 private:
   QToolButton *nextResultButton, *previousResultButton, *clearButton;
@@ -68,10 +68,10 @@ private slots:
 class PageCounter : public QLabel {
   Q_OBJECT
   typedef QLabel super;
-  int currentPage, lastPage;
+  int currentPage{1}, lastPage{-1};
 
 public:
-  PageCounter(QWidget *parent = 0, Qt::WindowFlags f = 0);
+  PageCounter(QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = {});
 
 public slots:
   void setLastPage(int page);
@@ -85,10 +85,10 @@ private:
 class ZoomTracker : public QLabel {
   Q_OBJECT
   typedef QLabel super;
-  qreal zoom;
+  qreal zoom{1.0};
 
 public:
-  ZoomTracker(QWidget *parent = 0, Qt::WindowFlags f = 0);
+  ZoomTracker(QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = {});
 
 public slots:
   void setZoom(qreal newZoom);

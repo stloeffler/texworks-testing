@@ -21,6 +21,16 @@
 
 #include "PythonScript.h"
 
+// Python uses the name "slots", which Qt hijacks. So we temporarily undefine
+// it, then include the python headers, then redefine it
+#undef slots
+#ifdef __APPLE__ // can't use Q_OS_DARWIN as it's not defined yet!
+#include <Python/Python.h>
+#else
+#include <Python.h>
+#endif
+#define slots Q_SLOTS
+
 #include <QMetaObject>
 #include <QMetaMethod>
 #include <QMetaProperty>
@@ -238,7 +248,6 @@ PyObject * PythonScript::QObjectToPython(QObject * o)
 PyObject* PythonScript::getAttribute(PyObject * o, PyObject * attr_name)
 {
 	QObject * obj;
-	QMetaMethod method;
 	QString propName;
 	QVariant result;
 	pyQObjectMethodObject * pyMethod;
@@ -384,7 +393,7 @@ PyObject * PythonScript::VariantToPython(const QVariant & v)
 
 	if (v.isNull()) Py_RETURN_NONE;
 
-	switch ((QMetaType::Type)v.type()) {
+	switch (static_cast<int>(v.type())) {
 		case QVariant::Double:
 			return Py_BuildValue("d", v.toDouble());
 		case QVariant::Bool:
@@ -490,8 +499,6 @@ QVariant PythonScript::PythonToVariant(PyObject * o)
 /*static*/
 bool PythonScript::asQString(PyObject * obj, QString & str)
 {
-	PyObject * tmp;
-
 	// Get the parameters
 	// In Python 3.x, the PyString_* were replaced by PyBytes_*
 #if PY_MAJOR_VERSION < 3
@@ -506,7 +513,7 @@ bool PythonScript::asQString(PyObject * obj, QString & str)
 	}
 #endif
 	if (PyUnicode_Check(obj)) {
-		tmp = PyUnicode_AsUTF8String(obj);
+		PyObject * tmp = PyUnicode_AsUTF8String(obj);
 #if PY_MAJOR_VERSION < 3
 		str = QString::fromUtf8(PyString_AsString(tmp));
 #else

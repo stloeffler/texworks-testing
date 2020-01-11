@@ -25,15 +25,6 @@ namespace QtPDF {
 
 namespace Transition {
 
-AbstractTransition::AbstractTransition() :
-  _duration(1),
-  _direction(0),
-  _motion(Motion_Inward),
-  _started(false),
-  _finished(false)
-{
-}
-
 void AbstractTransition::start(const QImage & imgStart, const QImage & imgEnd)
 {
   setImages(imgStart, imgEnd);
@@ -496,14 +487,13 @@ QImage Push::getImage()
   int i, j;
   int edge;
   const QRgb * img1, * img2;
-  QRgb * img;
   
   if (_direction == 0) {
     edge = static_cast<int>(getFracTime() * static_cast<float>(_imgEnd.width()));
     for (j = 0; j < _imgEnd.height(); ++j) {
       img1 = reinterpret_cast<const QRgb*>(_imgStart.constScanLine(j));
       img2 = reinterpret_cast<const QRgb*>(_imgEnd.constScanLine(j));
-      img = reinterpret_cast<QRgb*>(retVal.scanLine(j));
+      QRgb * img = reinterpret_cast<QRgb*>(retVal.scanLine(j));
       for (i = 0; i < edge; ++i)
         img[i] = img2[i + _imgEnd.width() - edge];
       for (; i < _imgEnd.width(); ++i)
@@ -536,14 +526,13 @@ QImage Cover::getImage()
   int i, j;
   int edge;
   const QRgb * img1, * img2;
-  QRgb * img;
   
   if (_direction == 0) {
     edge = static_cast<int>(getFracTime() * static_cast<float>(_imgEnd.width()));
     for (j = 0; j < _imgEnd.height(); ++j) {
       img1 = reinterpret_cast<const QRgb*>(_imgStart.constScanLine(j));
       img2 = reinterpret_cast<const QRgb*>(_imgEnd.constScanLine(j));
-      img = reinterpret_cast<QRgb*>(retVal.scanLine(j));
+      QRgb * img = reinterpret_cast<QRgb*>(retVal.scanLine(j));
       for (i = 0; i < edge; ++i)
         img[i] = img2[i + _imgEnd.width() - edge];
       for (; i < _imgEnd.width(); ++i)

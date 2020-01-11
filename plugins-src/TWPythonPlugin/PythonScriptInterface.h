@@ -22,16 +22,6 @@
 #ifndef PythonScriptInterface_H
 #define PythonScriptInterface_H
 
-// Python uses the name "slots", which Qt hijacks. So we temporarily undefine
-// it, then include the python headers, then redefine it
-#undef slots
-#ifdef __APPLE__ // can't use Q_OS_DARWIN as it's not defined yet!
-#include <Python/Python.h>
-#else
-#include <Python.h>
-#endif
-#define slots Q_SLOTS
-
 #include "scripting/Script.h"
 #include "scripting/ScriptLanguageInterface.h"
 
@@ -56,7 +46,7 @@ public:
 	 *
 	 * Finalizes the python instance
 	 */
-	virtual ~PythonScriptInterface();
+	~PythonScriptInterface() override;
 
 	/** \brief Script factory
 	 *
@@ -64,23 +54,23 @@ public:
 	 * 			interface requires; the caller owns the object and must delete
 	 * 			it.
 	 */
-	virtual Script * newScript(const QString& fileName);
+	Script * newScript(const QString& fileName) override;
 
 	/** \brief	Get the supported script language name
 	 *
 	 * \return	the name of the scripting language
 	 */
-	virtual QString scriptLanguageName() const { return QStringLiteral("Python"); }
+	QString scriptLanguageName() const override { return QStringLiteral("Python"); }
 
 	/** \brief	Get a URL for information on the supported script language
 	 *
 	 * \return	a string with a URL for information about the language
 	 */
-	virtual QString scriptLanguageURL() const { return QStringLiteral("http://www.python.org/"); }
+	QString scriptLanguageURL() const override { return QStringLiteral("http://www.python.org/"); }
 
 	/** \brief  Return whether the given file is handled by this scripting language plugin
 	 */
-	virtual bool canHandleFile(const QFileInfo& fileInfo) const { return fileInfo.suffix() == QStringLiteral("py"); }
+	bool canHandleFile(const QFileInfo& fileInfo) const override { return fileInfo.suffix() == QStringLiteral("py"); }
 };
 
 } // namespace Scripting

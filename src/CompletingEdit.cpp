@@ -23,6 +23,8 @@
 #include "TWUtils.h"
 #include "TWApp.h"
 #include "Settings.h"
+#include "TeXHighlighter.h"
+#include "document/TeXDocument.h"
 
 #include <QCompleter>
 #include <QKeyEvent>
@@ -40,7 +42,6 @@
 #include <QTextCodec>
 #include <QAbstractTextDocumentLayout>
 #include <QSignalMapper>
-#include <QTextDocument>
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QTimer>
@@ -48,19 +49,7 @@
 #include <QClipboard>
 
 CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
-	: QTextEdit(parent),
-	  mouseMode(none),
-	  droppedOffset(-1),
-	  droppedLength(0),
-	  clickCount(0),
-	  wheelDelta(0),
-	  autoIndentMode(-1),
-	  prefixLength(0),
-	  smartQuotesMode(-1),
-	  c(nullptr),
-	  itemIndex(0),
-	  prevRow(-1),
-	  _dictionary(nullptr)
+	: QTextEdit(parent)
 {
 	if (!sharedCompleter) { // initialize shared (static) members
 		sharedCompleter = new QCompleter(qApp);
@@ -85,15 +74,35 @@ CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
 
 	lineNumberArea = new Tw::UI::LineNumberWidget(this);
 	
-	connect(document(), SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
+	// Invoke our setDocument() method to properly set up document-specific
+	// connections
+	setDocument(document());
 	connect(this, SIGNAL(updateRequest(const QRect&, int)), this, SLOT(updateLineNumberArea(const QRect&, int)));
 	connect(this, SIGNAL(textChanged()), lineNumberArea, SLOT(update()));
 
 	connect(TWApp::instance(), SIGNAL(highlightLineOptionChanged()), this, SLOT(resetExtraSelections()));
-	
+
+	setupUi(this);
+	connect(actionJump_To_PDF, SIGNAL(triggered()), this, SLOT(jumpToPdf()));
+	// As these actions are not used in menus/toolbars, we need to manually add
+	// them to the widget for TWUtils::installCustomShortcuts to work
+	insertActions(nullptr, {actionNext_Completion, actionPrevious_Completion, actionNext_Completion_Placeholder, actionPrevious_Completion_Placeholder, actionJump_To_PDF});
+
+#ifdef Q_OS_DARWIN
+	// Backwards compatibility
+	// Ctrl+Tab is mapped to Command+Tab on the Mac, which is the standard key
+	// sequence for switching applications. Hence that combination is changed to
+	// Alt+Tab on the Mac
+	if (actionNext_Completion_Placeholder->shortcut() == QKeySequence(Qt::CTRL + Qt::Key_Tab))
+		actionNext_Completion_Placeholder->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Tab));
+	if (actionPrevious_Completion_Placeholder->shortcut() == QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab))
+		actionPrevious_Completion_Placeholder->setShortcut(QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_Tab));
+#endif
+
 	cursorPositionChangedSlot();
 	updateLineNumberAreaWidth(0);
 	updateColors();
+	TWUtils::installCustomShortcuts(this);
 }
 
 void CompletingEdit::prefixLines(const QString &prefix)
@@ -348,7 +357,8 @@ void CompletingEdit::mouseMoveEvent(QMouseEvent *e)
 			}
 			setTextCursor(dragStartCursor);
 			mouseMode = dragSelecting;
-			// fall through to dragSelecting
+			// fall through
+			// to dragSelecting
 
 		case dragSelecting:
 			QPoint pos = e->pos();
@@ -563,11 +573,12 @@ void CompletingEdit::resetExtraSelections()
 
 void CompletingEdit::keyPressEvent(QKeyEvent *e)
 {
-	// Shortcut key for command completion
-	bool isShortcut = (e->key() == Qt::Key_Tab || e->key() == Qt::Key_Backtab);
-	if (isShortcut && autocompleteEnabled) {
-		handleCompletionShortcut(e);
-		return;
+	if (autocompleteEnabled) {
+		QKeySequence seq(static_cast<int>(e->modifiers()) | e->key());
+		if (seq == actionNext_Completion->shortcut() || seq == actionPrevious_Completion->shortcut() || seq == actionNext_Completion_Placeholder->shortcut() || seq == actionPrevious_Completion_Placeholder->shortcut()) {
+			if (handleCompletionShortcut(e))
+				return;
+		}
 	}
 
 	if (!e->text().isEmpty())
@@ -576,6 +587,11 @@ void CompletingEdit::keyPressEvent(QKeyEvent *e)
 	switch (e->key()) {
 		case Qt::Key_Return:
 			handleReturn(e);
+			break;
+
+		case Qt::Key_Tab:
+		case Qt::Key_Backtab:
+			handleTab(e);
 			break;
 
 		case Qt::Key_Backspace:
@@ -643,11 +659,10 @@ void CompletingEdit::handleBackspace(QKeyEvent *e)
 
 void CompletingEdit::handleOtherKey(QKeyEvent *e)
 {
-	QTextCursor cursor = textCursor();
 	int pos = textCursor().selectionStart(); // remember cursor before the keystroke
 	int end = textCursor().selectionEnd();
 	QTextEdit::keyPressEvent(e);
-	cursor = textCursor();
+	QTextCursor cursor = textCursor();
 	bool arrowKey = false;
 	if (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right) {
 		arrowKey = true;
@@ -822,24 +837,16 @@ void CompletingEdit::smartenQuotes()
 	}
 }
 
-void CompletingEdit::handleCompletionShortcut(QKeyEvent *e)
+// \returns true if shortcut was handled, false otherwise
+bool CompletingEdit::handleCompletionShortcut(QKeyEvent *e)
 {
-// usage:
-//   unmodified: next completion
-//   shift     : previous completion
-//   ctl/alt       : skip to next placeholder (alt on Mac, ctl elsewhere)
-//   ctl/alt-shift : skip to previous placeholder
-
-#if defined(Q_OS_DARWIN)
-	if ((e->modifiers() & ~Qt::ShiftModifier) == Qt::AltModifier)
-#else
-	if ((e->modifiers() & ~Qt::ShiftModifier) == Qt::ControlModifier)
-#endif
+	QKeySequence seq(static_cast<int>(e->modifiers()) | e->key());
+	if (seq == actionNext_Completion_Placeholder->shortcut() || seq == actionPrevious_Completion_Placeholder->shortcut())
 	{
-		if (!find(QString(0x2022), (e->modifiers() & Qt::ShiftModifier)
+		if (!find(QString(0x2022), (seq == actionPrevious_Completion_Placeholder->shortcut())
 									? QTextDocument::FindBackward : QTextDocument::FindFlags()))
 			QApplication::beep();
-		return;
+		return true;
 	}
 
 	// if we are at the beginning of the line (i.e., only whitespaces before a
@@ -904,10 +911,10 @@ void CompletingEdit::handleCompletionShortcut(QKeyEvent *e)
 					setCompleter(nullptr);
 				}
 				else {
-					if (e->modifiers() == Qt::ShiftModifier)
+					if (seq == actionPrevious_Completion->shortcut())
 						c->setCurrentRow(c->completionCount() - 1);
 					showCurrentCompletion();
-					return;
+					return true;
 				}
 			}
 			break;
@@ -915,7 +922,7 @@ void CompletingEdit::handleCompletionShortcut(QKeyEvent *e)
 	}
 	
 	if (c && c->completionCount() > 0) {
-		if (e->modifiers() == Qt::ShiftModifier)  {
+		if (seq == actionPrevious_Completion->shortcut()) {
 			if (c->currentRow() == 0) {
 				showCompletion(c->completionPrefix());
 				setCompleter(nullptr);
@@ -935,10 +942,14 @@ void CompletingEdit::handleCompletionShortcut(QKeyEvent *e)
 				showCurrentCompletion();
 			}
 		}
-		return;
+		return true;
 	}
-	
-	if(!noSelection) {
+	return false;
+}
+
+void CompletingEdit::handleTab(QKeyEvent * e)
+{
+	if (textCursor().hasSelection()) {
 		if(e->modifiers() == Qt::ShiftModifier) {
 			unPrefixLines(QString::fromLatin1("\t"));
 		} else {
@@ -1056,7 +1067,14 @@ void CompletingEdit::loadCompletionFiles(QCompleter *theCompleter)
 	theCompleter->setModel(model);
 }
 
-void CompletingEdit::jumpToPdf()
+void CompletingEdit::jumpToPdf(QTextCursor pos)
+{
+	if (pos.isNull())
+		pos = textCursor();
+	emit syncClick(pos.blockNumber() + 1, pos.positionInBlock());
+}
+
+void CompletingEdit::jumpToPdfFromContextMenu()
 {
 	QAction *act = qobject_cast<QAction*>(sender());
 	if (act) {
@@ -1073,18 +1091,19 @@ void CompletingEdit::contextMenuEvent(QContextMenuEvent *event)
 	QTextCursor cur = cursorForPosition(event->pos());
 
 	act->setData(QVariant(QPoint(cur.positionInBlock(), cur.blockNumber() + 1)));
-	connect(act, SIGNAL(triggered()), this, SLOT(jumpToPdf()));
+	connect(act, SIGNAL(triggered()), this, SLOT(jumpToPdfFromContextMenu()));
 	menu->insertSeparator(menu->actions().first());
 	menu->insertAction(menu->actions().first(), act);
 	
-	if (_dictionary) {
+	const Tw::Document::SpellChecker::Dictionary * dictionary = getSpellChecker();
+	if (dictionary) {
 		currentWord = cursorForPosition(event->pos());
 		currentWord.setPosition(currentWord.position());
 		if (selectWord(currentWord)) {
-			if (!_dictionary->isWordCorrect(currentWord.selectedText())) {
+			if (!dictionary->isWordCorrect(currentWord.selectedText())) {
 				QAction *sep = menu->insertSeparator(menu->actions().first());
 
-				QList<QString> suggestions = _dictionary->suggestionsForWord(currentWord.selectedText());
+				QList<QString> suggestions = dictionary->suggestionsForWord(currentWord.selectedText());
 				if (suggestions.size() == 0)
 					menu->insertAction(sep, new QAction(tr("No suggestions"), menu));
 				else {
@@ -1114,11 +1133,6 @@ void CompletingEdit::contextMenuEvent(QContextMenuEvent *event)
 	delete menu;
 }
 
-void CompletingEdit::setSpellChecker(Tw::Document::SpellChecker::Dictionary * dictionary)
-{
-	_dictionary = dictionary;
-}
-
 void CompletingEdit::setAutoIndentMode(int index)
 {
 	autoIndentMode = (index >= 0 && index < indentModes->count()) ? index : -1;
@@ -1137,8 +1151,11 @@ void CompletingEdit::addToDictionary()
 
 void CompletingEdit::ignoreWord()
 {
+	Tw::Document::SpellChecker::Dictionary * dictionary = getSpellChecker();
+	if (dictionary == nullptr)
+		return;
 	// note that this is not persistent after quitting TW
-	_dictionary->ignoreWord(currentWord.selectedText());
+	dictionary->ignoreWord(currentWord.selectedText());
 	emit rehighlight();
 }
 
@@ -1299,6 +1316,13 @@ void CompletingEdit::setTextCursor(const QTextCursor & cursor)
 	QTextEdit::setTextCursor(cursor);
 }
 
+void CompletingEdit::setDocument(QTextDocument * document)
+{
+	disconnect(this, SLOT(updateLineNumberAreaWidth(int)));
+	QTextEdit::setDocument(document);
+	connect(document, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
+}
+
 bool CompletingEdit::event(QEvent *e)
 {
 	if (e->type() == QEvent::UpdateRequest) {
@@ -1310,6 +1334,22 @@ bool CompletingEdit::event(QEvent *e)
 	// derive the colors from the application's palette
 	if (e->type() == QEvent::PaletteChange)
 		updateColors();
+	if (e->type() == QEvent::ShortcutOverride) {
+		auto ke = reinterpret_cast<QKeyEvent*>(e);
+		QKeySequence seq(static_cast<int>(ke->modifiers()) | ke->key());
+		if (seq == actionNext_Completion->shortcut() ||
+			seq == actionPrevious_Completion->shortcut() ||
+			seq == actionNext_Completion_Placeholder->shortcut() ||
+			seq == actionPrevious_Completion_Placeholder->shortcut())
+		{
+			// If the key press corresponds to a completion shortcut, accept the
+			// event to tell Qt not to treat it as a shortcut but to send it to
+			// the focused widget normally (thereby invoking the keyPressEvent
+			// handler)
+			e->accept();
+		}
+	}
+
 	return QTextEdit::event(e);
 }
 
@@ -1319,6 +1359,17 @@ void CompletingEdit::scrollContentsBy(int dx, int dy)
 		emit updateRequest(viewport()->rect(), dy);
 	}
 	QTextEdit::scrollContentsBy(dx, dy);
+}
+
+Tw::Document::SpellChecker::Dictionary * CompletingEdit::getSpellChecker() const
+{
+	Tw::Document::TeXDocument * doc = qobject_cast<Tw::Document::TeXDocument *>(document());
+	if (doc == nullptr)
+		return nullptr;
+	TeXHighlighter * highlighter = doc->getHighlighter();
+	if (highlighter == nullptr)
+		return nullptr;
+	return highlighter->getSpellChecker();
 }
 
 void CompletingEdit::setHighlightCurrentLine(bool highlight)

@@ -19,25 +19,23 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include <QTextCodec>
 #include <QTextCursor>
 
 #include "TeXHighlighter.h"
-#include "TeXDocument.h"
 #include "TWUtils.h"
+#include "document/TeXDocument.h"
 
 #include <climits> // for INT_MAX
 
 QList<TeXHighlighter::HighlightingSpec> *TeXHighlighter::syntaxRules = nullptr;
 QList<TeXHighlighter::TagPattern> *TeXHighlighter::tagPatterns = nullptr;
 
-TeXHighlighter::TeXHighlighter(QTextDocument *parent, TeXDocument *texDocument)
-    : NonblockingSyntaxHighlighter(parent)
-    , texDoc(texDocument)
-    , highlightIndex(-1)
-    , isTagging(true)
+TeXHighlighter::TeXHighlighter(Tw::Document::TeXDocument * parent)
+	: NonblockingSyntaxHighlighter(parent)
+	, highlightIndex(-1)
+	, isTagging(true)
 	, _dictionary(nullptr)
-    , textDoc(parent)
+	, texDoc(parent)
 {
 	loadPatterns();
 	// TODO: We should use QTextCharFormat::SpellCheckUnderline here, but that
@@ -104,9 +102,7 @@ void TeXHighlighter::highlightBlock(const QString &text)
 		spellCheckRange(text, charPos, text.length(), spellFormat);
 
 	if (texDoc) {
-		bool changed = false;
-		if (texDoc->removeTags(currentBlock().position(), currentBlock().length()) > 0)
-			changed = true;
+		texDoc->removeTags(currentBlock().position(), currentBlock().length());
 		if (isTagging) {
 			int index = 0;
 			while (index < text.length()) {
@@ -126,19 +122,16 @@ void TeXHighlighter::highlightBlock(const QString &text)
 					QTextCursor	cursor(document());
 					cursor.setPosition(currentBlock().position() + firstIndex);
 					cursor.setPosition(currentBlock().position() + firstIndex + len, QTextCursor::KeepAnchor);
-					QString text = firstMatch.captured(1);
-					if (text.isEmpty())
-						text = firstMatch.captured(0);
-					texDoc->addTag(cursor, firstPatt->level, text);
+					QString tagText = firstMatch.captured(1);
+					if (tagText.isEmpty())
+						tagText = firstMatch.captured(0);
+					texDoc->addTag(cursor, firstPatt->level, tagText);
 					index = firstIndex + len;
-					changed = true;
 				}
 				else
 					break;
 			}
 		}
-		if (changed)
-			texDoc->tagsChanged();
 	}
 }
 
@@ -259,7 +252,7 @@ void TeXHighlighter::loadPatterns()
 					continue;
 				TagPattern patt;
 				bool ok;
-				patt.level = parts[0].toInt(&ok);
+				patt.level = parts[0].toUInt(&ok);
 				if (ok) {
 					patt.pattern = QRegularExpression(parts[1]);
 					if (patt.pattern.isValid())

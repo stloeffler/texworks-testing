@@ -33,7 +33,7 @@ public:
 	public:
 		enum Type { NORMAL, COMMENT, PREAMBLE, STRING };
 
-		Entry(BibTeXFile * parent) : _parent(parent) { _cache.valid = false; }
+		explicit Entry(BibTeXFile * parent) : _parent(parent) { _cache.valid = false; }
 		Type type() const;
 		QString value(const QString & key) const;
 		bool hasField(const QString & key) const;
@@ -59,8 +59,8 @@ public:
 		BibTeXFile * _parent;
 	};
 
-	BibTeXFile();
-	BibTeXFile(const QString & filename) : BibTeXFile() { load(filename); }
+	BibTeXFile() = default;
+	explicit BibTeXFile(const QString & filename) : BibTeXFile() { load(filename); }
 
 	unsigned int numEntries() const;
 	const Entry & entry(const unsigned int idx) const;

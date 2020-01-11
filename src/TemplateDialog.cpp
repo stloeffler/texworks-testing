@@ -23,6 +23,7 @@
 #include "TeXHighlighter.h"
 #include "TWUtils.h"
 #include "Settings.h"
+#include "document/TeXDocument.h"
 
 #include <QDirModel>
 #include <QFile>
@@ -31,18 +32,15 @@
 
 TemplateDialog::TemplateDialog()
 	: QDialog(nullptr)
-	, model(nullptr)
 {
 	init();
-}
-
-TemplateDialog::~TemplateDialog()
-{
 }
 
 void TemplateDialog::init()
 {
 	setupUi(this);
+	Tw::Document::TeXDocument * texDoc = new Tw::Document::TeXDocument(textEdit);
+	textEdit->setDocument(texDoc);
 
 	QString templatePath = TWUtils::getLibraryPath(QString::fromLatin1("templates"));
 		// do this before creating the model, as getLibraryPath might initialize a new dir
@@ -62,7 +60,12 @@ void TemplateDialog::init()
 
 	Tw::Settings settings;
 	if (settings.value(QString::fromLatin1("syntaxColoring"), true).toBool()) {
-		new TeXHighlighter(textEdit->document());
+		TeXHighlighter * highlighter = new TeXHighlighter(texDoc);
+		// For now, we use "LaTeX" highlighting for all files (which is probably
+		// reasonable in most/typical cases)
+		int idx = TeXHighlighter::syntaxOptions().indexOf(QStringLiteral("LaTeX"));
+		if (idx >= 0)
+			highlighter->setActiveIndex(idx);
 	}
 }
 
@@ -95,7 +98,7 @@ QString TemplateDialog::doTemplateDialog()
 
 	TemplateDialog dlg;
 	dlg.show();
-	DialogCode	result = (DialogCode)dlg.exec();
+	DialogCode result = static_cast<DialogCode>(dlg.exec());
 
 	if (result == Accepted) {
 		QModelIndexList selection = dlg.treeView->selectionModel()->selectedRows();

@@ -22,8 +22,8 @@
 #include "TWSynchronizer.h"
 #include "TWApp.h"
 #include "TWUtils.h"
-#include "TeXDocument.h"
-#include "PDFDocument.h"
+#include "TeXDocumentWindow.h"
+#include "PDFDocumentWindow.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -125,7 +125,7 @@ TWSynchronizer::TeXSyncPoint TWSyncTeXSynchronizer::syncFromPDF(const TWSynchron
   if (src.rects.length() != 1)
     return retVal;
 
-  if (SyncTeX::synctex_edit_query(_scanner, src.page, src.rects[0].left(), src.rects[0].top()) > 0) {
+  if (SyncTeX::synctex_edit_query(_scanner, src.page, static_cast<float>(src.rects[0].left()), static_cast<float>(src.rects[0].top())) > 0) {
     SyncTeX::synctex_node_p node;
 	while ((node = SyncTeX::synctex_scanner_next_result(_scanner))) {
       retVal.filename = QString::fromLocal8Bit(SyncTeX::synctex_scanner_get_name(_scanner, SyncTeX::synctex_node_tag(node)));
@@ -159,8 +159,8 @@ void TWSyncTeXSynchronizer::_syncFromTeXFine(const TWSynchronizer::TeXSyncPoint 
     return;
 
   QDir curDir(QFileInfo(src.filename).canonicalPath());
-  TeXDocument * tex = TeXDocument::findDocument(src.filename);
-  PDFDocument * pdf = PDFDocument::findDocument(QFileInfo(curDir, dest.filename).canonicalFilePath());
+  TeXDocumentWindow * tex = TeXDocumentWindow::findDocument(src.filename);
+  PDFDocumentWindow * pdf = PDFDocumentWindow::findDocument(QFileInfo(curDir, dest.filename).canonicalFilePath());
   if (!tex || !pdf || !pdf->widget())
     return;
   QSharedPointer<QtPDF::Backend::Document> pdfDoc = pdf->widget()->document().toStrongRef();
@@ -220,8 +220,8 @@ void TWSyncTeXSynchronizer::_syncFromPDFFine(const TWSynchronizer::PDFSyncPoint 
   if (dest.filename.isEmpty())
     return;
   QDir curDir(QFileInfo(src.filename).canonicalPath());
-  TeXDocument * tex = TeXDocument::openDocument(QFileInfo(curDir, dest.filename).canonicalFilePath(), false, false, dest.line);
-  PDFDocument * pdf = PDFDocument::findDocument(src.filename);
+  TeXDocumentWindow * tex = TeXDocumentWindow::openDocument(QFileInfo(curDir, dest.filename).canonicalFilePath(), false, false, dest.line);
+  PDFDocumentWindow * pdf = PDFDocumentWindow::findDocument(src.filename);
   if (!tex || !pdf || !pdf->widget())
     return;
   QSharedPointer<QtPDF::Backend::Document> pdfDoc = pdf->widget()->document().toStrongRef();

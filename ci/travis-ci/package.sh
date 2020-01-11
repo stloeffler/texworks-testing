@@ -57,7 +57,7 @@ echo "VERSION_NAME = ${VERSION_NAME}"
 cd "${BUILDDIR}"
 
 if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
-	if [ ${QT} -eq 5 ]; then
+	if [ "${QT}" -eq 5 ]; then
 		DEBDATE=$(date -R)
 
 		echo_var "DEBDATE"
@@ -113,15 +113,15 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			sed -i -e "s/<AUTHOR>/${DEB_MAINTAINER_NAME}/g" -e "s/<DATE>/${DEBDATE}/g" "${DEBDIR}/debian/copyright"
 
 			print_info "   preparing changelog"
-			echo "texworks (${DEB_VERSION}) ${DISTRO}; urgency=low\n" > "${DEBDIR}/debian/changelog"
+			printf "texworks (${DEB_VERSION}) ${DISTRO}; urgency=low\n\n" > "${DEBDIR}/debian/changelog"
 			if [ -z "${TRAVIS_TAG}" ]; then
-				git log --reverse --pretty=format:"%w(80,4,6)* %s" ${TRAVIS_COMMIT_RANGE} >> "${DEBDIR}/debian/changelog"
+				git log --reverse --pretty=format:"%w(80,4,6)* %s" "${TRAVIS_COMMIT_RANGE}" >> "${DEBDIR}/debian/changelog"
 				echo "" >> "${DEBDIR}/debian/changelog" # git log does not append a newline
 			else
-				NEWS=$(sed -n "/^Release ${TW_VERSION}/,/^Release/p" ${TRAVIS_BUILD_DIR}/NEWS | sed -e '/^Release/d' -e 's/^\t/    /')
+				NEWS=$(sed -n "/^Release ${TW_VERSION}/,/^Release/p" "${TRAVIS_BUILD_DIR}/NEWS" | sed -e '/^Release/d' -e 's/^\t/    /')
 				echo "$NEWS" >> "${DEBDIR}/debian/changelog"
 			fi
-			echo "\n -- ${DEB_MAINTAINER_NAME} <${DEB_MAINTAINER_EMAIL}>  ${DEBDATE}" >> "${DEBDIR}/debian/changelog"
+			printf "\n -- ${DEB_MAINTAINER_NAME} <${DEB_MAINTAINER_EMAIL}>  ${DEBDATE}\n" >> "${DEBDIR}/debian/changelog"
 
 			print_info "   building package"
 			cd "${DEBDIR}"
@@ -131,7 +131,7 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			# will try to sign (at least) the .dsc file and the .changes files,
 			# thus reading the passphrase from the pipe several times
 			# NB: --passphrase-file seems to be broken somehow
-			for i in $(seq 10); do
+			for _ in $(seq 10); do
 				echo "${DEB_PASSPHRASE}" >> "/tmp/passphrase.txt" 2> /dev/null || print_error "Failed to write to /tmp/passphrase.txt"
 			done
 			debuild -k00582F84 -p"gpg --no-tty --batch --passphrase-fd 0" -S < /tmp/passphrase.txt && DEBUILD_RETVAL=$? || DEBUILD_RETVAL=$?
@@ -157,9 +157,9 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
 elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
-	if [ ${QT} -eq 5 ]; then
+	if [ "${QT}" -eq 5 ]; then
 		print_info "Stripping TeXworks.exe"
-		${MXEDIR}/usr/bin/${MXETARGET}-strip ${BUILDDIR}/TeXworks.exe
+		"${MXEDIR}/usr/bin/${MXETARGET}-strip" "${BUILDDIR}/TeXworks.exe"
 		print_info "Assembling package"
 		echo_and_run "mkdir -p \"package-zip/share\""
 		echo_and_run "cp \"${BUILDDIR}/TeXworks.exe\" \"package-zip/\""
@@ -218,7 +218,7 @@ EOF
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
 	fi
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
-	if [ ${QT} -eq 5 ]; then
+	if [ "${QT}" -eq 5 ]; then
 		print_info "Running CPack"
 		cpack --verbose
 

@@ -1,11 +1,6 @@
 # Build Python Plugin
 # ===================
 
-INCLUDE_DIRECTORIES(
-  ${TeXworks_SOURCE_DIR}/src
-  ${PYTHON_INCLUDE_DIRS}
-)
-
 SET(TWPYTHONPLUGIN_LIB_TYPE MODULE)
 IF (NOT ${BUILD_SHARED_PLUGINS})
   SET(TWPYTHONPLUGIN_LIB_TYPE STATIC)
@@ -26,6 +21,15 @@ ADD_LIBRARY(TWPythonPlugin ${TWPYTHONPLUGIN_LIB_TYPE}
   ${TWSCRIPT_SRC}
   ${PYTHON_PLUGIN_MOC}
 )
+target_compile_options(TWPythonPlugin PRIVATE ${WARNING_OPTIONS})
+if (NOT MSVC)
+	# Don't warn about old-style casts as the Python headers are littered with
+	# macros (which are handled as if copied into our code) using those
+	target_compile_options(TWPythonPlugin PRIVATE -Wno-old-style-cast)
+endif ()
+
+target_include_directories(TWPythonPlugin SYSTEM PRIVATE ${PYTHON_INCLUDE_DIRS})
+target_include_directories(TWPythonPlugin PRIVATE ${TeXworks_SOURCE_DIR}/src)
 
 # Specify link libraries even if the plugin is built statically so all the
 # interface properties of the Qt targets (include directories, lib directories,

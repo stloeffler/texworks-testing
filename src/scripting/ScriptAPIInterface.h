@@ -39,7 +39,7 @@ public:
 		SystemAccess_PermissionDenied
 	};
 
-	virtual ~ScriptAPIInterface() {};
+	virtual ~ScriptAPIInterface() = default;
 
 	virtual QObject* self() = 0;
 
@@ -97,19 +97,19 @@ public:
 	// QMessageBox functions to display alerts
 	virtual int information(QWidget* parent,
 					const QString& title, const QString& text,
-					int buttons = (int)QMessageBox::Ok,
+					int buttons = QMessageBox::Ok,
 					int defaultButton = QMessageBox::NoButton) = 0;
 	virtual int question(QWidget* parent,
 				 const QString& title, const QString& text,
-				 int buttons = (int)QMessageBox::Ok,
+				 int buttons = QMessageBox::Ok,
 				 int defaultButton = QMessageBox::NoButton) = 0;
 	virtual int warning(QWidget* parent,
 				const QString& title, const QString& text,
-				int buttons = (int)QMessageBox::Ok,
+				int buttons = QMessageBox::Ok,
 				int defaultButton = QMessageBox::NoButton) = 0;
 	virtual int critical(QWidget* parent,
 				 const QString& title, const QString& text,
-				 int buttons = (int)QMessageBox::Ok,
+				 int buttons = QMessageBox::Ok,
 				 int defaultButton = QMessageBox::NoButton) = 0;
 
 	// QInputDialog functions

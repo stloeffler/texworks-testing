@@ -35,8 +35,8 @@
 
 class QMainWindow;
 class QCompleter;
-class TeXDocument;
-class PDFDocument;
+class TeXDocumentWindow;
+class PDFDocumentWindow;
 
 // static utility methods
 class TWUtils
@@ -148,7 +148,7 @@ public:
 	static CmdKeyFilter *filter();
 
 protected:
-	bool eventFilter(QObject *obj, QEvent *event);
+	bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
 	static CmdKeyFilter *filterObj;

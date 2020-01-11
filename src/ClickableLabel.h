@@ -30,9 +30,9 @@ class ClickableLabel : public QLabel
 {
 	Q_OBJECT
 public:
-	ClickableLabel(QWidget * parent = 0, Qt::WindowFlags f = 0);
-	ClickableLabel(const QString & text, QWidget * parent = 0, Qt::WindowFlags f = 0);
-	virtual ~ClickableLabel() { }
+	explicit ClickableLabel(QWidget * parent = nullptr, Qt::WindowFlags f = nullptr);
+	explicit ClickableLabel(const QString & text, QWidget * parent = nullptr, Qt::WindowFlags f = Q_NULLPTR);
+	~ClickableLabel() override = default;
 	
 signals:
 	void mouseDoubleClick(QMouseEvent * event);
@@ -41,9 +41,9 @@ signals:
 	void mouseRightClick(QMouseEvent * event);
 
 protected:
-	virtual void mouseDoubleClickEvent(QMouseEvent * event);
-	virtual void mousePressEvent(QMouseEvent * event);
-	virtual void mouseReleaseEvent(QMouseEvent * event);
+	void mouseDoubleClickEvent(QMouseEvent * event) override;
+	void mousePressEvent(QMouseEvent * event) override;
+	void mouseReleaseEvent(QMouseEvent * event) override;
 
 	QPoint mouseStartPoint;
 };

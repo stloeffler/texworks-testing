@@ -21,8 +21,8 @@
 
 #include "TWApp.h"
 #include "TWUtils.h"
-#include "TeXDocument.h"
-#include "PDFDocument.h"
+#include "TeXDocumentWindow.h"
+#include "PDFDocumentWindow.h"
 #include "PrefsDialog.h"
 #include "DefaultPrefs.h"
 #include "TemplateDialog.h"
@@ -557,7 +557,7 @@ void TWApp::launchAction()
 {
 	scriptManager->runHooks(QString::fromLatin1("TeXworksLaunched"));
 
-	if (!TeXDocument::documentList().empty() || !PDFDocument::documentList().empty())
+	if (!TeXDocumentWindow::documentList().empty() || !PDFDocumentWindow::documentList().empty())
 		return;
 
 	Tw::Settings settings;
@@ -576,9 +576,9 @@ void TWApp::launchAction()
 #if !defined(Q_OS_DARWIN)
 	// on Mac OS, it's OK to end up with no document (we still have the app menu bar)
 	// but on W32 and X11 we need a window otherwise the user can't interact at all
-	if (TeXDocument::documentList().empty() && PDFDocument::documentList().empty()) {
+	if (TeXDocumentWindow::documentList().empty() && PDFDocumentWindow::documentList().empty()) {
 		newFile();
-		if (TeXDocument::documentList().empty()) {
+		if (TeXDocumentWindow::documentList().empty()) {
 			// something went wrong, give up!
 			(void)QMessageBox::critical(nullptr, tr("Unable to create window"),
 					tr("Something is badly wrong; %1 was unable to create a document window. "
@@ -592,7 +592,7 @@ void TWApp::launchAction()
 
 QObject * TWApp::newFile() const
 {
-	TeXDocument *doc = new TeXDocument;
+	TeXDocumentWindow *doc = new TeXDocumentWindow;
 	doc->show();
 	doc->editor()->updateLineNumberAreaWidth(0);
 	doc->runHooks(QString::fromLatin1("NewFile"));
@@ -603,7 +603,7 @@ QObject * TWApp::newFromTemplate() const
 {
 	QString templateName = TemplateDialog::doTemplateDialog();
 	if (!templateName.isEmpty()) {
-		TeXDocument *doc = new TeXDocument(templateName, true);
+		TeXDocumentWindow *doc = new TeXDocumentWindow(templateName, true);
 		if (doc) {
 			doc->makeUntitled();
 			doc->selectWindow();
@@ -668,9 +668,9 @@ void TWApp::open()
 QObject* TWApp::openFile(const QString &fileName, int pos /* = 0 */)
 {
 	if (TWUtils::isPDFfile(fileName)) {
-		PDFDocument *doc = PDFDocument::findDocument(fileName);
+		PDFDocumentWindow *doc = PDFDocumentWindow::findDocument(fileName);
 		if (!doc)
-			doc = new PDFDocument(fileName);
+			doc = new PDFDocumentWindow(fileName);
 		if (doc) {
 			if (pos > 0)
 				doc->widget()->goToPage(pos - 1);
@@ -679,7 +679,7 @@ QObject* TWApp::openFile(const QString &fileName, int pos /* = 0 */)
 		}
 		return nullptr;
 	}
-	return TeXDocument::openDocument(fileName, true, true, pos, 0, 0);
+	return TeXDocumentWindow::openDocument(fileName, true, true, pos, 0, 0);
 }
 
 void TWApp::preferences()
@@ -742,10 +742,10 @@ void TWApp::arrangeWindows(WindowArrangementFunction func)
 	QDesktopWidget *desktop = QApplication::desktop();
 	for (int screenIndex = 0; screenIndex < desktop->numScreens(); ++screenIndex) {
 		QWidgetList windows;
-		foreach (TeXDocument* texDoc, TeXDocument::documentList())
+		foreach (TeXDocumentWindow* texDoc, TeXDocumentWindow::documentList())
 			if (desktop->screenNumber(texDoc) == screenIndex)
 				windows << texDoc;
-		foreach (PDFDocument* pdfDoc, PDFDocument::documentList())
+		foreach (PDFDocumentWindow* pdfDoc, PDFDocumentWindow::documentList())
 			if (desktop->screenNumber(pdfDoc) == screenIndex)
 				windows << pdfDoc;
 		if (!windows.empty())
@@ -1133,7 +1133,7 @@ QList<QVariant> TWApp::getOpenWindows() const
 	QList<QVariant> result;
 	
 	foreach (QWidget *widget, QApplication::topLevelWidgets()) {
-		if (qobject_cast<TWScriptable*>(widget))
+		if (qobject_cast<TWScriptableWindow*>(widget))
 			result << QVariant::fromValue(qobject_cast<QObject*>(widget));
 	}
 	return result;
@@ -1148,7 +1148,7 @@ void TWApp::setGlobal(const QString& key, const QVariant& val)
 	
 	// For objects on the heap make sure we are notified when their lifetimes
 	// end so that we can remove them from our hash accordingly
-	switch ((QMetaType::Type)val.type()) {
+	switch (static_cast<QMetaType::Type>(val.type())) {
 		case QMetaType::QObjectStar:
 			connect(v.value<QObject*>(), SIGNAL(destroyed(QObject*)), this, SLOT(globalDestroyed(QObject*)));
 			break;
@@ -1162,7 +1162,7 @@ void TWApp::globalDestroyed(QObject * obj)
 	QHash<QString, QVariant>::iterator i = m_globals.begin();
 	
 	while (i != m_globals.end()) {
-		switch ((QMetaType::Type)i.value().type()) {
+		switch (static_cast<QMetaType::Type>(i.value().type())) {
 			case QMetaType::QObjectStar:
 				if (i.value().value<QObject*>() == obj)
 					i = m_globals.erase(i);
@@ -1236,9 +1236,9 @@ void TWApp::reloadSpellchecker()
 {
 	// save the current language and deactivate the spell checker for all open
 	// TeXDocument windows
-	QHash<TeXDocument*, QString> oldLangs;
+	QHash<TeXDocumentWindow*, QString> oldLangs;
 	foreach (QWidget *widget, QApplication::topLevelWidgets()) {
-		TeXDocument * texDoc = qobject_cast<TeXDocument*>(widget);
+		TeXDocumentWindow * texDoc = qobject_cast<TeXDocumentWindow*>(widget);
 		if (texDoc) {
 			oldLangs[texDoc] = texDoc->spellcheckLanguage();
 			texDoc->setSpellcheckLanguage(QString());
@@ -1251,7 +1251,7 @@ void TWApp::reloadSpellchecker()
 	Tw::Document::SpellChecker::getDictionaryList(true);
 	
 	// reenable spell checker
-	for (QHash<TeXDocument*, QString>::iterator it = oldLangs.begin(); it != oldLangs.end(); ++it) {
+	for (QHash<TeXDocumentWindow*, QString>::iterator it = oldLangs.begin(); it != oldLangs.end(); ++it) {
 		it.key()->setSpellcheckLanguage(it.value());
 	}
 }

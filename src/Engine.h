@@ -1,17 +1,14 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <QObject>
 #include <QProcess>
 #include <QFileInfo>
 
 // specification of an "engine" used to process files
-class Engine : public QObject
+class Engine
 {
-	Q_OBJECT
-
 public:
-	Engine();
+	Engine() = default;
 	Engine(const QString& name, const QString& program, const QStringList & arguments, bool showPdf);
 	Engine(const Engine& orig);
 	Engine& operator=(const Engine& rhs);
@@ -37,7 +34,7 @@ private:
 	QString _name;
 	QString _program;
 	QStringList _arguments;
-	bool _showPdf;
+	bool _showPdf{false};
 };
 
 
