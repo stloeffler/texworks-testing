@@ -1,4 +1,4 @@
-From 9569f55d6eea348035d2c639110caac46d38a0be Mon Sep 17 00:00:00 2001
+From 0c51f67e3cb05c9ab74f78f5ca03c8e43c352b02 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stefan=20L=C3=B6ffler?= <st.loeffler@gmail.com>
 Date: Thu, 11 Feb 2016 23:14:20 -0500
 Subject: [PATCH 2/3] Native Mac font handling
@@ -145,7 +145,7 @@ index 755cdc1a..7dafa2ea 100644
    std::unordered_map<std::string, std::string> fontFiles;
 diff --git a/poppler/GlobalParamsMac.cc b/poppler/GlobalParamsMac.cc
 new file mode 100644
-index 00000000..cca770f6
+index 00000000..731e7247
 --- /dev/null
 +++ b/poppler/GlobalParamsMac.cc
 @@ -0,0 +1,312 @@
@@ -410,17 +410,17 @@ index 00000000..cca770f6
 + ******************************************************************************/
 +
 +// Not needed
-+void GlobalParams::setupBaseFonts(char *dir) {
++void GlobalParams::setupBaseFonts(const char *dir) {
 +}
 +
-+GooString *GlobalParams::findBase14FontFile(const GooString *base14Name, GfxFont *font) {
++GooString *GlobalParams::findBase14FontFile(const GooString *base14Name, const GfxFont *font) {
 +  SysFontType type;
 +  int fontNum;
 +
 +  return findSystemFontFile(font, &type, &fontNum, nullptr, base14Name);
 +}
 +
-+GooString *GlobalParams::findSystemFontFile(GfxFont *font,
++GooString *GlobalParams::findSystemFontFile(const GfxFont *font,
 +					  SysFontType *type,
 +					  int *fontNum, GooString *substituteFontName, const GooString *base14Name) {
 +	std::unordered_map<std::string, std::string>::iterator path;
