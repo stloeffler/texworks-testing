@@ -39,8 +39,12 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 	env PATH="${MXEDIR}/usr/bin:${MXEDIR}/usr/${MXETARGET}/qt/bin:$PATH" PREFIX="${MXEDIR}/usr" TARGET="${MXETARGET}" JOBS="$JOBS" MXE_CONFIGURE_OPTS="--host='${MXETARGET}' --build='$(${MXEDIR}/ext/config.guess)' --prefix='${MXEDIR}/usr/${MXETARGET}' --enable-static --disable-shared ac_cv_prog_HAVE_DOXYGEN='false'" TEST_FILE="poppler-test.cxx" make -f build-poppler-mxe.mk
 
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
+	brew list --versions
+	brew outdated -v
 	print_info "Updating homebrew"
 	brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
+	brew list --versions
+	brew outdated -v
 	if [ "${QT}" -eq 5 ]; then
 		print_info "Brewing packages: qt5 poppler hunspell lua"
 		# Travis-CI comes with python preinstalled; poppler depends on
