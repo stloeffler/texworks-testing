@@ -1,4 +1,4 @@
-From c5e41d8a218e417c059a2f99bb1a0dc8c3ca78a4 Mon Sep 17 00:00:00 2001
+From 0050911e363f0884082b739e711dc05eb9a15a85 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Stefan=20L=C3=B6ffler?= <st.loeffler@gmail.com>
 Date: Thu, 11 Feb 2016 23:14:20 -0500
 Subject: [PATCH 2/3] Native Mac font handling
@@ -8,9 +8,9 @@ Subject: [PATCH 2/3] Native Mac font handling
  config.h.cmake                 |   3 +
  poppler/GlobalParams.cc        |  15 ++
  poppler/GlobalParams.h         |   7 +
- poppler/GlobalParamsMac.cc     | 314 +++++++++++++++++++++++++++++++++
+ poppler/GlobalParamsMac.cc     | 312 +++++++++++++++++++++++++++++++++
  poppler/poppler-config.h.cmake |   5 +
- 6 files changed, 359 insertions(+), 1 deletion(-)
+ 6 files changed, 357 insertions(+), 1 deletion(-)
  create mode 100644 poppler/GlobalParamsMac.cc
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
@@ -72,7 +72,7 @@ index c92fc352..af08d974 100644
  #cmakedefine WITH_FONTCONFIGURATION_WIN32 1
  
 diff --git a/poppler/GlobalParams.cc b/poppler/GlobalParams.cc
-index ea5d8125..02ff8e32 100644
+index ea5d8125..82332075 100644
 --- a/poppler/GlobalParams.cc
 +++ b/poppler/GlobalParams.cc
 @@ -239,6 +239,9 @@ public:
@@ -80,7 +80,7 @@ index ea5d8125..02ff8e32 100644
    void addFcFont(SysFontInfo *si) {fonts->push_back(si);}
  #endif
 +#ifdef WITH_FONTCONFIGURATION_MAC
-+	void addMacFont(SysFontInfo *si) {fonts->append(si);}
++	void addMacFont(SysFontInfo *si) {fonts->push_back(si);}
 +#endif
  private:
  
@@ -90,7 +90,7 @@ index ea5d8125..02ff8e32 100644
  {
    initBuiltinFontTables();
 +#if WITH_FONTCONFIGURATION_MAC
-+  tempFontFiles = NULL;
++  tempFontFiles = nullptr;
 +  numTempFontFiles = 0;
 +#endif
  
@@ -145,10 +145,10 @@ index 755cdc1a..9fff7143 100644
    std::unordered_map<std::string, std::string> fontFiles;
 diff --git a/poppler/GlobalParamsMac.cc b/poppler/GlobalParamsMac.cc
 new file mode 100644
-index 00000000..b94afcb9
+index 00000000..088d2d30
 --- /dev/null
 +++ b/poppler/GlobalParamsMac.cc
-@@ -0,0 +1,314 @@
+@@ -0,0 +1,312 @@
 +//========================================================================
 +//
 +// GlobalParamsMac.cc
@@ -160,7 +160,7 @@ index 00000000..b94afcb9
 +// Contributed to the Poppler project - http://poppler.freedesktop.org
 +//
 +// Copyright (c) 2009 Jonathan Kew
-+// Copyright (c) 2016 Stefan Löffler
++// Copyright (c) 2016--2020 Stefan Löffler
 +//
 +//========================================================================
 +
@@ -177,8 +177,6 @@ index 00000000..b94afcb9
 +
 +#include "goo/gmem.h"
 +#include "goo/GooString.h"
-+#include "goo/GooList.h"
-+#include "goo/GooHash.h"
 +#include "goo/gfile.h"
 +#include "Error.h"
 +
