@@ -51,7 +51,7 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 		# gobject-introspection, which depends on python@2, which
 		# conflicts with the preinstalled version; so we unlink the
 		# pre-installed version first
-#		brew unlink python@2
+		brew unlink python@2
 #		brew install qt5
 		brew upgrade "${TRAVIS_BUILD_DIR}/CMake/packaging/mac/poppler.rb"
 	else
