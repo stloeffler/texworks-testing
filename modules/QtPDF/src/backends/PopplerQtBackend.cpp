@@ -143,9 +143,7 @@ void convertAnnotation(Annotation::AbstractAnnotation * dest, const ::Poppler::A
 // ==============
 Document::Document(const QString & fileName):
   Super(fileName),
-  _poppler_doc(::Poppler::Document::load(fileName)),
-  _poppler_docLock(new QMutex()),
-  _fontsLoaded(false)
+  _poppler_doc(::Poppler::Document::load(fileName))
 {
 #ifdef DEBUG
 //  qDebug() << "PopplerQt::Document::Document(" << fileName << ")";
@@ -192,6 +190,7 @@ void Document::parseDocument()
   QWriteLocker docLocker(_docLock.data());
 
   clearMetaData();
+  _meta_fileSize = QFileInfo(_fileName).size();
   _numPages = -1;
 
   if (!_poppler_doc || _isLocked())
@@ -262,7 +261,6 @@ void Document::parseDocument()
     _meta_modDate = fromPDFDate(_poppler_doc->info(QString::fromUtf8("ModDate")));
     metaKeys.removeAll(QString::fromUtf8("ModDate"));
   }
-  _meta_fileSize = QFileInfo(_fileName).size();
 
   // Get the most often used page size
   QMap<QSizeF, int> pageSizes;
@@ -513,9 +511,7 @@ bool Document::unlock(const QString password)
 // Page Class
 // ==========
 Page::Page(Document *parent, int at, QSharedPointer<QReadWriteLock> docLock):
-  Super(parent, at, docLock),
-  _annotationsLoaded(false),
-  _linksLoaded(false)
+  Super(parent, at, docLock)
 {
   _poppler_page = QSharedPointer< ::Poppler::Page >(dynamic_cast<Document *>(_parent)->_poppler_doc->page(at));
   loadTransitionData();
