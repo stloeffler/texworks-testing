@@ -26,6 +26,9 @@ elif [ "${TARGET_OS}" = "linux" ]; then
 	xvfb-run ctest -V
 elif [ "${TARGET_OS}" = "osx" ]; then
 	ctest -V
+
+	echo_and_run "cd \"${TRAVIS_BUILD_DIR}/modules/QtPDF/unit-tests\""
+	echo_and_run "${BUILDDIR}/test_poppler-qt5"
 fi
 
 if [ "x${COVERAGE}" != "x" ]; then
