@@ -132,9 +132,7 @@ void TestQtPDF::loadDocs()
 
   // Don't run documents that may produce error messages in QBENCHMARK as
   // otherwise the console may be filled with unhelpful messages
-  qDebug() << "invalid";
   _docs[QString::fromLatin1("invalid")] = backend.newDocument(QString());
-  qDebug() << "base14-locked";
   _docs[QString::fromLatin1("base14-locked")] = backend.newDocument(QString::fromLatin1("base14-fonts-locked.pdf"));
 
   QBENCHMARK {

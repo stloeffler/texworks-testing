@@ -55,7 +55,6 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 		# patched version
 		brew uninstall --ignore-dependencies poppler
 		brew install "${TRAVIS_BUILD_DIR}/CMake/packaging/mac/poppler.rb"
-#		brew upgrade poppler
 	else
 		print_error "Unsupported Qt version '${QT}'"
 		exit 1

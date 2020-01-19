@@ -25,9 +25,6 @@ elif [ "${TARGET_OS}" = "linux" ]; then
 	# e.g. for finding fonts)
 	xvfb-run ctest -V
 elif [ "${TARGET_OS}" = "osx" ]; then
-	echo_and_run "cd \"${TRAVIS_BUILD_DIR}/modules/QtPDF/unit-tests\""
-	echo_and_run "${BUILDDIR}/test_poppler-qt5"
-
 	ctest -V
 fi
 

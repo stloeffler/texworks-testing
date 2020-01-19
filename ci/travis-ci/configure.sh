@@ -48,7 +48,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	if [ "${QT}" -eq 5 ]; then
 		print_info "Running CMake"
-		echo_and_run "cmake .. ${CMAKE_OPTS} -DCMAKE_OSX_SYSROOT=macosx -DCMAKE_PREFIX_PATH=\"/usr/local/opt/qt5\" -DCMAKE_BUILD_TYPE=\"Debug\""
+		echo_and_run "cmake .. ${CMAKE_OPTS} -DCMAKE_OSX_SYSROOT=macosx -DCMAKE_PREFIX_PATH=\"/usr/local/opt/qt5\""
 		if [ -f "CMakeFiles/CMakeError.log" ]; then
 			echo "=== CMake Error Log ==="
 			cat "CMakeFiles/CMakeError.log"
