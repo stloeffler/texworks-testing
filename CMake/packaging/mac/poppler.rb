@@ -44,10 +44,6 @@ class Poppler < Formula
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-0003-Add-support-for-persistent-GlobalParams.patch'
     sha256 "d6159cbf1af7cfb570925b172e02508a12fbe885dc09c5ff98d1c5e98e142890"
   end
-  patch do
-    url "file://" + TEXWORKS_PATCH_DIR + 'poppler-mac-debug.patch'
-    sha256 "de4309eb755d2d504190cb02433f612c43f78753ceeb901178b1e9e75c51b93e"
-  end
 # END TEXWORKS MODIFICATION
 
   depends_on "cmake" => :build
