@@ -143,12 +143,12 @@ void convertAnnotation(Annotation::AbstractAnnotation * dest, const ::Poppler::A
 // Document Class
 // ==============
 Document::Document(const QString & fileName):
-  Super(fileName),
-  _poppler_doc(::Poppler::Document::load(fileName))
+  Super(fileName)
 {
 #ifdef DEBUG
   qDebug() << "PopplerQt::Document::Document(" << fileName << ")";
 #endif
+  _poppler_doc = QSharedPointer<::Poppler::Document>(::Poppler::Document::load(fileName));
   parseDocument();
   qDebug() << "END: PopplerQt::Document::Document(" << fileName << ")";
 }
