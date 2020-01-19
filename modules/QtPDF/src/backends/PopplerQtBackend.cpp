@@ -15,7 +15,6 @@
 // NOTE: `PopplerQtBackend.h` is included via `PDFBackend.h`
 #include <PDFBackend.h>
 #include <QBitArray>
-#include <QDebug>
 
 #if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
 #include "poppler-config.h"
@@ -146,21 +145,19 @@ Document::Document(const QString & fileName):
   Super(fileName)
 {
 #ifdef DEBUG
-  qDebug() << "PopplerQt::Document::Document(" << fileName << ")";
+//  qDebug() << "PopplerQt::Document::Document(" << fileName << ")";
 #endif
   _poppler_doc = QSharedPointer<::Poppler::Document>(::Poppler::Document::load(fileName));
   parseDocument();
-  qDebug() << "END: PopplerQt::Document::Document(" << fileName << ")";
 }
 
 Document::~Document()
 {
 #ifdef DEBUG
-  qDebug() << "PopplerQt::Document::~Document()";
+//  qDebug() << "PopplerQt::Document::~Document()";
 #endif
   clearPages();
   delete _poppler_docLock;
-  qDebug() << "END: PopplerQt::Document::~Document()";
 }
 
 void Document::reload()

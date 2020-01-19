@@ -132,27 +132,17 @@ void TestQtPDF::loadDocs()
 
   // Don't run documents that may produce error messages in QBENCHMARK as
   // otherwise the console may be filled with unhelpful messages
-  qDebug() << "base14-locked";
-  _docs[QString::fromLatin1("base14-locked")] = backend.newDocument(QString::fromLatin1("base14-fonts-locked.pdf"));
-  qDebug() << "invalid";
   _docs[QString::fromLatin1("invalid")] = backend.newDocument(QString());
+  _docs[QString::fromLatin1("base14-locked")] = backend.newDocument(QString::fromLatin1("base14-fonts-locked.pdf"));
 
   QBENCHMARK {
-    qDebug() << "transitions";
     _docs[QString::fromLatin1("transitions")] = backend.newDocument(QString::fromLatin1("pdf-transitions.pdf"));
-    qDebug() << "pgfmanual";
     _docs[QString::fromLatin1("pgfmanual")] = backend.newDocument(QString::fromLatin1("pgfmanual.pdf"));
-    qDebug() << "base14-fonts";
     _docs[QString::fromLatin1("base14-fonts")] = backend.newDocument(QString::fromLatin1("base14-fonts.pdf"));
-    qDebug() << "poppler-data";
     _docs[QString::fromLatin1("poppler-data")] = backend.newDocument(QString::fromLatin1("poppler-data.pdf"));
-    qDebug() << "metadata";
     _docs[QString::fromLatin1("metadata")] = backend.newDocument(QString::fromLatin1("metadata.pdf"));
-    qDebug() << "page-rotation";
     _docs[QString::fromLatin1("page-rotation")] = backend.newDocument(QString::fromLatin1("page-rotation.pdf"));
-    qDebug() << "annotations";
     _docs[QString::fromLatin1("annotations")] = backend.newDocument(QString::fromLatin1("annotations.pdf"));
-    qDebug() << "---done---";
   }
 }
 

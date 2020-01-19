@@ -15,7 +15,6 @@
 #include <PDFBackend.h>
 #include <QPainter>
 #include <QApplication>
-#include <QDebug>
 
 namespace QtPDF {
 
@@ -465,7 +464,7 @@ Document::Document(QString fileName):
   Q_ASSERT(_docLock != nullptr);
 
 #ifdef DEBUG
-  qDebug() << "Document::Document(" << fileName << ")";
+//  qDebug() << "Document::Document(" << fileName << ")";
 #endif
 
   // Set cache for rendered pages to be 1GB. This is enough for 256 RGBA tiles
@@ -474,16 +473,14 @@ Document::Document(QString fileName):
   // NOTE: The application seems to exceed 1 GB---usage plateaus at around 2GB. No idea why. Perhaps freed
   // blocks are not garbage collected?? Perhaps my math is off??
   _pageCache.setMaxSize(1024 * 1024 * 1024);
-  qDebug() << "END: Document::Document(" << fileName << ")";
 }
 
 Document::~Document()
 {
 #ifdef DEBUG
-  qDebug() << "Document::~Document()";
+//  qDebug() << "Document::~Document()";
 #endif
   clearPages();
-  qDebug() << "END: Document::~Document()";
 }
 
 int Document::numPages() { QReadLocker docLocker(_docLock.data()); return _numPages; }
