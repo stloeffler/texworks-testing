@@ -149,6 +149,7 @@ Document::Document(const QString & fileName):
   qDebug() << "PopplerQt::Document::Document(" << fileName << ")";
 #endif
   _poppler_doc = QSharedPointer<::Poppler::Document>(::Poppler::Document::load(fileName));
+  qDebug() << _poppler_doc;
   parseDocument();
   qDebug() << "END: PopplerQt::Document::Document(" << fileName << ")";
 }
