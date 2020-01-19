@@ -46,7 +46,7 @@ class Poppler < Formula
   end
   patch do
     url "file://" + TEXWORKS_PATCH_DIR + 'poppler-mac-debug.patch'
-    sha256 "72eaa30569507a12ea97de979434721997c7b2dcc231e318e89fd45975a2bfb9"
+    sha256 "de4309eb755d2d504190cb02433f612c43f78753ceeb901178b1e9e75c51b93e"
   end
 # END TEXWORKS MODIFICATION
 
