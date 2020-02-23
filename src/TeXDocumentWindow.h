@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2007-2018  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2007-2020  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -167,6 +167,7 @@ public slots:
 	void doHardWrapDialog();
 	void doInsertCitationsDialog();
 	void setLineNumbers(bool displayNumbers);
+	void setLineSpacing(qreal percent);
 	void setWrapLines(bool wrap);
 	void setSyntaxColoring(int index);
 	void copyToFind();
