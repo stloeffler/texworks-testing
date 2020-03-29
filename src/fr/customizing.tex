@@ -27,7 +27,7 @@ Regardons plus attentivement aux trois parties de chaque règle. Dans sa forme l
 \end{verbExample}
 \verb|<fontflags>| peut spécifier indépendamment des couleurs (notez cependant qu'il doit toujours être précédé d'un \verb|;|). La couleur d'arrière plan (ainsi que le \verb|/|) peut être omise, mais si vous la spécifiez, vous devez aussi spécifier la couleur d'avant plan.
 
-Chaque couleur peut être spécifiée soit par un nom SVG\footnote{Voir \url{http://www.w3.org/TR/SVG/types.html#ColorKeywords} pour une liste de noms valides.}, soit par une valeur hexadécimale (\verb|#rrggbb|\footnote{Parce que \verb|#| est aussi utilisé pour indiquer les commentaires si donné comme premier caractère d'une ligne, vous devez ajouter un espace, une tabulation ou quelque chose de similaire avant de spécifier une couleur hexadécimale d'avant plan.}) similaire aux documents web. Le \verb|<fontflahs>| peut être toute combinaison des lettres \verb|B| (gras), \verb|I| (italique) et \verb|U| (souligné).
+Chaque couleur peut être spécifiée soit par un nom SVG\footnote{Voir \url{https://www.w3.org/TR/SVG11/types.html#ColorKeywords} pour une liste de noms valides.}, soit par une valeur hexadécimale (\verb|#rrggbb|\footnote{Parce que \verb|#| est aussi utilisé pour indiquer les commentaires si donné comme premier caractère d'une ligne, vous devez ajouter un espace, une tabulation ou quelque chose de similaire avant de spécifier une couleur hexadécimale d'avant plan.}) similaire aux documents web. Le \verb|<fontflahs>| peut être toute combinaison des lettres \verb|B| (gras), \verb|I| (italique) et \verb|U| (souligné).
 
 Exemples d'instructions de mise en forme valides:
 \begin{verbExample}
@@ -145,8 +145,17 @@ Mots clé définis dans \path{tw-basic.txt}\index{complétion automatique!tw-bas
 \input{autocompletionBasic}
 
 \needspace{6\baselineskip}
-Mots clé définis dans \path{tw-latex.txt}\index{complétion automatique!tw-latex.txt} (définis dans in \LaTeX):
+Mots clé définis dans \path{tw-latex.txt}\index{complétion automatique!tw-latex.txt} (définis dans \LaTeX):
 %\input{tw-latex_fr.tex}
 \input{autocompletionLatex}
 
-On y trouve aussi des codes d'environnements (ci-dessus) sans le \verb|\begin{| (qui est aussi un mot clé); cela permet si on a commencé d'entrer le code d'un environnement, de le compléter par \verb|[Tab]|.
+Mots clé définis dans \path{tw-latex-pkg.txt}\index{auto-completion!tw-latex-pkg.txt} (défini dans divers paquets):
+\input{autocompletionLatexPkg}
+
+Mots clé définis dans \path{tw-beamer.txt}\index{auto-completion!tw-beamer.txt} (défini by dans le paquet beamer):
+\input{autocompletionBeamer}
+
+Mots clé définis dans \path{tw-context.txt}\index{auto-completion!tw-context.txt} (définis dans \ConTeXt):
+\input{autocompletionContext}
+
+On y trouve aussi des codes d'environnements (ci-dessus) sans le \verb|\begin{| (qui est aussi un mot clé); cela permet si on a commencé d'entrer le code d'un environnement, de le compléter par \keysequence{Tab}.

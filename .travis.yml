@@ -5,30 +5,25 @@ dist: xenial
 addons:
   apt:
     packages:
-#    - texlive-latex-base
-#    - texlive-latex-extra
-#    - texlive-luatex
-#    - tex4ht
-#    - texlive-fonts-recommended
-#    - lmodern
-#    - texlive-lang-french
-    - texlive-full
+    - texlive-latex-base
+    - texlive-latex-extra
+    - texlive-luatex
+    - tex4ht
+    - texlive-fonts-recommended
+    - lmodern
+    - texlive-lang-french
     - ghostscript
     - imagemagick
     - netpbm
+    - tidy
     - ubuntu-dev-tools
     - debhelper
     - dput
     - fakeroot
     - python-paramiko
-    - tidy
-
-#install:
-#  - ${TRAVIS_BUILD_DIR}/travis-ci/install.sh
 
 script:
-#  - export PATH="$HOME/texlive/2018/bin/x86_64-linux:$PATH"
-  - make dist LTXFLAGS="--interaction=nonstopmode"
+  - make dist
 
 after_success:
   - ${TRAVIS_BUILD_DIR}/travis-ci/package.sh

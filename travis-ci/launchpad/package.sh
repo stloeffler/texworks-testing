@@ -29,19 +29,19 @@ if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PA
 	exit 0
 fi
 
-print_info "Decrypt signing key"
-openssl aes-256-cbc -K $encrypted_9fc9b03c2815_key -iv $encrypted_9fc9b03c2815_iv -in "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc.enc" -out "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc" -d
+print_info "Decrypt keys"
+cd "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/"
+openssl aes-256-cbc -K $encrypted_bd11dfdabef3_key -iv $encrypted_bd11dfdabef3_iv -in keys.tar.enc -out keys.tar -d
+tar xvf keys.tar
+cd "${TRAVIS_BUILD_DIR}"
+
+print_info "Import signing key"
 gpg --import "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/key.asc"
 
 
 print_info "Add ppa.launchpad.net to known hosts"
 # Add ppa.launchpad.net to ssh's known hosts so we can upload to it using sftp
 echo "ppa.launchpad.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0aKz5UTUndYgIGG7dQBV+HaeuEZJ2xPHo2DS2iSKvUL4xNMSAY4UguNW+pX56nAQmZKIZZ8MaEvSj6zMEDiq6HFfn5JcTlM80UwlnyKe8B8p7Nk06PPQLrnmQt5fh0HmEcZx+JU9TZsfCHPnX7MNz4ELfZE6cFsclClrKim3BHUIGq//t93DllB+h4O9LHjEUsQ1Sr63irDLSutkLJD6RXchjROXkNirlcNVHH/jwLWR5RcYilNX7S5bIkK8NlWPjsn/8Ua5O7I9/YoE97PpO6i73DTGLh5H9JN/SITwCKBkgSDWUt61uPK3Y11Gty7o2lWsBjhBUm2Y38CBsoGmBw==" >> ~/.ssh/known_hosts
-
-print_info "Decrypt ssh authentication key"
-# Set up key for ssh (sftp) authentication
-openssl aes-256-cbc -K $encrypted_6a8dc39105f1_key -iv $encrypted_6a8dc39105f1_iv -in "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/id_rsa_texworks.enc" -out "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/id_rsa_texworks" -d
-chmod 0600 "${TRAVIS_BUILD_DIR}/travis-ci/launchpad/id_rsa_texworks"
 
 print_info "Creating ~/.ssh/config"
 echo """Host ppa.launchpad.net
