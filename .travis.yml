@@ -44,4 +44,13 @@ deploy:
       condition: -f ${TRAVIS_BUILD_DIR}/travis-ci/bintray/bintray.json
     key:
       secure: oULH4rfgoSAo46cmFdhTZ4Bse+DWAFke4toShIzDiOoooyXhXkbMU/lDMe5msUXVYejIr4icyuC/9/JkRCLtSYNIgafuLtvCYI+SWF2pyta00NyETDmXrF6tQqtaUVMEpfsozbYVcnMGrEUDCEzKseLgnUPthz7Kr2hvXO2ga6WX/0csiH2Tvr/vwQHM3hz4uck/O+VSEXWt1WvYMbHGd3hnxuzUBSCDorPJNLl/zWs0MgzGepZwFq3NXWUkee0k7G6d1vHotdinShqfdG4pWx/ZJIRFys2R8PYosKx62/1CAdNLfW8bT8lP7h+eape7QlaHqRHkFZrU0wpzqvQdtCnoAibp7ND+44L4iyJAg2XhvKqxp912OaEloLYklx4rsGRPiu408/z304zYG2KRAWwHwn0Ik2JY+oXtfF3lxbD7O/yYG267R8hjq1A9MRiMCd/eXNRZbGhkLoP41eIU1icbowsEgiue6mXLY1vIs68vA4qu5fA5rebfialzfUqpsnvLf5lyCI8eHtOJ825Km002LErcI0ODCFyoqVlk4W2rTwsmQzN4NlU9G4e4HoRxP5TgwzvHyMEzlgz+HGroglR6uqxmrOTBFlSq+4V4xfTXGLLJreC7NtZ2f50pv8GZMH57gt/GoZ9K03n84K0U68rlBH1HydSrQZZ1R2gfkPE=
-
+  - provide: releases
+    skip_cleanup: true
+    file:
+      - html/*.zip
+      - pdf/**/*.pdf
+    api_key:
+      secure: akA00h7RTn7dIwBv/t87tkI2onHOBFCGn8cgRzDCuWOcvn0QisvLX2Ji2+W5MQupDk4xpTdxUknsUquBV88c/dDkyPPWwMq7Lw+owojKcrgiymJRX8zl2fZBgoPm1Jd6hA2FSJKyfFvwrsHW5Kz4UjKjquHxnZNx3oAR/oyV/lBguZZOVWjOcf0XMhKe1RcnW9JKqoooGj3rHZgF4Qk/P5+fd3awoE4n23A820H6r8724xeWM9l0nvE4ugdGwd8IepaElLN/w38KH8QfZkiX/wFGjm1k21kaQuQgiNaCzh6QjIdcCh63ZomfkgbadWEJUOCEjHML1oHH/IyjkWDtC5186k3TKbBlbEWodfucsaiQlHo/sSqnK0lvV5m7RfALRSsOioxfILvPkBba0sZ/8rZLuzjKGvM6O57Kaz+qh48ubAWtgo2tlvykPsX6YjqTOLqeV5lq27aGD/NdvF9mnNMx5R4hkpkM7IKtUzxwfDCqAyFOyiCElxf0RxDbKj2ntyLGKuCp/uVVcWxUhWKewV70sH2XXkG/d6BC7mNKk32f8IGySrEBEJxcf55QAX2zqv/0+gKvN5oHcWxMA7FG7OSaldcW8qBw1tDye9nM8AiQ3R7F//EPYILLahbTYZInpjy+NMVrNNZHHfkilXFxf4WkIWTJdoTrIA0jtPaFCBM=
+    on:
+      tags: true
+      branch: manual
