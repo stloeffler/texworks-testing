@@ -37,6 +37,32 @@ jobs:
       run: xvfb-run ctest -V
       working-directory: build
 
+  build-win:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        vcpkg install hunspell qt5 lua
+
+    - name: Configure
+      run: |
+        mkdir build
+        cd build
+        cmake -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
+
+    - name: Build
+      run: make -j
+      working-directory: build
+
+    - name: Test
+      run: ctest -V
+      working-directory: build
+
   build-macosx:
     name: Build on Mac OS X
     runs-on: macos-latest
