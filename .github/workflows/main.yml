@@ -36,3 +36,33 @@ jobs:
     - name: Test
       run: xvfb-run ctest -V
       working-directory: build
+
+  build-macosx:
+    name: Build on Mac OS X
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout
+          uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        brew update
+		brew install qt5
+        brew install poppler
+        brew install hunspell
+        brew install lua
+
+    - name: Configure
+      run: |
+        mkdir build
+        cd build
+        cmake -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
+
+    - name: Build
+      run: make -j
+      working-directory: build
+
+    - name: Test
+      run: ctest -V
+      working-directory: build
