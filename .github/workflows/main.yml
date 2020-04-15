@@ -41,5 +41,5 @@ jobs:
       working-directory: build
 
     - name: Test
-      run: make test
+      run: ctest -V
       working-directory: build
