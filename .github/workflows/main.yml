@@ -20,10 +20,13 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        modules: qtscript
+#    - name: Install Qt
+#      uses: jurplel/install-qt-action@v2
+#      with:
+#        modules: qtscript
+
+    - name: Install Dependencies
+      run: sudo apt install qtbase5-dev qtscript5-dev qttools5-dev qttools5-dev-tools libpoppler-private-dev liblua5.3-dev
 
     # Runs a single command using the runners shell
     - name: Configure
