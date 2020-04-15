@@ -22,7 +22,8 @@ jobs:
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
-      modules: qtscript
+      with:
+        modules: qtscript
 
     # Runs a single command using the runners shell
     - name: Configure
