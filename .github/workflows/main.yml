@@ -26,7 +26,7 @@ jobs:
 #        modules: qtscript
 
     - name: Install Dependencies
-      run: sudo apt install qtbase5-dev qtscript5-dev qttools5-dev qttools5-dev-tools libpoppler-private-dev liblua5.3-dev
+      run: sudo apt install qtbase5-dev qtscript5-dev qttools5-dev qttools5-dev-tools zlib1g-dev libhunspell-dev libpoppler-private-dev liblua5.3-dev
 
     # Runs a single command using the runners shell
     - name: Configure
