@@ -45,9 +45,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        modules: 'qtscript'
+
     - name: Install Dependencies
       run: |
-        vcpkg install hunspell qt5 lua
+        vcpkg install hunspell lua
 
     - name: Configure
       run: |
