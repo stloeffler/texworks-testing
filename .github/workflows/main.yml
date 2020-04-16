@@ -54,6 +54,10 @@ jobs:
       with:
         modules: 'qtscript'
 
+    - name: Build Poppler
+      shell: python
+      run: .github/workflows/build-poppler.py
+
     - name: Install Dependencies
       run: |
         vcpkg install hunspell:x64-windows lua:x64-windows zlib:x64-windows
