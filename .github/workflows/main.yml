@@ -56,7 +56,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        vcpkg install hunspell lua zlib
+        vcpkg install hunspell:x64-windows lua:x64-windows zlib:x64-windows
 
     - name: Configure
       run: |
