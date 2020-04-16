@@ -51,7 +51,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        vcpkg install hunspell:x64-windows lua:x64-windows zlib:x64-windows freetype:x64-windows lcms:x64-windows
+        vcpkg install hunspell:x64-windows lua:x64-windows zlib:x64-windows freetype:x64-windows lcms:x64-windows libjpeg-turbo:x64-windows
         find C:/vcpkg/packages/
 
     - name: Install Qt
