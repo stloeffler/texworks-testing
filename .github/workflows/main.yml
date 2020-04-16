@@ -77,9 +77,12 @@ jobs:
         update: true
 
     - run: msys2do pacman --noconfirm -Ss poppler
+    - run: msys2do pacman --noconfirm -Ss qt5
+    - run: msys2do pacman --noconfirm -Ss hunspell
+    - run: msys2do pacman --noconfirm -Ss lua
 
     - name: Install dependencies
-      run: msys2do pacman --noconfirm -S cmake mingw-w64-qt5-static mingw-w64-poppler mingw-w64-hunspell mingw-w64-lua
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
 
     - name: Configure
       run: msys2do cmake -B build -DTW_BUILD_ID='github'
