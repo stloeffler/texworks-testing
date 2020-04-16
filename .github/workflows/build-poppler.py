@@ -26,6 +26,8 @@ downloadFile(POPPLER_FILENAME, POPPLER_URL)
 # FIXME: Check checksum
 echo_and_run(['7z', 'x', POPPLER_FILENAME])
 echo_and_run(['7z', 'x', os.path.splitext(POPPLER_FILENAME)[0]])
-echo_and_run(['cmake', '-B', 'build', '-DOpenJPEG_DIR={0}'.format(OPENJPEG_CMAKE_DIR), '-DPKG_CONFIG_EXECUTABLE=""', '-DCMAKE_TOOLCHAIN_FILE={0}'.format(os.path.join(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'scripts/buildsystems/vcpkg.cmake')), '.'], cwd = POPPLER_FOLDER)
+echo_and_run(['patch', '-p1', '-i', os.path.join(os.environ.get('GITHUB_WORKSPACE'), '.github', 'workflows', 'poppler.patch')], cwd = os.path.join(POPPLER_FOLDER))
+
+echo_and_run(['cmake', '-B', 'build', '-DOpenJPEG_DIR={0}'.format(OPENJPEG_CMAKE_DIR), '-DCMAKE_TOOLCHAIN_FILE={0}'.format(os.path.join(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'scripts/buildsystems/vcpkg.cmake')), '.'], cwd = POPPLER_FOLDER)
 echo_and_run(['cmake', '--build', 'build'], cwd = POPPLER_FOLDER)
 echo_and_run(['cmake', '--install', 'build'], cwd = POPPLER_FOLDER)

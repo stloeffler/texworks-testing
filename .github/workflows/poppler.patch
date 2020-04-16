@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index dbe6a089..d5c2e8ac 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -7,7 +7,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+ include(PopplerDefaults)
+ include(PopplerMacros)
+ include(MacroOptionalFindPackage)
+-find_package(PkgConfig)
+ include(MacroEnsureVersion)
+ include(MacroBoolTo01)
+ if (WIN32)
