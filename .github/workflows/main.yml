@@ -86,10 +86,10 @@ jobs:
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
 
     - name: Configure
-      run: msys2do mingw-w64-x86_64-cmake -B build -DTW_BUILD_ID='github'
+      run: msys2do mingw-w64-cmake -B build -DTW_BUILD_ID='github'
 
     - name: Build
-      run: msys2do mingw-w64-x86_64-cmake --build build
+      run: msys2do mingw-w64-cmake --build build
 
     - name: Test
       run: msys2do ctest -V
