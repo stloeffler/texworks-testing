@@ -12,7 +12,7 @@ def downloadFile(filename, url):
 
 def echo_and_run(args, **kwargs):
 	print(' '.join(args))
-	subprocess.run(args, **kwargs)
+	subprocess.run(args, **kwargs).check_returncode()
 
 downloadFile(POPPLER_FILENAME, POPPLER_URL)
 # FIXME: Check checksum
