@@ -64,7 +64,7 @@ jobs:
         echo "${{ github.workspace }}"
         mkdir build
         cd build
-        cmake -DTW_BUILD_ID='github' -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}\scripts\buildsystems\vcpkg.cmake ${GITHUB_WORKSPACE}
+        cmake -DTW_BUILD_ID='github' -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake ${GITHUB_WORKSPACE}
 
     - name: Build
       run: make -j
