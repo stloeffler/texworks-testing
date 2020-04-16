@@ -18,6 +18,6 @@ downloadFile(POPPLER_FILENAME, POPPLER_URL)
 # FIXME: Check checksum
 echo_and_run(['7z', 'x', POPPLER_FILENAME])
 echo_and_run(['7z', 'x', os.path.splitext(POPPLER_FILENAME)[0]])
-echo_and_run(['cmake', '-B', 'build', '-DCMAKE_TOOLCHAIN_FILE={0}'.format(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'scripts/buildsystems/vcpkg.cmake'), '.'], cwd = POPPLER_FOLDER)
+echo_and_run(['cmake', '-B', 'build', '-DCMAKE_TOOLCHAIN_FILE={0}'.format(os.path.join(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'scripts/buildsystems/vcpkg.cmake')), '.'], cwd = POPPLER_FOLDER)
 echo_and_run(['cmake', '--build', 'build'], cwd = POPPLER_FOLDER)
 echo_and_run(['cmake', '--install', 'build'], cwd = POPPLER_FOLDER)
