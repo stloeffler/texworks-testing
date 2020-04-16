@@ -58,9 +58,10 @@ jobs:
     - name: Configure
       run: |
         echo "${{ env.GITHUB_WORKSPACE }}"
+        echo "${{ github.workspace }}"
         mkdir build
         cd build
-        cmake -DTW_BUILD_ID='github' ..
+        cmake -DTW_BUILD_ID='github' ${{ github.workspace }}
 
     - name: Build
       run: make -j
