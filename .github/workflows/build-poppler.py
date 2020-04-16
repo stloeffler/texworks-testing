@@ -5,6 +5,10 @@ POPPLER_FOLDER='poppler-{0}'.format(POPPLER_VERSION)
 POPPLER_FILENAME='poppler-{0}.tar.xz'.format(POPPLER_VERSION)
 POPPLER_URL='https://poppler.freedesktop.org/{0}'.format(POPPLER_FILENAME)
 
+OPENJPEG_VERSION = '2.3.1'
+OPENJPEG_FILENAME = 'openjpeg-v{0}-windows-x64.zip'.format(OPENJPEG_VERSION)
+OPENJPEG_URL = 'https://github.com/uclouvain/openjpeg/releases/download/v{0}/{1}'.format(OPENJPEG_VERSION, OPENJPEG_FILENAME)
+
 def downloadFile(filename, url):
 	with open(filename, 'wb') as fout:
 		with urllib.request.urlopen(url) as fin:
@@ -13,6 +17,10 @@ def downloadFile(filename, url):
 def echo_and_run(args, **kwargs):
 	print(' '.join(args))
 	subprocess.run(args, **kwargs).check_returncode()
+
+downloadFile(OPENJPEG_FILENAME, OPENJPEG_URL)
+echo_and_run(['unzip', '-d', os.path.join(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'packages'), OPENJPEG_FILENAME])
+echo_and_run(['find', os.path.join(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'packages'), OPENJPEG_FILENAME])
 
 downloadFile(POPPLER_FILENAME, POPPLER_URL)
 # FIXME: Check checksum
