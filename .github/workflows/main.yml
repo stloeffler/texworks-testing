@@ -49,6 +49,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Install Dependencies
+      run: |
+        vcpkg install hunspell:x64-windows lua:x64-windows zlib:x64-windows freetype:x64-windows lcms:x64-windows
+        find C:/vcpkg/packages/
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
@@ -56,11 +61,6 @@ jobs:
 
     - name: Build Poppler
       run: python .github/workflows/build-poppler.py
-
-    - name: Install Dependencies
-      run: |
-        vcpkg install hunspell:x64-windows lua:x64-windows zlib:x64-windows
-        find C:/vcpkg/packages/
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake ${GITHUB_WORKSPACE}
