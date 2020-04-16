@@ -20,7 +20,6 @@ def echo_and_run(args, **kwargs):
 
 downloadFile(OPENJPEG_FILENAME, OPENJPEG_URL)
 echo_and_run(['unzip', '-d', os.path.join(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'packages'), OPENJPEG_FILENAME])
-echo_and_run(['find', os.path.join(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'packages'), OPENJPEG_FILENAME])
 
 downloadFile(POPPLER_FILENAME, POPPLER_URL)
 # FIXME: Check checksum
