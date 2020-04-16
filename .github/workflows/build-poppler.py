@@ -1,4 +1,4 @@
-import os.path, subprocess, urllib.request
+import os, subprocess, urllib.request
 
 POPPLER_VERSION='0.87.0'
 POPPLER_FOLDER='poppler-{0}'.format(POPPLER_VERSION)
@@ -16,9 +16,8 @@ def echo_and_run(args, **kwargs):
 
 downloadFile(POPPLER_FILENAME, POPPLER_URL)
 # FIXME: Check checksum
-
 echo_and_run(['7z', 'x', POPPLER_FILENAME])
 echo_and_run(['7z', 'x', os.path.splitext(POPPLER_FILENAME)[0]])
-echo_and_run(['cmake', '-B', 'build', '.'], cwd = POPPLER_FOLDER)
+echo_and_run(['cmake', '-B', 'build', '-DCMAKE_TOOLCHAIN_FILE={0}'.format(os.environ.get('VCPKG_INSTALLATION_ROOT'), 'scripts/buildsystems/vcpkg.cmake'), '.'], cwd = POPPLER_FOLDER)
 echo_and_run(['cmake', '--build', 'build'], cwd = POPPLER_FOLDER)
 echo_and_run(['cmake', '--install', 'build'], cwd = POPPLER_FOLDER)
