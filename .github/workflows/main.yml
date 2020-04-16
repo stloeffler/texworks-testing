@@ -95,8 +95,7 @@ jobs:
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
 
     - name: Build
-      run: make -j
-      working-directory: build
+      run: cmake --build build
 
     - name: Test
       run: ctest -V
