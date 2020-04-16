@@ -53,7 +53,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        vcpkg install hunspell lua
+        vcpkg install hunspell lua zlib
 
     - name: Configure
       run: |
