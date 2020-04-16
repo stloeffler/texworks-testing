@@ -92,10 +92,7 @@ jobs:
         brew install lua
 
     - name: Configure
-      run: |
-        mkdir build
-        cd build
-        cmake -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
+      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
 
     - name: Build
       run: make -j
