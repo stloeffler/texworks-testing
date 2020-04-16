@@ -85,6 +85,8 @@ jobs:
     - name: Install dependencies
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
 
+    - run: msys2do pacman --noconfirm -Ql mingw-w64-x86_64-cmake
+
     - name: Configure
       run: msys2do mingw-w64-cmake -B build -DTW_BUILD_ID='github'
 
