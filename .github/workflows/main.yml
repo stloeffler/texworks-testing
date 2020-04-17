@@ -89,6 +89,8 @@ jobs:
 
     - run: msys2do pacman --noconfirm -Ql cmake
 
+    - run: msys2do ls -lisa /usr/bin/cmake*
+
     - name: Configure
 # FIXME: Replace hardcoded path
 #      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "pwd && echo `$OLDPWD && echo ^$PWD && echo ${env:OLDPWD} && cd `$OLDPWD && pwd && cmake -G 'MinGW Makefiles' -B build -DTW_BUILD_ID='github'"
