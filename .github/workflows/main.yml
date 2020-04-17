@@ -117,6 +117,8 @@ jobs:
     - name: Build
       run: msys2do cmake --build build
 
+    - run: msys2do find .
+
     - name: Test
       run: msys2do ctest -V
       working-directory: build
