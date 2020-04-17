@@ -87,17 +87,21 @@ jobs:
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
-#    - run: msys2do pacman --noconfirm -Ql cmake
+    - run: msys2do pacman --noconfirm -Ql mingw-w64-x86_64-make
 
 #    - run: msys2do ls -lisa /usr/bin/cmake*
 
     - name: Configure
 # FIXME: Replace hardcoded path
 #      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "pwd && echo `$OLDPWD && echo ^$PWD && echo ${env:OLDPWD} && cd `$OLDPWD && pwd && cmake -G 'MinGW Makefiles' -B build -DTW_BUILD_ID='github'"
-      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "cd `$OLDPWD && pwd && cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github'"
+      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "cd `$OLDPWD && pwd && cmake -G 'MSYS Makefiles' -DCMAKE_MAKE_PROGRAM='make' -B build -DTW_BUILD_ID='github'"
 #      run: cmake -G 'MinGW Makefiles' -B build -DTW_BUILD_ID='github'
 #      run: cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github'
+
+#      run: msys2do cmake -G "MSYS Makefiles" -B build
+#      run: msys2do cmake -G `"MSYS Makefiles`" -B build
 #      run: msys2do cmake -G `\"MSYS Makefiles`\" -B build
+
 #      run: msys2do pwd && which cmake && /usr/bin/cmake -B build -G `"MSYS Makefiles`" -DTW_BUILD_ID='github' && pwd
 #      run: msys2do pwd && which cmake && /usr/bin/cmake -B build -G `"MSYS Makefiles`" -DTW_BUILD_ID='github' && pwd
 #      run: msys2do find /usr/bin && /usr/bin/cmake.exe -B build -DTW_BUILD_ID='github' && pwd
