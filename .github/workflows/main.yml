@@ -48,6 +48,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      defaults:
+        run:
+          shell: bash
 
 #    - name: Install Dependencies
 #      run: |
@@ -88,9 +91,7 @@ jobs:
     - run: msys2do pacman --noconfirm -Ql mingw-w64-x86_64-cmake
 
     - name: Configure
-      env:
-        GENERATOR: MSYS Makefiles
-      run: msys2do cmake -G $GENERATOR -B build -DTW_BUILD_ID='github'
+      run: msys2do cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github'
 
     - name: Build
       run: msys2do cmake --build build
