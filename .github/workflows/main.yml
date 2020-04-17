@@ -76,6 +76,12 @@ jobs:
       with:
         update: true
 
+    - name: Update Git Rev Info
+      run: msys2do ./getGitRevInfo.sh
+
+    - run: ls src
+    - run: cat src/GitRev.h
+
     - run: msys2do pacman --noconfirm -Ss cmake
     - run: msys2do pacman --noconfirm -Ss poppler
     - run: msys2do pacman --noconfirm -Ss qt5
