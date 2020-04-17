@@ -81,10 +81,11 @@ jobs:
     - run: msys2do pacman --noconfirm -Ss qt5
     - run: msys2do pacman --noconfirm -Ss hunspell
     - run: msys2do pacman --noconfirm -Ss lua
+    - run: msys2do pacman --noconfirm -Ss make
 
     - name: Install dependencies
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
-      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
     - run: msys2do pacman --noconfirm -Ql mingw-w64-x86_64-cmake
 
