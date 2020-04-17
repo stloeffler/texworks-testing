@@ -87,14 +87,14 @@ jobs:
       run: msys2do pacman --noconfirm -S cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
-#    - run: msys2do pacman --noconfirm -Ql mingw-w64-x86_64-cmake
+    - run: msys2do pacman --noconfirm -Ql cmake
 
     - name: Configure
 # FIXME: Replace hardcoded path
 #      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "pwd && echo `$OLDPWD && echo ^$PWD && echo ${env:OLDPWD} && cd `$OLDPWD && pwd && cmake -G 'MinGW Makefiles' -B build -DTW_BUILD_ID='github'"
 #      run: cmake -G 'MinGW Makefiles' -B build -DTW_BUILD_ID='github'
 #      run: cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github'
-      run: msys2do cmake -B build -DTW_BUILD_ID='github'
+      run: msys2do pwd && cmake -B build -DTW_BUILD_ID='github' && pwd
 
     - name: Build
       run: msys2do cmake --build build
