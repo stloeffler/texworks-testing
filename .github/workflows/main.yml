@@ -90,7 +90,7 @@ jobs:
 
     - name: Configure
 # FIXME: Replace hardcoded path
-      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "pwd && env && echo ${env:GITHUB_WORKSPACE} && cd ${env:GITHUB_WORKSPACE} && pwd && cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github'" 
+      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "pwd && echo \${OLDPWD} && cd \${OLDPWD} && pwd && cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github'" 
 
     - name: Build
       run: msys2do cmake --build build
