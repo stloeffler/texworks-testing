@@ -110,7 +110,7 @@ jobs:
     - run: msys2do find .
 
     - name: Test
-      run: ctest -V
+      run: msys2do ctest -V
       working-directory: build
 
   build-macosx:
