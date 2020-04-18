@@ -85,8 +85,8 @@ jobs:
 
 #    - run: msys2do ls -lisa /usr/bin/cmake*
 
-#    - name: Update Git Revision Info
-#      run: msys2do ./getGitRevInfo.sh
+    - name: Update Git Revision Info
+      run: msys2do ./getGitRevInfo.sh
 
     - name: Configure
 # FIXME: Replace hardcoded path
