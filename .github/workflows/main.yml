@@ -108,13 +108,10 @@ jobs:
       run: msys2do ctest -V
       working-directory: build
 
-    - run: 7z a TeXworks.zip libTWLuaPlugin.dll TeXworks.exe
-      working-directory: build
-
     - uses: actions/upload-artifact@v1
       with:
-        name: TeXworks.zip
-        path: build/TeXworks.zip
+        name: TeXworks
+        path: build/install
 
   build-macosx:
     name: Build on Mac OS X
