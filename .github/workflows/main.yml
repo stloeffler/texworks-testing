@@ -81,8 +81,8 @@ jobs:
       run: msys2do pacman --noconfirm -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-diffutils mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
-#    - name: Update Git Revision Info
-#      run: msys2do ./getGitRevInfo.sh
+    - name: Update Git Revision Info
+      run: msys2do ./getGitRevInfo.sh
 
     - name: Configure
 # FIXME: Replace hardcoded path
