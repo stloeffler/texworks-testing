@@ -8,6 +8,8 @@ pwd >&2
 # Use git to create src/GitRev.h.new with latest commit information. If this
 # fails (e.g., because git is not available), we assume that this is an export
 # so the commit info is in GitArchiveInfo.txt
+git --git-dir=".git" show --no-patch --pretty="// This file is used to identify the latest git commit. Please do not touch.%n#define GIT_COMMIT_HASH \"%h\"%n#define GIT_COMMIT_DATE \"%ci\"%n" > src/GitRev.h.new || cp GitArchiveInfo.txt src/GitRev.h.new
+
 git --git-dir=".git" show --no-patch --pretty="// This file is used to identify the latest git commit. Please do not touch.%n#define GIT_COMMIT_HASH \"%h\"%n#define GIT_COMMIT_DATE \"%ci\"%n" > src/GitRev.h.new 2> /dev/null || cp GitArchiveInfo.txt src/GitRev.h.new
 
 find src/Git* >&2
