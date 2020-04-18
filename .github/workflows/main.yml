@@ -107,6 +107,7 @@ jobs:
 
     - uses: actions/upload-artifact@v1
       with:
+        name: TeXworks.zip
         path: build/TeXworks.zip
 
   build-macosx:
