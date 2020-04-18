@@ -24,6 +24,8 @@
 #include <QDir>
 #include <QTextStream>
 
+#include <QDebug>
+
 namespace Tw {
 namespace Utils {
 
@@ -134,7 +136,11 @@ QByteArray FileVersionDatabase::hashForFile(const QString & path)
 	if (!fin.open(QIODevice::ReadOnly))
 		return retVal;
 
-	retVal = QCryptographicHash::hash(fin.readAll(), QCryptographicHash::Md5);
+	QByteArray content = fin.readAll();
+	qDebug() << content;
+
+	retVal = QCryptographicHash::hash(content, QCryptographicHash::Md5);
+	qDebug() << path << retVal.toHex();
 	fin.close();
 	return retVal;
 }
