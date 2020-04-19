@@ -55,7 +55,8 @@ jobs:
       run: |
         wget -qO - "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0xC6BF758A33A3A276" | sudo apt-key add -
         sudo add-apt-repository --yes --update "deb https://pkg.mxe.cc/repos/apt xenial main"
-        sudo apt install mxe-i686-w64-mingw32.static-cairo mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-glib mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-lcms mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-libwebp mxe-i686-w64-mingw32.static-lua mxe-i686-w64-mingw32.static-openjpeg mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff mxe-i686-w64-mingw32.static-zlib
+        sudo apt install mxe-i686-w64-mingw32.static-cairo mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-glib mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-lcms mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-libwebp mxe-i686-w64-mingw32.static-lua mxe-i686-w64-mingw32.static-openjpeg mxe-i686-w64-mingw32.static-poppler mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff mxe-i686-w64-mingw32.static-zlib
+      # FIXME: Build poppler (it changes too often)
 
     - name: Update Git Revision Info
       run: ./getGitRevInfo.sh
