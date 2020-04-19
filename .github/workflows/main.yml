@@ -65,7 +65,7 @@ jobs:
       run: mkdir build && cd build && ${MXEDIR}/usr/bin/${MXETARGET}-cmake -DTW_BUILD_ID='github' -DCMAKE_INSTALL_PREFIX=install ..
 
     - name: Build
-      run: ${MXEDIR}/usr/bin/${MXETARGET}-cmake --build build --parallel
+      run: ${MXEDIR}/usr/bin/${MXETARGET}-cmake --build build
 
     - name: Install
       run: ${MXEDIR}/usr/bin/${MXETARGET}-cmake --build build --target install
