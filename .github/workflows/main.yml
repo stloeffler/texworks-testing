@@ -114,6 +114,12 @@ jobs:
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
     - run: msys2do find /usr/bin
+    - run: msys2do find / -iname Qt5Core.dll
+    - run: msys2do find / -iname libgcc_s_seh-1.dll
+    - run: msys2do find / -iname libhunspell-1.7-0.dll
+    - run: msys2do find / -iname libpoppler-qt5-1.dll
+    - run: msys2do find / -iname libstdc++-6.dll
+    - run: msys2do find / -iname zlib1.dll
 
     - name: Update Git Revision Info
       run: msys2do ./getGitRevInfo.sh
