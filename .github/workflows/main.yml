@@ -153,7 +153,7 @@ jobs:
       run: msys2do cmake --build build --target install
 
     - name: Copy DLLs
-      run: msys2do cp /mingw64/bin/Qt5Core.dll /mingw64/bin/libgcc_s_seh-1.dll /mingw64/bin/libstdc++-6.dll /mingw64/bin/libhunspell-1.7-0.dll /mingw64/bin/libpoppler-qt5-1.dll /mingw64/bin/Qt5Concurrent.dll /mingw64/bin/Qt5Gui.dll /mingw64/bin/Qt5Script.dll /mingw64/bin/Qt5ScriptTools.dll /mingw64/bin/Qt5Widgets.dll /mingw64/bin/Qt5Xml.dll /mingw64/bin/zlib1.dll install/
+      run: msys2do cp /mingw64/bin/libdouble-conversion.dll /mingw64/bin/libfreetype-6.dll /mingw64/bin/libgcc_s_seh-1.dll /mingw64/bin/libharfbuzz-0.dll /mingw64/bin/libhunspell-1.7-0.dll /mingw64/bin/libicuin65.dll /mingw64/bin/libicuuc65.dll /mingw64/bin/libpcre2-16-0.dll /mingw64/bin/libpng16-16.dll /mingw64/bin/libpoppler-98.dll /mingw64/bin/libpoppler-qt5-1.dll /mingw64/bin/libstdc++-6.dll /mingw64/bin/libwinpthread-1.dll /mingw64/bin/libzstd.dll /mingw64/bin/Qt5Concurrent.dll /mingw64/bin/Qt5Core.dll /mingw64/bin/Qt5Gui.dll /mingw64/bin/Qt5Script.dll /mingw64/bin/Qt5ScriptTools.dll /mingw64/bin/Qt5Widgets.dll /mingw64/bin/Qt5Xml.dll /mingw64/bin/zlib1.dll install/
 
     - uses: actions/upload-artifact@v1
       with:
