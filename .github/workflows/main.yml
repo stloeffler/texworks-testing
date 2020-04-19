@@ -71,7 +71,21 @@ jobs:
     - name: Install
       run: ${MXEDIR}/usr/bin/${MXETARGET}-cmake --build build --target install
 
+    - name: Package tests
+      run: mkdir tests && cp test_*.exe tests/
+      working-directory: build
+
     - run: find .
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: TeXworks-MXE
+        path: build/install
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: tw-mxe-tests
+        path: build/tests
 
 ################################################################################
 
