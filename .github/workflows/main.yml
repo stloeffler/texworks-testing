@@ -136,14 +136,17 @@ jobs:
     - name: Build
       run: msys2do cmake --build build --parallel
 
-    - name: Install
-      run: msys2do cmake --build build --target install
-
     - run: msys2do find .
 
     - name: Test
       run: msys2do ctest -V
       working-directory: build
+
+    - name: Install
+      run: msys2do cmake --build build --target install
+
+    - name: Copy DLLs
+      run: msys2do cp /mingw64/bin/Qt5Core.dll /mingw64/bin/libgcc_s_seh-1.dll /mingw64/bin/libstdc++-6.dll /mingw64/bin/libhunspell-1.7-0.dll /mingw64/bin/libpoppler-qt5-1.dll /mingw64/bin/Qt5Concurrent.dll /mingw64/bin/Qt5Gui.dll /mingw64/bin/Qt5Script.dll /mingw64/bin/Qt5ScriptTools.dll /mingw64/bin/Qt5Widgets.dll /mingw64/bin/Qt5Xml.dll /mingw64/bin/zlib1.dll install/
 
     - uses: actions/upload-artifact@v1
       with:
