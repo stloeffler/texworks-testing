@@ -66,7 +66,8 @@ jobs:
 
 
     - name: Build
-      run: ${MXEDIR}/usr/bin/${MXETARGET}-cmake --build build && ${MXEDIR}/usr/bin/${MXETARGET}-strip TeXworks.exe
+      run: ${MXEDIR}/usr/bin/${MXETARGET}-cmake --build . && ${MXEDIR}/usr/bin/${MXETARGET}-strip TeXworks.exe
+      working-director: build
 
     - name: Install
       run: ${MXEDIR}/usr/bin/${MXETARGET}-cmake --build build --target install
