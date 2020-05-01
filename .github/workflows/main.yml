@@ -14,7 +14,7 @@ jobs:
     name: Build on Linux
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    if: false
+#    if: false
 
     steps:
     - name: Checkout
@@ -173,7 +173,7 @@ jobs:
   build-macosx:
     name: Build on Mac OS X
     runs-on: macos-latest
-    if: false
+#    if: false
 
     steps:
     - name: Checkout
