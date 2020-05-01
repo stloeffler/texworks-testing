@@ -111,7 +111,7 @@ jobs:
         wget https://downloads.sourceforge.net/project/hunspell/Hunspell/1.2/hunspell-1.2.1.tar.gz
         tar -xvf hunspell-1.2.1.tar.gz
         cd hunspell-1.2.1
-        CC=gcc-6 CXX=g++-6 ./configure
+        CC=gcc-6 CXX=g++-6 CXXFLAGS="-fpermissive" ./configure
         make
         sudo make install
 
