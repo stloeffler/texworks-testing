@@ -10,6 +10,8 @@ cd "${TRAVIS_BUILD_DIR}"
 
 print_headline "Building TeXworks for ${TARGET_OS}/qt${QT}"
 
+echo_and_run "git diff-index HEAD; echo \$?"
+
 echo_and_run "cd \"${BUILDDIR}\""
 echo_and_run "make VERBOSE=1"
 
