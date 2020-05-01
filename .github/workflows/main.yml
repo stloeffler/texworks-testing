@@ -120,7 +120,8 @@ jobs:
         wget https://poppler.freedesktop.org/poppler-0.24.5.tar.xz
         tar -xvf poppler-0.24.5.tar.xz
         cd poppler-0.24.5
-        ./configure --enable-xpdf-headers --disable-poppler-qt4 --disable-poppler-cpp --disable-gtk-test --disable-utils
+        mkdir build && cd build
+        cmake -DENABLE_XPDF_HEADERS=ON -DBUILD_GTK_TESTS=OFF -DBUILD_QT4_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_CPP_TESTS=OFF -DENABLE_UTILS=OFF -DENABLE_CPP=OFF ..
         make
         sudo make install
 
