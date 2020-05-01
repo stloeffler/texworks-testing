@@ -98,7 +98,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update -y
-        sudo apt install -y g++-6 zlib1g-dev liblua5.3-dev xvfb
+        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
@@ -111,7 +111,7 @@ jobs:
         wget https://downloads.sourceforge.net/project/hunspell/Hunspell/1.2/hunspell-1.2.1.tar.gz
         tar -xvf hunspell-1.2.1.tar.gz
         cd hunspell-1.2.1
-        CC=gcc-6 CXX=g++-6 CXXFLAGS="-fpermissive" ./configure
+        CXXFLAGS="-fpermissive" ./configure
         make
         sudo make install
 
