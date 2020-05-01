@@ -1204,7 +1204,11 @@ void TeXDocumentWindow::reloadIfChangedOnDisk()
 	if (untitled() || !lastModified.isValid())
 		return;
 
-	QDateTime fileModified = textDoc()->getFileInfo().lastModified();
+	// Get the file info and force-refresh it to make sure we have the current
+	// modification datetime (and not some cached value)
+	QFileInfo fi{textDoc()->getFileInfo()};
+	fi.refresh();
+	QDateTime fileModified{fi.lastModified()};
 	if (!fileModified.isValid() || fileModified == lastModified)
 		return;
 
@@ -2787,7 +2791,7 @@ void TeXDocumentWindow::updateTypesettingAction()
 {
 	if (!process) {
 		disconnect(actionTypeset, SIGNAL(triggered()), this, SLOT(interrupt()));
-		actionTypeset->setIcon(QIcon(QString::fromLatin1(":/images/images/runtool.png")));
+		actionTypeset->setIcon(QIcon::fromTheme(QStringLiteral("process-start")));
 		actionTypeset->setText(tr("Typeset"));
 		connect(actionTypeset, SIGNAL(triggered()), this, SLOT(typeset()));
 		if (pdfDoc)
@@ -2795,7 +2799,7 @@ void TeXDocumentWindow::updateTypesettingAction()
 	}
 	else {
 		disconnect(actionTypeset, SIGNAL(triggered()), this, SLOT(typeset()));
-		actionTypeset->setIcon(QIcon(QString::fromLatin1(":/images/tango/process-stop.png")));
+		actionTypeset->setIcon(QIcon::fromTheme(QStringLiteral("process-stop")));
 		actionTypeset->setText(tr("Abort typesetting"));
 		connect(actionTypeset, SIGNAL(triggered()), this, SLOT(interrupt()));
 		if (pdfDoc)

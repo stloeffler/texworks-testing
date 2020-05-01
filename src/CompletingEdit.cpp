@@ -20,6 +20,7 @@
 */
 
 #include "CompletingEdit.h"
+#include "DefaultPrefs.h"
 #include "TWUtils.h"
 #include "TWApp.h"
 #include "Settings.h"
@@ -51,6 +52,7 @@
 CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
 	: QTextEdit(parent)
 {
+	Tw::Settings settings;
 	if (!sharedCompleter) { // initialize shared (static) members
 		sharedCompleter = new QCompleter(qApp);
 		sharedCompleter->setCompletionMode(QCompleter::InlineCompletion);
@@ -61,11 +63,11 @@ CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
 		braceMatchingFormat = new QTextCharFormat;
 		currentLineFormat = new QTextCharFormat;
 
-		Tw::Settings settings;
 		highlightCurrentLine = settings.value(QString::fromLatin1("highlightCurrentLine"), true).toBool();
 		autocompleteEnabled = settings.value(QString::fromLatin1("autocompleteEnabled"), true).toBool();
 	}
-		
+	setCursorWidth(settings.value(QStringLiteral("cursorWidth"), kDefault_CursorWidth).toInt());
+
 	loadIndentModes();
 	loadSmartQuotesModes();
 	
@@ -409,9 +411,11 @@ void CompletingEdit::mouseReleaseEvent(QMouseEvent *e)
 			QTextEdit::mouseReleaseEvent(e);
 			return;
 		case ignoring:
+			mouseMode = none;
 			e->accept();
 			return;
 		case synctexClick:
+			mouseMode = none;
 			{
 				QTextCursor curs = cursorForPosition(e->pos());
 				emit syncClick(curs.blockNumber() + 1, curs.positionInBlock());
@@ -419,14 +423,17 @@ void CompletingEdit::mouseReleaseEvent(QMouseEvent *e)
 			e->accept();
 			return;
 		case dragSelecting:
+			mouseMode = none;
 			e->accept();
 			return;
 		case normalSelection:
+			mouseMode = none;
 			setTextCursor(dragStartCursor);
 			setSelectionClipboard(dragStartCursor);
 			e->accept();
 			return;
 		case extendingSelection:
+			mouseMode = none;
 			QTextEdit::mouseReleaseEvent(e);
 			return;
 	}
@@ -1319,7 +1326,10 @@ void CompletingEdit::setTextCursor(const QTextCursor & cursor)
 void CompletingEdit::setDocument(QTextDocument * document)
 {
 	disconnect(this, SLOT(updateLineNumberAreaWidth(int)));
+	// Remember the cursor width setting
+	int oldCursorWidth = cursorWidth();
 	QTextEdit::setDocument(document);
+	setCursorWidth(oldCursorWidth);
 	connect(document, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
 }
 

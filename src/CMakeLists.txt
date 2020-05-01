@@ -127,7 +127,8 @@ FILE(GLOB TEXWORKS_TRANS_TS   "${TeXworks_SOURCE_DIR}/trans/*.ts")
 FILE(GLOB QT_TRANS_QM         "${TeXworks_SOURCE_DIR}/trans/qt/*.qm")
 
 IF ( WIN32 )
-  LIST(APPEND TEXWORKS_SRCS ${TeXworks_SOURCE_DIR}/res/TeXworks.rc)
+  configure_file(${TeXworks_SOURCE_DIR}/res/TeXworks.rc TeXworks.rc)
+  list(APPEND TEXWORKS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/TeXworks.rc)
 ENDIF ( WIN32 )
 
 # These source files along with the `.moc` files generated from some headers
@@ -189,6 +190,7 @@ ADD_EXECUTABLE(TeXworks ${GUI_TYPE}
   ${TEXWORKS_RCS}
   ${TeXworks_APP_ICONS}
 )
+add_dependencies(TeXworks GitRev)
 
 if (UNIX AND NOT APPLE)
   set_target_properties(TeXworks PROPERTIES
