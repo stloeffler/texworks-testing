@@ -31,3 +31,5 @@ echo_var() {
 	# echo "$1 = ${!1}" does not work in dash (Ubuntu's default sh)
 	eval "echo \"$1 = \$$1\""
 }
+
+BUILDDIR="${TRAVIS_BUILD_DIR}/build-${TRAVIS_OS_NAME}-${TARGET_OS}-qt${QT}"
