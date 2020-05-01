@@ -87,6 +87,56 @@ jobs:
 
 ################################################################################
 
+  build-linux-earliest_versions:
+    name: Build with Qt 5.0.2, Poppler 0.24.5, Hunspell 1.2.1
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update -y
+        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.0.2'
+        modules: 'qtscript'
+
+    - name: Build Hunspell
+      run: |
+        wget https://downloads.sourceforge.net/project/hunspell/Hunspell/1.2/hunspell-1.2.1.tar.gz
+        tar -xvf hunspell-1.2.1.tar.gz
+        cd hunspell-1.2.1
+        ./configure
+        make
+        sudo make install
+
+    - name: Build Poppler
+      run: |
+        wget https://poppler.freedesktop.org/poppler-0.24.5.tar.xz
+        tar -xvf poppler-0.24.5.tar.xz
+        cd poppler-0.24.5
+        ./configure --enable-xpdf-headers --disable-poppler-qt4 --disable-poppler-cpp --disable-gtk-test --disable-utils
+        make
+        sudo make install
+
+    - name: Configure
+      run: |
+        mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX='/usr' -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
+
+    - name: Build
+      run: make -j
+      working-directory: build
+
+    - name: Test
+      run: xvfb-run ctest -V
+      working-directory: build
+
+################################################################################
+
   build-win:
     name: Build on Windows
     runs-on: windows-latest
