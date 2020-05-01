@@ -13,4 +13,6 @@ print_headline "Building TeXworks for ${TARGET_OS}/qt${QT}"
 echo_and_run "cd \"${BUILDDIR}\""
 echo_and_run "make VERBOSE=1"
 
+echo_and_run "cat src/GitRev.h"
+
 cd "${TRAVIS_BUILD_DIR}"
