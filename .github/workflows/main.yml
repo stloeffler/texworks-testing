@@ -143,6 +143,9 @@ jobs:
     - run: ldd texworks
       working-directory: build
 
+    - run: ldd test_poppler-qt5
+      working-directory: build
+
     - name: Test
       run: LD_LIBRARY_PATH="/usr/local/lib:${Qt5_DIR}:${Qt5_DIR}/lib:${Qt5_DIR}/plugins:${Qt5_DIR}/plugins/platforms:${LD_LIBRARY_PATH}" xvfb-run ctest -V
       working-directory: build
