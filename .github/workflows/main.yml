@@ -89,7 +89,7 @@ jobs:
 ################################################################################
 
   build-linux-ancient_versions:
-    name: Build with Qt 5.3, Poppler 0.24.5, Hunspell 1.2.8
+    name: Build with Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
