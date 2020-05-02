@@ -101,7 +101,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update -y
-        sudo apt install -y zlib1g-dev liblua5.3-dev poppler-data xvfb
+        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
@@ -130,6 +130,13 @@ jobs:
         mkdir build && cd build
         cmake -DENABLE_XPDF_HEADERS=ON -DBUILD_GTK_TESTS=OFF -DBUILD_QT4_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_CPP_TESTS=OFF -DENABLE_UTILS=OFF -DENABLE_CPP=OFF ..
         make -j
+        sudo make install
+
+    - name: Install poppler-data
+      run: |
+        wget https://poppler.freedesktop.org/poppler-data-0.4.6.tar.gz
+        tar -xvf poppler-data-0.4.6.tar.gz
+        cd poppler-data-0.4.6
         sudo make install
 
     - name: Configure
