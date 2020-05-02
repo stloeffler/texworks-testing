@@ -119,7 +119,7 @@ jobs:
         tar -xvf hunspell-1.2.8.tar.gz
         cd hunspell-1.2.8
         ./configure
-        make
+        make -j
         sudo make install
 
     - name: Build Poppler
@@ -129,7 +129,7 @@ jobs:
         cd poppler-0.24.5
         mkdir build && cd build
         cmake -DENABLE_XPDF_HEADERS=ON -DBUILD_GTK_TESTS=OFF -DBUILD_QT4_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_CPP_TESTS=OFF -DENABLE_UTILS=OFF -DENABLE_CPP=OFF ..
-        make
+        make -j
         sudo make install
 
     - name: Configure
