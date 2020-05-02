@@ -133,6 +133,7 @@ foreach (cmp IN LISTS Poppler_FIND_COMPONENTS)
 
   # Find version
   if (EXISTS "${${label}_INCLUDE_DIR}/poppler-version.h")
+message("${${label}_INCLUDE_DIR}/poppler-version.h")
     file(STRINGS "${${label}_INCLUDE_DIR}/poppler-version.h" ${label}_CONFIG_H REGEX "^#define POPPLER_VERSION \"[0-9.]+\"$")
 
     if(${label}_CONFIG_H)
@@ -149,6 +150,11 @@ foreach (cmp IN LISTS Poppler_FIND_COMPONENTS)
       endif()
     endif()
   endif ()
+
+  message("label = ${label}")
+  message("${label}_LIBRARY = ${${label}_LIBRARY}")
+  message("${label}_INCLUDE_DIR = ${${label}_INCLUDE_DIR}")
+  message("${label}_VERSION_STRING = ${${label}_VERSION_STRING}")
 
   find_package_handle_standard_args(${label} REQUIRED_VARS ${label}_LIBRARY ${label}_INCLUDE_DIR VERSION_VAR ${label}_VERSION_STRING)
 
