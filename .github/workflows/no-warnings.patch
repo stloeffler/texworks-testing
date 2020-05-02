@@ -15,3 +15,20 @@ index 4e2b7a6..197885b 100644
  
  # Determine Version Numbers
  # -------------------------
+diff --git a/modules/QtPDF/CMakeLists.txt b/modules/QtPDF/CMakeLists.txt
+index 58cd894..6b8cb43 100644
+--- a/modules/QtPDF/CMakeLists.txt
++++ b/modules/QtPDF/CMakeLists.txt
+@@ -303,12 +303,6 @@ SET_TARGET_PROPERTIES(qtpdf PROPERTIES
+   INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src"
+ )
+ 
+-if (MSVC)
+-  target_compile_options(qtpdf PRIVATE /W4)
+-else ()
+-  target_compile_options(qtpdf PRIVATE -Wall -Wpedantic -Wextra -Wconversion -Wold-style-cast -Woverloaded-virtual -Wzero-as-null-pointer-constant)
+-endif ()
+-
+ if (NOT TARGET QtPDF::qtpdf)
+   add_library(QtPDF::qtpdf ALIAS qtpdf)
+ endif ()
