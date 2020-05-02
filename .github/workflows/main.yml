@@ -91,11 +91,30 @@ jobs:
   build-linux-ancient_versions:
     name: Build with Qt 5.3, Poppler 0.24.5, Hunspell 1.2.8
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        disable-warnings: [false]
+        include:
+          - qt: 5.3
+            poppler: 0.24.5
+            hunspell: 1.2.8
+            poppler-data: 0.4.6
+            cmake: 3.1.0
+            disable-warnings: true
+          - qt: 5.12.8
+            poppler: 0.71.0
+            hunspell: 1.2.8
+#            hunspell: 1.7.0
+            poppler-data: 0.4.9
+            cmake: 3.16.2
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
     - name: Patch out warnings
+      if: ${{ matrix.disable-warnings }}
       run: patch -p1 < .github/workflows/no-warnings.patch
 
     - name: Install Dependencies
@@ -105,9 +124,9 @@ jobs:
 
     - name: Install CMake
       run: |
-        wget https://github.com/Kitware/CMake/releases/download/v3.1.0/cmake-3.1.0-Linux-x86_64.tar.gz
-        tar -xvf cmake-3.1.0-Linux-x86_64.tar.gz
-        echo "::add-path::$(pwd)/cmake-3.1.0-Linux-x86_64/bin"
+        wget https://github.com/Kitware/CMake/releases/download/v${{ matrix.cmake }}/cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
+        tar -xvf cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
+        echo "::add-path::$(pwd)/cmake-${{ matrix.cmake }}-Linux-x86_64/bin"
 
     - run: |
         echo "$PATH"
@@ -116,7 +135,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: '5.3'
+        version: '${{ matrix.qt }}'
         modules: 'qtscript'
 
     - run: echo "${Qt5_DIR}"
@@ -125,18 +144,18 @@ jobs:
 
     - name: Build Hunspell
       run: |
-        wget https://downloads.sourceforge.net/project/hunspell/Hunspell/1.2.8/hunspell-1.2.8.tar.gz
-        tar -xvf hunspell-1.2.8.tar.gz
-        cd hunspell-1.2.8
+        wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
+        tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
+        cd hunspell-${{ matrix.hunspell }}
         ./configure
         make -j
         sudo make install
 
     - name: Build Poppler
       run: |
-        wget https://poppler.freedesktop.org/poppler-0.24.5.tar.xz
-        tar -xvf poppler-0.24.5.tar.xz
-        cd poppler-0.24.5
+        wget https://poppler.freedesktop.org/poppler-${{ matrix.poppler }}.tar.xz
+        tar -xvf poppler-${{ matrix.poppler }}.tar.xz
+        cd poppler-${{ matrix.poppler }}
         mkdir build && cd build
         cmake -DENABLE_XPDF_HEADERS=ON -DBUILD_GTK_TESTS=OFF -DBUILD_QT4_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_CPP_TESTS=OFF -DENABLE_UTILS=OFF -DENABLE_CPP=OFF ..
         make -j
@@ -144,9 +163,9 @@ jobs:
 
     - name: Install poppler-data
       run: |
-        wget https://poppler.freedesktop.org/poppler-data-0.4.6.tar.gz
-        tar -xvf poppler-data-0.4.6.tar.gz
-        cd poppler-data-0.4.6
+        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
+        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
+        cd poppler-data-${{ matrix.poppler-data }}
         sudo make install
 
     - name: Configure
