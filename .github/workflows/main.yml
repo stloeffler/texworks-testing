@@ -88,8 +88,8 @@ jobs:
 
 ################################################################################
 
-  build-linux-earliest_versions:
-    name: Build with Qt 5.3, Poppler 0.24.5, Hunspell 1.2.1
+  build-linux-ancient_versions:
+    name: Build with Qt 5.3, Poppler 0.24.5, Hunspell 1.2.8
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -108,9 +108,9 @@ jobs:
 
     - name: Build Hunspell
       run: |
-        wget https://downloads.sourceforge.net/project/hunspell/Hunspell/1.2/hunspell-1.2.1.tar.gz
-        tar -xvf hunspell-1.2.1.tar.gz
-        cd hunspell-1.2.1
+        wget https://downloads.sourceforge.net/project/hunspell/Hunspell/1.2.8/hunspell-1.2.8.tar.gz
+        tar -xvf hunspell-1.2.8.tar.gz
+        cd hunspell-1.2.8
         CXXFLAGS="-fpermissive" ./configure
         make
         sudo make install
