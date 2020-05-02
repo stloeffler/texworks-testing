@@ -120,7 +120,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update -y
-        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb
+        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb libxkbcommon-x11-0
 
     - name: Install CMake
       run: |
