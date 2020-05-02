@@ -141,7 +141,7 @@ jobs:
       working-directory: build
 
     - name: Test
-      run: LD_LIBRARY_PATH="/usr/local/lib:${Qt5_DIR}/lib:${LD_LIBRARY_PATH}" xvfb-run ctest -V
+      run: LD_LIBRARY_PATH="/usr/local/lib:${Qt5_DIR}/plugins/platforms:${LD_LIBRARY_PATH}" xvfb-run ctest -V
       working-directory: build
 
 ################################################################################
