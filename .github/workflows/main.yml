@@ -149,19 +149,12 @@ jobs:
     - run: find "${Qt5_DIR}"
 
     - name: Build Hunspell
-      if: ${{ matrix.hunspell-server }} == 'sourceforge'
       run: |
-        wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
-        tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
-        cd hunspell-${{ matrix.hunspell }}
-        ./configure
-        make -j
-        sudo make install
-
-    - name: Build Hunspell
-      if: ${{ matrix.hunspell-server }} == 'github'
-      run: |
-        wget -O hunspell-${{ matrix.hunspell }}.tar.gz https://github.com/hunspell/hunspell/archive/v${{ matrix.hunspell }}.tar.gz
+        if [[ "${{ matrix.hunspell-server }}" == "sourceforge" ]]; then
+          wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
+        else
+	      wget -O hunspell-${{ matrix.hunspell }}.tar.gz https://github.com/hunspell/hunspell/archive/v${{ matrix.hunspell }}.tar.gz
+        fi
         tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
         cd hunspell-${{ matrix.hunspell }}
         ./configure
