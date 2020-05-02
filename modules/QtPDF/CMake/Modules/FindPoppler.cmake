@@ -157,10 +157,14 @@ message("${${label}_INCLUDE_DIR}/poppler-version.h")
   message("${label}_VERSION_STRING = ${${label}_VERSION_STRING}")
 
   if (${label}_VERSION_STRING)
+    message("OK1")
     find_package_handle_standard_args(${label} REQUIRED_VARS ${label}_LIBRARY ${label}_INCLUDE_DIR VERSION_VAR ${label}_VERSION_STRING)
   else (${label}_VERSION_STRING)
+    message("OK2")
     find_package_handle_standard_args(${label} REQUIRED_VARS ${label}_LIBRARY ${label}_INCLUDE_DIR)
   endif (${label}_VERSION_STRING)
+
+  message("${label}_FOUND = ${${label}_FOUND}")
 
   if (${label}_FOUND)
     set(${label}_INCLUDE_DIRS "${${label}_INCLUDE_DIR}" "${Poppler_INCLUDE_DIR}")
@@ -187,6 +191,9 @@ endforeach ()
 # ---------
 # Finish up
 # ---------
+
+message("Poppler_LIBRARY = ${Poppler_LIBRARY}")
+message("Poppler_VERSION_STRING = ${Poppler_VERSION_STRING}")
 
 find_package_handle_standard_args(Poppler REQUIRED_VARS Poppler_LIBRARY VERSION_VAR Poppler_VERSION_STRING HANDLE_COMPONENTS)
 
