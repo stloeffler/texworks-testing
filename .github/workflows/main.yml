@@ -95,17 +95,18 @@ jobs:
       fail-fast: false
       matrix:
         disable-warnings: [false]
+        hunspell-server: [github]
         include:
           - qt: 5.3
             poppler: 0.24.5
             hunspell: 1.2.8
+            hunspell-server: sourceforge
             poppler-data: 0.4.6
             cmake: 3.1.0
             disable-warnings: true
           - qt: 5.12.8
             poppler: 0.71.0
-            hunspell: 1.2.8
-#            hunspell: 1.7.0
+            hunspell: 1.7.0
             poppler-data: 0.4.9
             cmake: 3.16.2
 
@@ -143,8 +144,19 @@ jobs:
     - run: find "${Qt5_DIR}"
 
     - name: Build Hunspell
+      if: ${{ matrix.hunspell-server }} == 'sourceforge'
       run: |
         wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
+        tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
+        cd hunspell-${{ matrix.hunspell }}
+        ./configure
+        make -j
+        sudo make install
+
+    - name: Build Hunspell
+      if: ${{ matrix.hunspell-server }} == 'github'
+      run: |
+        wget -O hunspell-${{ matrix.hunspell }}.tar.gz https://github.com/hunspell/hunspell/archive/v${{ matrix.hunspell }}.tar.gz
         tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
         cd hunspell-${{ matrix.hunspell }}
         ./configure
