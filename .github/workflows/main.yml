@@ -94,6 +94,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        qt: [5.3, 5.12.8, 5.15.0]
         disable-warnings: [false]
         hunspell-server: [github]
         include:
