@@ -101,7 +101,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update -y
-        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb
+        sudo apt install -y zlib1g-dev liblua5.3-dev poppler-data xvfb
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
