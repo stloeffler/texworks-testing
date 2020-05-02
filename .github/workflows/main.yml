@@ -158,6 +158,7 @@ jobs:
         fi
         tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
         cd hunspell-${{ matrix.hunspell }}
+        autoreconf -vfi
         ./configure
         make -j
         sudo make install
