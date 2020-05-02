@@ -95,6 +95,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Patch out warnings
+      run: patch -p1 < .github/workflows/no-warnings.patch
+
     - name: Install Dependencies
       run: |
         sudo apt update -y
