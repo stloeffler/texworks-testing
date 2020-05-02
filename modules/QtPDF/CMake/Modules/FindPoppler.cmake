@@ -159,7 +159,7 @@ message("${${label}_INCLUDE_DIR}/poppler-version.h")
   if (${label}_VERSION_STRING)
     find_package_handle_standard_args(${label} REQUIRED_VARS ${label}_LIBRARY ${label}_INCLUDE_DIR VERSION_VAR ${label}_VERSION_STRING)
   else (${label}_VERSION_STRING)
-    find_package_handle_standard_args(${label} REQUIRED_VARS ${label}_LIBRARY ${label}_INCLUDE_DIR VERSION_VAR)
+    find_package_handle_standard_args(${label} REQUIRED_VARS ${label}_LIBRARY ${label}_INCLUDE_DIR)
   endif (${label}_VERSION_STRING)
 
   if (${label}_FOUND)
