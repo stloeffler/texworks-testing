@@ -109,6 +109,10 @@ jobs:
         version: '5.3'
         modules: 'qtscript'
 
+    - run: echo "${Qt5_DIR}"
+
+    - run: find "${Qt5_DIR}"
+
     - name: Build Hunspell
       run: |
         wget https://downloads.sourceforge.net/project/hunspell/Hunspell/1.2.8/hunspell-1.2.8.tar.gz
