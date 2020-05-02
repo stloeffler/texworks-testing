@@ -10,33 +10,33 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-linux:
-    name: Build on Linux
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    if: false
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Install Dependencies
-      run: |
-        sudo apt update -y
-        sudo apt install -y qtbase5-dev qtscript5-dev qttools5-dev qttools5-dev-tools zlib1g-dev libhunspell-dev libpoppler-qt5-dev libpoppler-private-dev liblua5.3-dev xvfb
-
-    - name: Configure
-      run: |
-        pwd
-        mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX='/usr' -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
-
-    - name: Build
-      run: make -j
-      working-directory: build
-
-    - name: Test
-      run: xvfb-run ctest -V
-      working-directory: build
+#  build-linux:
+#    name: Build on Linux
+#    # The type of runner that the job will run on
+#    runs-on: ubuntu-latest
+#    if: false
+#
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v2
+#
+#    - name: Install Dependencies
+#      run: |
+#        sudo apt update -y
+#        sudo apt install -y qtbase5-dev qtscript5-dev qttools5-dev qttools5-dev-tools zlib1g-dev libhunspell-dev libpoppler-qt5-dev libpoppler-private-dev liblua5.3-dev xvfb
+#
+#    - name: Configure
+#      run: |
+#        pwd
+#        mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX='/usr' -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
+#
+#    - name: Build
+#      run: make -j
+#      working-directory: build
+#
+#    - name: Test
+#      run: xvfb-run ctest -V
+#      working-directory: build
 
 ################################################################################
 
