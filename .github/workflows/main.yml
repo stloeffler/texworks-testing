@@ -153,7 +153,7 @@ jobs:
         if [[ "${{ matrix.hunspell-server }}" == "sourceforge" ]]; then
           wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
         else
-	      wget -O hunspell-${{ matrix.hunspell }}.tar.gz https://github.com/hunspell/hunspell/archive/v${{ matrix.hunspell }}.tar.gz
+          wget -O hunspell-${{ matrix.hunspell }}.tar.gz https://github.com/hunspell/hunspell/archive/v${{ matrix.hunspell }}.tar.gz
         fi
         tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
         cd hunspell-${{ matrix.hunspell }}
