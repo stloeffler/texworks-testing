@@ -88,8 +88,8 @@ jobs:
 
 ################################################################################
 
-  build-linux-ancient_versions:
-    name: Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }}
+  build-linux:
+    name: Linux (Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -181,7 +181,7 @@ jobs:
 ################################################################################
 
   build-win:
-    name: Build on Windows
+    name: Windows
     runs-on: windows-latest
 #    if: false
 #    defaults:
@@ -265,7 +265,7 @@ jobs:
         path: install
 
   build-macosx:
-    name: Build on Mac OS X
+    name: Mac OS X
     runs-on: macos-latest
 #    if: false
 
