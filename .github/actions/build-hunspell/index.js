@@ -4,10 +4,10 @@ const tc = require('@actions/tool-cache');
 
 function extract(archive) {
 	if (process.platform === 'win32') {
-		return await tc.extract7z(archivePath);
+		return tc.extract7z(archivePath);
 	}
 	else {
-		return await tc.extractTar(archivePath);
+		return tc.extractTar(archivePath);
 	}
 }
 
