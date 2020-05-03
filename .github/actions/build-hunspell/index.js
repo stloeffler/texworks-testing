@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const exec = require('@actions/exec');
 const tc = require('@actions/tool-cache');
 
-function extract(archive) {
+function extract(archivePath) {
 	if (process.platform === 'win32') {
 		return tc.extract7z(archivePath);
 	}
