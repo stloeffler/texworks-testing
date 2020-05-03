@@ -267,7 +267,7 @@ jobs:
   build-macosx:
     name: Build on Mac OS X
     runs-on: macos-latest
-    if: false
+#    if: false
 
     steps:
     - name: Checkout
