@@ -2,12 +2,12 @@ const core = require('@actions/core');
 const exec = require('@actions/exec');
 const tc = require('@actions/tool-cache');
 
-function extract(archivePath) {
+async function extract(archivePath) {
 	if (process.platform === 'win32') {
-		return tc.extract7z(archivePath);
+		return await tc.extract7z(archivePath);
 	}
 	else {
-		return tc.extractTar(archivePath);
+		return await tc.extractTar(archivePath);
 	}
 }
 
@@ -22,7 +22,7 @@ async function run() {
 
 		console.log(`Downloaded hunspell to ${archivePath}`);
 
-		const folder = extract(archivePath);
+		const folder = await extract(archivePath);
 
 		console.log(`Extracted hunspell to ${folder}`);
 	} catch(error) {
