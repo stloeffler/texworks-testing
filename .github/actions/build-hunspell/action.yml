@@ -1,0 +1,14 @@
+name: 'Build Hunspell'
+author: 'Stefan Löffler'
+description: 'Build the Hunspell spell checker library'
+inputs:
+  version:
+    description: 'Which version to build'
+    required: true
+  install:
+    required: false
+    description: 'Run sudo make install after build?'
+    default: true
+runs:
+  using: 'node12'
+  main: 'index.js'
