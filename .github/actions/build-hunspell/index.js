@@ -2,6 +2,20 @@ const core = require('@actions/core');
 const exec = require('@actions/exec');
 const tc = require('@actions/tool-cache');
 
+function getUrl(version) {
+	const parts = version.split('.');
+	const major = parts.length > 0 ? parseInt(parts[0]) : 0;
+	const minor = parts.length > 1 ? parseInt(parts[1]) : 0;
+	const patch = parts.length > 2 ? parseInt(parts[2]) : 0;
+
+	// Hunspell <= 1.3.3 are on SourceForge, later versions are on GitHub
+	if (major === 1 && (minor < 3 || (minor == 3 && patch <= 3))) {
+		return `https://downloads.sourceforge.net/project/hunspell/Hunspell/${version}/hunspell-${version}.tar.gz`;
+	} else {
+		return `https://github.com/hunspell/hunspell/archive/v${version}.tar.gz`
+	}
+}
+
 async function extract(archivePath) {
 	if (process.platform === 'win32') {
 		return await tc.extract7z(archivePath);
@@ -14,7 +28,7 @@ async function extract(archivePath) {
 async function run() {
 	try {
 		const version = core.getInput('version');
-		let url = `https://github.com/hunspell/hunspell/archive/v${version}.tar.gz`;
+		const url = getUrl(version);
 
 		console.log(`Downloading hunspell from ${url}`);
 
