@@ -41,11 +41,11 @@ async function run() {
 		console.log(`Extracted hunspell to ${folder}`);
 
 		await exec.exec('autoreconf', ['-vfi'], {cwd: folder});
-		await exec.exec('./configure', {cwd: folder});
-		await exec.exec('make -j', {cwd: folder});
+		await exec.exec('./configure', [], {cwd: folder});
+		await exec.exec('make', ['-j'], {cwd: folder});
 
         if (core.getInput('install') === 'true') {
-	        await exec.exec('sudo make install', {cwd: folder});
+	        await exec.exec('sudo', ['make', 'install'], {cwd: folder});
         }
 	} catch(error) {
 		core.setFailed(error.message);
