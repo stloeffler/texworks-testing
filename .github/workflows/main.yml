@@ -127,6 +127,8 @@ jobs:
 
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell
+      with:
+        version: '${{ hunspell }}'
 
     - name: Install Dependencies
       run: |
