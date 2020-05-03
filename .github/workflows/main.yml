@@ -128,7 +128,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update -y
-        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb libxkbcommon-x11-0
+        sudo apt install -y zlib1g-dev liblua5.3-dev xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
 
     - name: Install CMake
       run: |
