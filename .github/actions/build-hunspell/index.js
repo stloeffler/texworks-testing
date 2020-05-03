@@ -34,19 +34,27 @@ async function run() {
 
 		const archivePath = await tc.downloadTool(url);
 
-		console.log(`Downloaded hunspell to ${archivePath}`);
-
+		core.startGroup('Extracting sources');
 		const folder = await extract(archivePath) + `/hunspell-${version}`;
+		core.endGroup();
 
-		console.log(`Extracted hunspell to ${folder}`);
-
+		core.startGroup('Running autoreconf');
 		await exec.exec('autoreconf', ['-vfi'], {cwd: folder});
-		await exec.exec('./configure', [], {cwd: folder});
-		await exec.exec('make', ['-j'], {cwd: folder});
+		core.endGroup();
 
-        if (core.getInput('install') === 'true') {
-	        await exec.exec('sudo', ['make', 'install'], {cwd: folder});
-        }
+		core.startGroup('Configure');
+		await exec.exec('./configure', [], {cwd: folder});
+		core.endGroup();
+
+		core.startGroup('Build');
+		await exec.exec('make', ['-j'], {cwd: folder});
+		core.endGroup();
+
+		if (core.getInput('install') === 'true') {
+			core.startGroup('Install');
+			await exec.exec('sudo', ['make', 'install'], {cwd: folder});
+			core.endGroup();
+		}
 	} catch(error) {
 		core.setFailed(error.message);
 	}
