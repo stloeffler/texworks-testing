@@ -97,12 +97,10 @@ jobs:
         # The "ancient versions" (with Qt 5.3) are a special case to be included separately
         qt: [5.12.8, 5.15.0]
         disable-warnings: [false]
-        hunspell-server: [github]
         include:
           - qt: 5.3
             poppler: 0.24.5
             hunspell: 1.2.8
-            hunspell-server: sourceforge
             poppler-data: 0.4.6
             cmake: 3.1.0
             disable-warnings: true
@@ -124,11 +122,6 @@ jobs:
     - name: Patch out warnings
       if: ${{ matrix.disable-warnings }}
       run: patch -p1 < .github/workflows/no-warnings.patch
-
-    - name: Build Hunspell
-      uses: ./.github/actions/build-hunspell
-      with:
-        version: '${{ matrix.hunspell }}'
 
     - name: Install Dependencies
       run: |
@@ -152,18 +145,9 @@ jobs:
         modules: 'qtscript'
 
     - name: Build Hunspell
-      run: |
-        if [[ "${{ matrix.hunspell-server }}" == "sourceforge" ]]; then
-          wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
-        else
-          wget -O hunspell-${{ matrix.hunspell }}.tar.gz https://github.com/hunspell/hunspell/archive/v${{ matrix.hunspell }}.tar.gz
-        fi
-        tar -xvf hunspell-${{ matrix.hunspell }}.tar.gz
-        cd hunspell-${{ matrix.hunspell }}
-        autoreconf -vfi
-        ./configure
-        make -j
-        sudo make install
+      uses: ./.github/actions/build-hunspell
+      with:
+        version: '${{ matrix.hunspell }}'
 
     - name: Build Poppler
       run: |
