@@ -146,10 +146,6 @@ jobs:
         version: '${{ matrix.qt }}'
         modules: 'qtscript'
 
-    - run: echo "${Qt5_DIR}"
-
-    - run: find "${Qt5_DIR}"
-
     - name: Build Hunspell
       run: |
         if [[ "${{ matrix.hunspell-server }}" == "sourceforge" ]]; then
@@ -189,10 +185,8 @@ jobs:
       run: make -j
       working-directory: build
 
-    - run: ldd "${Qt5_DIR}/plugins/platforms/libqxcb.so"
-
     - name: Test
-      run: QT_DEBUG_PLUGINS=1 LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}" QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" xvfb-run ctest -V
+      run: LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}" QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" xvfb-run ctest -V
       working-directory: build
 
 ################################################################################
