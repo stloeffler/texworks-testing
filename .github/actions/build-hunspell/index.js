@@ -36,9 +36,17 @@ async function run() {
 
 		console.log(`Downloaded hunspell to ${archivePath}`);
 
-		const folder = await extract(archivePath);
+		const folder = await extract(archivePath) + `/hunspell-${version}`;
 
 		console.log(`Extracted hunspell to ${folder}`);
+
+		exec.exec('autoreconf', ['-vfi'], {cwd: folder});
+        exec.exec('./configure', {cwd: folder});
+        exec.exec('make -j', {cwd: folder});
+
+        if (core.getInput('install') === 'true') {
+	        exec.exec('sudo make install', {cwd: folder});
+        }
 	} catch(error) {
 		core.setFailed(error.message);
 	}
