@@ -2,6 +2,15 @@ const core = require('@actions/core');
 const exec = require('@actions/exec');
 const tc = require('@actions/tool-cache');
 
+function extract(archive) {
+	if (process.platform === 'win32') {
+		return await tc.extract7z(archivePath);
+	}
+	else {
+		return await tc.extractTar(archivePath);
+	}
+}
+
 async function run() {
 	try {
 		const version = core.getInput('version');
@@ -13,12 +22,8 @@ async function run() {
 
 		console.log(`Downloaded hunspell to ${archivePath}`);
 
-		if (process.platform === 'win32') {
-			const folder = await tc.extract7z(archivePath);
-		}
-		else {
-			const folder = await tc.extractTar(archivePath);
-		}
+		const folder = extract(archivePath);
+
 		console.log(`Extracted hunspell to ${folder}`);
 	} catch(error) {
 		core.setFailed(error.message);
