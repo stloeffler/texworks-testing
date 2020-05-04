@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const exec = require('@actions/exec');
+const io = require('@actions/io');
 const tc = require('@actions/tool-cache');
 
 function getUrl(version) {
@@ -18,7 +19,11 @@ function getUrl(version) {
 
 async function extract(archivePath) {
 	if (process.platform === 'win32') {
-		return await tc.extract7z(archivePath);
+		const tempDirectory = process.env['RUNNER_TEMP'] + 'hunspell';
+		io.mkdirP(tempDirectory);
+		await exec.exec('msys2do', ['tar', '-xvf', archivePath], {'cwd': tempDirectory});
+		return tempDirectory;
+//		return await tc.extract7z(archivePath);
 	}
 	else {
 		return await tc.extractTar(archivePath);
