@@ -49,9 +49,10 @@ async function run() {
 				case 'linux':
 					break;
 				case 'darwin':
-					await exec.exec('brew', ['install', 'autoconf', 'automake', 'libtool']);
+					await runCmd('brew', ['install', 'autoconf', 'automake', 'libtool']);
 					break;
 				case 'win32':
+					await runCmd('pacman', ['--noconfirm', '-S', 'tar'])
 					break;
 				default:
 					break;
