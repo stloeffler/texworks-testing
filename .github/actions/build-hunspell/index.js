@@ -43,6 +43,22 @@ async function run() {
 		const version = core.getInput('version');
 		const url = getUrl(version);
 
+		if (core.getInput('install-deps') === 'true') {
+			core.startGroup('Installing dependencies');
+			switch (process.platform) {
+				case 'linux':
+					break;
+				case 'darwin':
+					await exec.exec('brew', ['install', 'autoconf', 'automake', 'libtool']);
+					break;
+				case 'win32':
+					break;
+				default:
+					break;
+			}
+			core.endGroup('Installing dependencies');
+		}
+
 		console.log(`Downloading hunspell from ${url}`);
 
 		const archivePath = await tc.downloadTool(url);

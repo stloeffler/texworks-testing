@@ -9,6 +9,10 @@ inputs:
     required: false
     description: 'Run sudo make install after build?'
     default: true
+  install-deps:
+    required: false
+    description: 'Whether or not to automatically install dependencies'
+    default: true
 runs:
   using: 'node12'
   main: 'index.js'
