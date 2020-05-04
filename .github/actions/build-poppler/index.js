@@ -71,7 +71,7 @@ async function run() {
 		let env = process.env
 		if (process.os === 'darwin') {
 			// nss doesn't seem to be picked up properly otherwise
-			env['LDFLAGS'] = '-L/usr/local/lib'
+			env.LDFLAGS = '-L/usr/local/lib'
 		}
 		await runCmd('cmake', ['-DENABLE_XPDF_HEADERS=ON', '-DENABLE_UNSTABLE_API_ABI_HEADERS=ON', '-DENABLE_LIBOPENJPEG=unmaintained', '-DBUILD_GTK_TESTS=OFF', '-DBUILD_QT4_TESTS=OFF', '-DBUILD_QT5_TESTS=OFF', '-DBUILD_CPP_TESTS=OFF', '-DENABLE_UTILS=OFF', '-DENABLE_CPP=OFF', '-DENABLE_GLIB=OFF', escapePath(folder)], {cwd: buildDir, env: env});
 		core.endGroup();
