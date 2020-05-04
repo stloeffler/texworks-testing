@@ -45,14 +45,6 @@ async function run() {
 	try {
 		const version = core.getInput('version');
 		const url = getUrl(version);
-		const makeCmd = function() {
-			switch (process.platform) {
-				case 'win32':
-					return 'make';
-				default:
-					return 'make';
-			}
-		}();
 
 		if (core.getInput('install-deps') === 'true') {
 			core.startGroup('Installing dependencies');
@@ -90,7 +82,7 @@ async function run() {
 		core.endGroup();
 
 		core.startGroup('Build');
-		await runCmd(makeCmd, ['-j'], {cwd: folder});
+		await runCmd('make', ['-j'], {cwd: folder});
 		core.endGroup();
 
 		if (core.getInput('install') === 'true') {
