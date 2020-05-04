@@ -7,13 +7,13 @@ async function extract(archivePath) {
 	if (process.platform === 'win32') {
 		const tempDirectory = process.env['RUNNER_TEMP'] + 'poppler';
 		await io.mkdirP(tempDirectory);
-		await io.cp(archivePath, tempDirectory + '/archive.tar.gz')
-		await exec.exec('7z', ['x', 'archive.tar.gz'], {'cwd': tempDirectory})
+		await io.cp(archivePath, tempDirectory + '/archive.tar.xz')
+		await exec.exec('7z', ['x', 'archive.tar.xz'], {'cwd': tempDirectory})
 		await exec.exec('7z', ['x', 'archive.tar'], {'cwd': tempDirectory})
 		return tempDirectory;
 	}
 	else {
-		return await tc.extractTar(archivePath);
+		return await tc.extractTar(archivePath, null, 'xJ');
 	}
 }
 
