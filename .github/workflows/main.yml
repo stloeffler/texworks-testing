@@ -187,6 +187,15 @@ jobs:
 #    defaults:
 #      run:
 #        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - qt: 5.12.8
+            poppler: 0.71.0
+            hunspell: 1.7.0
+            poppler-data: 0.4.9
+            cmake: 3.16.2
 
     steps:
     - name: Checkout
@@ -214,6 +223,7 @@ jobs:
 #    - name: Test
 #      run: ctest -V
 #      working-directory: build
+
     - name: Setup MSYS
       uses: numworks/setup-msys2@v1
       with:
@@ -224,8 +234,15 @@ jobs:
 
     - name: Install dependencies
       # git is needed for getting git revision information
-      run: msys2do pacman --noconfirm -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-qt5 mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
+      run: msys2do pacman --noconfirm -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-poppler mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: ${{ matrix.qt }}
+        modules: 'qtscript'
+        arch: win64_mingw73
 
     - run: msys2do find /mingw64/bin
 #    - run: msys2do find / -iname Qt5Core.dll
@@ -268,10 +285,25 @@ jobs:
     name: Mac OS X
     runs-on: macos-latest
 #    if: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - qt: 5.12.8
+            poppler: 0.71.0
+            hunspell: 1.7.0
+            poppler-data: 0.4.9
+            cmake: 3.16.2
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: ${{ matrix.qt }}
+        modules: 'qtscript'
 
     - name: Install Dependencies
       run: |
