@@ -25,6 +25,14 @@ async function extract(archivePath) {
 	}
 }
 
+async function runCmd(cmd, args, opts) {
+	if (process.platform === 'win32') {
+		return await exec.exec('msys2do', [cmd] + args, opts);
+	} else {
+		return await exec.exec(cmd, arg, opts);
+	}
+}
+
 async function run() {
 	try {
 		const version = core.getInput('version');
@@ -39,20 +47,24 @@ async function run() {
 		core.endGroup();
 
 		core.startGroup('Running autoreconf');
-		await exec.exec('autoreconf', ['-vfi'], {cwd: folder});
+		await runCmd('autoreconf', ['-vfi'], {cwd: folder});
 		core.endGroup();
 
 		core.startGroup('Configure');
-		await exec.exec('./configure', [], {cwd: folder});
+		await runCmd('./configure', [], {cwd: folder});
 		core.endGroup();
 
 		core.startGroup('Build');
-		await exec.exec('make', ['-j'], {cwd: folder});
+		await runCmd('make', ['-j'], {cwd: folder});
 		core.endGroup();
 
 		if (core.getInput('install') === 'true') {
 			core.startGroup('Install');
-			await exec.exec('sudo', ['make', 'install'], {cwd: folder});
+			if (process.platform === 'linux') {
+				await runCmd('sudo', ['make', 'install'], {cwd: folder});
+			} else {
+				await runCmd('make', ['install'], {cwd: folder});
+			}
 			core.endGroup();
 		}
 	} catch(error) {
