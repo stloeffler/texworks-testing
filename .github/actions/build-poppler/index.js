@@ -46,6 +46,7 @@ async function run() {
 				case 'darwin':
 					await runCmd('brew', ['install', 'gobject-introspection', 'pkg-config', 'cairo', 'fontconfig', 'freetype', 'gettext', 'glib', 'jpeg', 'libpng', 'libtiff', 'little-cms2', 'nss']);
 					await runCmd('brew', ['list', 'nss']);
+					await runCmd('find', ['/usr/local/lib']);
 					break;
 				case 'win32':
 					await runCmd('pacman', ['--noconfirm', '-S', 'make', 'mingw-w64-x86_64-gcc'])
