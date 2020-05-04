@@ -55,7 +55,7 @@ async function run() {
 					await runCmd('brew', ['install', 'autoconf', 'automake', 'libtool']);
 					break;
 				case 'win32':
-					await runCmd('pacman', ['--noconfirm', '-S', 'autoconf', 'automake1.16', 'libtool', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc'])
+					await runCmd('pacman', ['--noconfirm', '-S', 'autoconf', 'automake1.16', 'automake-wrapper', 'libtool', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc'])
 					break;
 				default:
 					break;
