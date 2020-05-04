@@ -70,7 +70,7 @@ async function run() {
 		core.endGroup();
 
 		core.startGroup('Build');
-		await runCmd('make', ['-j'], {cwd: buildDir});
+		await runCmd('make', ['-j', '-v'], {cwd: buildDir});
 		core.endGroup();
 
 		if (core.getInput('install') === 'true') {
