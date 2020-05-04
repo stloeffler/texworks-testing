@@ -48,7 +48,7 @@ async function run() {
 		const makeCmd = function() {
 			switch (process.platform) {
 				case 'win32':
-					return 'mingw-w64-x86_64-make';
+					return 'mingw64-make';
 				default:
 					return 'make';
 			}
