@@ -1,0 +1,18 @@
+name: 'Build Poppler'
+author: 'Stefan Löffler'
+description: 'Build the Poppler PDF rendering library'
+inputs:
+  version:
+    description: 'Which version to build'
+    required: true
+  install:
+    required: false
+    description: 'Run sudo make install after build?'
+    default: true
+  install-deps:
+    required: false
+    description: 'Whether or not to automatically install dependencies'
+    default: true
+runs:
+  using: 'node12'
+  main: 'index.js'

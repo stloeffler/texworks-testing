@@ -150,14 +150,19 @@ jobs:
         version: '${{ matrix.hunspell }}'
 
     - name: Build Poppler
-      run: |
-        wget https://poppler.freedesktop.org/poppler-${{ matrix.poppler }}.tar.xz
-        tar -xvf poppler-${{ matrix.poppler }}.tar.xz
-        cd poppler-${{ matrix.poppler }}
-        mkdir build && cd build
-        cmake -DENABLE_XPDF_HEADERS=ON -DENABLE_UNSTABLE_API_ABI_HEADERS=ON -DENABLE_LIBOPENJPEG=unmaintained -DBUILD_GTK_TESTS=OFF -DBUILD_QT4_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_CPP_TESTS=OFF -DENABLE_UTILS=OFF -DENABLE_CPP=OFF -DENABLE_GLIB=OFF ..
-        make -j
-        sudo make install
+      uses: ./.github/actions/build-poppler
+      with:
+        version: '${{ matrix.poppler }}'
+
+#    - name: Build Poppler
+#      run: |
+#        wget https://poppler.freedesktop.org/poppler-${{ matrix.poppler }}.tar.xz
+#        tar -xvf poppler-${{ matrix.poppler }}.tar.xz
+#        cd poppler-${{ matrix.poppler }}
+#        mkdir build && cd build
+#        cmake -DENABLE_XPDF_HEADERS=ON -DENABLE_UNSTABLE_API_ABI_HEADERS=ON -DENABLE_LIBOPENJPEG=unmaintained -DBUILD_GTK_TESTS=OFF -DBUILD_QT4_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_CPP_TESTS=OFF -DENABLE_UTILS=OFF -DENABLE_CPP=OFF -DENABLE_GLIB=OFF ..
+#        make -j
+#        sudo make install
 
     - name: Install poppler-data
       run: |
@@ -250,6 +255,11 @@ jobs:
         modules: 'qtscript'
         arch: win64_mingw73
 
+    - name: Build Poppler
+      uses: ./.github/actions/build-poppler
+      with:
+        version: '${{ matrix.poppler }}'
+
     - run: msys2do find /mingw64/bin
 #    - run: msys2do find / -iname Qt5Core.dll
 #    - run: msys2do find / -iname libgcc_s_seh-1.dll
@@ -317,10 +327,14 @@ jobs:
         version: ${{ matrix.qt }}
         modules: 'qtscript'
 
+    - name: Build Poppler
+      uses: ./.github/actions/build-poppler
+      with:
+        version: '${{ matrix.poppler }}'
+
     - name: Install Dependencies
       run: |
         brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
-        brew install poppler
         brew install lua
 
     - name: Configure
