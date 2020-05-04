@@ -144,11 +144,6 @@ jobs:
         version: '${{ matrix.qt }}'
         modules: 'qtscript'
 
-    - name: Build Hunspell
-      uses: ./.github/actions/build-hunspell
-      with:
-        version: '${{ matrix.hunspell }}'
-
     - name: Build Poppler
       uses: ./.github/actions/build-poppler
       with:
@@ -170,6 +165,11 @@ jobs:
         tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
         cd poppler-data-${{ matrix.poppler-data }}
         sudo make install
+
+    - name: Build Hunspell
+      uses: ./.github/actions/build-hunspell
+      with:
+        version: '${{ matrix.hunspell }}'
 
     - name: Configure
       run: |
@@ -238,11 +238,6 @@ jobs:
     - run: msys2do pacman -Ss poppler
     - run: msys2do pacman -Ss libtool
 
-    - name: Build Hunspell
-      uses: ./.github/actions/build-hunspell
-      with:
-        version: '${{ matrix.hunspell }}'
-
     - name: Install dependencies
       # git is needed for getting git revision information
       run: msys2do pacman --noconfirm -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-poppler mingw-w64-x86_64-lua
@@ -259,6 +254,11 @@ jobs:
       uses: ./.github/actions/build-poppler
       with:
         version: '${{ matrix.poppler }}'
+
+    - name: Build Hunspell
+      uses: ./.github/actions/build-hunspell
+      with:
+        version: '${{ matrix.hunspell }}'
 
     - run: msys2do find /mingw64/bin
 #    - run: msys2do find / -iname Qt5Core.dll
@@ -316,11 +316,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Build Hunspell
-      uses: ./.github/actions/build-hunspell
-      with:
-        version: '${{ matrix.hunspell }}'
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
@@ -331,6 +326,11 @@ jobs:
       uses: ./.github/actions/build-poppler
       with:
         version: '${{ matrix.poppler }}'
+
+    - name: Build Hunspell
+      uses: ./.github/actions/build-hunspell
+      with:
+        version: '${{ matrix.hunspell }}'
 
     - name: Install Dependencies
       run: |
