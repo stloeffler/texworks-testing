@@ -17,14 +17,6 @@ function getUrl(version) {
 	}
 }
 
-function getConfigureOpts() {
-	if (process.platform === 'win32') {
-		return ['--disable-dependency-tracking'];
-	} else {
-		return [];
-	}
-}
-
 async function extract(archivePath) {
 	if (process.platform === 'win32') {
 		const tempDirectory = process.env['RUNNER_TEMP'] + 'hunspell';
@@ -84,7 +76,7 @@ async function run() {
 		core.endGroup();
 
 		core.startGroup('Configure');
-		await runCmd('./configure', getConfigureOpts(), {cwd: folder});
+		await runCmd('./configure', ['--disable-dependency-tracking'], {cwd: folder});
 		core.endGroup();
 
 		core.startGroup('Build');
