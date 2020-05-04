@@ -64,6 +64,7 @@ async function run() {
 					break;
 				case 'win32':
 					await runCmd('pacman', ['--noconfirm', '-S', 'autoconf', 'automake-wrapper', 'libtool', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc'])
+					await runCmd('pacman', ['-Ql', 'mingw-w64-x86_64-make']);
 					break;
 				default:
 					break;
