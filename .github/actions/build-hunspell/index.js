@@ -48,7 +48,7 @@ async function run() {
 		const makeCmd = function() {
 			switch (process.platform) {
 				case 'win32':
-					return 'mingw64-make';
+					return 'make';
 				default:
 					return 'make';
 			}
@@ -63,8 +63,9 @@ async function run() {
 					await runCmd('brew', ['install', 'autoconf', 'automake', 'libtool']);
 					break;
 				case 'win32':
-					await runCmd('pacman', ['--noconfirm', '-S', 'autoconf', 'automake-wrapper', 'libtool', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc'])
+					await runCmd('pacman', ['--noconfirm', '-S', 'autoconf', 'automake-wrapper', 'libtool', 'make', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc'])
 					await runCmd('pacman', ['-Ql', 'mingw-w64-x86_64-make']);
+					await runCmd('pacman', ['-Ql', 'make']);
 					break;
 				default:
 					break;
