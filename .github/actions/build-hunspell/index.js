@@ -32,7 +32,7 @@ async function extract(archivePath) {
 
 async function runCmd(cmd, args, opts) {
 	if (process.platform === 'win32') {
-		return await exec.exec('msys2do', [cmd] + args, opts);
+		return await exec.exec('msys2do', [cmd].concat(args), opts);
 	} else {
 		return await exec.exec(cmd, args, opts);
 	}
