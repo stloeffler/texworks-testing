@@ -231,7 +231,7 @@ jobs:
 
     - run: msys2do pacman -Ss qt5
     - run: msys2do pacman -Ss poppler
-    - run: msys2do pacman -Ss tar
+    - run: msys2do pacman -Ss autoconf
 
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell
