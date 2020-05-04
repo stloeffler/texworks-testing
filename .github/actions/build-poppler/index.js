@@ -25,6 +25,14 @@ async function runCmd(cmd, args, opts) {
 	}
 }
 
+function escapePath(path) {
+	if (process.platform === 'win32') {
+		return path.replace(/^([a-zA-Z]):/, "/$1").replace(/\\/g, '/');
+	} else {
+		return path;
+	}
+}
+
 async function run() {
 	try {
 		const version = core.getInput('version');
@@ -58,7 +66,7 @@ async function run() {
 
 		core.startGroup('Running CMake');
 		await io.mkdirP(buildDir)
-		await runCmd('cmake', ['-DENABLE_XPDF_HEADERS=ON', '-DENABLE_UNSTABLE_API_ABI_HEADERS=ON', '-DENABLE_LIBOPENJPEG=unmaintained', '-DBUILD_GTK_TESTS=OFF', '-DBUILD_QT4_TESTS=OFF', '-DBUILD_QT5_TESTS=OFF', '-DBUILD_CPP_TESTS=OFF', '-DENABLE_UTILS=OFF', '-DENABLE_CPP=OFF', '-DENABLE_GLIB=OFF', folder], {cwd: buildDir});
+		await runCmd('cmake', ['-DENABLE_XPDF_HEADERS=ON', '-DENABLE_UNSTABLE_API_ABI_HEADERS=ON', '-DENABLE_LIBOPENJPEG=unmaintained', '-DBUILD_GTK_TESTS=OFF', '-DBUILD_QT4_TESTS=OFF', '-DBUILD_QT5_TESTS=OFF', '-DBUILD_CPP_TESTS=OFF', '-DENABLE_UTILS=OFF', '-DENABLE_CPP=OFF', '-DENABLE_GLIB=OFF', escapePath(folder)], {cwd: buildDir});
 		core.endGroup();
 
 		core.startGroup('Build');
