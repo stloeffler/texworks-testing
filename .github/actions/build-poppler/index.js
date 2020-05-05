@@ -111,7 +111,7 @@ async function run() {
 				await runCmd('sudo', ['make', 'install'], {cwd: folder});
 			} else if (process.platform === 'win32') {
 				// FIXME: Determine path at runtime
-				await runCmd('make', ['DESTDIR=/d/a/_temp/msys/msys64/mingw64/', 'install'], {cwd: folder});
+				await runCmd('make', ['prefix=/d/a/_temp/msys/msys64/mingw64/', 'install'], {cwd: folder});
 			} else {
 				await runCmd('make', ['install'], {cwd: folder});
 			}
