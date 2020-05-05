@@ -240,7 +240,7 @@ jobs:
 
     - name: Install dependencies
       # git is needed for getting git revision information
-      run: msys2do pacman --noconfirm -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-qt5 mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
+      run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-cmake mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
 #    - name: Install Qt
@@ -271,7 +271,7 @@ jobs:
     - name: Configure
 # FIXME: Replace hardcoded path
 #      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "cd `$OLDPWD && cmake -G 'MSYS Makefiles' -DCMAKE_MAKE_PROGRAM='mingw32-make' -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'"
-      run: msys2do cmake -G `\`"MSYS Makefiles`\`" -DCMAKE_MAKE_PROGRAM='mingw32-make' -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi' -DCMAKE_INSTALL_PREFIX=install
+      run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi' -DCMAKE_INSTALL_PREFIX=install
 
 #      run: msys2do cmake -G "MSYS Makefiles" -B build
 #      run: msys2do cmake -G `"MSYS Makefiles`" -B build
