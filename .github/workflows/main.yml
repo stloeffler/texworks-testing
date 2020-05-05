@@ -128,15 +128,18 @@ jobs:
         sudo apt update -y
         sudo apt install -y zlib1g-dev liblua5.3-dev xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
 
-    - name: Install CMake
-      run: |
-        wget https://github.com/Kitware/CMake/releases/download/v${{ matrix.cmake }}/cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
-        tar -xvf cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
-        echo "::add-path::$(pwd)/cmake-${{ matrix.cmake }}-Linux-x86_64/bin"
+#    - name: Install CMake
+#      run: |
+#        wget https://github.com/Kitware/CMake/releases/download/v${{ matrix.cmake }}/cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
+#        tar -xvf cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
+#        echo "::add-path::$(pwd)/cmake-${{ matrix.cmake }}-Linux-x86_64/bin"
 
-    - run: |
-        echo "$PATH"
-        cmake --version
+    - name: Install CMake
+      uses: ./.github/actions/install-cmake
+      with:
+        version: '${{ matrix.cmake }}'
+
+	- run: cmake --version
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
@@ -239,9 +242,16 @@ jobs:
     - run: msys2do pacman -Ss poppler
     - run: msys2do pacman -Ss jpeg
 
+    - name: Install CMake
+      uses: ./.github/actions/install-cmake
+      with:
+        version: '${{ matrix.cmake }}'
+
+	- run: msys2do cmake --version
+
     - name: Install dependencies
       # git is needed for getting git revision information
-      run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-cmake mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
+      run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
 #      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
 #    - name: Install Qt
@@ -317,6 +327,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Install CMake
+      uses: ./.github/actions/install-cmake
+      with:
+        version: '${{ matrix.cmake }}'
+
+	- run: cmake --version
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2

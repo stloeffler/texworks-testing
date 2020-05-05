@@ -1,0 +1,10 @@
+name: 'Install CMake'
+author: 'Stefan Löffler'
+description: 'Installs CMake'
+inputs:
+  version:
+    description: 'Which version to install'
+    required: true
+runs:
+  using: 'node12'
+  main: 'index.js'
