@@ -78,7 +78,7 @@ async function run() {
 		core.endGroup();
 
 		core.startGroup('Build');
-		await runCmd('cmake', ['--build', '.', '--parallel'], {cwd: buildDir});
+		await runCmd('cmake', ['--build', '.'], {cwd: buildDir});
 		core.endGroup();
 
 		if (core.getInput('install') === 'true') {
