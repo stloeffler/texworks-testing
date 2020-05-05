@@ -335,6 +335,7 @@ jobs:
       with:
         version: '${{ matrix.cmake }}'
 
+    - run: echo "$PATH"
     - run: cmake --version
 
     - name: Install Qt
