@@ -42,7 +42,7 @@ async function run() {
 		}();
 		core.addPath(pathToCMake);
 		if (process.platform === 'win32') {
-			await exec.exec('msys2do', ['export', `PATH=\`"${pathToCMake}:\`\$PATH\`"`]);
+			await exec.exec('msys2do', ['export', `PATH=\`"${pathToCMake}:\`\$PATH\`"`], {windowsVerbatimArguments: true});
 		}
 
 		console.log(`Adding CMake to path: ${pathToCMake}`);
