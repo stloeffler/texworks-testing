@@ -238,15 +238,15 @@ jobs:
     - run: msys2do pacman -Ss poppler
     - run: msys2do pacman -Ss libtool
 
+    - name: Install dependencies
+      # git is needed for getting git revision information
+      run: msys2do pacman --noconfirm -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
+#      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
+
     - name: Build Poppler
       uses: ./.github/actions/build-poppler
       with:
         version: '${{ matrix.poppler }}'
-
-    - name: Install dependencies
-      # git is needed for getting git revision information
-      run: msys2do pacman --noconfirm -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-poppler mingw-w64-x86_64-lua
-#      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
