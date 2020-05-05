@@ -45,7 +45,7 @@ async function run() {
 		console.log(`Adding CMake to path: ${pathToCMake}`);
 
 		if (process.platform === 'win32') {
-			await exec.exec('msys2do', ['find', folder]);
+			await exec.exec('msys2do', ['find', folder.replace(/^([a-zA-Z]):/, '/$1').replace(/\\/g, '/')]);
 		} else {
 			await exec.exec('find', [folder]);
 		}
