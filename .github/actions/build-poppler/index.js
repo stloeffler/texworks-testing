@@ -70,7 +70,7 @@ async function run() {
 		await io.mkdirP(buildDir)
 		let cmakeArgs = ['-DENABLE_XPDF_HEADERS=ON', '-DENABLE_UNSTABLE_API_ABI_HEADERS=ON', '-DENABLE_LIBOPENJPEG=unmaintained', '-DBUILD_GTK_TESTS=OFF', '-DBUILD_QT4_TESTS=OFF', '-DBUILD_QT5_TESTS=OFF', '-DBUILD_CPP_TESTS=OFF', '-DENABLE_UTILS=OFF', '-DENABLE_CPP=OFF', '-DENABLE_GLIB=OFF'];
 		if (process.platform === 'win32') {
-			cmakeArgs.push('-G', '`\\`"MSYS Makefiles`\\`"');
+			cmakeArgs.push('-G', '`"MSYS Makefiles`"');
 			cmakeArgs.push("-DCMAKE_MAKE_PROGRAM='mingw32-make'")
 		}
 		cmakeArgs.push(escapePath(folder));
