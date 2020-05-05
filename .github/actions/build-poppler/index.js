@@ -49,7 +49,7 @@ async function run() {
 					await runCmd('find', ['/usr/local/lib']);
 					break;
 				case 'win32':
-					await runCmd('pacman', ['--noconfirm', '-S', 'make', 'mingw-w64-x86_64-gcc'])
+					await runCmd('pacman', ['--noconfirm', '-S', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-freetype'])
 					break;
 				default:
 					break;
