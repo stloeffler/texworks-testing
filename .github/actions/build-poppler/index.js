@@ -109,6 +109,9 @@ async function run() {
 			core.startGroup('Installing poppler-data');
 			if (process.platform === 'linux') {
 				await runCmd('sudo', ['make', 'install'], {cwd: folder});
+			} else if (process.platform === 'win32') {
+				// FIXME: Determine path at runtime
+				await runCmd('make', ['DESTDIR=/d/a/_temp/msys/msys64/mingw64/', 'install'], {cwd: folder});
 			} else {
 				await runCmd('make', ['install'], {cwd: folder});
 			}
