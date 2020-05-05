@@ -49,7 +49,7 @@ async function run() {
 					await runCmd('ls', ['/usr/local/lib']);
 					break;
 				case 'win32':
-					await runCmd('pacman', ['--noconfirm', '-S', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-freetype', 'mingw-w64-x86_64-jpeg'])
+					await runCmd('pacman', ['--noconfirm', '-S', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-freetype', 'mingw-w64-x86_64-libjpeg-turbo'])
 					break;
 				default:
 					break;
