@@ -247,6 +247,8 @@ jobs:
       with:
         version: '${{ matrix.cmake }}'
 
+    - run: echo "$PATH"
+    - run: msys2do echo `"$PATH`"
     - run: msys2do cmake --version
 
     - name: Install dependencies

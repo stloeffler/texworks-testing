@@ -39,6 +39,9 @@ async function run() {
 		core.startGroup('Extracting');
 		const folder = await extract(archivePath);
 		core.addPath(`${folder}/${fullname}/bin`);
+
+		console.log(`Adding CMake to path: ${folder}/${fullname}/bin`);
+
 		core.endGroup();
 	} catch(error) {
 		core.setFailed(error.message);
