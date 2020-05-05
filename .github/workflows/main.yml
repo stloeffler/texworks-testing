@@ -139,7 +139,7 @@ jobs:
       with:
         version: '${{ matrix.cmake }}'
 
-	- run: cmake --version
+    - run: cmake --version
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
@@ -247,7 +247,7 @@ jobs:
       with:
         version: '${{ matrix.cmake }}'
 
-	- run: msys2do cmake --version
+    - run: msys2do cmake --version
 
     - name: Install dependencies
       # git is needed for getting git revision information
@@ -333,7 +333,7 @@ jobs:
       with:
         version: '${{ matrix.cmake }}'
 
-	- run: cmake --version
+    - run: cmake --version
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
