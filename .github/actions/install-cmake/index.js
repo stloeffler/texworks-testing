@@ -42,11 +42,12 @@ async function run() {
 		}();
 		core.addPath(pathToCMake);
 		if (process.platform === 'win32') {
+			const path = `${folder}/cmake-${version}-win64-x64`.replace(/^([a-zA-Z]):/, '/$1').replace(/\\/g, '/');
 //			await exec.exec('msys2do', ['cat', '~/.bash_profile'], {windowsVerbatimArguments: true});
 //			await exec.exec('msys2do', ['echo', `PATH=\\"${pathToCMake}:\$PATH\\"`], {windowsVerbatimArguments: true});
 //			await exec.exec('msys2do', ['cat', '~/.bash_profile'], {windowsVerbatimArguments: true});
 			// FIXME: Determine path at runtime
-			await exec.exec('msys2do', ['mv', `${pathToCMake}/../*`, '/usr/local'])
+			await exec.exec('msys2do', ['mv', `${path}/*`, '/usr/local'])
 		}
 
 		console.log(`Adding CMake to path: ${pathToCMake}`);
