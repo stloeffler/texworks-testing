@@ -344,5 +344,5 @@ jobs:
       run: cmake --build build
 
     - name: Test
-      run: ctest -V
+      run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
       working-directory: build
