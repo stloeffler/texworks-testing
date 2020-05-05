@@ -73,7 +73,7 @@ async function run() {
 			cmakeArgs.push('-G', '"MSYS Makefiles"');
 		}
 		cmakeArgs.push(escapePath(folder));
-		await runCmd('cmake', cmakeArgs], {cwd: buildDir});
+		await runCmd('cmake', cmakeArgs, {cwd: buildDir});
 		core.endGroup();
 
 		core.startGroup('Build');
