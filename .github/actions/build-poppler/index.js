@@ -44,8 +44,8 @@ async function run() {
 				case 'linux':
 					break;
 				case 'darwin':
-					await runCmd('brew', ['install', 'gobject-introspection', 'pkg-config', 'cairo', 'fontconfig', 'freetype', 'gettext', 'glib', 'jpeg', 'libpng', 'libtiff', 'little-cms2', 'nss']);
-					await runCmd('brew', ['list', 'nss']);
+					await runCmd('brew', ['install', 'gobject-introspection', 'pkg-config', 'cairo', 'fontconfig', 'freetype', 'gettext', 'glib', 'jpeg', 'libpng', 'libtiff', 'little-cms2']);
+//					await runCmd('brew', ['list', 'nss']);
 					await runCmd('ls', ['/usr/local/lib']);
 					break;
 				case 'win32':
