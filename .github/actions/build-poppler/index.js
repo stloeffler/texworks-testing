@@ -80,15 +80,15 @@ async function run() {
 		core.endGroup();
 
 		core.startGroup('Build');
-		await runCmd('cmake', ['--build', '.'], {cwd: buildDir});
+		await runCmd('make', ['-j'], {cwd: buildDir});
 		core.endGroup();
 
 		if (core.getInput('install') === 'true') {
 			core.startGroup('Install');
 			if (process.platform === 'linux') {
-				await runCmd('sudo', ['cmake', '--build', '.', '--target', 'install'], {cwd: buildDir});
+				await runCmd('sudo', ['make', 'install'], {cwd: buildDir});
 			} else {
-				await runCmd('cmake', ['--build', '.', '--target', 'install'], {cwd: buildDir});
+				await runCmd('make', ['install'], {cwd: buildDir});
 			}
 			core.endGroup();
 		}
