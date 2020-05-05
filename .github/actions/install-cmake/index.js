@@ -35,12 +35,15 @@ async function run() {
 				case 'darwin':
 					return `${folder}/cmake-${version}-Darwin-x86_64/CMake.app/Contents/bin`;
 				case 'win32':
-					return `${folder}/cmake-${version}-win64-x64/bin`;
+					return `${folder}/cmake-${version}-win64-x64/bin`.replace(/^([a-zA-Z]):/, '/$1').replace(/\\/g, '/');
 				case 'linux':
 					return `${folder}/cmake-${version}-Linux-x86_64/bin`;
 			}
 		}();
 		core.addPath(pathToCMake);
+		if (process.platform === 'win32') {
+			await exec.exec('msys2do', ['export', `PATH=\`"${pathToCMake}:\`\$PATH\`"`]);
+		}
 
 		console.log(`Adding CMake to path: ${pathToCMake}`);
 
