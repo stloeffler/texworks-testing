@@ -327,6 +327,13 @@ jobs:
       with:
         version: '${{ matrix.poppler }}'
 
+    - name: Install poppler-data
+      run: |
+        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
+        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
+        cd poppler-data-${{ matrix.poppler-data }}
+        make install
+
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell
       with:
