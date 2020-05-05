@@ -133,6 +133,8 @@ jobs:
         wget https://github.com/Kitware/CMake/releases/download/v${{ matrix.cmake }}/cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
         tar -xvf cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
         echo "::add-path::$(pwd)/cmake-${{ matrix.cmake }}-Linux-x86_64/bin"
+        echo "name=CMAKE_ROOT::$(pwd)/$(ls -d cmake-${{ matrix.cmake }}-Linux-x86_64/share/cmake-*)"
+        echo "::set-env name=CMAKE_ROOT::$(pwd)/$(ls -d cmake-${{ matrix.cmake }}-Linux-x86_64/share/cmake-*)"
 
     - run: |
         echo "$PATH"
