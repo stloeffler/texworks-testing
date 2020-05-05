@@ -49,7 +49,7 @@ async function run() {
 					await runCmd('ls', ['/usr/local/lib']);
 					break;
 				case 'win32':
-					await runCmd('pacman', ['--noconfirm', '-S', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-freetype'])
+					await runCmd('pacman', ['--noconfirm', '-S', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-freetype'])
 					break;
 				default:
 					break;
@@ -70,7 +70,8 @@ async function run() {
 		await io.mkdirP(buildDir)
 		let cmakeArgs = ['-DENABLE_XPDF_HEADERS=ON', '-DENABLE_UNSTABLE_API_ABI_HEADERS=ON', '-DENABLE_LIBOPENJPEG=unmaintained', '-DBUILD_GTK_TESTS=OFF', '-DBUILD_QT4_TESTS=OFF', '-DBUILD_QT5_TESTS=OFF', '-DBUILD_CPP_TESTS=OFF', '-DENABLE_UTILS=OFF', '-DENABLE_CPP=OFF', '-DENABLE_GLIB=OFF'];
 		if (process.platform === 'win32') {
-			cmakeArgs.push('-G', 'MSYS Makefiles');
+//			cmakeArgs.push('-G', 'MSYS Makefiles');
+			cmakeArgs.push("-DCMAKE_MAKE_PROGRAM='mingw32-make'")
 		}
 		cmakeArgs.push(escapePath(folder));
 		await runCmd('cmake', cmakeArgs, {cwd: buildDir});
