@@ -236,7 +236,7 @@ jobs:
 
     - run: msys2do pacman -Ss qt5
     - run: msys2do pacman -Ss poppler
-    - run: msys2do pacman -Ss libtool
+    - run: msys2do pacman -Ss jpeg
 
     - name: Install dependencies
       # git is needed for getting git revision information
