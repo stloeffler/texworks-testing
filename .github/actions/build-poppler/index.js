@@ -72,7 +72,7 @@ async function run() {
 		let cmakeOpts = {cwd: buildDir};
 		if (process.platform === 'win32') {
 			cmakeArgs.push('-G', '\\"MSYS Makefiles\\"');
-			cmakeArgs.push("-DCMAKE_MAKE_PROGRAM='mingw32-make'")
+//			cmakeArgs.push("-DCMAKE_MAKE_PROGRAM='mingw32-make'")
 			cmakeOpts.windowsVerbatimArguments = true;
 		}
 		cmakeArgs.push(escapePath(folder));
