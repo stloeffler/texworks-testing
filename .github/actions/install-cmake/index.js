@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
+const exec = require('@actions/exec');
 
 async function extract(archive) {
 	if (process.platform === 'win32') {
@@ -41,6 +42,12 @@ async function run() {
 		core.addPath(`${folder}/${fullname}/bin`);
 
 		console.log(`Adding CMake to path: ${folder}/${fullname}/bin`);
+
+		if (process.platform === 'win32') {
+			await exec.exec('msys2do', ['find', folder]);
+		} else {
+			await exec.exec('find', [folder]);
+		}
 
 		core.endGroup();
 	} catch(error) {
