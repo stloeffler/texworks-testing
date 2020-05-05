@@ -148,6 +148,7 @@ jobs:
       uses: ./.github/actions/build-poppler
       with:
         version: '${{ matrix.poppler }}'
+        poppler-data-version: '${{ matrix.poppler-data }}'
 
 #    - name: Build Poppler
 #      run: |
@@ -159,12 +160,12 @@ jobs:
 #        make -j
 #        sudo make install
 
-    - name: Install poppler-data
-      run: |
-        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
-        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
-        cd poppler-data-${{ matrix.poppler-data }}
-        sudo make install
+#    - name: Install poppler-data
+#      run: |
+#        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
+#        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
+#        cd poppler-data-${{ matrix.poppler-data }}
+#        sudo make install
 
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell
@@ -254,6 +255,7 @@ jobs:
       uses: ./.github/actions/build-poppler
       with:
         version: '${{ matrix.poppler }}'
+        poppler-data-version: '${{ matrix.poppler-data }}'
 
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell
@@ -326,13 +328,14 @@ jobs:
       uses: ./.github/actions/build-poppler
       with:
         version: '${{ matrix.poppler }}'
+        poppler-data-version: '${{ matrix.poppler-data }}'
 
-    - name: Install poppler-data
-      run: |
-        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
-        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
-        cd poppler-data-${{ matrix.poppler-data }}
-        make install
+#    - name: Install poppler-data
+#      run: |
+#        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
+#        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
+#        cd poppler-data-${{ matrix.poppler-data }}
+#        make install
 
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell

@@ -3,9 +3,9 @@ const exec = require('@actions/exec');
 const io = require('@actions/io');
 const tc = require('@actions/tool-cache');
 
-async function extract(archivePath) {
+async function extract(archivePath, suffix) {
 	if (process.platform === 'win32') {
-		const tempDirectory = process.env['RUNNER_TEMP'] + 'poppler';
+		const tempDirectory = process.env['RUNNER_TEMP'] + '/' + suffix;
 		await io.mkdirP(tempDirectory);
 		await io.cp(archivePath, tempDirectory + '/archive.tar.xz')
 		await exec.exec('7z', ['x', 'archive.tar.xz'], {'cwd': tempDirectory})
@@ -13,7 +13,7 @@ async function extract(archivePath) {
 		return tempDirectory;
 	}
 	else {
-		return await tc.extractTar(archivePath, null, 'xJ');
+		return await tc.extractTar(archivePath, null, 'x');
 	}
 }
 
@@ -36,6 +36,7 @@ function escapePath(path) {
 async function run() {
 	try {
 		const version = core.getInput('version');
+		const popplerData = core.getInput('poppler-data-version');
 		const url = `https://poppler.freedesktop.org/poppler-${version}.tar.xz`;
 
 		if (core.getInput('install-deps') === 'true') {
@@ -62,7 +63,7 @@ async function run() {
 		const archivePath = await tc.downloadTool(url);
 
 		core.startGroup('Extracting sources');
-		const folder = await extract(archivePath) + `/poppler-${version}`;
+		const folder = await extract(archivePath, 'poppler') + `/poppler-${version}`;
 		const buildDir = folder + '/build';
 		core.endGroup();
 
@@ -72,6 +73,7 @@ async function run() {
 		let cmakeOpts = {cwd: buildDir};
 		if (process.platform === 'win32') {
 			cmakeArgs.push('-G', '\\"MSYS Makefiles\\"');
+			// FIXME: Determine path at runtime
 			cmakeArgs.push('-DCMAKE_INSTALL_PREFIX=D:/a/_temp/msys/msys64/mingw64/');
 //			cmakeArgs.push("-DCMAKE_MAKE_PROGRAM='mingw32-make'")
 			cmakeOpts.windowsVerbatimArguments = true;
@@ -90,6 +92,25 @@ async function run() {
 				await runCmd('sudo', ['make', 'install'], {cwd: buildDir});
 			} else {
 				await runCmd('make', ['install'], {cwd: buildDir});
+			}
+			core.endGroup();
+		}
+
+		if (popplerData !== 'undefined') {
+			const url = `https://poppler.freedesktop.org/poppler-data-${popplerData}.tar.gz`;
+
+			console.log(`Downloading poppler-data from ${url}`);
+
+			const archivePath = await tc.downloadTool(url);
+
+			core.startGroup('Extracting poppler-data');
+			const folder = await extract(archivePath, 'poppler-data') + `/poppler-data-${popplerData}`;
+			core.endGroup();
+			core.startGroup('Installing poppler-data');
+			if (process.platform === 'linux') {
+				await runCmd('sudo', ['make', 'install'], {cwd: folder});
+			} else {
+				await runCmd('make', ['install'], {cwd: folder});
 			}
 			core.endGroup();
 		}

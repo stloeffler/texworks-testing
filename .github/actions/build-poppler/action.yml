@@ -13,6 +13,10 @@ inputs:
     required: false
     description: 'Whether or not to automatically install dependencies'
     default: true
+  poppler-data-version:
+    required: false
+    description: 'Install the specified version of poppler-data if specified'
+    default: undefined
 runs:
   using: 'node12'
   main: 'index.js'
