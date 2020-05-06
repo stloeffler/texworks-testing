@@ -165,7 +165,7 @@ jobs:
 ################################################################################
 
   build-win:
-    name: Windows
+    name: Windows (Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }})
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -225,7 +225,7 @@ jobs:
       working-directory: build
 
   build-macosx:
-    name: Mac OS X
+    name: Mac OS X (Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }})
     runs-on: macos-latest
     strategy:
       fail-fast: false
