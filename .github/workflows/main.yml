@@ -279,7 +279,7 @@ jobs:
         brew install lua
 
     - run: otool -L /usr/lib/libz.dylib
-    - run: otool -L /usr/lib/libz.dylib | sed -ne 's#\s*/usr/lib/libz.*\.dylib ([^,]+, current version \([^)]+\))#\1#p'
+    - run: otool -L /usr/lib/libz.dylib | sed -ne 's#\s*/usr/lib/libz.*\.dylib ([^,]\+, current version \([^)]\+\))#\1#p'
 
     - name: Install CMake
       uses: ./.github/actions/install-cmake
@@ -312,7 +312,7 @@ jobs:
         echo "Poppler:      ${{ matrix.poppler }}"
         echo "Poppler-data: ${{ matrix.poppler-data }}"
         echo "Qt:           ${{ matrix.qt }}"
-        echo "Zlib:         $(brew list --versions zlib | sed -ne 's/zlib //p')"
+        echo "Zlib:         $(otool -L /usr/lib/libz.dylib | sed -ne 's#\\s*/usr/lib/libz.*\\.dylib ([^,]\\+, current version \\([^)]\\+\\))#\\1#p') (system)"
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
