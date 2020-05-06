@@ -229,14 +229,14 @@ jobs:
 
     - name: Version summary
       run: |
-        msys2do echo \"CMake:        `$(cmake --version | sed -ne 's/cmake version //p')\"
-        msys2do echo \"GCC:          `$(gcc --version | sed -ne 's/gcc ([^)]*) //p')\"
-        msys2do echo \"Hunspell:     `${{ matrix.hunspell }}\"
-        msys2do echo \"Lua:          \"
-        msys2do echo \"Poppler:      `${{ matrix.poppler }}\"
-        msys2do echo \"Poppler-data: `${{ matrix.poppler-data }}\"
-        msys2do echo \"Qt:           `${{ matrix.qt }}\"
-        msys2do echo \"Zlib:         \"
+        msys2do echo `\"CMake:        `$(cmake --version | sed -ne 's/cmake version //p')`\"
+        msys2do echo `\"GCC:          `$(gcc --version | sed -ne 's/gcc ([^)]*) //p')`\"
+        msys2do echo `\"Hunspell:     ${{ matrix.hunspell }}`\"
+        msys2do echo `\"Lua:          `\"
+        msys2do echo `\"Poppler:      ${{ matrix.poppler }}`\"
+        msys2do echo `\"Poppler-data: ${{ matrix.poppler-data }}`\"
+        msys2do echo `\"Qt:           ${{ matrix.qt }}`\"
+        msys2do echo `\"Zlib:         `\"
 
     - name: Configure
       run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
