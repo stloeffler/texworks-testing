@@ -278,6 +278,7 @@ jobs:
 
     - run: brew list --versions lua
     - run: brew info lua
+    - run: brew list --versions zlib
 
     - name: Install CMake
       uses: ./.github/actions/install-cmake
@@ -306,11 +307,11 @@ jobs:
         echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
         echo "GCC:          $(gcc --version | sed -ne 's/gcc ([^)]*) //p')"
         echo "Hunspell:     ${{ matrix.hunspell }}"
-        echo "Lua:          "
+        echo "Lua:          $(brew list --versions lua | sed -ne 's/lua //p')"
         echo "Poppler:      ${{ matrix.poppler }}"
         echo "Poppler-data: ${{ matrix.poppler-data }}"
         echo "Qt:           ${{ matrix.qt }}"
-        echo "Zlib:         "
+        echo "Zlib:         $(brew list --versions zlib | sed -ne 's/zlib //p')"
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
