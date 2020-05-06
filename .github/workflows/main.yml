@@ -276,9 +276,10 @@ jobs:
         brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install lua
 
+    - run: brew list
     - run: brew list --versions lua
     - run: brew info lua
-    - run: brew list --versions zlib
+    - run: brew list --versions zlib-devel
 
     - name: Install CMake
       uses: ./.github/actions/install-cmake
