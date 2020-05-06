@@ -19,7 +19,7 @@ function getUrl(version) {
 
 async function extract(archivePath) {
 	if (process.platform === 'win32') {
-		const tempDirectory = process.env['RUNNER_TEMP'] + 'hunspell';
+		const tempDirectory = process.env['RUNNER_TEMP'] + '/hunspell';
 		await io.mkdirP(tempDirectory);
 		await io.cp(archivePath, tempDirectory + '/archive.tar.gz')
 //		await exec.exec('msys2do', ['tar', '-xvf', archivePath.replace(/\\/g, '/').replace(/^([a-zA-Z]):/, '/$1')], {'cwd': tempDirectory});
