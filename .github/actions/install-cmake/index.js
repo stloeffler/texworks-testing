@@ -46,7 +46,6 @@ async function run() {
 //			await exec.exec('msys2do', ['cat', '~/.bash_profile'], {windowsVerbatimArguments: true});
 //			await exec.exec('msys2do', ['echo', `PATH=\\"${pathToCMake}:\$PATH\\"`], {windowsVerbatimArguments: true});
 //			await exec.exec('msys2do', ['cat', '~/.bash_profile'], {windowsVerbatimArguments: true});
-			// FIXME: Determine path at runtime
 			await exec.exec('msys2do', ['mv', `${path}/*`, '/usr/local'])
 		}
 

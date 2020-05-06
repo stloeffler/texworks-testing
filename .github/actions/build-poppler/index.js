@@ -38,6 +38,7 @@ async function run() {
 		const version = core.getInput('version');
 		const popplerData = core.getInput('poppler-data-version');
 		const url = `https://poppler.freedesktop.org/poppler-${version}.tar.xz`;
+		const tempDir = process.env['RUNNER_TEMP'].replace(/^([a-zA-Z]):/, '/$1').replace(/\\/g, '/');
 
 		if (core.getInput('install-deps') === 'true') {
 			core.startGroup('Installing dependencies');
@@ -73,8 +74,7 @@ async function run() {
 		let cmakeOpts = {cwd: buildDir};
 		if (process.platform === 'win32') {
 			cmakeArgs.push('-G', '\\"MSYS Makefiles\\"');
-			// FIXME: Determine path at runtime
-			cmakeArgs.push('-DCMAKE_INSTALL_PREFIX=D:/a/_temp/msys/msys64/mingw64');
+			cmakeArgs.push(`-DCMAKE_INSTALL_PREFIX=${tempDir}/msys/msys64/mingw64`);
 //			cmakeArgs.push("-DCMAKE_MAKE_PROGRAM='mingw32-make'")
 			cmakeOpts.windowsVerbatimArguments = true;
 		}
@@ -110,8 +110,7 @@ async function run() {
 			if (process.platform === 'linux') {
 				await runCmd('sudo', ['make', 'install'], {cwd: folder});
 			} else if (process.platform === 'win32') {
-				// FIXME: Determine path at runtime
-				await runCmd('make', ['prefix=/d/a/_temp/msys/msys64/mingw64', 'install'], {cwd: folder});
+				await runCmd('make', [`prefix=${tempDir}/msys/msys64/mingw64`, 'install'], {cwd: folder});
 			} else {
 				await runCmd('make', ['install'], {cwd: folder});
 			}
