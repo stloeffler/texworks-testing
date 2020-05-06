@@ -171,7 +171,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - qt: 5.12.8
+#          - qt: 5.12.8
+          - qt: 5.14.2 # mingw-w64-x86_64-qt5
             poppler: 0.71.0
             hunspell: 1.7.0
             poppler-data: 0.4.9
