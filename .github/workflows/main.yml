@@ -128,18 +128,10 @@ jobs:
         sudo apt update -y
         sudo apt install -y zlib1g-dev liblua5.3-dev xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
 
-#    - name: Install CMake
-#      run: |
-#        wget https://github.com/Kitware/CMake/releases/download/v${{ matrix.cmake }}/cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
-#        tar -xvf cmake-${{ matrix.cmake }}-Linux-x86_64.tar.gz
-#        echo "::add-path::$(pwd)/cmake-${{ matrix.cmake }}-Linux-x86_64/bin"
-
     - name: Install CMake
       uses: ./.github/actions/install-cmake
       with:
         version: '${{ matrix.cmake }}'
-
-    - run: cmake --version
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
@@ -153,23 +145,6 @@ jobs:
         version: '${{ matrix.poppler }}'
         poppler-data-version: '${{ matrix.poppler-data }}'
 
-#    - name: Build Poppler
-#      run: |
-#        wget https://poppler.freedesktop.org/poppler-${{ matrix.poppler }}.tar.xz
-#        tar -xvf poppler-${{ matrix.poppler }}.tar.xz
-#        cd poppler-${{ matrix.poppler }}
-#        mkdir build && cd build
-#        cmake -DENABLE_XPDF_HEADERS=ON -DENABLE_UNSTABLE_API_ABI_HEADERS=ON -DENABLE_LIBOPENJPEG=unmaintained -DBUILD_GTK_TESTS=OFF -DBUILD_QT4_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_CPP_TESTS=OFF -DENABLE_UTILS=OFF -DENABLE_CPP=OFF -DENABLE_GLIB=OFF ..
-#        make -j
-#        sudo make install
-
-#    - name: Install poppler-data
-#      run: |
-#        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
-#        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
-#        cd poppler-data-${{ matrix.poppler-data }}
-#        sudo make install
-
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell
       with:
@@ -177,7 +152,7 @@ jobs:
 
     - name: Configure
       run: |
-        mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX='/usr' -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
+        mkdir build && cd build && cmake -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
 
     - name: Build
       run: make -j
@@ -192,10 +167,6 @@ jobs:
   build-win:
     name: Windows
     runs-on: windows-latest
-#    if: false
-#    defaults:
-#      run:
-#        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -210,51 +181,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-#    - name: Install Dependencies
-#      run: |
-#        vcpkg install hunspell:x64-windows lua:x64-windows zlib:x64-windows freetype:x64-windows lcms:x64-windows libjpeg-turbo:x64-windows
-#        find C:/vcpkg/packages/
-#
-#    - name: Install Qt
-#      uses: jurplel/install-qt-action@v2
-#      with:
-#        modules: 'qtscript'
-#
-#    - name: Build Poppler
-#      run: python .github/workflows/build-poppler.py
-#
-#    - name: Configure
-#      run: cmake -B build -DTW_BUILD_ID='github' -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake ${GITHUB_WORKSPACE}
-#
-#    - name: Build
-#      run: cmake --build build
-#
-#    - name: Test
-#      run: ctest -V
-#      working-directory: build
-
     - name: Setup MSYS
       uses: numworks/setup-msys2@v1
       with:
         update: true
-
-    - run: msys2do pacman -Ss qt5
-    - run: msys2do pacman -Ss poppler
-    - run: msys2do pacman -Ss jpeg
 
     - name: Install CMake
       uses: ./.github/actions/install-cmake
       with:
         version: '${{ matrix.cmake }}'
 
-    - run: echo "$PATH"
-    - run: msys2do echo `"`$PATH`"
-    - run: msys2do cmake --version
-
     - name: Install dependencies
       # git is needed for getting git revision information
       run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
-#      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-make
 
 #    - name: Install Qt
 #      uses: jurplel/install-qt-action@v2
@@ -274,48 +213,20 @@ jobs:
       with:
         version: '${{ matrix.hunspell }}'
 
-    - run: msys2do find /mingw64/bin
-#    - run: msys2do find / -iname Qt5Core.dll
-#    - run: msys2do find / -iname libgcc_s_seh-1.dll
-#    - run: msys2do find / -iname libhunspell-1.7-0.dll
-#    - run: msys2do find / -iname libpoppler-qt5-1.dll
-#    - run: msys2do find / -iname libstdc++-6.dll
-#    - run: msys2do find / -iname zlib1.dll
-
     - name: Configure
-# FIXME: Replace hardcoded path
-#      run: d:\a\_temp\msys\msys64\usr\bin\bash.exe -ilc "cd `$OLDPWD && cmake -G 'MSYS Makefiles' -DCMAKE_MAKE_PROGRAM='mingw32-make' -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'"
-      run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi' -DCMAKE_INSTALL_PREFIX=install
-
-#      run: msys2do cmake -G "MSYS Makefiles" -B build
-#      run: msys2do cmake -G `"MSYS Makefiles`" -B build
-#      run: msys2do cmake -G `\"MSYS Makefiles`\" -B build
+      run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
 
     - name: Build
-      run: msys2do cmake --build build --parallel
-
-    - run: msys2do find .
+      run: msys2do make -j
+      working-directory: build
 
     - name: Test
       run: msys2do ctest -V
       working-directory: build
 
-#    - name: Install
-#      run: msys2do cmake --build build --target install
-#
-##/mingw64/bin/libhunspell-1.7-0.dll 
-#    - name: Copy DLLs
-#      run: msys2do cp /mingw64/bin/libbz2-1.dll /mingw64/bin/libcrypto-1_1-x64.dll /mingw64/bin/libcurl-4.dll /mingw64/bin/libdouble-conversion.dll /mingw64/bin/libfreetype-6.dll /mingw64/bin/libgcc_s_seh-1.dll /mingw64/bin/libglib-2.0-0.dll /mingw64/bin/libgraphite2.dll /mingw64/bin/libharfbuzz-0.dll /mingw64/bin/libiconv-2.dll /mingw64/bin/libicudt65.dll /mingw64/bin/libicuin65.dll /mingw64/bin/libicuuc65.dll /mingw64/bin/libidn2-0.dll /mingw64/bin/libintl-8.dll /mingw64/bin/libjpeg-8.dll /mingw64/bin/liblcms2-2.dll /mingw64/bin/liblzma-5.dll /mingw64/bin/libnghttp2-14.dll /mingw64/bin/libnspr4.dll /mingw64/bin/libopenjp2-7.dll /mingw64/bin/libpcre-1.dll /mingw64/bin/libpcre2-16-0.dll /mingw64/bin/libplc4.dll /mingw64/bin/libplds4.dll /mingw64/bin/libpng16-16.dll /mingw64/bin/libpoppler-98.dll /mingw64/bin/libpoppler-qt5-1.dll /mingw64/bin/libpsl-5.dll /mingw64/bin/libbrotlicommon.dll /mingw64/bin/libbrotlidec.dll /mingw64/bin/libssh2-1.dll /mingw64/bin/libssl-1_1-x64.dll /mingw64/bin/libstdc++-6.dll /mingw64/bin/libtiff-5.dll /mingw64/bin/libunistring-2.dll /mingw64/bin/libwinpthread-1.dll /mingw64/bin/libzstd.dll /mingw64/bin/nss3.dll /mingw64/bin/nssutil3.dll /mingw64/bin/Qt5Concurrent.dll /mingw64/bin/Qt5Core.dll /mingw64/bin/Qt5Gui.dll /mingw64/bin/Qt5Script.dll /mingw64/bin/Qt5ScriptTools.dll /mingw64/bin/Qt5Widgets.dll /mingw64/bin/Qt5Xml.dll /mingw64/bin/smime3.dll /mingw64/bin/zlib1.dll install/
-#
-#    - uses: actions/upload-artifact@v1
-#      with:
-#        name: TeXworks
-#        path: install
-
   build-macosx:
     name: Mac OS X
     runs-on: macos-latest
-#    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -335,9 +246,6 @@ jobs:
       with:
         version: '${{ matrix.cmake }}'
 
-    - run: echo "$PATH"
-    - run: cmake --version
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
@@ -349,13 +257,6 @@ jobs:
       with:
         version: '${{ matrix.poppler }}'
         poppler-data-version: '${{ matrix.poppler-data }}'
-
-#    - name: Install poppler-data
-#      run: |
-#        wget https://poppler.freedesktop.org/poppler-data-${{ matrix.poppler-data }}.tar.gz
-#        tar -xvf poppler-data-${{ matrix.poppler-data }}.tar.gz
-#        cd poppler-data-${{ matrix.poppler-data }}
-#        make install
 
     - name: Build Hunspell
       uses: ./.github/actions/build-hunspell
@@ -371,7 +272,8 @@ jobs:
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
 
     - name: Build
-      run: cmake --build build
+      run: make -j
+      working-directory: build
 
     - name: Test
       run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
