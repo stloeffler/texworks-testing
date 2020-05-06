@@ -150,6 +150,16 @@ jobs:
       with:
         version: '${{ matrix.hunspell }}'
 
+    - name: Version summary
+      run: |
+        echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
+        echo "Hunspell:     ${{ matrix.hunspell }}"
+        echo "Lua:          $(apt-cache policy liblua5.3-dev | sed -ne 's/ Installed: //p')"
+        echo "Poppler:      ${{ matrix.poppler }}"
+        echo "Poppler-data: ${{ matrix.poppler-data }}"
+        echo "Qt:           ${{ matrix.qt }}"
+        echo "Zlib:         $(apt-cache policy zlib1g-dev | sed -ne 's/ Installed: //p')"
+
     - name: Configure
       run: |
         mkdir build && cd build && cmake -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
@@ -191,6 +201,8 @@ jobs:
       # git is needed for getting git revision information
       run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
 
+    - run: msys2do pacman -Qi mingw-w64-x86_64-qt5
+
     - name: Install CMake
       uses: ./.github/actions/install-cmake
       with:
@@ -213,6 +225,16 @@ jobs:
       uses: ./.github/actions/build-hunspell
       with:
         version: '${{ matrix.hunspell }}'
+
+    - name: Version summary
+      run: |
+        msys2do echo \"CMake:        `$(cmake --version | sed -ne 's/cmake version //p')\"
+        msys2do echo \"Hunspell:     `${{ matrix.hunspell }}\"
+        msys2do echo \"Lua:          \"
+        msys2do echo \"Poppler:      `${{ matrix.poppler }}\"
+        msys2do echo \"Poppler-data: `${{ matrix.poppler-data }}\"
+        msys2do echo \"Qt:           `${{ matrix.qt }}\"
+        msys2do echo \"Zlib:         \"
 
     - name: Configure
       run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
@@ -252,6 +274,9 @@ jobs:
         brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install lua
 
+    - run: brew list --versions lua
+    - run: brew info lua
+
     - name: Install CMake
       uses: ./.github/actions/install-cmake
       with:
@@ -273,6 +298,16 @@ jobs:
       uses: ./.github/actions/build-hunspell
       with:
         version: '${{ matrix.hunspell }}'
+
+    - name: Version summary
+      run: |
+        echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
+        echo "Hunspell:     ${{ matrix.hunspell }}"
+        echo "Lua:          "
+        echo "Poppler:      ${{ matrix.poppler }}"
+        echo "Poppler-data: ${{ matrix.poppler-data }}"
+        echo "Qt:           ${{ matrix.qt }}"
+        echo "Zlib:         "
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
