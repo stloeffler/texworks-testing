@@ -236,6 +236,11 @@ jobs:
             hunspell: 1.7.0
             poppler-data: 0.4.9
             cmake: 3.16.2
+          - qt: 5.15.0
+            poppler: 0.88.0
+            hunspell: 1.7.0
+            poppler-data: 0.4.9
+            cmake: 3.17.2
 
     steps:
     - name: Checkout
