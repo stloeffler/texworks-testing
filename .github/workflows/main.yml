@@ -154,11 +154,11 @@ jobs:
       run: |
         echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
         echo "Hunspell:     ${{ matrix.hunspell }}"
-        echo "Lua:          $(apt-cache policy liblua5.3-dev | sed -ne 's/ Installed: //p')"
+        echo "Lua:          $(apt-cache policy liblua5.3-dev | sed -ne 's/  Installed: //p')"
         echo "Poppler:      ${{ matrix.poppler }}"
         echo "Poppler-data: ${{ matrix.poppler-data }}"
         echo "Qt:           ${{ matrix.qt }}"
-        echo "Zlib:         $(apt-cache policy zlib1g-dev | sed -ne 's/ Installed: //p')"
+        echo "Zlib:         $(apt-cache policy zlib1g-dev | sed -ne 's/  Installed: //p')"
 
     - name: Configure
       run: |
