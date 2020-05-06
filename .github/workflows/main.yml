@@ -153,6 +153,7 @@ jobs:
     - name: Version summary
       run: |
         echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
+        echo "GCC:          $(gcc --version | sed -ne 's/gcc ([^)]*) //p')"
         echo "Hunspell:     ${{ matrix.hunspell }}"
         echo "Lua:          $(apt-cache policy liblua5.3-dev | sed -ne 's/  Installed: //p')"
         echo "Poppler:      ${{ matrix.poppler }}"
@@ -229,6 +230,7 @@ jobs:
     - name: Version summary
       run: |
         msys2do echo \"CMake:        `$(cmake --version | sed -ne 's/cmake version //p')\"
+        msys2do echo \"GCC:          `$(gcc --version | sed -ne 's/gcc ([^)]*) //p')\"
         msys2do echo \"Hunspell:     `${{ matrix.hunspell }}\"
         msys2do echo \"Lua:          \"
         msys2do echo \"Poppler:      `${{ matrix.poppler }}\"
@@ -302,6 +304,7 @@ jobs:
     - name: Version summary
       run: |
         echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
+        echo "GCC:          $(gcc --version | sed -ne 's/gcc ([^)]*) //p')"
         echo "Hunspell:     ${{ matrix.hunspell }}"
         echo "Lua:          "
         echo "Poppler:      ${{ matrix.poppler }}"
