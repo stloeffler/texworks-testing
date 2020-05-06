@@ -47,8 +47,6 @@ async function run() {
 					break;
 				case 'darwin':
 					await runCmd('brew', ['install', 'gobject-introspection', 'pkg-config', 'cairo', 'fontconfig', 'freetype', 'gettext', 'glib', 'jpeg', 'libpng', 'libtiff', 'little-cms2']);
-//					await runCmd('brew', ['list', 'nss']);
-					await runCmd('ls', ['/usr/local/lib']);
 					break;
 				case 'win32':
 					await runCmd('pacman', ['--noconfirm', '-S', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-freetype', 'mingw-w64-x86_64-libjpeg-turbo'])
@@ -75,7 +73,6 @@ async function run() {
 		if (process.platform === 'win32') {
 			cmakeArgs.push('-G', '\\"MSYS Makefiles\\"');
 			cmakeArgs.push(`-DCMAKE_INSTALL_PREFIX=${tempDir}/msys/msys64/mingw64`);
-//			cmakeArgs.push("-DCMAKE_MAKE_PROGRAM='mingw32-make'")
 			cmakeOpts.windowsVerbatimArguments = true;
 		}
 		cmakeArgs.push(escapePath(folder));

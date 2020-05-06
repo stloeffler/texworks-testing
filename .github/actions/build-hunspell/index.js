@@ -22,11 +22,9 @@ async function extract(archivePath) {
 		const tempDirectory = process.env['RUNNER_TEMP'] + '/hunspell';
 		await io.mkdirP(tempDirectory);
 		await io.cp(archivePath, tempDirectory + '/archive.tar.gz')
-//		await exec.exec('msys2do', ['tar', '-xvf', archivePath.replace(/\\/g, '/').replace(/^([a-zA-Z]):/, '/$1')], {'cwd': tempDirectory});
 		await exec.exec('7z', ['x', 'archive.tar.gz'], {'cwd': tempDirectory})
 		await exec.exec('7z', ['x', 'archive.tar'], {'cwd': tempDirectory})
 		return tempDirectory;
-//		return await tc.extract7z(archivePath);
 	}
 	else {
 		return await tc.extractTar(archivePath);

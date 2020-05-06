@@ -40,23 +40,15 @@ async function run() {
 					return `${folder}/cmake-${version}-Linux-x86_64/bin`;
 			}
 		}();
-		core.addPath(pathToCMake);
 		if (process.platform === 'win32') {
+			// I have found no way so far to easily & reliably modify the msys
+			// $PATH, so we just move everything into /usr/local (which is in
+			// the $PATH automatically)
 			const path = `${folder}/cmake-${version}-win64-x64`.replace(/^([a-zA-Z]):/, '/$1').replace(/\\/g, '/');
-//			await exec.exec('msys2do', ['cat', '~/.bash_profile'], {windowsVerbatimArguments: true});
-//			await exec.exec('msys2do', ['echo', `PATH=\\"${pathToCMake}:\$PATH\\"`], {windowsVerbatimArguments: true});
-//			await exec.exec('msys2do', ['cat', '~/.bash_profile'], {windowsVerbatimArguments: true});
 			await exec.exec('msys2do', ['mv', `${path}/*`, '/usr/local'])
-		}
-
-		console.log(`Adding CMake to path: ${pathToCMake}`);
-
-		if (process.platform === 'win32') {
-			await exec.exec('msys2do', ['find', folder.replace(/^([a-zA-Z]):/, '/$1').replace(/\\/g, '/')]);
 		} else {
-			await exec.exec('find', [folder]);
+			core.addPath(pathToCMake);
 		}
-
 		core.endGroup();
 	} catch(error) {
 		core.setFailed(error.message);
