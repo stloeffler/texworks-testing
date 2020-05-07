@@ -215,6 +215,12 @@ jobs:
       # git is needed for getting git revision information
       run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
 
+    - run: |
+        msys2do echo $(pacman -Qi mingw-w64-x86_64-qt5)
+
+    - run: |
+        msys2do echo $(pacman -Qi mingw-w64-x86_64-qt5 | sed -ne 's/Version\s*: //p')
+
     - run: msys2do pacman -Qi mingw-w64-x86_64-qt5
 
     - name: Install CMake
