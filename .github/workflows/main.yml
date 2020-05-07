@@ -316,7 +316,7 @@ jobs:
         echo "Poppler:      ${{ matrix.poppler }}"
         echo "Poppler-data: ${{ matrix.poppler-data }}"
         echo "Qt:           ${{ matrix.qt }}"
-        echo "Zlib:         $(otool -L /usr/lib/libz.dylib | sed -ne 's|[:space:]*/usr/lib/libz.*\\.dylib ([^,]*, current version \\([^)]*\\))|\\1|p') (system)"
+        echo "Zlib:         $(otool -L /usr/lib/libz.dylib | sed -ne 's|	*/usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p') (system)"
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
