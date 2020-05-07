@@ -230,9 +230,9 @@ jobs:
     - name: Version summary
       run: |
         msys2do echo `\`"Hunspell:     ${{ matrix.hunspell }}`\`"
+        msys2do echo `\`"Poppler:      ${{ matrix.poppler }}`\"
 
 #        msys2do echo `\`"Lua:          `\`"
-#        msys2do echo `\`"Poppler:      ${{ matrix.poppler }}`\"
 #        msys2do echo `\`"Poppler-data: ${{ matrix.poppler-data }}`\`"
 #        msys2do echo `\`"Qt:           ${{ matrix.qt }}`\`"
 #        msys2do echo `\`"Zlib:         `\`"
