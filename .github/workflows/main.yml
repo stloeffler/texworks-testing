@@ -229,7 +229,7 @@ jobs:
 
     - name: Version summary
       run: |
-        msys2do echo `\`"Hunspell:     ${{ matrix.hunspell }} Poppler:      ${{ matrix.poppler }}`\"
+        msys2do echo `\`"Hunspell:     ${{ matrix.hunspell }} Poppler:      ${{ matrix.poppler }}`\`"
 #        msys2do echo `\`"Hunspell:     ${{ matrix.hunspell }}`\`\nPoppler:      ${{ matrix.poppler }}`\"
 
 #        msys2do echo `\`"Lua:          `\`"
