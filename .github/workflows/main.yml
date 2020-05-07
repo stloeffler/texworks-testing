@@ -273,8 +273,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - run: cmake --version
-    - run: cmake --version | sed -ne 's/cmake version //p'
+    - run: gcc --version
+    - run: g++ --version
 
     - name: Install Dependencies
       run: |
