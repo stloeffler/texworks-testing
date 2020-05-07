@@ -273,6 +273,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: cmake --version
+    - name: cmake --version | sed -ne 's/cmake version //p'
+
     - name: Install Dependencies
       run: |
         brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
