@@ -319,7 +319,7 @@ jobs:
     - name: Version summary
       run: |
         echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
-        echo "GCC:          $(gcc --version | sed -ne 's/gcc ([^)]*) //p')"
+        echo "GCC:          clang $(gcc --version | sed -ne 's/Apple clang version \([^ ]*\) .*/\1/p')"
         echo "Hunspell:     ${{ matrix.hunspell }}"
         echo "Lua:          $(brew list --versions lua | sed -ne 's/lua //p')"
         echo "Poppler:      ${{ matrix.poppler }}"
