@@ -282,7 +282,6 @@ jobs:
     - run: otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz||p'
     - run: otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz.*\.dylib ||p'
     - run: otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz.*\.dylib (||p'
-    - run: otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz.*\.dylib \(||p'
     - run: otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz.*\.dylib ([^,]+,||p'
     - run: otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz.*\.dylib ([^,]\+,||p'
     - run: otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz.*\.dylib ([^,]\+, current version ||p'
