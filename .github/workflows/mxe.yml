@@ -19,9 +19,11 @@ jobs:
       uses: actions/checkout@v2
 
     - run: docker version
-#    - run: |
-#        Set-Variable -Name DOCKER_CLI_EXPERIMENTAL -Value enabled
-#        docker version
+    - run: |
+        $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
+        docker version
+    - run: Restart-Service docker
+    - run: docker version
 #    - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
 #    - run: sc start Docker --experimental
     - run: sc config Docker experimental=enabled
