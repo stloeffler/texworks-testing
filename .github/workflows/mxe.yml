@@ -23,6 +23,19 @@ jobs:
         $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
         docker version
 
+#https://ubuntu.com/tutorials/tutorial-windows-ubuntu-hyperv-containers#1-overview
+    - run: New-Item -Path "C:\Program Files" -Name "Linux Containers" -ItemType "directory"
+    - run: Invoke-WebRequest -URI https://partner-images.canonical.com/hyper-v/linux-containers/bionic/current/bionic-container-hyperv.vhdx.xz
+    - run: xz.exe -d bionic-container-hyperv.vhdx.xz
+#param(
+#[string] $Root
+#)
+## Give the virtual machines group full control
+#$acl = Get-Acl -Path $Root
+#$vmGroupRule = new-object System.Security.AccessControl.FileSystemAccessRule("NT VIRTUAL MACHINE\Virtual Machines", "FullControl","ContainerInherit,ObjectInherit", "None", "Allow")
+#$acl.SetAccessRule($vmGroupRule)
+#Set-Acl -AclObject $acl -Path $Root
+
     - run: sc qc docker
 
     - run: sc config docker binPath= `"\`"C:\Program Files\Docker\dockerd.exe\`" --run-service --experimental`"
