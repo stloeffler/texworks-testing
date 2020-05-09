@@ -25,7 +25,7 @@ jobs:
 
     - run: sc qc docker
 
-    - run: sc config docker binPath= "\"C:\Program Files\docker\dockerd.exe\" --experimental"
+    - run: sc config docker binPath= "\"C:\Program Files\Docker\dockerd.exe\" --run-service --experimental"
     - run: sc qc docker
     - run: docker version
 
