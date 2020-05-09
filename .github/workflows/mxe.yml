@@ -24,7 +24,7 @@ jobs:
 #        docker version
 #    - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
 #    - run: sc start Docker --experimental
-    - run: sc config docker --experimental
+    - run: sc config Docker --experimental
     - run: docker version
 
     - name: Build
