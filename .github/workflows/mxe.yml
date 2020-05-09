@@ -23,12 +23,14 @@ jobs:
         $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
         docker version
 
-    - run: sc query
+    - run: sc qc docker
 
-    - run: cmd /c "sc config docker binPath= \"\\\"C:\Program Files\docker\dockerd.exe\\\" --experimental\""
+    - run: sc config docker binPath= "\"C:\Program Files\docker\dockerd.exe\" --experimental"
+    - run: sc qc docker
     - run: docker version
 
     - run: Restart-Service docker
+    - run: Start-Sleep -Seconds 2
     - run: docker version
 #    - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
 #    - run: sc start Docker --experimental
