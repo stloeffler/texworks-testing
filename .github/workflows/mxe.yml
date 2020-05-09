@@ -22,6 +22,10 @@ jobs:
     - run: |
         $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
         docker version
+
+    - run: sc config docker binpath= "\"C:\Program Files\docker\dockerd.exe\" --experimental"
+    - run: docker version
+
     - run: Restart-Service docker
     - run: docker version
 #    - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
