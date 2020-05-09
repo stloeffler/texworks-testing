@@ -25,7 +25,7 @@ jobs:
 
     - run: sc query
 
-    - run: sc config docker binpath="\"C:\Program Files\docker\dockerd.exe\" --experimental"
+    - run: sc config docker binPath= "\"C:\Program Files\docker\dockerd.exe\" --experimental"
     - run: docker version
 
     - run: Restart-Service docker
