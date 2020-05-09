@@ -18,7 +18,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - run: docker --version
+    - run: docker version
     - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
 
     - name: Build
