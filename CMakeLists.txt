@@ -491,6 +491,7 @@ MESSAGE("TeXworks has been configured:\n")
 message("  Version info")
 CONFIG_VERSION("${PROJECT_NAME}" "${TeXworks_VERSION} (${TeXworks_GIT_HASH}, ${TeXworks_GIT_DATE})")
 CONFIG_VERSION("CMake" ${CMAKE_VERSION})
+CONFIG_VERSION("Compiler" "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 # Hunspell does not have a reliable way to determine its version
 #CONFIG_VERSION("Hunspell" "${HUNSPELL_VERSION_STRING}")
 IF ( WITH_LUA )
