@@ -18,6 +18,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - run: docker --version
+    - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
+
     - name: Build
       run: DOCKER_CLI_EXPERIMENTAL=enabled docker build --platform linux -t "tw" -f .github/workflows/mxe.docker .
 
