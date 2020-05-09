@@ -23,7 +23,9 @@ jobs:
         $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
         docker version
 
-    - run: sc config docker binpath= "\"C:\Program Files\docker\dockerd.exe\" --experimental"
+    - run: sc query
+
+    - run: sc config docker binpath="\"C:\Program Files\docker\dockerd.exe\" --experimental"
     - run: docker version
 
     - run: Restart-Service docker
