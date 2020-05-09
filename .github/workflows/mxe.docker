@@ -1,0 +1,29 @@
+FROM ubuntu:18.04
+
+RUN apt update && apt install -y --no-install-recommends ca-certificates gnupg && \
+	echo "deb https://pkg.mxe.cc/repos/apt bionic main" > /etc/apt/sources.list.d/mxe.list && \
+	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86B72ED9 && \
+	apt update && apt -y --no-install-recommends install \
+		cmake \
+		git \
+		make \
+		mxe-i686-w64-mingw32.static-hunspell \
+		mxe-i686-w64-mingw32.static-lua \
+		mxe-i686-w64-mingw32.static-poppler \
+		mxe-i686-w64-mingw32.static-qtscript \
+		mxe-i686-w64-mingw32.static-qttools \
+	&& apt clean
+
+COPY . /tw
+
+ENV MXEDIR /usr/lib/mxe
+ENV MXETARGET i686-w64-mingw32.static
+
+RUN mkdir /tw/build && cd /tw/build && \
+${MXEDIR}/usr/bin/${MXETARGET}-cmake \
+	-DMXE_USE_CCACHE=OFF \
+	-DPoppler_ADDITIONAL_DEPENDENCIES='jpeg;tiff;lzma;webp;openjp2;lcms2;wtsapi32;freetype;bz2;harfbuzz;freetype_too' \
+	-DTEXWORKS_ADDITIONAL_LIBS='shlwapi;' \
+	-DPLATFORM_DEPENDENCIES='freetype;harfbuzz_too;freetype;bz2;wtsapi32;opengl32' \
+	.. && \
+make -j
