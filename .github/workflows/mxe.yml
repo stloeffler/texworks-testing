@@ -9,52 +9,100 @@ on:
   - pull_request
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+#jobs:
+#  build:
+#    name: Build
+#    runs-on: windows-latest
+#
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v2
+#
+#    - run: docker version
+#    - run: |
+#        $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
+#        docker version
+#
+##https://ubuntu.com/tutorials/tutorial-windows-ubuntu-hyperv-containers#1-overview
+#    - run: New-Item -Path "C:\Program Files" -Name "Linux Containers" -ItemType "directory"
+#    - run: Invoke-WebRequest -URI https://partner-images.canonical.com/hyper-v/linux-containers/bionic/current/bionic-container-hyperv.vhdx.xz
+#    - run: xz.exe -d bionic-container-hyperv.vhdx.xz
+##param(
+##[string] $Root
+##)
+### Give the virtual machines group full control
+##$acl = Get-Acl -Path $Root
+##$vmGroupRule = new-object System.Security.AccessControl.FileSystemAccessRule("NT VIRTUAL MACHINE\Virtual Machines", "FullControl","ContainerInherit,ObjectInherit", "None", #"Allow")
+##$acl.SetAccessRule($vmGroupRule)
+##Set-Acl -AclObject $acl -Path $Root
+#
+#    - run: sc qc docker
+#
+#    - run: sc config docker binPath= `"\`"C:\Program Files\Docker\dockerd.exe\`" --run-service --experimental`"
+#    - run: sc qc docker
+#    - run: docker version
+#
+#    - run: Restart-Service docker
+#    - run: Start-Sleep -Seconds 2
+#    - run: docker version
+##    - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
+##    - run: sc start Docker --experimental
+##    - run: sc config Docker experimental=enabled
+##    - run: docker version
+#
+#    - name: Build
+#      run: |
+#        $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
+#        docker build --platform linux -t "tw" -f .github/workflows/mxe.docker .
+#
+## docker build -t 'tw' -f .github/workflows/Dockerfile .
+## docker create --name tw tw
+## docker cp tw:/tw/build .
+
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    env:
+      MXEDIR: /usr/lib/mxe
+      MXETARGET: i686-w64-mingw32.static
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - run: docker version
-    - run: |
-        $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
-        docker version
+    - name: Install dependencies
+      run: |
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86B72ED9
+        sudo add-apt-repository "deb https://pkg.mxe.cc/repos/apt bionic main"
+        sudo apt update
+        sudo apt install \
+          mxe-i686-w64-mingw32.static-hunspell \
+          mxe-i686-w64-mingw32.static-lua \
+          mxe-i686-w64-mingw32.static-poppler \
+          mxe-i686-w64-mingw32.static-qtscript \
+          mxe-i686-w64-mingw32.static-qttools
 
-#https://ubuntu.com/tutorials/tutorial-windows-ubuntu-hyperv-containers#1-overview
-    - run: New-Item -Path "C:\Program Files" -Name "Linux Containers" -ItemType "directory"
-    - run: Invoke-WebRequest -URI https://partner-images.canonical.com/hyper-v/linux-containers/bionic/current/bionic-container-hyperv.vhdx.xz
-    - run: xz.exe -d bionic-container-hyperv.vhdx.xz
-#param(
-#[string] $Root
-#)
-## Give the virtual machines group full control
-#$acl = Get-Acl -Path $Root
-#$vmGroupRule = new-object System.Security.AccessControl.FileSystemAccessRule("NT VIRTUAL MACHINE\Virtual Machines", "FullControl","ContainerInherit,ObjectInherit", "None", "Allow")
-#$acl.SetAccessRule($vmGroupRule)
-#Set-Acl -AclObject $acl -Path $Root
-
-    - run: sc qc docker
-
-    - run: sc config docker binPath= `"\`"C:\Program Files\Docker\dockerd.exe\`" --run-service --experimental`"
-    - run: sc qc docker
-    - run: docker version
-
-    - run: Restart-Service docker
-    - run: Start-Sleep -Seconds 2
-    - run: docker version
-#    - run: Get-Content -Path C:\ProgramData\Docker\config\daemon.json -Raw
-#    - run: sc start Docker --experimental
-#    - run: sc config Docker experimental=enabled
-#    - run: docker version
+    - name: Configure
+      run: |
+        mkdir build && cd build
+        ${MXEDIR}/usr/bin/${MXETARGET}-cmake \
+          -DMXE_USE_CCACHE=OFF \
+          -DPoppler_ADDITIONAL_DEPENDENCIES='jpeg;tiff;lzma;webp;openjp2;lcms2;wtsapi32;freetype;bz2;harfbuzz;freetype_too' \
+          -DTEXWORKS_ADDITIONAL_LIBS='shlwapi;' \
+          -DPLATFORM_DEPENDENCIES='freetype;harfbuzz_too;freetype;bz2;wtsapi32;opengl32' \
+          -DCMAKE_INSTALL_PREFIX='install' \
+          ..
 
     - name: Build
       run: |
-        $Env:DOCKER_CLI_EXPERIMENTAL="enabled"
-        docker build --platform linux -t "tw" -f .github/workflows/mxe.docker .
+        make -j
+        du -hd1
+        ${MXEDIR}/usr/bin/${MXETARGET}-strip *.exe
+        du -hd1
+        make install
 
-# docker build -t 'tw' -f .github/workflows/Dockerfile .
-# docker create --name tw tw
-# docker cp tw:/tw/build .
+    - uses: actions/upload-artifact@v2
+      with:
+        name: TeXworks
+        path: build/install
