@@ -142,7 +142,7 @@ jobs:
         name: unittests
 
     - name: Run Tests
-      run: cd build && ctest -v
+      run: cd build && ctest -V
 
 #  mac-screenshot:
 #    runs-on: macos-latest
