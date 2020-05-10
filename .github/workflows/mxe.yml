@@ -110,14 +110,14 @@ jobs:
         mkdir tests
         cp test_*.exe tests
 
-    - name: Upload TeXworks
-      uses: actions/upload-artifact@v2
-      with:
-        name: TeXworks
-        path: build/install
-
     - name: Upload Unit-Tests
       uses: actions/upload-artifact@v2
       with:
         name: unittests
         path: build/tests
+
+    - name: Upload TeXworks
+      uses: actions/upload-artifact@v2
+      with:
+        name: TeXworks
+        path: build/install
