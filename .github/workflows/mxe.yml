@@ -99,10 +99,8 @@ jobs:
         cd build
         make -j
         ls -lisah
-        ${MXEDIR}/usr/bin/${MXETARGET}-strip TeXworks.exe
+        ${MXEDIR}/usr/bin/${MXETARGET}-strip *.exe
         ls -lisah
-
-#        ${MXEDIR}/usr/bin/${MXETARGET}-strip *.exe
 
     - name: Package
       run: |
