@@ -317,7 +317,7 @@ endif ()
 
 if (WIN32 AND NOT BUILD_SHARED_LIBS)
   find_package(Qt5WindowsPlatformSupport)
-  TARGET_LINK_LIBRARIES(qtpdf Qt5::WindowsPlatformSupport)
+  TARGET_LINK_LIBRARIES(qtpdf Qt5::WindowsPlatformSupport Qt5::Gui)
   SET_TARGET_PROPERTIES(qtpdf PROPERTIES
     INTERFACE_COMPILE_DEFINITIONS $<TARGET_PROPERTY:Qt5::WindowsPlatformSupport,INTERFACE_COMPILE_DEFINITIONS>
   )
