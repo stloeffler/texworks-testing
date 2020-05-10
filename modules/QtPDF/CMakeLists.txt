@@ -92,6 +92,9 @@ endif()
 if (WIN32 AND NOT BUILD_SHARED_LIBS)
   find_package(Qt5WindowsPlatformSupport)
 endif ()
+message("WIN32 = ${WIN32}")
+message("BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}")
+message("QT_PLATFORM_LIBRARIES = ${QT_PLATFORM_LIBRARIES}")
 
 # Note: Qt5 only sets Qt5Widgets_VERSION, etc., but not QT_VERSION_MAJOR,
 # etc. which is used here.
