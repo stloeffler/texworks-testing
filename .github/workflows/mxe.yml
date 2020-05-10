@@ -111,8 +111,8 @@ jobs:
         cp test_*.exe tests/build
         cp -r ../testcases tests/
         for IN in $(find . -name CTestTestfile.cmake); do
-          mkdir -p $(dirname "${IN}")
-          sed -e 's|${GITHUB_WORKSPACE}||g' "${IN}" "tests/${IN}"
+          mkdir -p "tests/build/$(dirname "${IN}")"
+          sed -e 's|${GITHUB_WORKSPACE}||g' "${IN}" > "tests/build/${IN}"
         done
 
     - name: Upload Unit-Tests
