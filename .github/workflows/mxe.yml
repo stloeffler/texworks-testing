@@ -141,3 +141,13 @@ jobs:
 
     - name: Run Tests
       run: cd build && ctest -v
+
+  mac-screenshot:
+    runs-on: macos-latest
+
+    steps:
+    - run: screencapture -x ${GITHUB_WORKSPACE}/macos.jpg
+    - uses: actions/upload-artifact@v2
+      with:
+        name: macos.jpg
+        path: macos.jpg
