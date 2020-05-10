@@ -53,8 +53,12 @@ ENDIF ()
 # By default, we build a shared lib...
 OPTION(BUILD_SHARED_LIBS "Build shared library" ON)
 
+message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
+
 # ...with the viewer program...
 OPTION(QTPDF_VIEWER "Build PDF viewer application" ON)
+
+message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
 
 # ...with tests...
 OPTION(WITH_TESTS "Build tests" ON)
@@ -319,6 +323,8 @@ endif ()
 
 # Viewers
 # -------
+
+message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
 
 IF ( QTPDF_VIEWER )
 
