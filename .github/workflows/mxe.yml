@@ -96,6 +96,7 @@ jobs:
 
     - name: Build
       run: |
+        cd build
         make -j
         du -hd1
         ${MXEDIR}/usr/bin/${MXETARGET}-strip *.exe
