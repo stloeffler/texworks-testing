@@ -87,7 +87,7 @@ set (CMAKE_CXX_STANDARD 11)
 # Core Components
 # ---------------
 
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets Concurrent Xml LinguistTools)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent Xml LinguistTools)
 
 if (WITH_TESTS)
   find_package(Qt5 OPTIONAL_COMPONENTS Test QUIET)
