@@ -142,10 +142,10 @@ jobs:
         name: unittests
 
     - name: Run Tests
+      shell: bash
       run: |
         cd build
-        ctest --extra-verbose --interactive-debug-mode=0 --output-on-failure -O test.log
-        type test.log
+        ctest --verbose
 
 #  mac-screenshot:
 #    runs-on: macos-latest
