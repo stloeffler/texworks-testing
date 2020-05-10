@@ -107,8 +107,13 @@ jobs:
         cd build
         make install
 
-        mkdir tests
-        cp test_*.exe tests
+        mkdir -p tests/build
+        cp test_*.exe tests/build
+        cp -r ../testcases tests/
+        for IN in $(find . -name CTestTestfile.cmake); do
+          mkdir -p $(dirname "${IN}")
+          sed -e 's|${GITHUB_WORKSPACE}||g' "${IN}" "tests/${IN}"
+        done
 
     - name: Upload Unit-Tests
       uses: actions/upload-artifact@v2
