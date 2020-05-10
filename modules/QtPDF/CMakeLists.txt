@@ -56,7 +56,10 @@ OPTION(BUILD_SHARED_LIBS "Build shared library" ON)
 message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
 
 # ...with the viewer program...
-OPTION(QTPDF_VIEWER "Build PDF viewer application" ON)
+if (NOT DEFINED QTPDF_VIEWER)
+  set(QTPDF_VIEWER ON)
+endif (NOT DEFINED QTPDF_VIEWER)
+OPTION(QTPDF_VIEWER "Build PDF viewer application" ${QTPDF_VIEWER})
 
 message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
 
