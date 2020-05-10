@@ -112,7 +112,7 @@ jobs:
         cp -r ../testcases tests/
         for IN in $(find . -name CTestTestfile.cmake); do
           mkdir -p "tests/build/$(dirname "${IN}")"
-          sed -e "s|${GITHUB_WORKSPACE}||g" "${IN}" > "tests/build/${IN}"
+          sed -e "s|${GITHUB_WORKSPACE}|..|g" "${IN}" > "tests/build/${IN}"
         done
         echo "${GITHUB_WORKSPACE}"
 
