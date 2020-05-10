@@ -90,7 +90,7 @@ jobs:
           -DMXE_USE_CCACHE=OFF \
           -DPoppler_ADDITIONAL_DEPENDENCIES='jpeg;tiff;lzma;webp;openjp2;lcms2;wtsapi32;freetype;bz2;harfbuzz;freetype_too' \
           -DTEXWORKS_ADDITIONAL_LIBS='shlwapi;' \
-          -DPLATFORM_DEPENDENCIES='freetype;harfbuzz_too;freetype;bz2;wtsapi32;opengl32;imm32' \
+          -DPLATFORM_DEPENDENCIES='freetype;harfbuzz_too;freetype;bz2;wtsapi32;opengl32;imm32;dwmapi' \
           -DCMAKE_INSTALL_PREFIX='install' \
           ..
 
