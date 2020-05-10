@@ -107,10 +107,8 @@ jobs:
         cd build
         make install
 
-        mkdir -p tests/build tests/modules/QtPDF
+        mkdir -p tests/build
         cp test_*.exe tests/build
-        cp -r ../testcases tests/
-        cp -r ../modules/QtPDF/unit-tests/ tests/modules/QtPDF
         for IN in $(find . -name CTestTestfile.cmake); do
           mkdir -p "tests/build/$(dirname "${IN}")"
           sed -e "s|${GITHUB_WORKSPACE}|..|g" "${IN}" > "tests/build/${IN}"
@@ -135,6 +133,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: Download Unit-Tests
       uses: actions/download-artifact@v2
       with:
