@@ -107,9 +107,10 @@ jobs:
         cd build
         make install
 
-        mkdir -p tests/build
+        mkdir -p tests/build tests/modules/QtPDF
         cp test_*.exe tests/build
         cp -r ../testcases tests/
+        cp -r ../modules/QtPDF/unit-tests/ tests/modules/QtPDF
         for IN in $(find . -name CTestTestfile.cmake); do
           mkdir -p "tests/build/$(dirname "${IN}")"
           sed -e "s|${GITHUB_WORKSPACE}|..|g" "${IN}" > "tests/build/${IN}"
