@@ -93,13 +93,6 @@ if (WITH_TESTS)
   endif()
 endif()
 
-if (WIN32 AND NOT BUILD_SHARED_LIBS)
-  find_package(Qt5WindowsPlatformSupport)
-endif ()
-message("WIN32 = ${WIN32}")
-message("BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}")
-message("QT_PLATFORM_LIBRARIES = ${QT_PLATFORM_LIBRARIES}")
-
 # Note: Qt5 only sets Qt5Widgets_VERSION, etc., but not QT_VERSION_MAJOR,
 # etc. which is used here.
 string(REGEX REPLACE "^([0-9]+).*$" "\\1" QT_VERSION_MAJOR "${Qt5Widgets_VERSION}")
@@ -115,7 +108,6 @@ ADD_DEFINITIONS(-DQT_VERSION_MAJOR=${QT_VERSION_MAJOR})
 FIND_PACKAGE(ZLIB REQUIRED)
 
 SET(QTPDF_LIBS
-  ${QT_PLATFORM_LIBRARIES}
   Qt5::Core Qt5::Widgets Qt5::Concurrent Qt5::Core Qt5::Xml
   ZLIB::ZLIB
 )
@@ -318,6 +310,14 @@ endif ()
 
 if (NOT TARGET QtPDF::qtpdf)
   add_library(QtPDF::qtpdf ALIAS qtpdf)
+endif ()
+
+if (WIN32 AND NOT BUILD_SHARED_LIBS)
+  find_package(Qt5WindowsPlatformSupport)
+  TARGET_LINK_LIBRARIES(qtpdf Qt5::WindowsPlatformSupport)
+  SET_TARGET_PROPERTIES(qtpdf PROPERTIES
+    INTERFACE_COMPILE_DEFINITIONS $<TARGET_PROPERTY:Qt5::WindowsPlatformSupport,INTERFACE_COMPILE_DEFINITIONS>
+  )
 endif ()
 
 
