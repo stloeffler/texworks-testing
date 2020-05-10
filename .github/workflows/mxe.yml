@@ -98,12 +98,26 @@ jobs:
       run: |
         cd build
         make -j
-        du -hd1
+        ls -lisah
         ${MXEDIR}/usr/bin/${MXETARGET}-strip *.exe
-        du -hd1
+        ls -lisah
+
+    - name: Package
+      run: |
+        cd build
         make install
 
-    - uses: actions/upload-artifact@v2
+        mkdir tests
+        cp test_*.exe tests
+
+    - name: Upload TeXworks
+      uses: actions/upload-artifact@v2
       with:
         name: TeXworks
         path: build/install
+
+    - name: Upload Unit-Tests
+      uses: actions/upload-artifact@v2
+      with:
+        name: unittests
+        path: build/tests
