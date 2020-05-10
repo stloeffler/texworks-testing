@@ -142,7 +142,7 @@ jobs:
         name: unittests
 
     - name: Run Tests
-      run: cd build && ctest --verbose
+      run: cd build && ctest --extra-verbose --interactive-debug-mode=0 --output-on-failure
 
 #  mac-screenshot:
 #    runs-on: macos-latest
