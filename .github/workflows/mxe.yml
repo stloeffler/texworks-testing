@@ -126,3 +126,16 @@ jobs:
       with:
         name: TeXworks
         path: build/install
+
+  test:
+    name: Test
+    needs: build
+    runs-on: windows-latest
+
+    - name: Download Unit-Tests
+      uses: actions/download-artifact@v2
+      with:
+        name: unittests
+
+    - name: Run Tests
+      run: cd build && ctest -v
