@@ -107,13 +107,15 @@ jobs:
         cd build
         make install
 
-        mkdir -p tests/build
+        mkdir -p tests/build/share
         cp test_*.exe tests/build
+        wget https://poppler.freedesktop.org/poppler-data-0.4.9.tar.gz
+        tar -xvf poppler-data-0.4.9.tar.gz
+        mv poppler-data-0.4.9 tests/build/share/poppler
         for IN in $(find . -name CTestTestfile.cmake); do
           mkdir -p "tests/build/$(dirname "${IN}")"
           sed -e "s|${GITHUB_WORKSPACE}|\$ENV{GITHUB_WORKSPACE}|g" "${IN}" > "tests/build/${IN}"
         done
-        echo "${GITHUB_WORKSPACE}"
 
     - name: Upload Unit-Tests
       uses: actions/upload-artifact@v2
