@@ -141,6 +141,8 @@ jobs:
       with:
         name: unittests
 
+    - run: build/test_BibTeXFile.exe
+
     - name: Run Tests
       shell: bash
       run: |
