@@ -161,7 +161,9 @@ jobs:
 
     - run: cd testcases && ..\build\test_BibTeXFile.exe -help
     - run: cd testcases && ..\build\test_BibTeXFile.exe -vb -nocrashhandler
-    - run: cd testcases && ..\build\test_BibTeXFile.exe -o test.log & type test.log
+    - run: |
+        cd testcases && ..\build\test_BibTeXFile.exe -o test.log
+        type test.log
 
     - name: Run Tests
       shell: bash
