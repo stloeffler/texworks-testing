@@ -156,24 +156,16 @@ jobs:
 #
 #    - run: cmake --version
 
-    - run: dir
-    - run: dir build
-
-    - run: cd testcases && ..\build\test_BibTeXFile.exe -help
-    - run: cd testcases && ..\build\test_BibTeXFile.exe -vb -nocrashhandler
-    - run: |
-        cd testcases && ..\build\test_BibTeXFile.exe -o test.log
-        type test.log
-
     - name: Run Tests
-#      shell: bash
+# QT_FORCE_STDERR_LOGGING was introduced in Qt 5.11 (earlier versions used
+# QT_LOGGING_TO_CONSOLE); without it, messages are sent to the debugger (or
+# potentially to a newly opened console window) instead of the running console
+# s.a. src/testlib/qplaintestlogger.cpp outputMessage() and
+# src/corelib/global/qlogging.cpp shouldLogToStderr()
       run: |
         cd build
-        $env:QT_LOGGING_DEBUG = 1
-        $env:QT_LOGGING_RULES = "*.info=true;*.debug=true"
         $env:QT_FORCE_STDERR_LOGGING = '1'
-        Get-ChildItem env:
-        ctest --verbose --force-new-ctest-process --debug
+        ctest --verbose
 
 #        Start-Process -FilePath ctest -Wait -NoNewWindow -ArgumentList "--verbose","-O test.log" -WorkingDirectory build
 #        type build\test.log
