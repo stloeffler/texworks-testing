@@ -166,7 +166,7 @@ jobs:
         type test.log
 
     - name: Run Tests
-      shell: bash
+#      shell: bash
       run: |
         Start-Process -FilePath ctest -Wait -NoNewWindow -ArgumentList "--verbose" -WorkingDirectory build
 
