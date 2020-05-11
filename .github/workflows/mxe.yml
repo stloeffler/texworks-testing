@@ -130,7 +130,7 @@ jobs:
   test:
     name: Test
     needs: build
-    runs-on: windows-2016
+    runs-on: windows-latest
 
     steps:
     - name: Checkout
