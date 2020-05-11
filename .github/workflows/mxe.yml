@@ -168,7 +168,8 @@ jobs:
     - name: Run Tests
 #      shell: bash
       run: |
-        Start-Process -FilePath ctest -Wait -NoNewWindow -ArgumentList "--verbose" -WorkingDirectory build
+        Start-Process -FilePath ctest -Wait -NoNewWindow -ArgumentList "--verbose","-O test.log" -WorkingDirectory build
+        type build\test.log
 
 #  mac-screenshot:
 #    runs-on: macos-latest
