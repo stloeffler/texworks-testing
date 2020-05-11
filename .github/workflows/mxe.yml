@@ -153,7 +153,8 @@ jobs:
         dir cmake-3.16.3-win64-x64\bin
         echo "$(pwd)\cmake-3.16.3-win64-x64\bin"
         echo "::add-path::$(pwd)\cmake-3.16.3-win64-x64\bin"
-        cmake --version
+
+    - run: cmake --version
 
     - run: dir
     - run: dir build
