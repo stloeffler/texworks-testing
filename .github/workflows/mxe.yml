@@ -157,7 +157,7 @@ jobs:
     - run: dir
     - run: dir build
 
-    - run: cd testcases && ..\build\test_BibTeXFile.exe -h
+    - run: cd testcases && ..\build\test_BibTeXFile.exe -help
     - run: cd testcases && ..\build\test_BibTeXFile.exe
 
     - name: Run Tests
