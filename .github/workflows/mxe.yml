@@ -169,6 +169,8 @@ jobs:
 #      shell: bash
       run: |
         cd build
+        $Env:QT_LOGGING_DEBUG = 1
+        $Env:QT_LOGGING_RULES = "*.info=true;*.debug=true"
         ctest --verbose
 
 #        Start-Process -FilePath ctest -Wait -NoNewWindow -ArgumentList "--verbose","-O test.log" -WorkingDirectory build
