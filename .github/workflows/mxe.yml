@@ -171,7 +171,7 @@ jobs:
         cd build
         $env:QT_LOGGING_DEBUG = 1
         $env:QT_LOGGING_RULES = "*.info=true;*.debug=true"
-        ctest --verbose --force-new-ctest-process
+        ctest --verbose --force-new-ctest-process --debug
 
 #        Start-Process -FilePath ctest -Wait -NoNewWindow -ArgumentList "--verbose","-O test.log" -WorkingDirectory build
 #        type build\test.log
