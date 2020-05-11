@@ -141,7 +141,13 @@ jobs:
       with:
         name: unittests
 
-    - run: build\test_BibTeXFile.exe
+    - name: Install CMake
+      uses: ./.github/actions/install-cmake
+      with:
+        version: '3.17.2'
+
+    - run: dir
+    - run: dir build
 
     - name: Run Tests
       shell: bash
