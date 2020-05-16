@@ -95,7 +95,7 @@ jobs:
       fail-fast: false
       matrix:
         # The "ancient versions" (with Qt 5.3) are a special case to be included separately
-        qt: [5.12.8, 5.15.0]
+        qt: [5.12.8, 5.14.1]
         disable-warnings: [false]
         include:
           - qt: 5.3
@@ -109,7 +109,7 @@ jobs:
             hunspell: 1.7.0
             poppler-data: 0.4.9
             cmake: 3.16.2
-          - qt: 5.15.0
+          - qt: 5.14.1
             poppler: 0.88.0
             hunspell: 1.7.0
             poppler-data: 0.4.9
