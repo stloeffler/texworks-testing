@@ -14,10 +14,10 @@
 #ifndef PDFDocumentView_H
 #define PDFDocumentView_H
 
-#include <QtWidgets>
+#include "PDFBackend.h"
+#include "PDFDocumentTools.h"
 
-#include <PDFBackend.h>
-#include <PDFDocumentTools.h>
+#include <QtWidgets>
 
 namespace QtPDF {
 
@@ -261,8 +261,10 @@ public:
   // put into a QScrollArea instead).
 public slots:
   void setWindowTitle(const QString & windowTitle);
+#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
 signals:
   void windowTitleChanged(const QString &);
+#endif
 protected slots:
   virtual void initFromDocument(const QWeakPointer<QtPDF::Backend::Document> doc) { _doc = doc; }
   virtual void retranslateUi() { }

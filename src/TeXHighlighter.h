@@ -24,12 +24,11 @@
 
 #include "document/SpellChecker.h"
 
+#include <QRegularExpression>
 #include <QSyntaxHighlighter>
-
+#include <QTextCharFormat>
 #include <QTextDocument>
 #include <QTextLayout>
-#include <QTextCharFormat>
-#include <QRegularExpression>
 #include <QTimer>
 
 namespace Tw {
@@ -97,7 +96,7 @@ private:
 	QVector<range> _dirtyRanges;
 
 	QTextBlock _currentBlock;
-	QList<QTextLayout::FormatRange> _currentFormatRanges;
+	QVector<QTextLayout::FormatRange> _currentFormatRanges;
 };
 
 class TeXHighlighter : public NonblockingSyntaxHighlighter

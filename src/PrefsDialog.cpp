@@ -20,24 +20,24 @@
 */
 
 #include "PrefsDialog.h"
+
+#include "CompletingEdit.h"
 #include "DefaultPrefs.h"
+#include "PDFDocumentWindow.h"
 #include "Settings.h"
 #include "TWApp.h"
-#include "PDFDocumentWindow.h"
-#include "TeXHighlighter.h"
-#include "CompletingEdit.h"
 #include "TWUtils.h"
+#include "TeXHighlighter.h"
 #include "document/SpellChecker.h"
 
-#include <QFontDatabase>
-#include <QTextCodec>
-#include <QSet>
-#include <QFileDialog>
-#include <QMainWindow>
-#include <QToolBar>
 #include <QDesktopWidget>
-//#include <QtAlgorithms>
+#include <QFileDialog>
+#include <QFontDatabase>
+#include <QMainWindow>
 #include <QMessageBox>
+#include <QSet>
+#include <QTextCodec>
+#include <QToolBar>
 
 PrefsDialog::PrefsDialog(QWidget *parent)
 	: QDialog(parent)
@@ -445,7 +445,6 @@ void PrefsDialog::initPathAndToolLists()
 
 const int kSystemLocaleIndex = 0;
 const int kEnglishLocaleIndex = 1;
-const int kFirstTranslationIndex = 1;
 
 typedef QPair<QString, QString> DictPair;
 
@@ -494,7 +493,7 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 
 		dictList << qMakePair(label, dict);
 	}
-	qSort(dictList.begin(), dictList.end(), dictPairLessThan);
+	std::sort(dictList.begin(), dictList.end(), dictPairLessThan);
 	foreach (const DictPair& dict, dictList)
 		dlg.language->addItem(dict.first, dict.second);
 		
@@ -554,7 +553,7 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 		}
 		displayList << qMakePair(locName, *iter);
 	}
-	qSort(displayList.begin(), displayList.end(), dictPairLessThan);
+	std::sort(displayList.begin(), displayList.end(), dictPairLessThan);
 
 	Q_FOREACH(DictPair p, displayList) {
 		dlg.localePopup->addItem(p.first, p.second);
@@ -769,7 +768,11 @@ QDialog::DialogCode PrefsDialog::doPrefsDialog(QWidget *parent)
 		foreach (QWidget* widget, TWApp::instance()->allWidgets()) {
 			QTextEdit* editor = qobject_cast<QTextEdit*>(widget);
 			if (editor)
-			    editor->setTabStopWidth(dlg.tabWidth->value());
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+				editor->setTabStopWidth(dlg.tabWidth->value());
+#else
+				editor->setTabStopDistance(dlg.tabWidth->value());
+#endif
 		}
 		
 		// Preview

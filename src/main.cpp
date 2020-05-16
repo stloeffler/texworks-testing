@@ -19,18 +19,18 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include "TWApp.h"
-#include "TWVersion.h"
 #include "CommandlineParser.h"
-#include "TWUtils.h"
 #include "InterProcessCommunicator.h"
+#include "TWApp.h"
+#include "TWUtils.h"
+#include "TWVersion.h"
 
-#include <QTimer>
 #include <QTextCodec>
+#include <QTimer>
 
 #if defined(STATIC_QT5) && defined(Q_OS_WIN)
   #include <QtPlugin>
-  Q_IMPORT_PLUGIN (QWindowsIntegrationPlugin);
+  Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
 #endif
 
 struct fileToOpenStruct{

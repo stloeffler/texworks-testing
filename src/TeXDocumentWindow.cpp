@@ -20,46 +20,47 @@
 */
 
 #include "TeXDocumentWindow.h"
-#include "TeXHighlighter.h"
-#include "TeXDocks.h"
+
+#include "CitationSelectDialog.h"
+#include "ClickableLabel.h"
+#include "ConfirmDelete.h"
+#include "DefaultPrefs.h"
+#include "Engine.h"
 #include "FindDialog.h"
-#include "TemplateDialog.h"
+#include "HardWrapDialog.h"
+#include "PDFDocumentWindow.h"
 #include "Settings.h"
 #include "TWApp.h"
 #include "TWUtils.h"
-#include "PDFDocumentWindow.h"
-#include "ConfirmDelete.h"
-#include "HardWrapDialog.h"
-#include "DefaultPrefs.h"
-#include "CitationSelectDialog.h"
-#include "Engine.h"
-#include "ClickableLabel.h"
+#include "TeXDocks.h"
+#include "TeXHighlighter.h"
+#include "TemplateDialog.h"
 #include "scripting/ScriptAPI.h"
 
+#include <QAbstractButton>
+#include <QAbstractItemView>
+#include <QAbstractTextDocumentLayout>
+#include <QActionGroup>
+#include <QClipboard>
 #include <QCloseEvent>
+#include <QComboBox>
+#include <QDesktopWidget>
+#include <QDockWidget>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QTextStream>
-#include <QStatusBar>
+#include <QFileSystemWatcher>
 #include <QFontDialog>
 #include <QInputDialog>
-#include <QDesktopWidget>
-#include <QClipboard>
-#include <QStringList>
-#include <QUrl>
-#include <QComboBox>
+#include <QMessageBox>
 #include <QProcess>
-#include <QAbstractItemView>
-#include <QScrollBar>
-#include <QActionGroup>
-#include <QTextCodec>
-#include <QSignalMapper>
-#include <QDockWidget>
-#include <QAbstractButton>
 #include <QPushButton>
-#include <QFileSystemWatcher>
+#include <QScrollBar>
+#include <QSignalMapper>
+#include <QStatusBar>
+#include <QStringList>
 #include <QTextBrowser>
-#include <QAbstractTextDocumentLayout>
+#include <QTextCodec>
+#include <QTextStream>
+#include <QUrl>
 
 #if defined(Q_OS_WIN)
 #include <windows.h>
@@ -293,8 +294,14 @@ void TeXDocumentWindow::init()
 	}
 	
 	// kDefault_TabWidth is defined in DefaultPrefs.h
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 	textEdit->setTabStopWidth(settings.value(QString::fromLatin1("tabWidth"), kDefault_TabWidth).toInt());
-	
+	textEdit_console->setTabStopWidth(settings.value(QString::fromLatin1("tabWidth"), kDefault_TabWidth).toInt());
+#else
+	textEdit->setTabStopDistance(settings.value(QString::fromLatin1("tabWidth"), kDefault_TabWidth).toReal());
+	textEdit_console->setTabStopDistance(settings.value(QString::fromLatin1("tabWidth"), kDefault_TabWidth).toReal());
+#endif
+
 	// It is VITAL that this connection is queued! Calling showMessage directly
 	// from TeXDocument::contentsChanged would otherwise result in a seg fault
 	// (for whatever reason)
@@ -528,7 +535,7 @@ void TeXDocumentWindow::reloadSpellcheckerMenu()
 			dictActions << act;
 		}
 	}
-	qSort(dictActions.begin(), dictActions.end(), dictActionLessThan);
+	std::sort(dictActions.begin(), dictActions.end(), dictActionLessThan);
 	foreach (QAction* dictAction, dictActions)
 		menuSpelling->addAction(dictAction);
 }
@@ -693,7 +700,7 @@ bool TeXDocumentWindow::event(QEvent *event) // based on example at doc.trolltec
 					QPixmap dragIcon(QString::fromLatin1(":/images/images/TeXworks-doc-48.png"));
 					drag->setPixmap(dragIcon);
 					drag->setHotSpot(QPoint(dragIcon.width() - 5, 5));
-					drag->start(Qt::LinkAction | Qt::CopyAction);
+					drag->exec(Qt::LinkAction | Qt::CopyAction);
 				}
 				else if (mods == Qt::ShiftModifier) {
 					QMenu menu(this);

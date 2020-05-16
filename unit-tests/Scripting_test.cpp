@@ -18,10 +18,12 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
+
 #include "Scripting_test.h"
-#include "scripting/JSScriptInterface.h"
-#include "scripting/JSScript.h"
+
 #include "MockScriptingAPI.h"
+#include "scripting/JSScript.h"
+#include "scripting/JSScriptInterface.h"
 
 using namespace Tw::Scripting;
 
@@ -275,7 +277,7 @@ void TestScripting::execute()
 } // namespace UnitTest
 
 #if defined(STATIC_QT5) && defined(Q_OS_WIN)
-  Q_IMPORT_PLUGIN (QWindowsIntegrationPlugin);
+  Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
 #endif
 
 QTEST_MAIN(UnitTest::TestScripting)

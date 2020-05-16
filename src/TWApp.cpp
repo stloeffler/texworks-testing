@@ -20,45 +20,40 @@
 */
 
 #include "TWApp.h"
-#include "TWUtils.h"
-#include "TeXDocumentWindow.h"
+
+#include "DefaultBinaryPaths.h"
+#include "DefaultPrefs.h"
 #include "PDFDocumentWindow.h"
 #include "PrefsDialog.h"
-#include "DefaultPrefs.h"
-#include "TemplateDialog.h"
-#include "TWSystemCmd.h"
+#include "ResourcesDialog.h"
 #include "Settings.h"
+#include "TWSystemCmd.h"
+#include "TWTextCodecs.h"
+#include "TWUtils.h"
+#include "TWVersion.h"
+#include "TeXDocumentWindow.h"
+#include "TemplateDialog.h"
 #include "document/SpellChecker.h"
 #include "scripting/ScriptAPI.h"
 
-#include "TWVersion.h"
-#include "ResourcesDialog.h"
-#include "TWTextCodecs.h"
-
-#if defined(Q_OS_WIN)
-#include "DefaultBinaryPathsWin.h"
-#else
-#include "DefaultBinaryPaths.h"
-#endif
-
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QString>
-#include <QMenuBar>
-#include <QMenu>
 #include <QAction>
-#include <QSettings>
-#include <QStringList>
+#include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QEvent>
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QKeySequence>
-#include <QDesktopWidget>
-#include <QTextCodec>
+#include <QLibraryInfo>
 #include <QLocale>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
+#include <QTextCodec>
 #include <QTranslator>
 #include <QUrl>
-#include <QDesktopServices>
-#include <QLibraryInfo>
 
 #if defined(Q_OS_DARWIN)
 #include <CoreServices/CoreServices.h>
@@ -79,6 +74,29 @@ TWApp *TWApp::theAppInstance = nullptr;
 
 const QEvent::Type TWDocumentOpenEvent::type = static_cast<QEvent::Type>(QEvent::registerEventType());
 
+QString replaceEnvironmentVariables(const QString & s)
+{
+	QString rv{s};
+	QProcessEnvironment env{QProcessEnvironment::systemEnvironment()};
+
+	QStringList vars = env.keys();
+	// Sort the variable names from longest to shortest to appropriately handle
+	// cases like $HOMEPATH (if $HOME also exists)
+	std::sort(vars.begin(), vars.end(), [](const QString & a, const QString & b) { return a.length() > b.length(); });
+
+	foreach(const QString & var, vars) {
+#ifdef Q_OS_WINDOWS
+		// Replace "%VAR%" by the value of the corresponding environment variable
+		rv = rv.replace(QStringLiteral("%") + var + QStringLiteral("%"), env.value(var), Qt::CaseInsensitive);
+#else
+		// Replace "${VAR}" and "$VAR" by the value of the corresponding
+		// environment variable (but not "\$HOME")
+		QRegularExpression re{QStringLiteral("(?<!\\\\)\\$(%1|\\{%1\\})").arg(QRegularExpression::escape(var))};
+		rv.replace(re, env.value(var));
+#endif
+	}
+	return rv;
+}
 
 TWApp::TWApp(int &argc, char **argv)
 	: QApplication(argc, argv)
@@ -324,11 +342,11 @@ QString TWApp::GetWindowsVersionString()
 	memset(&osvi, 0, sizeof(OSVERSIONINFOEXA));
 	
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
-	if ( !(bOsVersionInfoEx = GetVersionExA ((OSVERSIONINFOA *) &osvi)) )
+	if ( !(bOsVersionInfoEx = GetVersionExA (reinterpret_cast<OSVERSIONINFOA *>(&osvi))) )
 		return result;
 	
 	// Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
-	pGNSI = (PGNSI) GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetNativeSystemInfo");
+	pGNSI = reinterpret_cast<PGNSI>(GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetNativeSystemInfo"));
 	if (pGNSI)
 		pGNSI(&si);
 	else
@@ -432,32 +450,24 @@ unsigned int TWApp::GetWindowsVersion()
 	memset(&osvi, 0, sizeof(OSVERSIONINFOEXA));
 	
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
-	if ( !GetVersionExA ((OSVERSIONINFOA *) &osvi) )
+	if (!GetVersionExA (reinterpret_cast<OSVERSIONINFOA *>(&osvi)))
 		return 0;
 	
 	return (osvi.dwMajorVersion << 24) | (osvi.dwMinorVersion << 16) | (osvi.wServicePackMajor << 8) | (osvi.wServicePackMinor << 0);
 }
 #endif
 
-const QStringList TWApp::getBinaryPaths(QStringList& systemEnvironment)
+const QStringList TWApp::getBinaryPaths()
 {
-#if defined(Q_OS_WIN)
-#define PATH_CASE_SENSITIVE	Qt::CaseInsensitive
-#else
-#define PATH_CASE_SENSITIVE	Qt::CaseSensitive
-#endif
 	QStringList binPaths = getPrefsBinaryPaths();
-	QMutableStringListIterator envIter(systemEnvironment);
-	while (envIter.hasNext()) {
-		QString& envVar = envIter.next();
-		if (envVar.startsWith(QLatin1String("PATH="), PATH_CASE_SENSITIVE)) {
-			foreach (const QString& s, envVar.mid(5).split(QString::fromLatin1(PATH_LIST_SEP), QString::SkipEmptyParts)) {
-				if (!binPaths.contains(s)) {
-					binPaths.append(s);
-				}
-			}
-			envVar = envVar.left(5) + binPaths.join(QString::fromLatin1(PATH_LIST_SEP));
-			break;
+	QProcessEnvironment env{QProcessEnvironment::systemEnvironment()};
+	for(QString & path : binPaths) {
+		path = replaceEnvironmentVariables(path);
+	}
+	for (QString path : env.value(QStringLiteral("PATH")).split(QStringLiteral(PATH_LIST_SEP), QString::SkipEmptyParts)) {
+		path = replaceEnvironmentVariables(path);
+		if (!binPaths.contains(path)) {
+			binPaths.append(path);
 		}
 	}
 	return binPaths;
@@ -503,8 +513,7 @@ void TWApp::writeToMailingList()
 #endif
 	body += QLatin1String("Library path     : ") + TWUtils::getLibraryPath(QString()) + QChar::fromLatin1('\n');
 
-	QStringList sysEnv(QProcess::systemEnvironment());
-	const QStringList binPaths = getBinaryPaths(sysEnv);
+	const QStringList binPaths = getBinaryPaths();
 	QString pdftex = findProgram(QString::fromLatin1("pdftex"), binPaths);
 	if (pdftex.isEmpty())
 		pdftex = QLatin1String("not found");
@@ -740,17 +749,20 @@ void TWApp::tileWindows()
 
 void TWApp::arrangeWindows(WindowArrangementFunction func)
 {
-	QDesktopWidget *desktop = QApplication::desktop();
-	for (int screenIndex = 0; screenIndex < desktop->numScreens(); ++screenIndex) {
+	foreach(QScreen * screen, QGuiApplication::screens()) {
 		QWidgetList windows;
-		foreach (TeXDocumentWindow* texDoc, TeXDocumentWindow::documentList())
-			if (desktop->screenNumber(texDoc) == screenIndex)
+		// All windows we iterate over here are top-level windows, so
+		// windowHandle() should return a valid pointer
+		foreach (TeXDocumentWindow* texDoc, TeXDocumentWindow::documentList()) {
+			if (texDoc->windowHandle()->screen() == screen)
 				windows << texDoc;
-		foreach (PDFDocumentWindow* pdfDoc, PDFDocumentWindow::documentList())
-			if (desktop->screenNumber(pdfDoc) == screenIndex)
+		}
+		foreach (PDFDocumentWindow* pdfDoc, PDFDocumentWindow::documentList()) {
+			if (pdfDoc->windowHandle()->screen() == screen)
 				windows << pdfDoc;
+		}
 		if (!windows.empty())
-			(*func)(windows, desktop->availableGeometry(screenIndex));
+			(*func)(windows, screen->availableGeometry());
 	}
 }
 
@@ -797,7 +809,13 @@ void TWApp::setDefaultPaths()
 		}
 	}
 	for (int i = binaryPaths->count() - 1; i >= 0; --i) {
-		QDir dir(binaryPaths->at(i));
+		// Note: Only replace the environmental variables for testing directory
+		// existance but do not alter the binaryPaths themselves. Those might
+		// get stored, e.g., in the preferences and we want to keep
+		// environmental variables intact in there (as they may be (re)defined
+		// later on).
+		// All binary paths are properly expanded in getBinaryPaths().
+		QDir dir(replaceEnvironmentVariables(binaryPaths->at(i)));
 		if (!dir.exists())
 			binaryPaths->removeAt(i);
 	}

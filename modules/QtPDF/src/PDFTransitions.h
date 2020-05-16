@@ -14,8 +14,8 @@
 #ifndef PDFTransitions_H
 #define PDFTransitions_H
 
+#include <QElapsedTimer>
 #include <QImage>
-#include <QTime>
 
 namespace QtPDF {
 
@@ -57,7 +57,7 @@ protected:
   Motion _motion{Motion_Inward};
   bool _started{false};
   bool _finished{false};
-  QTime _timer;
+  QElapsedTimer _timer;
   QImage _imgStart;
   QImage _imgEnd;
   // TODO: /SS and /B properties

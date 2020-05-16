@@ -19,12 +19,11 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include <QTextCursor>
-
 #include "TeXHighlighter.h"
 #include "TWUtils.h"
 #include "document/TeXDocument.h"
 
+#include <QTextCursor>
 #include <climits> // for INT_MAX
 
 QList<TeXHighlighter::HighlightingSpec> *TeXHighlighter::syntaxRules = nullptr;
@@ -382,7 +381,11 @@ void NonblockingSyntaxHighlighter::process()
 			_currentFormatRanges.clear();
 			highlightBlock(block.text());
 
-			block.layout()->setAdditionalFormats(_currentFormatRanges);
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+			block.layout()->setAdditionalFormats(_currentFormatRanges.toList());
+#else
+			block.layout()->setFormats(_currentFormatRanges);
+#endif
 
 			// If the userState has changed, make sure the next block is rehighlighted
 			// as well

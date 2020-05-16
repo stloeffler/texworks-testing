@@ -22,13 +22,21 @@
 #ifndef TWApp_H
 #define TWApp_H
 
-#include <QApplication>
-#include <QList>
 #include <QAction>
-#include <QSettings>
+#include <QApplication>
 #include <QClipboard>
-#include <QVariant>
 #include <QHash>
+#include <QList>
+#if defined Q_OS_DARWIN
+#include <QMenu>
+#include <QMenuBar>
+#endif
+#include <QSettings>
+#include <QString>
+#include <QVariant>
+
+class Engine;
+class TWScriptManager;
 
 #if defined(Q_OS_WIN)
 #define PATH_LIST_SEP   ";"
@@ -46,13 +54,6 @@
 #define TW_BUILD_ID_STR STRINGIFY(TW_BUILD_ID)
 
 #define DEFAULT_ENGINE_NAME "pdfLaTeX"
-
-class QString;
-class QMenu;
-class QMenuBar;
-
-class Engine;
-class TWScriptManager;
 
 // general constants used by multiple document types
 const int kStatusMessageDuration = 3000;
@@ -80,7 +81,7 @@ public:
 	void setBinaryPaths(const QStringList& paths);
 	void setEngineList(const QList<Engine>& engines);
 
-	const QStringList getBinaryPaths(QStringList& sysEnv);
+	const QStringList getBinaryPaths();
 	// runtime paths, including $PATH;
 	// also modifies passed-in sysEnv to include paths from prefs
 	QString findProgram(const QString& program, const QStringList& binPaths);
