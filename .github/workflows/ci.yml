@@ -91,6 +91,9 @@ jobs:
   build-linux:
     name: Linux (Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }})
     runs-on: ubuntu-latest
+    env:
+      CC: gcc-9
+      CXX: g++-9
     strategy:
       fail-fast: false
       matrix:
