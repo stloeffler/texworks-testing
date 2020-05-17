@@ -146,17 +146,6 @@ jobs:
       with:
         version: '${{ matrix.hunspell }}'
 
-    - name: Version summary
-      run: |
-        echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
-        echo "GCC:          $(gcc --version | sed -ne 's/gcc ([^)]*) //p')"
-        echo "Hunspell:     ${{ matrix.hunspell }}"
-        echo "Lua:          $(apt-cache policy liblua5.3-dev | sed -ne 's/  Installed: //p')"
-        echo "Poppler:      ${{ matrix.poppler }}"
-        echo "Poppler-data: ${{ matrix.poppler-data }}"
-        echo "Qt:           ${{ matrix.qt }}"
-        echo "Zlib:         $(apt-cache policy zlib1g-dev | sed -ne 's/  Installed: //p')"
-
     - name: Configure
       run: |
         mkdir build && cd build && cmake -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
@@ -174,8 +163,6 @@ jobs:
   build-win-msys:
     name: Windows (MSYS)
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
 
     steps:
     - name: Checkout
@@ -202,7 +189,7 @@ jobs:
       working-directory: build
 
   build-macosx:
-    name: Mac OS X (${{ matrix.label }})
+    name: Mac OS X
     runs-on: macos-latest
 
     steps:
