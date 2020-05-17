@@ -175,17 +175,17 @@ jobs:
 
     - name: Install dependencies
       # git is needed for getting git revision information
-      run: msys2do pacman --noconfirm -S cmake git make mingw-w64-x86_64-gcc mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua mingw-w64-x86_64-poppler mingw-w64-x86_64-qt5
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake git make mingw-w64-x86_64-gcc mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua mingw-w64-x86_64-poppler mingw-w64-x86_64-qt5
 
-    - run: msys2do pacman -Ql cmake
+  #  - run: msys2do pacman -Ql cmake
 
-    - run: msys2do echo `$PATH
+ #   - run: msys2do echo `$PATH
 
-    - run: msys2do ls /usr/bin
+  #  - run: msys2do ls /usr/bin
 
-    - run: msys2do /usr/bin/cmake.exe --version
+ #   - run: msys2do /usr/bin/cmake.exe --version
 
-    - run: msys2do cmake.exe --version
+ #   - run: msys2do cmake.exe --version
 
     - name: Configure
       run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
