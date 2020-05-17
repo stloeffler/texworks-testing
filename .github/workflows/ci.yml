@@ -181,6 +181,10 @@ jobs:
 
     - run: msys2do echo `$PATH
 
+    - run: msys2do ls /usr/bin
+
+    - run: msys2do /usr/bin/cmake.exe --version
+
     - run: msys2do cmake.exe --version
 
     - name: Configure
