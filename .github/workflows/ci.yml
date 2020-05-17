@@ -89,30 +89,30 @@ jobs:
 ################################################################################
 
   build-linux:
-    name: Linux (Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }})
+    name: Linux (${{ matrix.label }})
     runs-on: ubuntu-latest
-    env:
-      CC: gcc-9
-      CXX: g++-9
     strategy:
       fail-fast: false
       matrix:
         # The "ancient versions" (with Qt 5.3) are a special case to be included separately
-        qt: [5.12.8, 5.14.1]
+        label: ['oldest', 'lts', 'latest']
         disable-warnings: [false]
         include:
-          - qt: 5.3
+          - label: 'oldest'
+            qt: 5.3
             poppler: 0.24.5
             hunspell: 1.2.8
             poppler-data: 0.4.6
             cmake: 3.1.0
             disable-warnings: true
-          - qt: 5.12.8
+          - label: 'lts'
+            qt: 5.12.8
             poppler: 0.71.0
             hunspell: 1.7.0
             poppler-data: 0.4.9
             cmake: 3.16.2
-          - qt: 5.14.1
+          - label: 'latest'
+            qt: 5.14.2
             poppler: 0.88.0
             hunspell: 1.7.0
             poppler-data: 0.4.9
@@ -201,30 +201,22 @@ jobs:
       with:
         update: true
 
-    - name: Version summary
-      run: |
-        msys2do 'echo -e `\`"Hunspell:     ${{ matrix.hunspell }}`\nPoppler:      ${{ matrix.poppler }}`\`"'
-#        msys2do echo `\`"Hunspell:     ${{ matrix.hunspell }}`\`\nPoppler:      ${{ matrix.poppler }}`\"
-
-#        msys2do echo `\`"Lua:          `\`"
-#        msys2do echo `\`"Poppler-data: ${{ matrix.poppler-data }}`\`"
-#        msys2do echo `\`"Qt:           ${{ matrix.qt }}`\`"
-#        msys2do echo `\`"Zlib:         `\`"
-
-#        msys2do echo `\`"CMake:        `$(cmake --version | sed -ne 's/cmake version //p')`\`"
-#        msys2do echo `\`"GCC:          `$(gcc --version | sed -ne 's/gcc ([^)]*) //p')`\`"
+#    - name: Version summary
+#      run: |
+#        msys2do 'echo -e `\`"Hunspell:     ${{ matrix.hunspell }}`\nPoppler:      ${{ matrix.poppler }}`\`"'
+##        msys2do echo `\`"Hunspell:     ${{ matrix.hunspell }}`\`\nPoppler:      ${{ matrix.poppler }}`\"
+#
+##        msys2do echo `\`"Lua:          `\`"
+##        msys2do echo `\`"Poppler-data: ${{ matrix.poppler-data }}`\`"
+##        msys2do echo `\`"Qt:           ${{ matrix.qt }}`\`"
+##        msys2do echo `\`"Zlib:         `\`"
+#
+##        msys2do echo `\`"CMake:        `$(cmake --version | sed -ne 's/cmake version //p')`\`"
+##        msys2do echo `\`"GCC:          `$(gcc --version | sed -ne 's/gcc ([^)]*) //p')`\`"
 
     - name: Install dependencies
       # git is needed for getting git revision information
       run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
-
-    - run: |
-        msys2do echo $(pacman -Qi mingw-w64-x86_64-qt5)
-
-    - run: |
-        msys2do echo $(pacman -Qi mingw-w64-x86_64-qt5 | sed -ne 's/Version\s*: //p')
-
-    - run: msys2do pacman -Qi mingw-w64-x86_64-qt5
 
     - name: Install CMake
       uses: ./.github/actions/install-cmake
@@ -261,18 +253,20 @@ jobs:
       working-directory: build
 
   build-macosx:
-    name: Mac OS X (Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }})
+    name: Mac OS X (${{ matrix.label }})
     runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - qt: 5.12.8
+          - label: 'lts'
+            qt: 5.12.8
             poppler: 0.71.0
             hunspell: 1.7.0
             poppler-data: 0.4.9
             cmake: 3.16.2
-          - qt: 5.15.0
+          - label: 'latest'
+            qt: 5.15.0
             poppler: 0.88.0
             hunspell: 1.7.0
             poppler-data: 0.4.9
