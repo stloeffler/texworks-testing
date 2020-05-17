@@ -95,9 +95,8 @@ jobs:
       fail-fast: false
       matrix:
         # The "ancient versions" (with Qt 5.3) are a special case to be included separately
-        label: ['oldest', 'lts', 'latest']
         include:
-          - label: 'oldest'
+          - label: 'legacy'
             qt: 5.3
             poppler: 0.24.5
             hunspell: 1.2.8
