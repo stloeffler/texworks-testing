@@ -1,0 +1,26 @@
+FROM opensuse/tumbleweed
+
+RUN zypper install -y --no-recommends \
+	cmake \
+	dbus-1-devel \
+	git \
+	make \
+	hunspell-devel \
+	lua-devel \
+	libpoppler-qt5-devel \
+	libqt5-qtbase-devel \
+	libqt5-qtscript-devel \
+	libqt5-qttools-devel \
+	zlib-devel \
+	liberation-fonts \
+	poppler-data \
+	which \
+	xvfb-run \
+&& zypper clean --all
+
+COPY . /home/tw
+
+RUN mkdir /home/tw/build && cd /home/tw/build && \
+cmake .. && \
+make -j && \
+xvfb-run ctest -V

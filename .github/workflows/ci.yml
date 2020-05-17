@@ -334,3 +334,20 @@ jobs:
     - name: Test
       run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
       working-directory: build
+
+  build-docker:
+    name: ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - distro: Arch Linux
+          file: Dockerfile.arch
+        - distro: Fedora
+          file: Dockerfile.fedora
+        - distro: openSUSE
+          file: Dockerfile.opensuse
+    steps:
+    - name: Build
+      run: docker build -f .github/workflows/${{ matrix.file }} .

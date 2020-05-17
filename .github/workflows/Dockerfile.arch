@@ -1,0 +1,24 @@
+FROM archlinux
+
+RUN pacman --noconfirm -Syu \
+	cmake \
+	gcc \
+	git \
+	make \
+	hunspell \
+	lua \
+	poppler-qt5 \
+	qt5-base \
+	qt5-script \
+	qt5-tools \
+	gsfonts \
+	poppler-data \
+	xorg-server-xvfb \
+&& pacman --noconfirm -Scc
+
+COPY . /home/tw
+
+RUN mkdir /home/tw/build && cd /home/tw/build && \
+cmake .. && \
+make -j && \
+xvfb-run ctest -V

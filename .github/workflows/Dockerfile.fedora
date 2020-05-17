@@ -1,0 +1,24 @@
+FROM fedora
+
+RUN yum -y install \
+	cmake \
+	git \
+	make \
+	hunspell-devel \
+	lua-devel \
+	poppler-qt5-devel \
+	qt5-qtbase-devel \
+	qt5-qtscript-devel \
+	qt5-qttools-static \
+	zlib-devel \
+	liberation-fonts \
+	poppler-data \
+	xorg-x11-server-Xvfb \
+&& yum clean all
+
+COPY . /home/tw
+
+RUN mkdir /home/tw/build && cd /home/tw/build && \
+cmake .. && \
+make -j && \
+xvfb-run ctest -V
