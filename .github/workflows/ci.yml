@@ -179,7 +179,9 @@ jobs:
 
     - run: msys2do pacman -Ql cmake
 
-    - run: msys2do cmake --version
+    - run: msys2do echo `$PATH
+
+    - run: msys2do cmake.exe --version
 
     - name: Configure
       run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
