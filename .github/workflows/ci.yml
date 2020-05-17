@@ -205,80 +205,21 @@ jobs:
   build-macosx:
     name: Mac OS X (${{ matrix.label }})
     runs-on: macos-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - label: 'lts'
-            qt: 5.12.8
-            poppler: 0.71.0
-            hunspell: 1.7.0
-            poppler-data: 0.4.9
-            cmake: 3.16.2
-          - label: 'latest'
-            qt: 5.15.0
-            poppler: 0.88.0
-            hunspell: 1.7.0
-            poppler-data: 0.4.9
-            cmake: 3.17.2
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - run: gcc --version
-    - run: g++ --version
-
     - name: Install Dependencies
       run: |
         brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
-        brew install lua
-
-    - run: echo "$(otool -L /usr/lib/libz.dylib | sed -ne 's|[:space:]*/usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p')"
-    - run: echo "Zlib $(otool -L /usr/lib/libz.dylib | sed -ne 's|[:space:]*/usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p')"
-    - run: echo "Zlib $(otool -L /usr/lib/libz.dylib | sed -ne 's|\s*/usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p')"
-    - run: echo "Zlib $(otool -L /usr/lib/libz.dylib | sed -ne 's| */usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p')"
-    - run: echo "Zlib $(otool -L /usr/lib/libz.dylib | sed -ne 's|\t*/usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p')"
-    - run: echo "Zlib $(otool -L /usr/lib/libz.dylib | sed -ne 's|	*/usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p')"
-
-    - name: Install CMake
-      uses: ./.github/actions/install-cmake
-      with:
-        version: '${{ matrix.cmake }}'
-
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: ${{ matrix.qt }}
-        modules: 'qtscript'
-
-    - name: Build Poppler
-      uses: ./.github/actions/build-poppler
-      with:
-        version: '${{ matrix.poppler }}'
-        poppler-data-version: '${{ matrix.poppler-data }}'
-
-    - name: Build Hunspell
-      uses: ./.github/actions/build-hunspell
-      with:
-        version: '${{ matrix.hunspell }}'
-
-    - name: Version summary
-      run: |
-        echo "CMake:        $(cmake --version | sed -ne 's/cmake version //p')"
-        echo "GCC:          clang $(gcc --version | sed -ne 's/Apple clang version \([^ ]*\) .*/\1/p')"
-        echo "Hunspell:     ${{ matrix.hunspell }}"
-        echo "Lua:          $(brew list --versions lua | sed -ne 's/lua //p')"
-        echo "Poppler:      ${{ matrix.poppler }}"
-        echo "Poppler-data: ${{ matrix.poppler-data }}"
-        echo "Qt:           ${{ matrix.qt }}"
-        echo "Zlib:         $(otool -L /usr/lib/libz.dylib | sed -ne 's|	*/usr/lib/libz.*\.dylib ([^,]*, current version \([^)]*\))|\1|p') (system)"
+        brew install hunspell poppler lua qt5
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
 
     - name: Build
-      run: make VERBOSE=1
+      run: make -j
       working-directory: build
 
     - name: Test
