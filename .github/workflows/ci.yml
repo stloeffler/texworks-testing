@@ -172,19 +172,11 @@ jobs:
 
 ################################################################################
 
-  build-win:
-    name: Windows (Qt ${{ matrix.qt }}, Poppler ${{ matrix.poppler }}, Hunspell ${{ matrix.hunspell }})
+  build-win-msys:
+    name: Windows (MSYS)
     runs-on: windows-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-#          - qt: 5.12.8
-          - qt: 5.14.2 # mingw-w64-x86_64-qt5
-            poppler: 0.71.0
-            hunspell: 1.7.0
-            poppler-data: 0.4.9
-            cmake: 3.16.2
 
     steps:
     - name: Checkout
@@ -195,45 +187,9 @@ jobs:
       with:
         update: true
 
-#    - name: Version summary
-#      run: |
-#        msys2do 'echo -e `\`"Hunspell:     ${{ matrix.hunspell }}`\nPoppler:      ${{ matrix.poppler }}`\`"'
-##        msys2do echo `\`"Hunspell:     ${{ matrix.hunspell }}`\`\nPoppler:      ${{ matrix.poppler }}`\"
-#
-##        msys2do echo `\`"Lua:          `\`"
-##        msys2do echo `\`"Poppler-data: ${{ matrix.poppler-data }}`\`"
-##        msys2do echo `\`"Qt:           ${{ matrix.qt }}`\`"
-##        msys2do echo `\`"Zlib:         `\`"
-#
-##        msys2do echo `\`"CMake:        `$(cmake --version | sed -ne 's/cmake version //p')`\`"
-##        msys2do echo `\`"GCC:          `$(gcc --version | sed -ne 's/gcc ([^)]*) //p')`\`"
-
     - name: Install dependencies
       # git is needed for getting git revision information
-      run: msys2do pacman --noconfirm -S git make mingw-w64-x86_64-qt5 mingw-w64-x86_64-gcc mingw-w64-x86_64-lua
-
-    - name: Install CMake
-      uses: ./.github/actions/install-cmake
-      with:
-        version: '${{ matrix.cmake }}'
-
-#    - name: Install Qt
-#      uses: jurplel/install-qt-action@v2
-#      with:
-#        version: ${{ matrix.qt }}
-#        modules: 'qtscript'
-#        arch: win64_mingw73
-
-    - name: Build Poppler
-      uses: ./.github/actions/build-poppler
-      with:
-        version: '${{ matrix.poppler }}'
-        poppler-data-version: '${{ matrix.poppler-data }}'
-
-    - name: Build Hunspell
-      uses: ./.github/actions/build-hunspell
-      with:
-        version: '${{ matrix.hunspell }}'
+      run: msys2do pacman --noconfirm -S cmake git make mingw-w64-x86_64-gcc mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua mingw-w64-x86_64-poppler mingw-w64-x86_64-qt5
 
     - name: Configure
       run: msys2do cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
