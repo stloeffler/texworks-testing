@@ -96,7 +96,6 @@ jobs:
       matrix:
         # The "ancient versions" (with Qt 5.3) are a special case to be included separately
         label: ['oldest', 'lts', 'latest']
-        disable-warnings: [false]
         include:
           - label: 'oldest'
             qt: 5.3
@@ -104,7 +103,6 @@ jobs:
             hunspell: 1.2.8
             poppler-data: 0.4.6
             cmake: 3.1.0
-            disable-warnings: true
           - label: 'lts'
             qt: 5.12.8
             poppler: 0.71.0
@@ -121,10 +119,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Patch out warnings
-      if: ${{ matrix.disable-warnings }}
-      run: patch -p1 < .github/workflows/no-warnings.patch
 
     - name: Install Dependencies
       run: |
