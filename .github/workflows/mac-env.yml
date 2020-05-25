@@ -48,5 +48,5 @@ jobs:
       working-directory: build
 
     - name: Test
-      run: ./mac-env
+      run: mac-env.app/Contents/MacOS/mac-env
       working-directory: build
