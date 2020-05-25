@@ -3,5 +3,9 @@ project(mac-env)
 
 find_package(Qt5 COMPONENTS Widgets)
 
-add_executable(mac-env mac-env.cpp)
+if (APPLE)
+  set(GUI_TYPE MACOSX_BUNDLE)
+endif ()
+
+add_executable(mac-env ${GUI_TYPE} mac-env.cpp)
 target_link_libraries(mac-env Qt5::Widgets)
