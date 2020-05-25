@@ -24,7 +24,7 @@ jobs:
       working-directory: build
 
     - name: Test
-      run: xvfb-run ./mac-env
+      run: xvfb-run ./mac-env && cat mac-env.log
       working-directory: build
 
   build-macosx:
@@ -48,5 +48,5 @@ jobs:
       working-directory: build
 
     - name: Test
-      run: open mac-env.app
+      run: open mac-env.app && cat mac-env.log
       working-directory: build
