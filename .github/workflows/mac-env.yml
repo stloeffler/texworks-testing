@@ -47,8 +47,8 @@ jobs:
       run: make
       working-directory: build
 
-    - name: Amend .profile
-      run: echo "PATH=\"/abc:\$PATH\"" >> ~/.profile && cat ~/.profile
+    - name: Amend .bash_profile
+      run: echo "PATH=\"/abc:\$PATH\"" >> ~/.bash_profile && cat ~/.bash_profile
 
     - name: Test
       run: open mac-env.app && sleep 5 && cat mac-env.log
