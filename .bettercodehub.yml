@@ -1,0 +1,11 @@
+component_depth: 2
+languages:
+  - name: cpp
+    production:
+      exclude:
+        - .*/unit-tests/.*
+    test:
+      include:
+        - .*/unit-tests/.*
+exclude:
+  - /modules/synctex/.*
