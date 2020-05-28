@@ -1,3 +1,2 @@
-coverage:
-  ignore:
-    - "/modules/synctex"
+ignore:
+  - "/modules/synctex"
