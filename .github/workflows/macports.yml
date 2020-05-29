@@ -22,7 +22,7 @@ jobs:
 
     - run: sudo port selfupdate
 
-    - run: sudo port install hunspell lua poppler-qt5
+    - run: sudo port install hunspell lua poppler-qt5 qt5-qtbase qt5-qtscript qt5-qttools
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
