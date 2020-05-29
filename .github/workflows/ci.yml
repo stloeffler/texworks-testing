@@ -190,6 +190,9 @@ jobs:
   build-win-msys:
     name: Windows (MSYS)
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd
 
     steps:
     - name: Checkout
@@ -216,6 +219,8 @@ jobs:
     - name: Test
       run: msys2do ctest -V
       working-directory: build
+
+################################################################################
 
   build-macosx:
     name: Mac OS X
