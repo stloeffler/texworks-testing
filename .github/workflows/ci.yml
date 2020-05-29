@@ -190,9 +190,6 @@ jobs:
   build-win-msys:
     name: Windows (MSYS)
     runs-on: windows-latest
-    defaults:
-      run:
-        shell: cmd
 
     steps:
     - name: Checkout
