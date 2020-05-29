@@ -16,6 +16,7 @@ jobs:
       run: |
         wget https://github.com/macports/macports-base/releases/download/v2.6.2/MacPorts-2.6.2-10.15-Catalina.pkg
         sudo /usr/sbin/installer -pkg MacPorts-2.6.2-10.15-Catalina.pkg -target /
+        echo "::add-path::/opt/local/bin:/opt/local/sbin"
 
     - run: port version
 
