@@ -4,9 +4,14 @@ on:
   - pull_request
 
 jobs:
-  build-macosx:
-    name: Mac OS X
+  build-macosx-macports:
+    name: Mac OS X (MacPorts)
     runs-on: macos-10.15
+    strategy:
+      matrix:
+        include:
+        - macports-version: 2.6.2
+          macports-platform: 10.15-Catalina
 
     steps:
     - name: Checkout
@@ -14,24 +19,21 @@ jobs:
 
     - name: Install MacPorts
       run: |
-        wget https://github.com/macports/macports-base/releases/download/v2.6.2/MacPorts-2.6.2-10.15-Catalina.pkg
-        sudo /usr/sbin/installer -pkg MacPorts-2.6.2-10.15-Catalina.pkg -target /
+        wget https://github.com/macports/macports-base/releases/download/v${{ matrix.macports-version }}/MacPorts-${{ matrix.macports-version }}-${{ matrix.macports-platform }}.pkg
+        sudo /usr/sbin/installer -pkg MacPorts-${{ matrix.macports-version }}-${{ matrix.macports-platform }}.pkg -target /
         echo "::add-path::/opt/local/bin:/opt/local/sbin"
 
-    - run: port version
-
-    - run: sudo port selfupdate
-
-    - run: sudo port install hunspell lua poppler-qt5 qt5-qtbase qt5-qtscript qt5-qttools
+    - name: Install Dependencies
+      run: sudo port selfupdate && sudo port install hunspell lua poppler-qt5 qt5-qtbase qt5-qtscript qt5-qttools
 
     - name: Configure
-      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
+      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
 
     - name: Build
       run: make -j
       working-directory: build
 
     - name: Test
-      run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
+      run: ctest -V
       working-directory: build
 
