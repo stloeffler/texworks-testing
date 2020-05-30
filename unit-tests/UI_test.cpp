@@ -49,7 +49,7 @@ public:
 class SignalCounter : public QObject
 {
 	Q_OBJECT
-	unsigned int _count{0};
+	int _count{0};
 	QMetaObject::Connection _connection;
 private slots:
 	void increment() { ++_count; }
@@ -57,7 +57,7 @@ public:
 	SignalCounter(QObject * obj, const char * signal) {
 		_connection = connect(obj, signal, this, SLOT(increment()));
 	}
-	unsigned int count() const { return _count; }
+	int count() const { return _count; }
 	void clear() { _count = 0; }
 	bool isValid() const { return static_cast<bool>(_connection); }
 };
