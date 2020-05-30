@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2008-2019  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2019  Stefan Löffler
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,31 +18,32 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
+#include <QtTest/QtTest>
 
-#ifndef __CLOSABLE_TAB_WIDGET_H
-#define __CLOSABLE_TAB_WIDGET_H
+namespace UnitTest {
 
-#include <QTabWidget>
-#include <QToolButton>
-
-// The ClosableTabWidget class is adapted from code presented by Girish
-// Ramakrishnan in a Qt Labs post:
-//
-//   http://labs.qt.nokia.com/2007/06/06/lineedit-with-a-clear-button
-class ClosableTabWidget : public QTabWidget
+class TestUI : public QObject
 {
 	Q_OBJECT
-public:
-	ClosableTabWidget(QWidget * parent = nullptr);
-	~ClosableTabWidget() override = default;
+private slots:
+	void LineNumberWidget_bgColor();
+	void LineNumberWidget_sizeHint();
+	void LineNumberWidget_paint();
+	void LineNumberWidget_setParent();
 
-signals:
-	void requestClose();
+	void ScreenCalibrationWidget_dpi();
+	void ScreenCalibrationWidget_drag();
+	void ScreenCalibrationWidget_unit();
+	void ScreenCalibrationWidget_paint();
+	void ScreenCalibrationWidget_changeEvent();
+	void ScreenCalibrationWidget_contextMenu();
 
-protected:
-	void resizeEvent(QResizeEvent * e) override;
+	void ClickableLable_ctor();
+	void ClickableLabel_click();
+	void ClickableLabel_doubleClick();
 
-	QToolButton * _closeButton;
+	void ClosableTabWidget_signals();
+	void ClosableTabWidget_resizeEvent();
 };
 
-#endif // !defined(__CLOSABLE_TAB_WIDGET_H)
+} // namespace UnitTest

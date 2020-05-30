@@ -456,13 +456,10 @@ macro(CONFIG_VERSION lib version)
 endmacro()
 
 # Print out configuration summary.
-MESSAGE("${PROJECT_NAME} has been configured:\n")
+MESSAGE("${PROJECT_NAME} has been configured (CMake ${CMAKE_VERSION}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}):\n")
 
-message("  Version info")
-
+message("  Version info:")
 CONFIG_VERSION("${PROJECT_NAME}" ${PROJECT_VERSION})
-CONFIG_VERSION("CMake" ${CMAKE_VERSION})
-CONFIG_VERSION("Compiler" "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 if (WITH_POPPLERQT)
   CONFIG_VERSION("Poppler" "${Poppler_VERSION_STRING}")
 endif ()

@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2019  Stefan Löffler
+	Copyright (C) 2008-2019  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,18 +18,37 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
-#include <QtTest/QtTest>
 
-namespace UnitTest {
+#ifndef __CLOSABLE_TAB_WIDGET_H
+#define __CLOSABLE_TAB_WIDGET_H
 
-class TestLineNumberWidget : public QObject
+#include <QTabWidget>
+#include <QToolButton>
+
+namespace Tw {
+namespace UI {
+
+// The ClosableTabWidget class is adapted from code presented by Girish
+// Ramakrishnan in a Qt Labs post:
+//
+//   http://labs.qt.nokia.com/2007/06/06/lineedit-with-a-clear-button
+class ClosableTabWidget : public QTabWidget
 {
 	Q_OBJECT
-private slots:
-	void bgColor();
-	void sizeHint();
-	void paint();
-	void setParent();
+public:
+	ClosableTabWidget(QWidget * parent = nullptr);
+	~ClosableTabWidget() override = default;
+
+signals:
+	void requestClose();
+
+protected:
+	void resizeEvent(QResizeEvent * e) override;
+
+	QToolButton * _closeButton;
 };
 
-} // namespace UnitTest
+} // namespace UI
+} // namespace Tw
+
+#endif // !defined(__CLOSABLE_TAB_WIDGET_H)

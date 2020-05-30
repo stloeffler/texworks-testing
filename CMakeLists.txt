@@ -479,14 +479,12 @@ macro(CONFIG_VERSION lib version)
 endmacro()
 
 # Print out configuration summary.
-MESSAGE("TeXworks has been configured:\n")
+MESSAGE("TeXworks has been configured (CMake ${CMAKE_VERSION}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}):\n")
 
 message("  Version info")
 CONFIG_VERSION("${PROJECT_NAME}" "${TeXworks_VERSION} (${TeXworks_GIT_HASH}, ${TeXworks_GIT_DATE})")
-CONFIG_VERSION("CMake" ${CMAKE_VERSION})
-CONFIG_VERSION("Compiler" "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 # Hunspell does not have a reliable way to determine its version
-#CONFIG_VERSION("Hunspell" "${HUNSPELL_VERSION_STRING}")
+CONFIG_YESNO("  Hunspell" "${HUNSPELL_FOUND}")
 IF ( WITH_LUA )
   CONFIG_VERSION("Lua" "${LUA_VERSION_STRING}")
 ENDIF()
@@ -496,9 +494,7 @@ endif()
 CONFIG_VERSION("Qt" ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH})
 CONFIG_VERSION("SyncTeX" "${SYNCTEX_VERSION_STRING}")
 CONFIG_VERSION("zlib" "${ZLIB_VERSION_STRING}")
-#    FIND_PACKAGE(PythonInterp)
-#    FIND_PACKAGE(PythonLibs)
-MESSAGE("")
+message("")
 
 CONFIG_INFO("Build ID" ${TW_BUILD_ID})
 CONFIG_INFO("Compiler optimization" ${CMAKE_BUILD_TYPE})

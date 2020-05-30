@@ -19,11 +19,16 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include "ScreenCalibrationWidget.h"
+#include "ui/ScreenCalibrationWidget.h"
 
 #include <QApplication>
+#include <QDoubleSpinBox>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QStyle>
+
+namespace Tw {
+namespace UI {
 
 ScreenCalibrationWidget::ScreenCalibrationWidget(QWidget * parent)
 	: QWidget(parent)
@@ -285,3 +290,6 @@ bool ScreenCalibrationWidget::eventFilter(QObject * object, QEvent * event)
 
 	return QWidget::eventFilter(object, event);
 }
+
+} // namespace UI
+} // namespace Tw

@@ -21,11 +21,14 @@
 #ifndef SCREENCALIBRATIONWIDGET_H
 #define SCREENCALIBRATIONWIDGET_H
 
-#include <QDoubleSpinBox>
 #include <QMenu>
-#include <QResizeEvent>
 #include <QSignalMapper>
 #include <QWidget>
+
+class QDoubleSpinBox;
+
+namespace Tw {
+namespace UI {
 
 class ScreenCalibrationWidget : public QWidget
 {
@@ -87,5 +90,8 @@ protected:
 	double _mouseDownInches{0};
 	bool _isDragging{false};
 };
+
+} // namespace UI
+} // namespace Tw
 
 #endif // SCREENCALIBRATIONWIDGET_H
