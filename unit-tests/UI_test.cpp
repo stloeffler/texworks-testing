@@ -252,12 +252,12 @@ void TestUI::ScreenCalibrationWidget_changeEvent()
 	QFont f(w.font());
 
 	w.setGeometry(0, 0, 300, 20);
-	QPixmap before = w.grab();
+	QImage before = w.grab().toImage();
 
 	f.setPointSize(2 * f.pointSize());
 	w.setFont(f);
 
-	QVERIFY(w.grab() != before);
+	QVERIFY(w.grab().toImage() != before);
 }
 
 void TestUI::ScreenCalibrationWidget_contextMenu()
