@@ -195,19 +195,18 @@ jobs:
         shell: msys2 {0}
 
     steps:
+    - name: Configure Git
+      run: git config --global core.autocrlf input
+      shell: bash
+
     - name: Setup MSYS
       uses: eine/setup-msys2@v1
       with:
         update: true
         install: mingw-w64-x86_64-cmake git make mingw-w64-x86_64-gcc mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua mingw-w64-x86_64-poppler mingw-w64-x86_64-qt5
 
-    - run: git config --global core.autocrlf input
-      shell: bash
-
     - name: Checkout
       uses: actions/checkout@v2
-
-    - run: git status
 
     - name: Configure
       run: cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
