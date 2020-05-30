@@ -198,7 +198,7 @@ jobs:
     - name: Setup MSYS
       uses: numworks/setup-msys2@v1
       with:
-        update: true
+        update: false
 
     - run: tasklist
     - run: taskkill /im ssh-agent.exe
