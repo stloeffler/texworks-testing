@@ -210,7 +210,7 @@ jobs:
     - run: git status
 
     - name: Configure
-      run: cmake -G `\`"MSYS Makefiles`\`" -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
+      run: cmake -G 'MSYS Makefiles' -B build -DTW_BUILD_ID='github' -DTEXWORKS_ADDITIONAL_LIBS='shlwapi'
 
     - name: Build
       run: make -j
