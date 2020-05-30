@@ -196,13 +196,13 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup MSYS
-      uses: numworks/setup-msys2@v1
+      uses: eine/setup-msys2@v1
       with:
-        update: false
+        update: true
 
     - name: Install dependencies
       # git is needed for getting git revision information
-      run: msys2do pacman -Syu --noconfirm && pacman --noconfirm -S mingw-w64-x86_64-cmake git make mingw-w64-x86_64-gcc mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua mingw-w64-x86_64-poppler mingw-w64-x86_64-qt5
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-cmake git make mingw-w64-x86_64-gcc mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua mingw-w64-x86_64-poppler mingw-w64-x86_64-qt5
 
     - run: msys2do git status
 
