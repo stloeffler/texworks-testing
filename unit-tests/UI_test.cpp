@@ -140,7 +140,7 @@ void TestUI::ScreenCalibrationWidget_dpi()
 {
 	Tw::UI::ScreenCalibrationWidget w;
 	QSignalSpy spy(&w, SIGNAL(dpiChanged(double)));
-	constexpr double MagicDPI = 42;
+	constexpr double MagicDPI = 42.;
 
 	QVERIFY(spy.isValid());
 
