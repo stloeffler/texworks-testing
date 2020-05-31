@@ -23,4 +23,6 @@ COPY . /home/tw
 RUN mkdir /home/tw/build && cd /home/tw/build && \
 cmake .. && \
 make -j && \
-xvfb-run ctest -V
+xvfb-run -s '-screen 0 1280x1024x24 +extension GLX' ctest -V
+
+# xvfb-run arguments from https://forum.qt.io/topic/104831/unit-testing-paint-event-qwidget-paintengine-should-no-longer-be-called/3
