@@ -264,7 +264,6 @@ void TestUI::ScreenCalibrationWidget_contextMenu()
 {
 	MyScreenCalibrationWidget w;
 
-	w.setGeometry(0, 0, 300, 20);
 	w.show();
 	QCoreApplication::processEvents();
 
