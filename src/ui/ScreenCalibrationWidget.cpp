@@ -282,7 +282,7 @@ void ScreenCalibrationWidget::contextMenuEvent(QContextMenuEvent * event)
 {
 	QWidget::contextMenuEvent(event);
 
-	qDebug() << "ScreenCalibrationWidget::contextMenuEvent";
+	qDebug() << "ScreenCalibrationWidget::contextMenuEvent" << _rulerRect << event->pos();
 
 	if (event->reason() == QContextMenuEvent::Mouse && !_rulerRect.contains(event->pos()))
 		return;
