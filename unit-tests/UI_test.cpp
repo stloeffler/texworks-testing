@@ -278,8 +278,8 @@ void TestUI::ScreenCalibrationWidget_contextMenu()
 		QContextMenuEvent cme(QContextMenuEvent::Mouse, w.mapToGlobal(w.rulerRect().center()));
 		QCoreApplication::instance()->notify(&w, &cme);
 	}
-	QCOMPARE(spy.count(), 1);
 	spy.wait(100);
+	QCOMPARE(spy.count(), 1);
 	QVERIFY(w.contextMenu().isVisible());
 	w.contextMenu().close();
 
