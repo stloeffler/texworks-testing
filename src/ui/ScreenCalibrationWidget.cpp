@@ -27,6 +27,8 @@
 #include <QPainter>
 #include <QStyle>
 
+#include <QDebug>
+
 namespace Tw {
 namespace UI {
 
@@ -225,6 +227,8 @@ void ScreenCalibrationWidget::mousePressEvent(QMouseEvent * event)
 		_mouseDownPos = event->pos();
 		double dpi = _sbDPI->value();
 		_mouseDownInches = (event->x() - _rulerRect.left()) / dpi;
+
+		qDebug() << "ScreenCalibrationWidget::mousePressEvent" << dpi << _mouseDownPos << _mouseDownInches;
 	}
 }
 
@@ -240,6 +244,9 @@ void ScreenCalibrationWidget::mouseMoveEvent(QMouseEvent * event)
 		if (px <= 0)
 			px = _mouseDownPos.x() - _rulerRect.left();
 		double dpi = px / _mouseDownInches;
+
+                qDebug() << "ScreenCalibrationWidget::mouseMoveEvent" << event->x() << px << dpi << _mouseDownPos << _mouseDownInches;
+
 		_sbDPI->setValue(dpi);
 	}
 }
@@ -275,9 +282,12 @@ void ScreenCalibrationWidget::contextMenuEvent(QContextMenuEvent * event)
 {
 	QWidget::contextMenuEvent(event);
 
+	qDebug() << "ScreenCalibrationWidget::contextMenuEvent";
+
 	if (event->reason() == QContextMenuEvent::Mouse && !_rulerRect.contains(event->pos()))
 		return;
 
+	qDebug() << "popup";
 	_contextMenu.popup(event->globalPos());
 }
 
