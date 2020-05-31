@@ -263,17 +263,23 @@ void TestUI::ScreenCalibrationWidget_changeEvent()
 void TestUI::ScreenCalibrationWidget_contextMenu()
 {
 	MyScreenCalibrationWidget w;
+	QSignalSpy spy(&(w.contextMenu()), SIGNAL(aboutToShow()));
+
+	QVERIFY(spy.isValid());
 
 	w.show();
 	QCoreApplication::processEvents();
+
+	QCOMPARE(spy.count(), 0);
 
 	// Click inside the rulerRect
 	QVERIFY(w.contextMenu().isVisible() == false);
 	{
 		QContextMenuEvent cme(QContextMenuEvent::Mouse, w.mapToGlobal(w.rulerRect().center()));
 		QCoreApplication::instance()->notify(&w, &cme);
-		QCoreApplication::processEvents();
 	}
+	QCOMPARE(spy.count(), 1);
+	spy.wait(100);
 	QVERIFY(w.contextMenu().isVisible());
 	w.contextMenu().close();
 
