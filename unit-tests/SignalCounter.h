@@ -19,31 +19,34 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include <QtTest/QtTest>
+#ifndef SignalCounter_H
+#define SignalCounter_H
+
+#include <QEventLoop>
+#include <QObject>
+#include <QTimerEvent>
 
 namespace UnitTest {
 
-class TestDocument : public QObject
+class SignalCounter : public QObject
 {
 	Q_OBJECT
+	int _count{0};
+	QMetaObject::Connection _connection;
+	QEventLoop _eventLoop;
+	int _timerId{-1};
+public:
+	SignalCounter(QObject * obj, const char * signal);
+	int count() const { return _count; }
+	void clear() { _count = 0; }
+	bool isValid() const { return static_cast<bool>(_connection); }
+	bool wait(int timeout = 5000);
+protected:
+	void timerEvent(QTimerEvent * event) override;
 private slots:
-	void isPDFfile_data();
-	void isPDFfile();
-	void isImageFile_data();
-	void isImageFile();
-	void isPostscriptFile_data();
-	void isPostscriptFile();
-
-	void fileInfo();
-	void storedInFilesystem();
-	void absoluteFilePath();
-
-	void tags();
-
-	void getHighlighter();
-	void modelines();
-	void findNextWord_data();
-	void findNextWord();
+	void increment();
 };
 
 } // namespace UnitTest
+
+#endif // !defined(SignalCounter_H)

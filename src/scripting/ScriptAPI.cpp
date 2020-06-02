@@ -23,11 +23,10 @@
 #include "Engine.h"
 #include "Settings.h"
 #include "TWApp.h"
-#include "TWSystemCmd.h"
-#include "TWUtils.h"
 #include "document/SpellChecker.h"
 #include "scripting/Script.h"
 #include "scripting/ScriptAPI.h"
+#include "utils/SystemCommand.h"
 
 #include <QBuffer>
 #include <QCoreApplication>
@@ -228,7 +227,7 @@ QMap<QString, QVariant> ScriptAPI::system(const QString& cmdline, bool waitForRe
 	}
 
 	if (mayExecuteSystemCommand(cmdline, m_target)) {
-		TWSystemCmd *process = new TWSystemCmd(this, waitForResult, !waitForResult);
+		Tw::Utils::SystemCommand * process = new Tw::Utils::SystemCommand(this, waitForResult, !waitForResult);
 		if (waitForResult) {
 			process->setProcessChannelMode(QProcess::MergedChannels);
 			process->start(cmdline);
@@ -359,7 +358,6 @@ int ScriptAPI::fileExists(const QString& filename) const
 	return (QFileInfo(path).exists() ? SystemAccess_OK : SystemAccess_Failed);
 }
 
-//////////////// Wrapper around selected TWUtils functions ////////////////
 Q_INVOKABLE
 QMap<QString, QVariant> ScriptAPI::getDictionaryList(const bool forceReload /* = false */)
 {
@@ -374,7 +372,6 @@ QMap<QString, QVariant> ScriptAPI::getDictionaryList(const bool forceReload /* =
 	
 	return retVal;
 }
-//////////////// Wrapper around selected TWUtils functions ////////////////
 
 
 // Wrapper around TWApp::getEngineList()

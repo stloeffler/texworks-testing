@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2020  Stefan Löffler
+	Copyright (C) 2019  Stefan Löffler
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,32 +18,23 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
-
 #include <QtTest/QtTest>
 
 namespace UnitTest {
 
-class TestDocument : public QObject
+class TestUtils : public QObject
 {
 	Q_OBJECT
 private slots:
-	void isPDFfile_data();
-	void isPDFfile();
-	void isImageFile_data();
-	void isImageFile();
-	void isPostscriptFile_data();
-	void isPostscriptFile();
+	void FileVersionDatabase_comparisons();
+	void FileVersionDatabase_hashForFile();
+	void FileVersionDatabase_addFileRecord();
+	void FileVersionDatabase_load();
+	void FileVersionDatabase_save();
 
-	void fileInfo();
-	void storedInFilesystem();
-	void absoluteFilePath();
-
-	void tags();
-
-	void getHighlighter();
-	void modelines();
-	void findNextWord_data();
-	void findNextWord();
+	void SystemCommand_wait();
+	void SystemCommand_getResult_data();
+	void SystemCommand_getResult();
 };
 
 } // namespace UnitTest

@@ -18,8 +18,12 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
-#include "FileVersionDatabase_test.h"
+
+#include "Utils_test.h"
+
+#include "SignalCounter.h"
 #include "utils/FileVersionDatabase.h"
+#include "utils/SystemCommand.h"
 
 #include <QTemporaryFile>
 
@@ -56,7 +60,7 @@ bool operator==(const FileVersionDatabase & db1, const FileVersionDatabase & db2
 
 namespace UnitTest {
 
-void TestFileVersionDatabase::comparisons()
+void TestUtils::FileVersionDatabase_comparisons()
 {
 	Tw::Utils::FileVersionDatabase::Record r1 = {QFileInfo(QStringLiteral("base14-fonts.pdf")), QStringLiteral("v1"), QByteArray()};
 	Tw::Utils::FileVersionDatabase::Record r2 = {QFileInfo(QStringLiteral("base14-fonts.pdf")), QString(), QByteArray::fromHex("814514754a5680a57d172b6720d48a8d")};
@@ -70,7 +74,7 @@ void TestFileVersionDatabase::comparisons()
 	QVERIFY(!(r2 == r3));
 }
 
-void TestFileVersionDatabase::hashForFile()
+void TestUtils::FileVersionDatabase_hashForFile()
 {
 	QByteArray zero = QByteArray::fromHex("d41d8cd98f00b204e9800998ecf8427e");
 
@@ -78,7 +82,7 @@ void TestFileVersionDatabase::hashForFile()
 	QCOMPARE(Tw::Utils::FileVersionDatabase::hashForFile(QStringLiteral("base14-fonts.pdf")), QByteArray::fromHex("814514754a5680a57d172b6720d48a8d"));
 }
 
-void TestFileVersionDatabase::addFileRecord()
+void TestUtils::FileVersionDatabase_addFileRecord()
 {
 	Tw::Utils::FileVersionDatabase db;
 	Tw::Utils::FileVersionDatabase::Record empty = {QFileInfo(), QString(), QByteArray::fromHex("d41d8cd98f00b204e9800998ecf8427e")};
@@ -98,7 +102,7 @@ void TestFileVersionDatabase::addFileRecord()
 	QCOMPARE(db.getFileRecords(), QList<Tw::Utils::FileVersionDatabase::Record>{r2});
 }
 
-void TestFileVersionDatabase::load()
+void TestUtils::FileVersionDatabase_load()
 {
 	Tw::Utils::FileVersionDatabase db;
 	db.addFileRecord(QFileInfo(QStringLiteral("/spaces test.tex")), QByteArray::fromHex("d41d8cd98f00b204e9800998ecf8427e"), QStringLiteral("v1"));
@@ -110,7 +114,7 @@ void TestFileVersionDatabase::load()
 	QCOMPARE(Tw::Utils::FileVersionDatabase::load(QStringLiteral("script1.js")), Tw::Utils::FileVersionDatabase());
 }
 
-void TestFileVersionDatabase::save()
+void TestUtils::FileVersionDatabase_save()
 {
 	Tw::Utils::FileVersionDatabase db;
 	db.addFileRecord(QFileInfo(QStringLiteral("/spaces test.tex")), QByteArray::fromHex("d41d8cd98f00b204e9800998ecf8427e"), QStringLiteral("v1"));
@@ -125,7 +129,72 @@ void TestFileVersionDatabase::save()
 	QCOMPARE(Tw::Utils::FileVersionDatabase::load(tmpFile.fileName()), db);
 }
 
+void TestUtils::SystemCommand_wait()
+{
+	Tw::Utils::SystemCommand cmd(this);
+	SignalCounter spy(&cmd, SIGNAL(finished(int, QProcess::ExitStatus)));
 
+	QVERIFY(spy.isValid());
+
+	cmd.start(QStringLiteral("echo \"OK\""));
+	QVERIFY(cmd.waitForStarted());
+	QVERIFY(cmd.waitForFinished());
+
+	spy.clear();
+
+	cmd.start(QStringLiteral("echo \"OK\""));
+	QVERIFY(spy.wait());
+	QVERIFY(cmd.waitForStarted());
+	QVERIFY(cmd.waitForFinished());
+}
+
+void TestUtils::SystemCommand_getResult_data()
+{
+	QTest::addColumn<QString>("program");
+	QTest::addColumn<bool>("outputWanted");
+	QTest::addColumn<bool>("runInBackground");
+	QTest::addColumn<bool>("success");
+	QTest::addColumn<QString>("output");
+
+	QString progOK{QStringLiteral("echo \"OK\"")};
+	QString progInvalid{QStringLiteral("invalid-command")};
+	QString outputQuiet;
+	QString outputOK{QStringLiteral("OK\n")};
+	QString outputInvalid{QStringLiteral("ERROR: failure code 0")};
+
+	QTest::newRow("success-quiet") << progOK << false << false << true << outputQuiet;
+	QTest::newRow("success-quiet-background") << progOK << false << true << true << outputQuiet;
+	QTest::newRow("success") << progOK << true << false << true << outputOK;
+	QTest::newRow("success-background") << progOK << true << true << true << outputOK;
+
+	QTest::newRow("invalid-quiet") << progInvalid << false << false << false << outputQuiet;
+	QTest::newRow("invalid-quiet-background") << progInvalid << false << true << false << outputQuiet;
+	QTest::newRow("invalid") << progInvalid << true << false << false << outputInvalid;
+	QTest::newRow("invalid-background") << progInvalid << true << true << false << outputInvalid;
+}
+
+void TestUtils::SystemCommand_getResult()
+{
+	QFETCH(QString, program);
+	QFETCH(bool, outputWanted);
+	QFETCH(bool, runInBackground);
+	QFETCH(bool, success);
+	QFETCH(QString, output);
+
+	Tw::Utils::SystemCommand * cmd = new Tw::Utils::SystemCommand(this, outputWanted, runInBackground);
+	QSignalSpy spy(cmd, SIGNAL(destroyed()));
+
+	QVERIFY(spy.isValid());
+
+	cmd->start(program);
+	QCOMPARE(cmd->waitForFinished(), success);
+	QCOMPARE(cmd->getResult(), output);
+
+	if (!runInBackground) {
+		cmd->deleteLater();
+	}
+	QVERIFY(spy.wait());
+}
 
 } // namespace UnitTest
 
@@ -133,4 +202,4 @@ void TestFileVersionDatabase::save()
   Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
 #endif
 
-QTEST_MAIN(UnitTest::TestFileVersionDatabase)
+QTEST_MAIN(UnitTest::TestUtils)

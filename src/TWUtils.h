@@ -52,9 +52,6 @@ public:
 
 	// return a sorted list of all the available text codecs
 	static QList<QTextCodec*> *findCodecs();
-
-	// get list of available translations
-	static QStringList *getTranslationList();
 	
 	// list of filename filters for the Open/Save dialogs
 	static QStringList* filterList();
@@ -82,9 +79,6 @@ public:
 	static void sideBySide(QWidget *window1, QWidget *window2);
 	static void ensureOnScreen(QWidget *window);
 	static void applyToolbarOptions(QMainWindow *theWindow, int iconSize, bool showText);
-
-	// find a "word", in TeX terms, returning whether it's a natural-language word or a control seq, punctuation, etc
-	static bool findNextWord(const QString& text, int index, int& start, int& end);
 
 	static QChar closerMatching(QChar c);
 	static QChar openerMatching(QChar c);
