@@ -366,6 +366,8 @@ void TestUtils::FullscreenManager()
 
 		QVERIFY(spy.isValid());
 
+		qDebug() << w.menuBar()->isNativeMenuBar();
+
 		QCOMPARE(m.isFullscreen(), false);
 		QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
 		QCOMPARE(w.statusBar()->isVisibleTo(&w), true);
