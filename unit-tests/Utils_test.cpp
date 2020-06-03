@@ -398,7 +398,7 @@ void TestUtils::FullscreenManager()
 			// Hover over and wait
 			m.mouseMoveEvent(&mouseOver);
 			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
-			spy.wait(m.timeout() + 10);
+			spy.wait(m.timeout() + m.timeout() / 2);
 			QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
 			m.mouseMoveEvent(&mouseOut);
 			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
