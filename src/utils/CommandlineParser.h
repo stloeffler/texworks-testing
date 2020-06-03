@@ -28,6 +28,9 @@
 #include <QTextStream>
 #include <QVariant>
 
+namespace Tw {
+namespace Utils {
+
 class CommandlineParser
 {
 public:
@@ -43,7 +46,8 @@ public:
 
 	// First item is app name
 	CommandlineParser() : m_rawItems(QCoreApplication::arguments().mid(1)) { }
-	
+	explicit CommandlineParser(const QStringList & argv) : m_rawItems(argv.mid(1)) { }
+
 	void registerSwitch(const QString longName, const QString description = QString(), const QString shortName = QString()) {
 		CommandlineItemSpec spec;
 		spec.type = Commandline_Switch;
@@ -88,5 +92,8 @@ private:
 	QList<CommandlineItem> m_items;
 	QList<CommandlineItemSpec> m_specs;
 };
+
+} // namespace Utils
+} // namespace Tw
 
 #endif // !defined(COMMANDLINE_PARSER_H)

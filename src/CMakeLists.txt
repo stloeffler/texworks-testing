@@ -11,7 +11,6 @@
 # to remember to re-run `cmake` if a source file is added._
 set(TEXWORKS_SRCS BibTeXFile.cpp
                   CitationSelectDialog.cpp
-                  CommandlineParser.cpp
                   CompletingEdit.cpp
                   ConfirmDelete.cpp
                   Engine.cpp
@@ -31,7 +30,6 @@ set(TEXWORKS_SRCS BibTeXFile.cpp
                   TWScriptableWindow.cpp
                   TWScriptManager.cpp
                   TWSynchronizer.cpp
-                  TWTextCodecs.cpp
                   TWUtils.cpp
                   document/Document.cpp
                   document/SpellChecker.cpp
@@ -45,13 +43,15 @@ set(TEXWORKS_SRCS BibTeXFile.cpp
                   ui/ClosableTabWidget.cpp
                   ui/LineNumberWidget.cpp
                   ui/ScreenCalibrationWidget.cpp
+                  utils/CommandlineParser.cpp
                   utils/FileVersionDatabase.cpp
+                  utils/FullscreenManager.cpp
                   utils/SystemCommand.cpp
+                  utils/TextCodecs.cpp
                   )
 
 set(TEXWORKS_HDRS BibTeXFile.h
                   CitationSelectDialog.h
-                  CommandlineParser.h
                   CompletingEdit.h
                   ConfirmDelete.h
                   DefaultBinaryPaths.h
@@ -73,7 +73,6 @@ set(TEXWORKS_HDRS BibTeXFile.h
                   TWScriptableWindow.h
                   TWScriptManager.h
                   TWSynchronizer.h
-                  TWTextCodecs.h
                   TWUtils.h
                   TWVersion.h
                   InterProcessCommunicator.h
@@ -91,8 +90,11 @@ set(TEXWORKS_HDRS BibTeXFile.h
                   ui/ClosableTabWidget.h
                   ui/LineNumberWidget.h
                   ui/ScreenCalibrationWidget.h
+                  utils/CommandlineParser.h
                   utils/FileVersionDatabase.h
+                  utils/FullscreenManager.h
                   utils/SystemCommand.h
+                  utils/TextCodecs.h
                   )
 
 if (WIN32)

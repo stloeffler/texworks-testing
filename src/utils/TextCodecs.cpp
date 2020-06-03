@@ -19,14 +19,16 @@
 	see <http://www.tug.org/texworks/>.
 */
 
-#include <TWTextCodecs.h>
+#include "utils/TextCodecs.h"
+
+namespace Tw {
+namespace Utils {
 
 // NOTE: The convert*Unicode functions are modeled after those in the files in
 // <Qt>/src/corelib/codecs/
 
-
 // This data is extracted from http://en.wikipedia.org/w/index.php?title=Macintosh_Central_European_encoding&oldid=450446783
-ushort MacCentralEurRomanCodes[] = {
+ushort MacCentralEurRomanCodec::unicodeCodepoints[] = {
 	0x00C4, 0x0100, 0x0101, 0x00C9, 0x0104, 0x00D6, 0x00DC, 0x00E1,
 	0x0105, 0x010C, 0x00E4, 0x010D, 0x0106, 0x0107, 0x00E9, 0x0179,
 	0x017A, 0x010E, 0x00ED, 0x010F, 0x0112, 0x0113, 0x0116, 0x00F3,
@@ -44,6 +46,11 @@ ushort MacCentralEurRomanCodes[] = {
 	0x016B, 0x016E, 0x00DA, 0x016F, 0x0170, 0x0171, 0x0172, 0x0173,
 	0x00DD, 0x00FD, 0x0137, 0x017B, 0x0141, 0x017C, 0x0122, 0x02C7
 };
+
+// According to the docs [https://doc.qt.io/qt-5/qtextcodec.html#QTextCodec-1],
+// all text codecs should be constructed on the heap, Qt takes ownership, and
+// deletes them when the application terminates
+MacCentralEurRomanCodec * MacCentralEurRomanCodec::_instance = new MacCentralEurRomanCodec();
 
 QList<QByteArray> MacCentralEurRomanCodec::aliases() const
 {
@@ -67,7 +74,7 @@ QByteArray MacCentralEurRomanCodec::convertFromUnicode(const QChar * input, int 
 		else {
 			int j{0};
 			for (j = 0; j < 128; ++j) {
-				if (MacCentralEurRomanCodes[j] == uc) {
+				if (unicodeCodepoints[j] == uc) {
 					c = static_cast<uchar>(j + 0x80);
 					break;
 				}
@@ -96,9 +103,11 @@ QString MacCentralEurRomanCodec::convertToUnicode(const char * chars, int len, C
 	while(len--) {
 		// NOTE: uc->unicode() should always be <= 0xff!
 		if (uc->unicode() >= 0x80 && uc->unicode() <= 0xff)
-			*uc = MacCentralEurRomanCodes[uc->unicode() - 0x80];
+			*uc = unicodeCodepoints[uc->unicode() - 0x80];
 		uc++;
 	}
 	return str;
 }
 
+} // namespace Utils
+} // namespace Tw

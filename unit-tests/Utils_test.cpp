@@ -22,10 +22,17 @@
 #include "Utils_test.h"
 
 #include "SignalCounter.h"
+#include "utils/CommandlineParser.h"
 #include "utils/FileVersionDatabase.h"
+#include "utils/FullscreenManager.h"
 #include "utils/SystemCommand.h"
+#include "utils/TextCodecs.h"
 
+#include <QMenuBar>
+#include <QMouseEvent>
+#include <QStatusBar>
 #include <QTemporaryFile>
+#include <QToolBar>
 
 namespace Tw {
 namespace Utils {
@@ -59,6 +66,16 @@ bool operator==(const FileVersionDatabase & db1, const FileVersionDatabase & db2
 
 
 namespace UnitTest {
+
+class FullscreenManager : public Tw::Utils::FullscreenManager
+{
+public:
+	FullscreenManager(QMainWindow * parent) : Tw::Utils::FullscreenManager(parent) {
+		_menuBarTimer.setInterval(100);
+	}
+	int timeout() const { return _menuBarTimer.interval(); }
+	QList<shortcut_info> shortcuts() const { return _shortcuts; }
+};
 
 void TestUtils::FileVersionDatabase_comparisons()
 {
@@ -194,6 +211,298 @@ void TestUtils::SystemCommand_getResult()
 		cmd->deleteLater();
 	}
 	QVERIFY(spy.wait());
+}
+
+void TestUtils::CommandLineParser_parse()
+{
+	QString exe{QStringLiteral("exe")};
+	{
+		Tw::Utils::CommandlineParser clp(QStringList({exe}));
+		QVERIFY(clp.parse());
+		QCOMPARE(clp.getNextArgument(), -1);
+		QCOMPARE(clp.getPrevArgument(), -1);
+		QCOMPARE(clp.getNextOption(), -1);
+		QCOMPARE(clp.getPrevOption(), -1);
+		QCOMPARE(clp.getNextSwitch(), -1);
+		QCOMPARE(clp.getPrevSwitch(), -1);
+	}
+	{
+		Tw::Utils::CommandlineParser clp(QStringList({exe, QStringLiteral("--oLong=asdf"), QStringLiteral("-o=ghjk"), QStringLiteral("qwerty"), QStringLiteral("-s"), QStringLiteral("--sLong")}));
+		clp.registerSwitch(QStringLiteral("sLong"), QString(), QStringLiteral("s"));
+		clp.registerOption(QStringLiteral("oLong"), QString(), QStringLiteral("o"));
+		QVERIFY(clp.parse());
+		int nextArg = clp.getNextArgument();
+		QCOMPARE(nextArg, 2);
+		{
+			const Tw::Utils::CommandlineParser::CommandlineItem & item = clp.at(nextArg);
+			QCOMPARE(item.type, Tw::Utils::CommandlineParser::Commandline_Argument);
+			QCOMPARE(item.longName, QString());
+			QCOMPARE(item.value, QVariant(QStringLiteral("qwerty")));
+			QVERIFY(item.processed == false);
+		}
+		int nextOpt = clp.getNextOption(QStringLiteral("oLong"));
+		QCOMPARE(nextOpt, 0);
+		{
+			const Tw::Utils::CommandlineParser::CommandlineItem & item = clp.at(nextOpt);
+			QCOMPARE(item.type, Tw::Utils::CommandlineParser::Commandline_Option);
+			QCOMPARE(item.longName, QStringLiteral("oLong"));
+			QCOMPARE(item.value, QVariant(QStringLiteral("asdf")));
+			QVERIFY(item.processed == false);
+		}
+		int nextOpt2 = clp.getNextOption(QStringLiteral("oLong"), nextOpt);
+		QCOMPARE(nextOpt2, 1);
+		{
+			const Tw::Utils::CommandlineParser::CommandlineItem & item = clp.at(nextOpt2);
+			QCOMPARE(item.type, Tw::Utils::CommandlineParser::Commandline_Option);
+			QCOMPARE(item.longName, QStringLiteral("oLong"));
+			QCOMPARE(item.value, QVariant(QStringLiteral("ghjk")));
+			QVERIFY(item.processed == false);
+		}
+		QCOMPARE(clp.getNextOption(QStringLiteral("oLong"), nextOpt2), -1);
+
+		int nextSwitch = clp.getNextSwitch(QStringLiteral("sLong"));
+		QCOMPARE(nextSwitch, 3);
+		{
+			const Tw::Utils::CommandlineParser::CommandlineItem & item = clp.at(nextSwitch);
+			QCOMPARE(item.type, Tw::Utils::CommandlineParser::Commandline_Switch);
+			QCOMPARE(item.longName, QStringLiteral("sLong"));
+			QCOMPARE(item.value, QVariant());
+			QVERIFY(item.processed == false);
+		}
+		int nextSwitch2 = clp.getNextSwitch(QStringLiteral("sLong"), nextSwitch);
+		QCOMPARE(nextSwitch2, 4);
+		{
+			const Tw::Utils::CommandlineParser::CommandlineItem & item = clp.at(nextSwitch2);
+			QCOMPARE(item.type, Tw::Utils::CommandlineParser::Commandline_Switch);
+			QCOMPARE(item.longName, QStringLiteral("sLong"));
+			QCOMPARE(item.value, QVariant());
+			QVERIFY(item.processed == false);
+		}
+		QCOMPARE(clp.getNextSwitch(QStringLiteral("sLong"), nextSwitch2), -1);
+
+		QCOMPARE(clp.getNextOption(QStringLiteral("sLong")), -1);
+		QCOMPARE(clp.getNextSwitch(QStringLiteral("oLong")), -1);
+
+		QCOMPARE(clp.getPrevArgument(), -1);
+		QCOMPARE(clp.getPrevArgument(nextArg), -1);
+		QCOMPARE(clp.getPrevArgument(nextArg + 1), nextArg);
+		QCOMPARE(clp.getPrevOption(QStringLiteral("oLong")), -1);
+		QCOMPARE(clp.getPrevOption(QStringLiteral("oLong"), nextOpt), -1);
+		QCOMPARE(clp.getPrevOption(QStringLiteral("oLong"), nextOpt + 1), nextOpt);
+		QCOMPARE(clp.getPrevOption(QStringLiteral("oLong"), nextOpt2 + 1), nextOpt2);
+		QCOMPARE(clp.getPrevSwitch(QStringLiteral("sLong")), -1);
+		QCOMPARE(clp.getPrevSwitch(QStringLiteral("sLong"), nextSwitch), -1);
+		QCOMPARE(clp.getPrevSwitch(QStringLiteral("sLong"), nextSwitch + 1), nextSwitch);
+		QCOMPARE(clp.getPrevSwitch(QStringLiteral("sLong"), nextSwitch2 + 1), nextSwitch2);
+	}
+}
+
+void TestUtils::CommandLineParser_printUsage()
+{
+	Tw::Utils::CommandlineParser clp;
+	QString buffer;
+	QTextStream strm(&buffer);
+	clp.registerSwitch(QStringLiteral("sLong"), QStringLiteral("sDesc"), QStringLiteral("s"));
+	clp.registerOption(QStringLiteral("oLong"), QStringLiteral("oDesc"), QStringLiteral("o"));
+
+	clp.printUsage(strm);
+
+	QCOMPARE(strm.readAll(), QStringLiteral("Usage: %1 [opts/args]\n\n   --sLong, -s   sDesc\n   --oLong=..., -o=...   oDesc\n").arg(QFileInfo(QCoreApplication::applicationFilePath()).fileName()));
+}
+
+void TestUtils::MacCentralEurRomanCodec()
+{
+	Tw::Utils::MacCentralEurRomanCodec * c = Tw::Utils::MacCentralEurRomanCodec::instance();
+	Q_ASSERT(c != nullptr);
+
+	QCOMPARE(c->mibEnum(), -4000);
+	QCOMPARE(c->name(), QByteArray("Mac Central European Roman"));
+	QCOMPARE(c->aliases(), QList<QByteArray>({"MacCentralEuropeanRoman", "MacCentralEurRoman"}));
+
+	// € cannot be encoded and is replaced by ? (or \x00 if
+	// QTextCodec::ConvertInvalidToNull is specified)
+	QCOMPARE(c->fromUnicode(QStringLiteral("AÄĀ°§€")), QByteArray("\x41\x80\x81\xA1\xA4?"));
+	QCOMPARE(c->toUnicode(QByteArray("\x41\x80\x81\xA1\xA4")), QStringLiteral("AÄĀ°§"));
+
+	QCOMPARE(c->toUnicode(nullptr), QString());
+
+	QTextEncoder * e = c->makeEncoder(QTextCodec::ConvertInvalidToNull);
+	QCOMPARE(e->fromUnicode(QStringLiteral("AÄĀ°§€")), QByteArray("\x41\x80\x81\xA1\xA4\x00", 6));
+	delete e;
+}
+
+void TestUtils::FullscreenManager()
+{
+	{
+		::UnitTest::FullscreenManager m(nullptr);
+		QSignalSpy spy(&m, SIGNAL(fullscreenChanged(bool)));
+		QVERIFY(spy.isValid());
+		QCOMPARE(m.isFullscreen(), false);
+		m.toggleFullscreen();
+		QCOMPARE(m.isFullscreen(), false);
+		m.setFullscreen();
+		QCOMPARE(m.isFullscreen(), false);
+		QCOMPARE(spy.count(), 0);
+
+		QCOMPARE(m.shortcuts().count(), 0);
+		m.addShortcut(QKeySequence(Qt::Key_F), SLOT(update()));
+		QCOMPARE(m.shortcuts().count(), 0);
+
+		QMouseEvent e(QMouseEvent::Move, {0, 0}, Qt::NoButton, Qt::NoButton, {});
+		m.mouseMoveEvent(&e);
+	}
+	{
+		QMainWindow w;
+		::UnitTest::FullscreenManager m(&w);
+		QSignalSpy spy(&m, SIGNAL(fullscreenChanged(bool)));
+
+		w.setAttribute(Qt::WA_TranslucentBackground);
+		w.setMenuBar(new QMenuBar);
+		w.setStatusBar(new QStatusBar);
+		QToolBar * tb = w.addToolBar(QString());
+
+		w.show();
+		QCoreApplication::processEvents();
+
+		QVERIFY(spy.isValid());
+
+		QCOMPARE(m.isFullscreen(), false);
+		QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
+		QCOMPARE(w.statusBar()->isVisibleTo(&w), true);
+		QCOMPARE(tb->isVisibleTo(&w), true);
+
+		m.toggleFullscreen();
+
+		QCOMPARE(m.isFullscreen(), true);
+		QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+		QCOMPARE(w.statusBar()->isVisibleTo(&w), false);
+		QCOMPARE(tb->isVisibleTo(&w), false);
+		QCOMPARE(spy.count(), 1);
+		QCOMPARE(spy[0][0].toBool(), true);
+
+		{
+			constexpr int threshold = 10;
+			QMouseEvent mouseOver(QMouseEvent::Move, {0, threshold}, Qt::NoButton, Qt::NoButton, {});
+			QMouseEvent mouseOut(QMouseEvent::Move, {0, qMax(threshold, w.menuBar()->height()) + 1.}, Qt::NoButton, Qt::NoButton, {});
+
+			// Hover over and move away quickly (should not trigger the menubar)
+			m.mouseMoveEvent(&mouseOver);
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+			spy.wait(m.timeout() / 2);
+			m.mouseMoveEvent(&mouseOut);
+			spy.wait(m.timeout() / 2);
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+			spy.wait(m.timeout() / 2);
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+
+			// Hover over and wait
+			m.mouseMoveEvent(&mouseOver);
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+			spy.wait(m.timeout() + 10);
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
+			m.mouseMoveEvent(&mouseOut);
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+		}
+
+		// Should do nothing - fullscreen is already active
+		m.setFullscreen(true);
+
+		QCOMPARE(m.isFullscreen(), true);
+		QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+		QCOMPARE(w.statusBar()->isVisibleTo(&w), false);
+		QCOMPARE(tb->isVisibleTo(&w), false);
+		QCOMPARE(spy.count(), 1);
+		QCOMPARE(spy[0][0].toBool(), true);
+
+		m.setFullscreen(false);
+
+		QCOMPARE(m.isFullscreen(), false);
+		QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
+		QCOMPARE(w.statusBar()->isVisibleTo(&w), true);
+		QCOMPARE(tb->isVisibleTo(&w), true);
+		QCOMPARE(spy.count(), 2);
+		QCOMPARE(spy[1][0].toBool(), false);
+
+		m.setFullscreen();
+		QTest::keyClick(&w, Qt::Key_Escape);
+		QCOMPARE(m.isFullscreen(), false);
+
+		QCOMPARE(m.shortcuts().count(), 1);
+		// Older versions of Qt don't support QCOMPARE of pointer and nullptr
+		QVERIFY(m.shortcuts()[0].action == nullptr);
+		QVERIFY(m.shortcuts()[0].shortcut != nullptr);
+		QCOMPARE(m.shortcuts()[0].shortcut->key(), QKeySequence(Qt::Key_Escape));
+		QCOMPARE(m.shortcuts()[0].shortcut->isEnabled(), false);
+
+		{
+			QAction * a = w.menuBar()->addAction(QStringLiteral("a"));
+			m.addShortcut(a, SLOT(update()));
+			m.addShortcut(QKeySequence(Qt::Key_F), SLOT(update()));
+
+			QCOMPARE(m.shortcuts().count(), 3);
+			QCOMPARE(m.shortcuts()[1].action, a);
+			QVERIFY(m.shortcuts()[1].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[1].shortcut->key(), QKeySequence());
+			QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), false);
+
+			QVERIFY(m.shortcuts()[2].action == nullptr);
+			QVERIFY(m.shortcuts()[2].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[2].shortcut->key(), QKeySequence(Qt::Key_F));
+			QCOMPARE(m.shortcuts()[2].shortcut->isEnabled(), false);
+
+			m.setFullscreen(true);
+
+			QCOMPARE(m.shortcuts().count(), 3);
+			QVERIFY(m.shortcuts()[0].action == nullptr);
+			QVERIFY(m.shortcuts()[0].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[0].shortcut->key(), QKeySequence(Qt::Key_Escape));
+			QCOMPARE(m.shortcuts()[0].shortcut->isEnabled(), true);
+
+			QCOMPARE(m.shortcuts()[1].action, a);
+			QVERIFY(m.shortcuts()[1].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[1].shortcut->key(), QKeySequence());
+			QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), true);
+
+			QVERIFY(m.shortcuts()[2].action == nullptr);
+			QVERIFY(m.shortcuts()[2].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[2].shortcut->key(), QKeySequence(Qt::Key_F));
+			QCOMPARE(m.shortcuts()[2].shortcut->isEnabled(), true);
+
+			m.setFullscreen(false);
+
+			QCOMPARE(m.shortcuts().count(), 3);
+			QVERIFY(m.shortcuts()[0].action == nullptr);
+			QVERIFY(m.shortcuts()[0].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[0].shortcut->key(), QKeySequence(Qt::Key_Escape));
+			QCOMPARE(m.shortcuts()[0].shortcut->isEnabled(), false);
+
+			QCOMPARE(m.shortcuts()[1].action, a);
+			QVERIFY(m.shortcuts()[1].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[1].shortcut->key(), QKeySequence());
+			QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), false);
+
+			QVERIFY(m.shortcuts()[2].action == nullptr);
+			QVERIFY(m.shortcuts()[2].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[2].shortcut->key(), QKeySequence(Qt::Key_F));
+			QCOMPARE(m.shortcuts()[2].shortcut->isEnabled(), false);
+
+			// Destroy the action to check if the corresponding shortcut is removed
+			QSignalSpy deletionSpy(a, SIGNAL(destroyed(QObject*)));
+			a->deleteLater();
+			QVERIFY(deletionSpy.wait());
+
+			QCOMPARE(m.shortcuts().count(), 2);
+			QVERIFY(m.shortcuts()[0].action == nullptr);
+			QVERIFY(m.shortcuts()[0].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[0].shortcut->key(), QKeySequence(Qt::Key_Escape));
+			QCOMPARE(m.shortcuts()[0].shortcut->isEnabled(), false);
+
+			QVERIFY(m.shortcuts()[1].action == nullptr);
+			QVERIFY(m.shortcuts()[1].shortcut != nullptr);
+			QCOMPARE(m.shortcuts()[1].shortcut->key(), QKeySequence(Qt::Key_F));
+			QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), false);
+		}
+	}
 }
 
 } // namespace UnitTest

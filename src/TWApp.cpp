@@ -27,7 +27,6 @@
 #include "PrefsDialog.h"
 #include "ResourcesDialog.h"
 #include "Settings.h"
-#include "TWTextCodecs.h"
 #include "TWUtils.h"
 #include "TWVersion.h"
 #include "TeXDocumentWindow.h"
@@ -35,6 +34,7 @@
 #include "document/SpellChecker.h"
 #include "scripting/ScriptAPI.h"
 #include "utils/SystemCommand.h"
+#include "utils/TextCodecs.h"
 
 #include <QAction>
 #include <QDesktopServices>
@@ -121,8 +121,6 @@ TWApp::~TWApp()
 
 void TWApp::init()
 {
-	customTextCodecs << new MacCentralEurRomanCodec();
-
 	QIcon::setThemeName(QStringLiteral("tango-texworks"));
 	QIcon appIcon;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
@@ -1030,8 +1028,8 @@ QStringList TWApp::getTranslationList()
 	QStringList translationList;
 	QVector<QDir> dirs({QDir(QStringLiteral(":/resfiles/translations")), QDir(TWUtils::getLibraryPath(QString::fromLatin1("translations")))});
 
-	foreach(QDir transDir, dirs) {
-		foreach (QFileInfo qmFileInfo, transDir.entryInfoList(QStringList(QStringLiteral(TEXWORKS_NAME "_*.qm")),
+	for (QDir transDir : dirs) {
+		for (QFileInfo qmFileInfo : transDir.entryInfoList(QStringList(QStringLiteral(TEXWORKS_NAME "_*.qm")),
 					QDir::Files | QDir::Readable, QDir::Name | QDir::IgnoreCase)) {
 			QString locName = qmFileInfo.completeBaseName();
 			locName.remove(QStringLiteral(TEXWORKS_NAME "_"));

@@ -35,6 +35,13 @@ private slots:
 	void SystemCommand_wait();
 	void SystemCommand_getResult_data();
 	void SystemCommand_getResult();
+
+	void CommandLineParser_parse();
+	void CommandLineParser_printUsage();
+
+	void MacCentralEurRomanCodec();
+
+	void FullscreenManager();
 };
 
 } // namespace UnitTest
