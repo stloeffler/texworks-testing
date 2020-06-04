@@ -470,7 +470,9 @@ void TestUtils::FullscreenManager()
 			QCOMPARE(m.shortcuts()[1].action, a);
 			QVERIFY(m.shortcuts()[1].shortcut != nullptr);
 			QCOMPARE(m.shortcuts()[1].shortcut->key(), QKeySequence());
-			QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), true);
+			if (!w.menuBar()->isNativeMenuBar()) {
+				QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), true);
+			}
 
 			QVERIFY(m.shortcuts()[2].action == nullptr);
 			QVERIFY(m.shortcuts()[2].shortcut != nullptr);
@@ -488,7 +490,9 @@ void TestUtils::FullscreenManager()
 			QCOMPARE(m.shortcuts()[1].action, a);
 			QVERIFY(m.shortcuts()[1].shortcut != nullptr);
 			QCOMPARE(m.shortcuts()[1].shortcut->key(), QKeySequence());
-			QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), false);
+			if (!w.menuBar()->isNativeMenuBar()) {
+				QCOMPARE(m.shortcuts()[1].shortcut->isEnabled(), false);
+			}
 
 			QVERIFY(m.shortcuts()[2].action == nullptr);
 			QVERIFY(m.shortcuts()[2].shortcut != nullptr);
