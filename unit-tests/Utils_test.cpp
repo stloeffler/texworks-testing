@@ -366,23 +366,26 @@ void TestUtils::FullscreenManager()
 
 		QVERIFY(spy.isValid());
 
-		qDebug() << w.menuBar()->isNativeMenuBar();
-
 		QCOMPARE(m.isFullscreen(), false);
-		QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
+
+		if (!w.menuBar()->isNativeMenuBar()) {
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
+		}
 		QCOMPARE(w.statusBar()->isVisibleTo(&w), true);
 		QCOMPARE(tb->isVisibleTo(&w), true);
 
 		m.toggleFullscreen();
 
 		QCOMPARE(m.isFullscreen(), true);
-		QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+		if (!w.menuBar()->isNativeMenuBar()) {
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+		}
 		QCOMPARE(w.statusBar()->isVisibleTo(&w), false);
 		QCOMPARE(tb->isVisibleTo(&w), false);
 		QCOMPARE(spy.count(), 1);
 		QCOMPARE(spy[0][0].toBool(), true);
 
-		{
+		if (!w.menuBar()->isNativeMenuBar()) {
 			constexpr int threshold = 10;
 			QMouseEvent mouseOver(QMouseEvent::Move, {0, threshold}, Qt::NoButton, Qt::NoButton, {});
 			QMouseEvent mouseOut(QMouseEvent::Move, {0, qMax(threshold, w.menuBar()->height()) + 1.}, Qt::NoButton, Qt::NoButton, {});
@@ -410,7 +413,9 @@ void TestUtils::FullscreenManager()
 		m.setFullscreen(true);
 
 		QCOMPARE(m.isFullscreen(), true);
-		QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+		if (!w.menuBar()->isNativeMenuBar()) {
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), false);
+		}
 		QCOMPARE(w.statusBar()->isVisibleTo(&w), false);
 		QCOMPARE(tb->isVisibleTo(&w), false);
 		QCOMPARE(spy.count(), 1);
@@ -419,7 +424,9 @@ void TestUtils::FullscreenManager()
 		m.setFullscreen(false);
 
 		QCOMPARE(m.isFullscreen(), false);
-		QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
+		if (!w.menuBar()->isNativeMenuBar()) {
+			QCOMPARE(w.menuBar()->isVisibleTo(&w), true);
+		}
 		QCOMPARE(w.statusBar()->isVisibleTo(&w), true);
 		QCOMPARE(tb->isVisibleTo(&w), true);
 		QCOMPARE(spy.count(), 2);
