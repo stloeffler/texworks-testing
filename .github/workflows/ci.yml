@@ -158,7 +158,7 @@ jobs:
         echo "::add-path::/opt/local/bin:/opt/local/sbin"
 
     - name: Install Dependencies
-      run: sudo port selfupdate && sudo port -v -d install hunspell lua poppler-qt5 qt5-qtbase qt5-qtscript qt5-qttools
+      run: sudo port selfupdate && sudo port -v -d install lua poppler-qt5 qt5-qtbase qt5-qtscript qt5-qttools hunspell
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
