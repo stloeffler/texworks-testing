@@ -58,7 +58,7 @@ jobs:
         wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
         tar -xf hunspell-${{ matrix.hunspell }}.tar.gz
         cd hunspell-${{ matrix.hunspell }}
-        autoreconf -vfi
+        # autoreconf -vfi
         ./configure --disable-dependency-tracking
         make -j
         sudo make install
