@@ -12,7 +12,7 @@ jobs:
         include:
         - qt: 5.3
           poppler: 0.24.5
-          hunspell: 1.2.10
+          hunspell: 1.2.9
           poppler-data: 0.4.6
           cmake: 3.1.0
     steps:
@@ -58,7 +58,6 @@ jobs:
         wget https://downloads.sourceforge.net/project/hunspell/Hunspell/${{ matrix.hunspell }}/hunspell-${{ matrix.hunspell }}.tar.gz
         tar -xf hunspell-${{ matrix.hunspell }}.tar.gz
         cd hunspell-${{ matrix.hunspell }}
-        # autoreconf -vfi
         ./configure --disable-dependency-tracking
         make -j
         sudo make install
