@@ -310,12 +310,10 @@ void TestDocument::findNextWord()
 
 void TestDocument::SpellChecker_getDictionaryList()
 {
-	qDebug() << __FILE__ << "@" << __LINE__ << "TestDocument::SpellChecker_getDictionaryList()";
 	auto * sc = Tw::Document::SpellChecker::instance();
 	Q_ASSERT(sc != nullptr);
 	QSignalSpy spy(sc, SIGNAL(dictionaryListChanged()));
 
-	qDebug() << __FILE__ << "@" << __LINE__ << "after instance()";
 	QVERIFY(spy.isValid());
 
 	QCOMPARE(spy.count(), 0);
@@ -323,22 +321,18 @@ void TestDocument::SpellChecker_getDictionaryList()
 	auto dictList = sc->getDictionaryList();
 	Q_ASSERT(dictList);
 
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getDictionaryList()";
 	QCOMPARE(spy.count(), 1);
 	QVERIFY(dictList->contains(QDir::current().absoluteFilePath(QStringLiteral("dictionary.dic")), QStringLiteral("dictionary")));
 
-	qDebug() << __FILE__ << "@" << __LINE__ << "after dictList->contains()";
 	// Calling getDictionaryList() again (without forcing a reload) should give
 	// the same data again
 	QCOMPARE(sc->getDictionaryList(), dictList);
 	QCOMPARE(spy.count(), 1);
 
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getDictionaryList() 2";
 	// Calling getDictionaryList() with forceReload should emit the
 	// dictionaryListChanged signal again
 	sc->getDictionaryList(true);
 	QCOMPARE(spy.count(), 2);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getDictionaryList(true)";
 }
 
 void TestDocument::SpellChecker_getDictionary()
