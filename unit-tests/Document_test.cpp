@@ -343,35 +343,25 @@ void TestDocument::SpellChecker_getDictionaryList()
 
 void TestDocument::SpellChecker_getDictionary()
 {
-	qDebug() << __FILE__ << "@" << __LINE__ << "SpellChecker_getDictionary()";
 	QString lang{QStringLiteral("dictionary")};
 	QString correctWord{QStringLiteral("World")};
 	QString wrongWord{QStringLiteral("Wrld")};
 
 	auto * sc = Tw::Document::SpellChecker::instance();
 	Q_ASSERT(sc != nullptr);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after instance()";
 
 	QVERIFY(sc->getDictionary(QString()) == nullptr);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getDictionary(empty)";
 	QVERIFY(sc->getDictionary(QStringLiteral("does-not-exist")) == nullptr);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getDictionary(does-not-exist)";
 
 	auto * d = sc->getDictionary(lang);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getDictionary(lang)";
 	QVERIFY(d != nullptr);
 	QCOMPARE(sc->getDictionary(lang), d);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getDictionary(lang) 2";
 
 	QCOMPARE(d->getLanguage(), lang);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after getLanguage()";
 	QCOMPARE(d->isWordCorrect(correctWord), true);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after isWordCorrect()";
 	QCOMPARE(d->isWordCorrect(wrongWord), false);
-	qDebug() << __FILE__ << "@" << __LINE__ << "after isWordCorrect() 2";
 
 	QCOMPARE(d->suggestionsForWord(wrongWord), QList<QString>{correctWord});
-	qDebug() << __FILE__ << "@" << __LINE__ << "after suggestionsForWord()";
 }
 
 void TestDocument::SpellChecker_ignoreWord()
