@@ -79,9 +79,10 @@ SpellChecker::Dictionary * SpellChecker::getDictionary(const QString& language)
 		QFileInfo affFile(dicDir, language + QLatin1String(".aff"));
 		QFileInfo dicFile(dicDir, language + QLatin1String(".dic"));
 		if (affFile.isReadable() && dicFile.isReadable()) {
-			qDebug() << __FILE__ << "@" << __LINE__ << affFile.canonicalPath() << dicFile.canonicalPath();
-			Hunhandle * h = Hunspell_create(affFile.canonicalFilePath().toLocal8Bit().data(),
-								dicFile.canonicalFilePath().toLocal8Bit().data());
+			qDebug() << __FILE__ << "@" << __LINE__ << affFile.canonicalFilePath() << dicFile.canonicalFilePath();
+			qDebug() << __FILE__ << "@" << __LINE__ << qPrintable(affFile.canonicalFilePath()) << qPrintable(dicFile.canonicalFilePath());
+			Hunhandle * h = Hunspell_create(qPrintable(affFile),
+								qPrintable(dicFile));
 			qDebug() << __FILE__ << "@" << __LINE__ << "after Hunspell_create()";
 			dictionaries->insert(language, new Dictionary(language, h));
 			qDebug() << __FILE__ << "@" << __LINE__ << "after dictionaries->insert()";
