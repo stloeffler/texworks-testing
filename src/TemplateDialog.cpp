@@ -45,14 +45,12 @@ void TemplateDialog::init()
 	QString templatePath = TWUtils::getLibraryPath(QString::fromLatin1("templates"));
 		// do this before creating the model, as getLibraryPath might initialize a new dir
 		
-	model = new QDirModel(this);
+	model = new QFileSystemModel(this);
+	model->setRootPath(templatePath);
 	treeView->setModel(model);
 	treeView->setRootIndex(model->index(templatePath));
-	treeView->expandAll();
-	treeView->resizeColumnToContents(0);
 	treeView->hideColumn(2);
-	treeView->collapseAll();
-	
+
 	connect(treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
 			this, SLOT(selectionChanged(const QItemSelection&, const QItemSelection&)));
 	
@@ -111,4 +109,26 @@ QString TemplateDialog::doTemplateDialog()
 	}
 	
 	return rval;
+}
+
+void TemplateDialog::showEvent(QShowEvent * event)
+{
+	QDialog::showEvent(event);
+
+	// Resize the first column to take all available screen space. This can only
+	// be done once the dialog is fully layouted to be shown - hence here.
+
+	// Only resize columns the first time the dialog is shown. After that, keep
+	// using what the user are used to (or have even configured themselves)
+	if (!_shouldResizeColumns) {
+		return;
+	}
+	_shouldResizeColumns = false;
+
+	QHeaderView * h = treeView->header();
+	Q_ASSERT(h != nullptr);
+	// Do not use the real section sizes as reference, as the last section might
+	// be expanding and is hence larger than necessary. The default section size
+	// seems to work well here.
+	h->resizeSection(0, h->length() - 2 * h->defaultSectionSize());
 }

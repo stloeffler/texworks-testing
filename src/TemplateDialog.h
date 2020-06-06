@@ -25,6 +25,7 @@
 #include "ui_TemplateDialog.h"
 
 #include <QDialog>
+#include <QFileSystemModel>
 #include <QItemSelection>
 #include <QString>
 
@@ -40,14 +41,18 @@ public:
 
 	static QString doTemplateDialog();
 
+protected:
+	void showEvent(QShowEvent * event) override;
+
 private slots:
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 	void itemActivated(const QModelIndex & index);
-	
+
 private:
 	void init();
 
-	QDirModel * model{nullptr};
+	QFileSystemModel * model{nullptr};
+	bool _shouldResizeColumns{true};
 };
 
 #endif
