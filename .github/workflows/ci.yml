@@ -12,16 +12,6 @@ jobs:
         include:
         - qt: 5.3
           poppler: 0.24.5
-          hunspell: 1.2.8
-          poppler-data: 0.4.6
-          cmake: 3.1.0
-        - qt: 5.3
-          poppler: 0.24.5
-          hunspell: 1.2.9
-          poppler-data: 0.4.6
-          cmake: 3.1.0
-        - qt: 5.3
-          poppler: 0.24.5
           hunspell: 1.2.10
           poppler-data: 0.4.6
           cmake: 3.1.0
