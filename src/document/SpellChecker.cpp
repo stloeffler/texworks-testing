@@ -25,8 +25,6 @@
 
 #include <hunspell.h>
 
-#include <QDebug>
-
 namespace Tw {
 namespace Document {
 
@@ -61,31 +59,23 @@ QMultiHash<QString, QString> * SpellChecker::getDictionaryList(const bool forceR
 // static
 SpellChecker::Dictionary * SpellChecker::getDictionary(const QString& language)
 {
-	qDebug() << __FILE__ << "@" << __LINE__ << "SpellChecker::getDictionary(" << language << ")";
-
 	if (language.isEmpty())
 		return nullptr;
 
 	if (!dictionaries)
 		dictionaries = new QHash<const QString, Dictionary*>;
 
-	qDebug() << __FILE__ << "@" << __LINE__ << "after new QHash";
 	if (dictionaries->contains(language))
 		return dictionaries->value(language);
 
-	qDebug() << __FILE__ << "@" << __LINE__ << "after dictionaries->contains()";
 	const QStringList dirs = TWUtils::getLibraryPaths(QStringLiteral("dictionaries"));
 	foreach (QDir dicDir, dirs) {
 		QFileInfo affFile(dicDir, language + QLatin1String(".aff"));
 		QFileInfo dicFile(dicDir, language + QLatin1String(".dic"));
 		if (affFile.isReadable() && dicFile.isReadable()) {
-			qDebug() << __FILE__ << "@" << __LINE__ << affFile.canonicalFilePath() << dicFile.canonicalFilePath();
-			qDebug() << __FILE__ << "@" << __LINE__ << qPrintable(affFile.canonicalFilePath()) << qPrintable(dicFile.canonicalFilePath());
-			Hunhandle * h = Hunspell_create(qPrintable(affFile.canonicalFilePath()),
-								qPrintable(dicFile.canonicalFilePath()));
-			qDebug() << __FILE__ << "@" << __LINE__ << "after Hunspell_create()";
+			Hunhandle * h = Hunspell_create(affFile.canonicalFilePath().toLocal8Bit().data(),
+								dicFile.canonicalFilePath().toLocal8Bit().data());
 			dictionaries->insert(language, new Dictionary(language, h));
-			qDebug() << __FILE__ << "@" << __LINE__ << "after dictionaries->insert()";
 			return dictionaries->value(language);
 		}
 	}
