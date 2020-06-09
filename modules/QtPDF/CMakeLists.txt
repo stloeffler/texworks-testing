@@ -83,7 +83,7 @@ set (CMAKE_CXX_STANDARD 11)
 # Core Components
 # ---------------
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent Xml LinguistTools)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets Concurrent Xml LinguistTools)
 
 if (WITH_TESTS)
   find_package(Qt5 OPTIONAL_COMPONENTS Test QUIET)
@@ -91,6 +91,10 @@ if (WITH_TESTS)
     set(WITH_TESTS OFF)
   endif()
 endif()
+
+if (WIN32 AND NOT BUILD_SHARED_LIBS)
+  find_package(Qt5WindowsPlatformSupport)
+endif ()
 
 # Note: Qt5 only sets Qt5Widgets_VERSION, etc., but not QT_VERSION_MAJOR,
 # etc. which is used here.
@@ -107,6 +111,7 @@ ADD_DEFINITIONS(-DQT_VERSION_MAJOR=${QT_VERSION_MAJOR})
 FIND_PACKAGE(ZLIB REQUIRED)
 
 SET(QTPDF_LIBS
+  ${QT_PLATFORM_LIBRARIES}
   Qt5::Core Qt5::Widgets Qt5::Concurrent Qt5::Core Qt5::Xml
   ZLIB::ZLIB
 )
@@ -314,14 +319,6 @@ endif ()
 
 if (NOT TARGET QtPDF::qtpdf)
   add_library(QtPDF::qtpdf ALIAS qtpdf)
-endif ()
-
-if (WIN32 AND NOT BUILD_SHARED_LIBS)
-  find_package(Qt5WindowsPlatformSupport)
-  TARGET_LINK_LIBRARIES(qtpdf Qt5::WindowsPlatformSupport Qt5::Gui)
-  SET_TARGET_PROPERTIES(qtpdf PROPERTIES
-    INTERFACE_COMPILE_DEFINITIONS $<TARGET_PROPERTY:Qt5::WindowsPlatformSupport,INTERFACE_COMPILE_DEFINITIONS>
-  )
 endif ()
 
 

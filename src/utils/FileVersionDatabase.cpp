@@ -137,9 +137,7 @@ QByteArray FileVersionDatabase::hashForFile(const QString & path)
 	if (!fin.open(QIODevice::ReadOnly))
 		return retVal;
 
-	QByteArray content = fin.readAll();
-
-	retVal = QCryptographicHash::hash(content, QCryptographicHash::Md5);
+	retVal = QCryptographicHash::hash(fin.readAll(), QCryptographicHash::Md5);
 	fin.close();
 	return retVal;
 }
