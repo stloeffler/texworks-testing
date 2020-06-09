@@ -64,17 +64,6 @@ elif [ "${TARGET_OS}" = "osx" -a "${TRAVIS_OS_NAME}" = "osx" ]; then
 	fi
 	brew install hunspell
 	brew install lua;
-elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "windows" ]; then
-	echo_and_run "pwd"
-	echo_and_run "ls"
-	ls /c/
-	print_info "Installing Qt5"
-	echo_and_run "wget --no-verbose -O qt-installer.exe http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe"
-	echo_and_run "ls"
-	echo_and_run "./qt-installer.exe --script ci/travis-ci/win32/qt-install.qs"
-
-	echo_and_run "ls /c/"
-	echo_and_run "ls /c/Qt/"
 else
 	print_error "Unsupported host/target combination '${TRAVIS_OS_NAME}/${TARGET_OS}'"
 	exit 1
