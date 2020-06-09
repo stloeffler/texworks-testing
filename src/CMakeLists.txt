@@ -261,7 +261,7 @@ IF (APPLE)
 
   SET_TARGET_PROPERTIES( TeXworks PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST
-      TeXworks.plist
+      ${CMAKE_CURRENT_BINARY_DIR}/TeXworks.plist
   )
 ENDIF ()
 
