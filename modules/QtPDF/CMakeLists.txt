@@ -53,15 +53,11 @@ ENDIF ()
 # By default, we build a shared lib...
 OPTION(BUILD_SHARED_LIBS "Build shared library" ON)
 
-message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
-
 # ...with the viewer program...
 if (NOT DEFINED QTPDF_VIEWER)
   set(QTPDF_VIEWER ON)
 endif (NOT DEFINED QTPDF_VIEWER)
 OPTION(QTPDF_VIEWER "Build PDF viewer application" ${QTPDF_VIEWER})
-
-message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
 
 # ...with tests...
 OPTION(WITH_TESTS "Build tests" ON)
@@ -332,8 +328,6 @@ endif ()
 # Viewers
 # -------
 
-message("2: QTPDF_VIEWER = ${QTPDF_VIEWER}")
-
 IF ( QTPDF_VIEWER )
 
 # Both viewers use a common set of source code files. Preprocessor definitions
@@ -393,7 +387,6 @@ IF ( WITH_TESTS )
   SET(QTPDFTEST_HDRS
     ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests/TestQtPDF.h
   )
-  message("CMAKE_WIN32_EXECUTABLE = ${CMAKE_WIN32_EXECUTABLE}")
   IF( WITH_POPPLERQT )
     ADD_EXECUTABLE(test_poppler-qt${QT_VERSION_MAJOR}
       ${QTPDFTEST_SRCS}

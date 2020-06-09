@@ -35,9 +35,7 @@ do shell script "hdiutil attach tw_tmp.dmg"
 do shell script "touch /Volumes/@CPACK_PACKAGE_FILE_NAME@/.DS_Store"
 do shell script "chmod +w /Volumes/@CPACK_PACKAGE_FILE_NAME@/.DS_Store"
 do shell script "SetFile -a -v /Volumes/@CPACK_PACKAGE_FILE_NAME@/background.png"
-do shell script "ls /Volumes"
 
-(*
 -- Setup Drag N' Drop installer window layout
 tell application "Finder"
   tell disk "@CPACK_PACKAGE_FILE_NAME@"
@@ -90,4 +88,4 @@ do shell script "hdiutil detach /Volumes/@CPACK_PACKAGE_FILE_NAME@"
 do shell script "rm @CPACK_PACKAGE_FILE_NAME@.dmg"
 do shell script "hdiutil convert -format UDBZ -imagekey zlib-level=9 -o @CPACK_PACKAGE_FILE_NAME@.dmg tw_tmp.dmg"
 do shell script "rm tw_tmp.dmg"
-*)
+

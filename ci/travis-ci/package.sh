@@ -152,7 +152,7 @@ if [ "${TARGET_OS}" = "linux" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 			fi
 			print_info "   scheduling to upload ${DEBFILE} to ${PPA}"
 
-			echo "dput --debug --config \"${TRAVIS_BUILD_DIR}/ci/travis-ci/launchpad/dput.cf\" \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/ci/travis-ci/dput-launchpad.sh"
+			echo "dput --config \"${TRAVIS_BUILD_DIR}/ci/travis-ci/launchpad/dput.cf\" \"${PPA}\" \"${BUILDDIR}/${DEBFILE}\"" >> "${TRAVIS_BUILD_DIR}/ci/travis-ci/dput-launchpad.sh"
 		done
 	else
 		print_error "Skipping unsupported combination '${TARGET_OS}/qt${QT}'"
