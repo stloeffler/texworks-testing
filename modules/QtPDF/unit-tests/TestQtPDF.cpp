@@ -1076,7 +1076,7 @@ void TestQtPDF::paperSize()
 
 void TestQtPDF::transitions_data()
 {
-  constexpr double duration = 0.05;
+  constexpr double duration = 0.1;
   constexpr int w = 10;
   constexpr int h = 10;
   using SPT = QSharedPointer<QtPDF::Transition::AbstractTransition>;
