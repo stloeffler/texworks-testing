@@ -1158,7 +1158,7 @@ void TestQtPDF::transitions()
   QCOMPARE(transition->isRunning(), true);
   QCOMPARE(transition->isFinished(), false);
 
-  QTest::qSleep(qCeil(0.5 * duration * 1000));
+  QTest::qWait(qCeil(0.5 * duration * 1000));
   switch (type) {
     case QtPDF::Transition::AbstractTransition::Type_Replace:
       // Replace directly jumps to the final image
@@ -1190,7 +1190,7 @@ void TestQtPDF::transitions()
 
   // Wait slightly longer than 0.5 * duration to ensure t>1 in
   // AbstractTransition::getFracTime()
-  QTest::qSleep(qCeil(0.6 * duration * 1000));
+  QTest::qWait(qCeil(0.6 * duration * 1000));
 
   // Test getImage() before isRunning() as the running state is only updated
   // when getImage() is called
