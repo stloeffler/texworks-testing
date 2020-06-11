@@ -1154,11 +1154,17 @@ void TestQtPDF::transitions()
   QCOMPARE(transition->motion(), motion);
 
   // Run animation
+  QElapsedTimer timer;
+  timer.start();
   transition->start(imgStart, imgEnd);
   QCOMPARE(transition->isRunning(), true);
   QCOMPARE(transition->isFinished(), false);
 
-  QTest::qWait(qCeil(0.5 * duration * 1000));
+  qint64 dt = qRound(0.5 * duration * 1000);
+
+  qDebug() << timer.elapsed();
+  QTest::qWait(qMax(Q_INT64_C(0), dt - timer.elapsed()));
+  qDebug() << timer.elapsed();
   switch (type) {
     case QtPDF::Transition::AbstractTransition::Type_Replace:
       // Replace directly jumps to the final image
