@@ -14,6 +14,8 @@
 
 #include "PDFTransitions.h"
 
+#include <QDebug>
+
 namespace QtPDF {
 
 namespace Transition {
@@ -102,6 +104,8 @@ QImage AbstractInPlaceTransition::getImage()
   // interpolated linearly
   int c1 = static_cast<int>(255 * (t - _spread));
   int c2 = static_cast<int>(255 * (t + _spread));
+
+  qDebug() << t << c1 << c2 << _spread;
 
   // NOTE: Using bits() instead of scanLine() here led to some unpredictable
   // crashes on Linux/Ubuntu when using zoom (probably due to some data
