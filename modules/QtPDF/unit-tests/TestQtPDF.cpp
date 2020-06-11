@@ -1166,6 +1166,10 @@ void TestQtPDF::transitions()
   qDebug() << timer.elapsed();
   qint64 delta = qMax(Q_INT64_C(0), dt - timer.elapsed());
   qDebug() << timer.elapsed();
+  QTest::qSleep(1);
+  qDebug() << timer.elapsed();
+  QTest::qSleep(1);
+  qDebug() << timer.elapsed();
   QTest::qSleep(delta);
   qDebug() << timer.elapsed();
   switch (type) {
