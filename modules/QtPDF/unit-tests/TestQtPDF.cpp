@@ -21,6 +21,9 @@
 #include "TestQtPDF.h"
 #include "PaperSizes.h"
 
+#include <chrono>
+#include <thread>
+
 #ifdef USE_MUPDF
   typedef QtPDF::MuPDFBackend Backend;
 #elif USE_POPPLERQT
@@ -1172,12 +1175,17 @@ void TestQtPDF::transitions()
   QTest::qSleep(delta);
   qDebug() << timer.elapsed();
 */
+/*
   int i{0};
   while (timer.elapsed() < dt) {
     QTest::qSleep(5);
     ++i;
   }
   qDebug() << timer.elapsed() << i;
+*/
+  qDebug() << timer.elapsed();
+  std::this_thread::sleep_for(std::chrono::duration<double>(0.5 * duration));
+  qDebug() << timer.elapsed();
 
   switch (type) {
     case QtPDF::Transition::AbstractTransition::Type_Replace:
