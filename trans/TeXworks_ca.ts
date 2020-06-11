@@ -331,7 +331,8 @@ Vol continuar?</translation>
         <location filename="../src/PDFDocumentWindow.cpp" line="1026"/>
         <source>Unfortunately, this version of %1 is unable to print PDF documents due to various technical reasons.
 </source>
-        <translation>Malauradament, aquesta versió de %1 no pot imprimir documents PDF degut a diverses raons tècniques.</translation>
+        <translation>Malauradament, aquesta versió de %1 no pot imprimir documents PDF degut a diverses raons tècniques.
+</translation>
     </message>
     <message>
         <location filename="../src/PDFDocumentWindow.cpp" line="1027"/>
@@ -1177,7 +1178,7 @@ Vol continuar?</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="802"/>
-        <source>Preview &gt; Source :</source>
+        <source>Preview &gt; Source:</source>
         <translation>Vista prèvia &gt; Font:</translation>
     </message>
     <message>

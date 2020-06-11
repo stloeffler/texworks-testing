@@ -70,7 +70,7 @@ namespace UnitTest {
 class FullscreenManager : public Tw::Utils::FullscreenManager
 {
 public:
-	FullscreenManager(QMainWindow * parent) : Tw::Utils::FullscreenManager(parent) {
+	explicit FullscreenManager(QMainWindow * parent) : Tw::Utils::FullscreenManager(parent) {
 		_menuBarTimer.setInterval(100);
 	}
 	int timeout() const { return _menuBarTimer.interval(); }
@@ -333,6 +333,10 @@ void TestUtils::MacCentralEurRomanCodec()
 	QTextEncoder * e = c->makeEncoder(QTextCodec::ConvertInvalidToNull);
 	QCOMPARE(e->fromUnicode(QStringLiteral("AÄĀ°§€")), QByteArray("\x41\x80\x81\xA1\xA4\x00", 6));
 	delete e;
+
+	QTextDecoder * d = c->makeDecoder(QTextCodec::ConvertInvalidToNull);
+	QCOMPARE(d->toUnicode(QByteArray("\x41\x80\x81\xA1\xA4")), QStringLiteral("AÄĀ°§"));
+	delete d;
 }
 
 void TestUtils::FullscreenManager()

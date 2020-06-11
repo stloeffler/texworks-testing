@@ -713,7 +713,8 @@
         <location filename="../src/PDFDocumentWindow.cpp" line="1026"/>
         <source>Unfortunately, this version of %1 is unable to print PDF documents due to various technical reasons.
 </source>
-        <translation>このバージョンの %1 では、技術的な課題からPDFの印刷はできません</translation>
+        <translation type="unfinished">このバージョンの %1 では、技術的な課題からPDFの印刷はできません
+</translation>
     </message>
     <message>
         <location filename="../src/PDFDocumentWindow.cpp" line="1027"/>
@@ -1295,7 +1296,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="802"/>
-        <source>Preview &gt; Source :</source>
+        <source>Preview &gt; Source:</source>
         <translation>プレビュー &gt; ソース(#P)</translation>
     </message>
     <message>
