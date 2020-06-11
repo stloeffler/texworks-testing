@@ -1161,7 +1161,7 @@ void TestQtPDF::transitions()
   QCOMPARE(transition->isFinished(), false);
 
   qint64 dt = qRound(0.5 * duration * 1000);
-
+/*
   qDebug() << timer.elapsed();
   QTest::qSleep(1);
   qDebug() << timer.elapsed();
@@ -1171,6 +1171,14 @@ void TestQtPDF::transitions()
   qDebug() << timer.elapsed() << delta;
   QTest::qSleep(delta);
   qDebug() << timer.elapsed();
+*/
+  int i{0};
+  while (timer.elapsed() < dt) {
+    QTest::qSleep(5);
+    ++i;
+  }
+  qDebug() << timer.elapsed() << i;
+
   switch (type) {
     case QtPDF::Transition::AbstractTransition::Type_Replace:
       // Replace directly jumps to the final image
