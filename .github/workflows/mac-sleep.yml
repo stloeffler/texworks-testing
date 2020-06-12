@@ -11,7 +11,7 @@ jobs:
     - run: sudo apt install qtbase5-dev
     - run: cmake -B build .
     - run: cmake --build build
-    - run: ./mac-timing
+    - run: ./mac-sleep
       working-directory: build
 
   mac:
@@ -21,6 +21,6 @@ jobs:
     - run: brew install qt5
     - run: cmake -B build . -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
     - run: cmake --build build
-    - run: ./mac-timing
+    - run: ./mac-sleep
       working-directory: build
 
