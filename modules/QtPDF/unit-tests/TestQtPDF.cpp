@@ -111,8 +111,8 @@ public:
 
 inline void sleep(quint64 ms)
 {
-  // QTest::qSleep seems very unreliable on Mac OS X (QTBUG-84998)
 #ifdef Q_OS_MACOS
+  // QTest::qSleep seems very unreliable on Mac OS X (QTBUG-84998)
   QElapsedTimer t;
   t.start();
   qint64 dt = (ms < 100 ? 1 : ms / 100);
@@ -1095,8 +1095,8 @@ void TestQtPDF::paperSize()
 
 void TestQtPDF::transitions_data()
 {
-  // Use longer duration on Mac OS as timing seems flaky there (QTBUG-84998)
 #ifdef Q_OS_MACOS
+  // Use longer duration on Mac OS as timing seems flaky there (QTBUG-84998)
   constexpr double duration = 0.2;
 #else
   constexpr double duration = 0.05;
@@ -1104,7 +1104,6 @@ void TestQtPDF::transitions_data()
   constexpr int w = 10;
   constexpr int h = 10;
   using SPT = QSharedPointer<QtPDF::Transition::AbstractTransition>;
-
   QTest::addColumn<QtPDF::Transition::AbstractTransition::Type>("type");
   QTest::addColumn<SPT>("transition");
   QTest::addColumn<double>("duration");
@@ -1184,7 +1183,6 @@ void TestQtPDF::transitions()
   QCOMPARE(transition->isFinished(), false);
 
   sleep(qRound(0.5 * duration * 1000));
-
   switch (type) {
     case QtPDF::Transition::AbstractTransition::Type_Replace:
       // Replace directly jumps to the final image
