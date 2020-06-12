@@ -1096,7 +1096,7 @@ void TestQtPDF::paperSize()
 void TestQtPDF::transitions_data()
 {
   // Use longer duration on Mac OS as timing seems flaky there (QTBUG-84998)
-#ifdef Q_OS_MACOSX
+#ifdef Q_OS_MACOS
   constexpr double duration = 0.2;
 #else
   constexpr double duration = 0.05;
