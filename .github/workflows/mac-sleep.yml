@@ -18,8 +18,8 @@ jobs:
     - uses: jurplel/install-qt-action@v2
       with:
         version: 5.15.0
-    - run: ${Qt5_DIR}/qmake --version
-    - run: ${Qt5_DIR}/qmake
+    - run: qmake --version
+    - run: qmake
     - run: make
     - run: ./mac-sleep
 
@@ -38,8 +38,8 @@ jobs:
     - uses: jurplel/install-qt-action@v2
       with:
         version: 5.15.0
-    - run: ${Qt5_DIR}/qmake --version
-    - run: ${Qt5_DIR}/qmake
+    - run: qmake --version
+    - run: qmake
     - run: make
     - run: mac-sleep.app/Contents/MacOS/mac-sleep
 
