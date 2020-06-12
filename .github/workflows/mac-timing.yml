@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: brew install qt5
-    - run: cmake -B build .
+    - run: cmake -B build . -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
     - run: cmake --build build
     - run: ./mac-timing
       working-directory: build
