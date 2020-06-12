@@ -17,7 +17,7 @@ jobs:
 #    - run: /usr/lib/qt5/bin/qmake
     - uses: jurplel/install-qt-action@v2
       with:
-        version: 5.15
+        version: 5.15.0
     - run: ${Qt5_DIR}/qmake --version
     - run: ${Qt5_DIR}/qmake
     - run: make
@@ -37,7 +37,7 @@ jobs:
 #    - run: /usr/local/opt/qt5/bin/qmake
     - uses: jurplel/install-qt-action@v2
       with:
-        version: 5.15
+        version: 5.15.0
     - run: ${Qt5_DIR}/qmake --version
     - run: ${Qt5_DIR}/qmake
     - run: make
