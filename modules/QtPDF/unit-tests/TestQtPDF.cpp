@@ -111,7 +111,7 @@ public:
 
 inline void sleep(quint64 ms)
 {
-  // QTest::qSleep seems very unreliable on Mac OS X
+  // QTest::qSleep seems very unreliable on Mac OS X (QTBUG-84998)
 #ifdef Q_OS_MACOS
   QElapsedTimer t;
   t.start();
@@ -1091,7 +1091,12 @@ void TestQtPDF::paperSize()
 
 void TestQtPDF::transitions_data()
 {
-  constexpr double duration = 0.1;
+  // Use longer duration on Mac OS as timing seems flaky there (QTBUG-84998)
+#ifdef Q_OS_MACOSX
+  constexpr double duration = 0.2;
+#else
+  constexpr double duration = 0.05;
+#endif
   constexpr int w = 10;
   constexpr int h = 10;
   using SPT = QSharedPointer<QtPDF::Transition::AbstractTransition>;
