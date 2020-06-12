@@ -13,7 +13,7 @@ jobs:
 #    - run: cmake --build build
 #    - run: ./mac-sleep
 #      working-directory: build
-    - run: qmake
+    - run: /usr/lib/qt5/bin/qmake
     - run: make
     - run: ./mac-sleep
 
@@ -29,5 +29,5 @@ jobs:
 #      working-directory: build
     - run: /usr/local/opt/qt5/bin/qmake
     - run: make
-    - run: ./mac-sleep
+    - run: mac-sleep.app/Contents/MacOS/mac-sleep
 
