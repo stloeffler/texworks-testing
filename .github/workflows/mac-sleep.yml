@@ -9,18 +9,25 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: sudo apt install qtbase5-dev
-    - run: cmake -B build .
-    - run: cmake --build build
+#    - run: cmake -B build .
+#    - run: cmake --build build
+#    - run: ./mac-sleep
+#      working-directory: build
+    - run: qmake
+    - run: make
     - run: ./mac-sleep
-      working-directory: build
+
 
   mac:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - run: brew install qt5
-    - run: cmake -B build . -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
-    - run: cmake --build build
+#    - run: cmake -B build . -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
+#    - run: cmake --build build
+#    - run: ./mac-sleep
+#      working-directory: build
+    - run: /usr/local/opt/qt5/bin/qmake
+    - run: make
     - run: ./mac-sleep
-      working-directory: build
 
