@@ -115,7 +115,7 @@ inline void sleep(quint64 ms)
 #ifdef Q_OS_MACOS
   QElapsedTimer t;
   t.start();
-  qint64 dt = (ms < 200 ? 1 : ms / 200);
+  qint64 dt = (ms < 100 ? 1 : ms / 100);
   while(t.elapsed() < ms) {
     QTest::qSleep(dt);
   }
