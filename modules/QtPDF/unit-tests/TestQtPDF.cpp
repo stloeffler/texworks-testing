@@ -1080,6 +1080,7 @@ void TestQtPDF::transitions_data()
   constexpr int w = 10;
   constexpr int h = 10;
   using SPT = QSharedPointer<QtPDF::Transition::AbstractTransition>;
+/*
   QTest::addColumn<QtPDF::Transition::AbstractTransition::Type>("type");
   QTest::addColumn<SPT>("transition");
   QTest::addColumn<double>("duration");
@@ -1122,6 +1123,13 @@ void TestQtPDF::transitions_data()
   QTest::newRow("uncover-H") << QtPDF::Transition::AbstractTransition::Type_Uncover << SPT(new QtPDF::Transition::Uncover) << duration << 0 << QtPDF::Transition::AbstractTransition::Motion_Inward << imgStart << imgEnd;
   QTest::newRow("uncover-V") << QtPDF::Transition::AbstractTransition::Type_Uncover << SPT(new QtPDF::Transition::Uncover) << duration << 270 << QtPDF::Transition::AbstractTransition::Motion_Inward << imgStart << imgEnd;
   QTest::newRow("fade") << QtPDF::Transition::AbstractTransition::Type_Fade << SPT(new QtPDF::Transition::Fade) << duration << -1 << QtPDF::Transition::AbstractTransition::Motion_Inward << imgStart << imgEnd;
+  */
+  QTest::addColumn<double>("duration");
+
+  for (int i = 0; i < 25; ++i) {
+    QTest::newRow(qPrintable(QStringLiteral("%1").arg(i))) << duration;
+  }
+  QTest::qSleep(1000);
 }
 
 void TestQtPDF::transitions()
