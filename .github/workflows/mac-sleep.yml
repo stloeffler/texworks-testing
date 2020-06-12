@@ -8,13 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt install qtbase5-dev
+#    - run: sudo apt install qtbase5-dev
 #    - run: cmake -B build .
 #    - run: cmake --build build
 #    - run: ./mac-sleep
 #      working-directory: build
-    - run: /usr/lib/qt5/bin/qmake --version
-    - run: /usr/lib/qt5/bin/qmake
+#    - run: /usr/lib/qt5/bin/qmake --version
+#    - run: /usr/lib/qt5/bin/qmake
+    - uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.15
+    - run: ${Qt5_DIR}/qmake --version
+    - run: ${Qt5_DIR}/qmake
     - run: make
     - run: ./mac-sleep
 
@@ -23,13 +28,18 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - run: brew install qt5
+#    - run: brew install qt5
 #    - run: cmake -B build . -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
 #    - run: cmake --build build
 #    - run: ./mac-sleep
 #      working-directory: build
-    - run: /usr/lib/qt5/bin/qmake --version
-    - run: /usr/local/opt/qt5/bin/qmake
+#    - run: /usr/lib/qt5/bin/qmake --version
+#    - run: /usr/local/opt/qt5/bin/qmake
+    - uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.15
+    - run: ${Qt5_DIR}/qmake --version
+    - run: ${Qt5_DIR}/qmake
     - run: make
     - run: mac-sleep.app/Contents/MacOS/mac-sleep
 
