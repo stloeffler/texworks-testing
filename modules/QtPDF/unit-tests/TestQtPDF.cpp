@@ -109,6 +109,21 @@ public:
   }
 };
 
+inline void sleep(quint64 ms)
+{
+  // QTest::qSleep seems very unreliable on Mac OS X
+#ifdef Q_OS_MACOS
+  QElapsedTimer t;
+  t.start();
+  qint64 dt = (ms < 100 ? 1 : ms / 100);
+  while(t.elapsed() < ms) {
+    QTest::qSleep(dt);
+  }
+#else
+  QTest::qSleep(ms);
+#endif
+}
+
 QTestData & TestQtPDF::newDocTest(const char * tag)
 {
   return QTest::newRow(tag) << _docs[QString::fromUtf8(tag)];
@@ -1080,7 +1095,7 @@ void TestQtPDF::transitions_data()
   constexpr int w = 10;
   constexpr int h = 10;
   using SPT = QSharedPointer<QtPDF::Transition::AbstractTransition>;
-/*
+
   QTest::addColumn<QtPDF::Transition::AbstractTransition::Type>("type");
   QTest::addColumn<SPT>("transition");
   QTest::addColumn<double>("duration");
@@ -1123,18 +1138,10 @@ void TestQtPDF::transitions_data()
   QTest::newRow("uncover-H") << QtPDF::Transition::AbstractTransition::Type_Uncover << SPT(new QtPDF::Transition::Uncover) << duration << 0 << QtPDF::Transition::AbstractTransition::Motion_Inward << imgStart << imgEnd;
   QTest::newRow("uncover-V") << QtPDF::Transition::AbstractTransition::Type_Uncover << SPT(new QtPDF::Transition::Uncover) << duration << 270 << QtPDF::Transition::AbstractTransition::Motion_Inward << imgStart << imgEnd;
   QTest::newRow("fade") << QtPDF::Transition::AbstractTransition::Type_Fade << SPT(new QtPDF::Transition::Fade) << duration << -1 << QtPDF::Transition::AbstractTransition::Motion_Inward << imgStart << imgEnd;
-  */
-  QTest::addColumn<double>("duration");
-
-  for (int i = 0; i < 25; ++i) {
-    QTest::newRow(qPrintable(QStringLiteral("%1").arg(i))) << duration;
-  }
-  QTest::qSleep(1000);
 }
 
 void TestQtPDF::transitions()
 {
-/*
   QFETCH(QtPDF::Transition::AbstractTransition::Type, type);
   QFETCH(QSharedPointer<QtPDF::Transition::AbstractTransition>, transition);
   QFETCH(double, duration);
@@ -1161,37 +1168,14 @@ void TestQtPDF::transitions()
   QCOMPARE(transition->duration(), duration);
   QCOMPARE(transition->direction(), direction);
   QCOMPARE(transition->motion(), motion);
-*/
+
   // Run animation
-  QElapsedTimer timer;
-  timer.start();
-/*
   transition->start(imgStart, imgEnd);
   QCOMPARE(transition->isRunning(), true);
   QCOMPARE(transition->isFinished(), false);
-*/
-//  qint64 dt = qRound(0.5 * duration * 1000);
-  qint64 dt = 50;
-/*
-  qDebug() << timer.elapsed();
-  QTest::qSleep(1);
-  qDebug() << timer.elapsed();
-  QTest::qSleep(1);
-  qDebug() << timer.elapsed();
-  qint64 delta = qMax(Q_INT64_C(0), dt - timer.elapsed());
-  qDebug() << timer.elapsed() << delta;
-  QTest::qSleep(delta);
-  qDebug() << timer.elapsed();
-*/
 
-  int i{0};
-  while (timer.elapsed() < dt) {
-    QTest::qSleep(5);
-    ++i;
-  }
-  qDebug() << timer.elapsed() << i;
+  sleep(qRound(0.5 * duration * 1000));
 
-/*
   switch (type) {
     case QtPDF::Transition::AbstractTransition::Type_Replace:
       // Replace directly jumps to the final image
@@ -1223,7 +1207,7 @@ void TestQtPDF::transitions()
 
   // Wait slightly longer than 0.5 * duration to ensure t>1 in
   // AbstractTransition::getFracTime()
-  QTest::qWait(qCeil(0.6 * duration * 1000));
+  sleep(qCeil(0.6 * duration * 1000));
 
   // Test getImage() before isRunning() as the running state is only updated
   // when getImage() is called
@@ -1240,7 +1224,6 @@ void TestQtPDF::transitions()
   QCOMPARE(transition->isFinished(), false);
   // Don't test getImage here - it corresponds to the first frame of the
   // animation, not imgStart
-  */
 }
 
 } // namespace UnitTest
