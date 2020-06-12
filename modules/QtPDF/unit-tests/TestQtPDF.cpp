@@ -115,9 +115,13 @@ inline void sleep(quint64 ms)
 #ifdef Q_OS_MACOS
   QElapsedTimer t;
   t.start();
-  qint64 dt = (ms < 100 ? 1 : ms / 100);
+  qint64 dt = (ms < 200 ? 1 : ms / 200);
   while(t.elapsed() < ms) {
     QTest::qSleep(dt);
+  }
+  // Issue a warning if the timing is off by more than 20%
+  if (t.elapsed() > 1.2 * ms) {
+    qWarning() << t.elapsed() << "ms have passed instead of the requested" << ms << "ms";
   }
 #else
   QTest::qSleep(ms);
