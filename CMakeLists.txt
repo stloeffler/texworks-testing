@@ -5,7 +5,7 @@ find_package(Qt5 COMPONENTS Core)
 
 if (APPLE)
 	set(GUI_TYPE MACOSX_BUNDLE)
-	set(ADDITIONAL_LIBS "-framework CoreServices")
+	set(ADDITIONAL_LIBS "-framework CoreServices -framework Foundation")
 	set(ADDITIONAL_SRC "sysinfo.mm")
 endif (APPLE)
 
