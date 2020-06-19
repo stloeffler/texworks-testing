@@ -1,3 +1,4 @@
+#import <Foundation/NSProcessInfo.h>
 #include <QString>
 
 QString getOSVersionString() {
