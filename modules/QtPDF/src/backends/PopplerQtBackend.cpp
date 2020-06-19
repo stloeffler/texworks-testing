@@ -324,16 +324,6 @@ QWeakPointer<Backend::Page> Document::page(int at)
   return _pages[at].toWeakRef();
 }
 
-QWeakPointer<Backend::Page> Document::page(int at) const
-{
-  QReadLocker docLocker(_docLock.data());
-
-  if (at < 0 || at >= _numPages || at >= _pages.size())
-    return QWeakPointer<Backend::Page>();
-
-  return QWeakPointer<Backend::Page>(_pages[at]);
-}
-
 PDFDestination Document::resolveDestination(const PDFDestination & namedDestination) const
 {
   QReadLocker docLocker(_docLock.data());
@@ -343,9 +333,10 @@ PDFDestination Document::resolveDestination(const PDFDestination & namedDestinat
   if (namedDestination.isExplicit())
     return namedDestination;
 
-  // If the destination could not be resolved, return an invalid object
+  // If the destination could not be resolved (a nullptr or an invalid page
+  // number is returned), return an invalid object
   ::Poppler::LinkDestination * dest = _poppler_doc->linkDestination(namedDestination.destinationName());
-  if (!dest)
+  if (dest == nullptr || dest->pageNumber() < 1)
     return PDFDestination();
   return toPDFDestination(_poppler_doc.data(), *dest);
 }

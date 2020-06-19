@@ -29,46 +29,31 @@
   #error Must specify one backend
 #endif
 
-namespace QtPDF {
-void compareDestination(const QtPDF::PDFDestination & a, const QtPDF::PDFDestination & b)
-{
-  QCOMPARE(a.isExplicit(), b.isExplicit());
-  QCOMPARE(a.page(), b.page());
-  if (a.isExplicit()) {
-    QCOMPARE(a.rect(), b.rect());
-    QCOMPARE(a.zoom(), b.zoom());
-  }
-  else
-    QCOMPARE(a.destinationName(), b.destinationName());
+namespace QTest {
+
+#ifdef DEBUG
+
+// Starting with QT_VERSION_CHECK(5, 5, 0), this could (should) be changed from
+// a template instanciation in the QTest namespace to a function overload in the
+// type's namespace - see docs of QTest::toString()
+template<>
+char * toString(const QtPDF::PDFDestination & dst) {
+  QString buffer;
+  QDebug dbg(&buffer);
+  dbg << dst;
+  return QTest::toString(buffer);
+}
+template<>
+char * toString(const QtPDF::PDFAction & act) {
+  QString buffer;
+  QDebug dbg(&buffer);
+  dbg << act;
+  return QTest::toString(buffer);
 }
 
-bool operator== (const QtPDF::PDFAction & a, const QtPDF::PDFAction & b) {
-  if (a.type() != b.type()) return false;
-  switch (a.type()) {
-  case QtPDF::PDFAction::ActionTypeGoTo:
-  {
-    const QtPDF::PDFGotoAction & A = reinterpret_cast<const QtPDF::PDFGotoAction &>(a);
-    const QtPDF::PDFGotoAction & B = reinterpret_cast<const QtPDF::PDFGotoAction &>(b);
+#endif // defined(DEBUG)
 
-    compareDestination(A.destination(), B.destination());
-    if (QTest::currentTestFailed()) return false;
-    if (A.isRemote() != B.isRemote()) return false;
-    if (A.filename() != B.filename()) return false;
-    if (A.openInNewWindow() != B.openInNewWindow()) return false;
-
-    return true;
-  }
-  case QtPDF::PDFAction::ActionTypeURI:
-  {
-    const QtPDF::PDFURIAction & A = reinterpret_cast<const QtPDF::PDFURIAction &>(a);
-    const QtPDF::PDFURIAction & B = reinterpret_cast<const QtPDF::PDFURIAction &>(b);
-    return A.url() == B.url();
-  }
-  default:
-    return false;
-  }
-}
-} // namespace QtPDF
+} // namespace QTest
 
 namespace UnitTest {
 
@@ -346,6 +331,205 @@ void TestQtPDF::page()
   }
 }
 
+void TestQtPDF::destination_data()
+{
+  QTest::addColumn<QtPDF::PDFDestination>("dst");
+  QTest::addColumn<bool>("isValid");
+  QTest::addColumn<bool>("isExplicit");
+  QTest::addColumn<int>("page");
+  QTest::addColumn<QString>("name");
+  QTest::addColumn<QtPDF::PDFDestination::Type>("type");
+  QTest::addColumn<qreal>("zoom");
+  QTest::addColumn<QRectF>("rect");
+  QTest::addColumn<QRectF>("nullptrRect");
+  QTest::addColumn<QRectF>("invalidRect");
+  QTest::addColumn<QRectF>("base14Rect");
+  QTest::addColumn<QRectF>("zoom1Rect");
+  QTest::addColumn<QRectF>("zoom2Rect");
+  QTest::addColumn<QString>("dbgOutput");
+
+  QtPDF::PDFDestination dst;
+  QRectF viewport{1, 2, 3, 4};
+  QString dstName = QStringLiteral("page.2");
+  QRectF invalidRect{QPointF(-1, -1), QSizeF(-1, -1)};
+
+  // Check defaults
+  QTest::newRow("default") << dst << false << false << -1 << QStringLiteral() <<
+    QtPDF::PDFDestination::Type::Destination_XYZ << -1. <<
+    invalidRect << viewport << viewport << viewport << viewport << viewport <<
+    QStringLiteral("PDFDestination()");
+
+  // Check a named destination
+  dst.setDestinationName(dstName);
+  QTest::newRow("named") << dst << true << false << -1 << dstName <<
+    QtPDF::PDFDestination::Type::Destination_XYZ << -1. <<
+    invalidRect << viewport << viewport << viewport << QRectF(QPointF(102, 750.89), QSizeF(3, 4)) << QRectF(QPointF(102, 750.89), QSizeF(3, 4)) <<
+    QStringLiteral("PDFDestination(name=\"%1\")").arg(dstName);
+
+  // Unsetting the name should yield an invalid destination again
+  dst.setDestinationName(QStringLiteral());
+  QTest::newRow("reset") << dst << false << false << -1 << QStringLiteral() <<
+    QtPDF::PDFDestination::Type::Destination_XYZ << -1. <<
+    invalidRect << viewport << viewport << viewport << viewport << viewport <<
+    QStringLiteral("PDFDestination()");
+
+  dst.setPage(0);
+  dst.setRect(viewport);
+  dst.setZoom(1.5);
+  {
+    QRectF zoom1Rect{QPointF(1.5, 3), QSizeF(4.5, 6)};
+    QRectF zoom2Rect{QPointF(0.75, 1.5), QSizeF(2.25, 3)};
+
+    // XYZ destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_XYZ);
+    QTest::newRow("XYZ") << dst << true << true << 0 << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_XYZ << 1.5 <<
+      viewport << zoom1Rect << zoom1Rect << zoom1Rect << zoom1Rect << zoom2Rect <<
+      QStringLiteral("PDFDestination(%1 /XYZ %2 %3 %4)").arg(dst.page()).arg(dst.left()).arg(dst.top()).arg(dst.zoom());
+  }
+
+  {
+    QRectF A4Rect{QPointF(0, 0), QSizeF(595.276, 841.89)};
+    QRectF A4RectRounded{QPointF(0, 0), QSizeF(595, 842)};
+
+    // Fit destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_Fit);
+    QTest::newRow("Fit") << dst << true << true << 0 << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_Fit << 1.5 <<
+      viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
+      QStringLiteral("PDFDestination(%1 /Fit)").arg(dst.page());
+
+    // FitB destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitB);
+    QTest::newRow("Fit") << dst << true << true << 0 << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitB << 1.5 <<
+      viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
+      QStringLiteral("PDFDestination(%1 /FitB)").arg(dst.page());
+  }
+
+  {
+    QRectF A4Rect{QPointF(0, 0), QSizeF(595.276, 793.701333333)};
+    QRectF A4RectRounded{QPointF(0, 0), QSizeF(595, 793.333333333)};
+
+    // FitH destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitH);
+    QTest::newRow("FitH") << dst << true << true << 0 << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitH << 1.5 <<
+      viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
+      QStringLiteral("PDFDestination(%1 /FitH %2)").arg(dst.page()).arg(dst.top());
+
+    // FitBH destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitBH);
+    QTest::newRow("FitH") << dst << true << true << 0 << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitBH << 1.5 <<
+      viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
+      QStringLiteral("PDFDestination(%1 /FitBH %2)").arg(dst.page()).arg(dst.top());
+  }
+
+  {
+    QRectF A4Rect{QPointF(0, 0), QSizeF(595.276, 841.89)};
+    QRectF A4RectRounded{QPointF(0, 0), QSizeF(595, 842)};
+
+    // FitV destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitV);
+    QTest::newRow("FitV") << dst << true << true << 0 << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitV << 1.5 <<
+      viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
+      QStringLiteral("PDFDestination(%1 /FitV %2)").arg(dst.page()).arg(dst.left());
+
+    // FitBV destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitBV);
+    QTest::newRow("FitV") << dst << true << true << 0 << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitBV << 1.5 <<
+      viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
+      QStringLiteral("PDFDestination(%1 /FitBV %2)").arg(dst.page()).arg(dst.left());
+  }
+
+  // FitR destination
+  dst.setType(QtPDF::PDFDestination::Type::Destination_FitR);
+  QTest::newRow("FitR") << dst << true << true << 0 << QStringLiteral() <<
+    QtPDF::PDFDestination::Type::Destination_FitR << 1.5 <<
+    viewport << viewport << viewport << viewport << viewport << viewport <<
+    QStringLiteral("PDFDestination(%1 /FitR %2 %3 %4 %5)").arg(dst.page()).arg(dst.left()).arg(dst.rect().bottom()).arg(dst.rect().right()).arg(dst.top());
+}
+
+void TestQtPDF::destination()
+{
+  QFETCH(QtPDF::PDFDestination, dst);
+  QFETCH(bool, isValid);
+  QFETCH(bool, isExplicit);
+  QFETCH(int, page);
+  QFETCH(QString, name);
+  QFETCH(QtPDF::PDFDestination::Type, type);
+  QFETCH(qreal, zoom);
+  QFETCH(QRectF, rect);
+  QFETCH(QRectF, nullptrRect);
+  QFETCH(QRectF, invalidRect);
+  QFETCH(QRectF, base14Rect);
+  QFETCH(QRectF, zoom1Rect);
+  QFETCH(QRectF, zoom2Rect);
+  QFETCH(QString, dbgOutput);
+
+  QCOMPARE(dst.isValid(), isValid);
+  QCOMPARE(dst.isExplicit(), isExplicit);
+  QCOMPARE(dst.page(), page);
+  QCOMPARE(dst.destinationName(), name);
+  QCOMPARE(dst.type(), type);
+  QCOMPARE(dst.zoom(), zoom);
+  QCOMPARE(dst.rect(), rect);
+  QCOMPARE(dst.top(), rect.top());
+  QCOMPARE(dst.left(), rect.left());
+
+  QRectF viewport{QPointF{1, 2}, QSizeF{3, 4}};
+  QCOMPARE(dst.viewport(nullptr, viewport, 1), nullptrRect);
+  QCOMPARE(dst.viewport(_docs[QStringLiteral("invalid")].data(), viewport, 1), invalidRect);
+  QCOMPARE(dst.viewport(_docs[QStringLiteral("base14-fonts")].data(), viewport, 1), base14Rect);
+  QCOMPARE(dst.viewport(_docs[QStringLiteral("annotations")].data(), viewport, 1), zoom1Rect);
+  QCOMPARE(dst.viewport(_docs[QStringLiteral("annotations")].data(), viewport, 2), zoom2Rect);
+#ifdef DEBUG
+  QString buffer;
+  QDebug dbg(&buffer);
+  dbg << dst;
+  QCOMPARE(buffer, dbgOutput);
+#endif
+}
+
+void TestQtPDF::destinationComparison()
+{
+  QVector<QtPDF::PDFDestination> dests;
+
+  dests << QtPDF::PDFDestination() << QtPDF::PDFDestination(QStringLiteral("name")) << QtPDF::PDFDestination(0);
+
+  for (int i = 0; i < dests.length(); ++i) {
+    QVERIFY(dests[i] == dests[i]);
+    for (int j = i + 1; j < dests.length(); ++j) {
+      QVERIFY2(!(dests[i] == dests[j]), qPrintable(QStringLiteral("dests[%1] == dests[%2]").arg(i).arg(j)));
+    }
+  }
+}
+
+void TestQtPDF::actionComparison()
+{
+  // Can't use QScopedPointer here as that does not work with QVector's <<
+  using QSP = QSharedPointer<QtPDF::PDFAction>;
+  QVector< QSP > actions;
+
+  actions << QSP(new QtPDF::PDFURIAction(QUrl()))
+          << QSP(new QtPDF::PDFURIAction(QUrl(QStringLiteral("http://www.tug.org/texworks/"))))
+          << QSP(new QtPDF::PDFGotoAction())
+          << QSP(new QtPDF::PDFGotoAction(QtPDF::PDFDestination(0)))
+          << QSP(new QtPDF::PDFGotoAction(QtPDF::PDFDestination(QStringLiteral("name"))))
+          << QSP(new QtPDF::PDFLaunchAction(QStringLiteral()))
+          << QSP(new QtPDF::PDFLaunchAction(QStringLiteral("cmd")));
+
+  for (int i = 0; i < actions.size(); ++i) {
+    QCOMPARE(*actions[i], *actions[i]);
+    for (int j = i + 1; j < actions.size(); ++j) {
+      QVERIFY2(!(*actions[i] == *actions[j]), qPrintable(QStringLiteral("actions[%1] == actions[%2]").arg(i).arg(j)));
+    }
+  }
+}
+
 void TestQtPDF::resolveDestination_data()
 {
   QTest::addColumn<pDoc>("doc");
@@ -355,7 +539,7 @@ void TestQtPDF::resolveDestination_data()
   {
     QtPDF::PDFDestination d;
     d.setDestinationName(QString::fromLatin1("does not exist"));
-    newDocTest("annotations") << d << d;
+    newDocTest("annotations") << d << QtPDF::PDFDestination();
   }
   {
     QtPDF::PDFDestination d(1);
@@ -375,7 +559,7 @@ void TestQtPDF::resolveDestination()
 
   QtPDF::PDFDestination actual = doc->resolveDestination(src);
 
-  compareDestination(actual, dest);
+  QCOMPARE(actual, dest);
 }
 
 void TestQtPDF::metaDataTitle_data()
@@ -847,17 +1031,19 @@ void TestQtPDF::page_loadLinks()
   for (int i = 0; i < actual.size(); ++i) {
     compareLinks(*(actual[i]), links[i]);
 
+#ifdef DEBUG
     if (QTest::currentTestFailed()) {
       qDebug() << "Actual Link" << (i + 1);
       qDebug() << "  " << actual[i]->quadPoints();
       if (actual[i]->actionOnActivation())
-        printAction(*(actual[i]->actionOnActivation()));
+        qDebug() << "  " << *(actual[i]->actionOnActivation());
       qDebug() << "Expected Link" << (i + 1);
       qDebug() << "  " << links[i].quadPoints();
       if (actual[i]->actionOnActivation())
-        printAction(*(links[i].actionOnActivation()));
+        qDebug() << "  " << *(links[i].actionOnActivation());
       break;
     }
+#endif // defined(DEBUG)
   }
 }
 

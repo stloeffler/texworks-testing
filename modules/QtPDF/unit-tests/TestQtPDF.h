@@ -72,6 +72,13 @@ private slots:
   void page_data();
   void page();
 
+  void destination_data();
+  void destination();
+
+  void destinationComparison();
+
+  void actionComparison();
+
   void resolveDestination_data();
   void resolveDestination();
 
@@ -165,3 +172,4 @@ Q_DECLARE_METATYPE(QStringMap)
 Q_DECLARE_METATYPE(QSharedPointer<QtPDF::Transition::AbstractTransition>)
 Q_DECLARE_METATYPE(QtPDF::Transition::AbstractTransition::Type)
 Q_DECLARE_METATYPE(QtPDF::Transition::AbstractTransition::Motion)
+Q_DECLARE_METATYPE(QtPDF::PDFDestination::Type)
