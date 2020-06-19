@@ -17,4 +17,4 @@ jobs:
 
     - run: find .
 
-    - run: ./mac-sysinfo
+    - run: mac-sysinfo.app/Contents/MacOS/mac-sysinfo
