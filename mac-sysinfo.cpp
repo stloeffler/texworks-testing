@@ -3,6 +3,8 @@
 
 #if defined(Q_OS_DARWIN)
 #include <CoreServices/CoreServices.h>
+
+extern QString getOSVersionString();
 #endif
 
 
@@ -16,6 +18,8 @@ int main() {
 	Gestalt(gestaltSystemVersionMinor, &minor);
 	Gestalt(gestaltSystemVersionBugFix, &bugfix);
 	qDebug() << QString::fromLatin1("Mac OS X %1.%2.%3").arg(major).arg(minor).arg(bugfix);
+
+	qDebug() << getOSVersionString();
 #endif
 
 	return 0;
