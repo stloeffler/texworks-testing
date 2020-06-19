@@ -526,6 +526,17 @@ void TestUtils::FullscreenManager()
 	}
 }
 
+#ifdef Q_OS_DARWIN
+extern QString GetMacOSVersionString();
+void TestUtils::OSVersionString()
+{
+	QString version = GetMacOSVersionString();
+	QRegularExpression pattern(QStringLiteral("^Mac OS X (\\d+)\\.(\\d+)\\.(\\d+)$"));
+	QVERIFY2(version.contains(pattern), qPrintable(version));
+}
+#endif // defined(Q_OS_DARWIN)
+
+
 } // namespace UnitTest
 
 #if defined(STATIC_QT5) && defined(Q_OS_WIN)
