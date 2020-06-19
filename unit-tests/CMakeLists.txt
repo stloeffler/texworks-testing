@@ -71,7 +71,7 @@ target_link_libraries(test_Utils ${QT_LIBRARIES} ${ZLIB_LIBRARIES} ${TEXWORKS_AD
 add_test(NAME test_Utils COMMAND test_Utils WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/testcases")
 
 if (APPLE)
-	target_sources(test_Utils "${CMAKE_SOURCE_DIR}/src/utils/OSVersionInfo_mac.mm")
+	target_sources(test_Utils PRIVATE "${CMAKE_SOURCE_DIR}/src/utils/OSVersionInfo_mac.mm")
 	target_link_libraries(test_Utils "-framework Foundation")
 endif (APPLE)
 

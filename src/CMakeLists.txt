@@ -160,7 +160,7 @@ SET(TeXworks_SCRIPT_API_H
 IF ( APPLE )
   SET(GUI_TYPE MACOSX_BUNDLE)
 
-  LIST(APPEND TeXworks_LIBS  "-framework CoreServices")
+  LIST(APPEND TeXworks_LIBS  "-framework Foundation")
 
   set(TeXworks_APP_ICONS "${TeXworks_SOURCE_DIR}/res/TeXworks.icns" "${TeXworks_SOURCE_DIR}/res/TeXworks-doc.icns")
   SET_SOURCE_FILES_PROPERTIES( ${TeXworks_APP_ICONS}
