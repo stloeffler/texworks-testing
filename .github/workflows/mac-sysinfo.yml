@@ -1,0 +1,20 @@
+name: mac-sysinfo
+on:
+  - push
+
+  build-macosx:
+    name: Mac OS X (${{ matrix.label }})
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: brew install qt5
+
+    - run: cmake -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5" .
+
+    - run: make VERBOSE=1
+
+    - run: find .
+
+    - run: ./mac-sysinfo
