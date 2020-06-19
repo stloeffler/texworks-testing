@@ -2,8 +2,8 @@ name: mac-sysinfo
 on:
   - push
 
+jobs:
   build-macosx:
-    name: Mac OS X (${{ matrix.label }})
     runs-on: macos-latest
 
     steps:
