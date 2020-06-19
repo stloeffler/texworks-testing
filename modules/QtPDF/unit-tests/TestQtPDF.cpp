@@ -373,6 +373,7 @@ void TestQtPDF::destination_data()
     invalidRect << viewport << viewport << viewport << viewport << viewport <<
     QStringLiteral("PDFDestination()");
 
+  // Check explicit destinations
   dst.setPage(0);
   dst.setRect(viewport);
   dst.setZoom(1.5);
@@ -401,7 +402,7 @@ void TestQtPDF::destination_data()
 
     // FitB destination
     dst.setType(QtPDF::PDFDestination::Type::Destination_FitB);
-    QTest::newRow("Fit") << dst << true << true << 0 << QStringLiteral() <<
+    QTest::newRow("FitB") << dst << true << true << 0 << QStringLiteral() <<
       QtPDF::PDFDestination::Type::Destination_FitB << 1.5 <<
       viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
       QStringLiteral("PDFDestination(%1 /FitB)").arg(dst.page());
@@ -420,7 +421,7 @@ void TestQtPDF::destination_data()
 
     // FitBH destination
     dst.setType(QtPDF::PDFDestination::Type::Destination_FitBH);
-    QTest::newRow("FitH") << dst << true << true << 0 << QStringLiteral() <<
+    QTest::newRow("FitBH") << dst << true << true << 0 << QStringLiteral() <<
       QtPDF::PDFDestination::Type::Destination_FitBH << 1.5 <<
       viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
       QStringLiteral("PDFDestination(%1 /FitBH %2)").arg(dst.page()).arg(dst.top());
@@ -439,7 +440,7 @@ void TestQtPDF::destination_data()
 
     // FitBV destination
     dst.setType(QtPDF::PDFDestination::Type::Destination_FitBV);
-    QTest::newRow("FitV") << dst << true << true << 0 << QStringLiteral() <<
+    QTest::newRow("FitBV") << dst << true << true << 0 << QStringLiteral() <<
       QtPDF::PDFDestination::Type::Destination_FitBV << 1.5 <<
       viewport << viewport << viewport << A4RectRounded << A4Rect << A4Rect <<
       QStringLiteral("PDFDestination(%1 /FitBV %2)").arg(dst.page()).arg(dst.left());
@@ -448,6 +449,76 @@ void TestQtPDF::destination_data()
   // FitR destination
   dst.setType(QtPDF::PDFDestination::Type::Destination_FitR);
   QTest::newRow("FitR") << dst << true << true << 0 << QStringLiteral() <<
+    QtPDF::PDFDestination::Type::Destination_FitR << 1.5 <<
+    viewport << viewport << viewport << viewport << viewport << viewport <<
+    QStringLiteral("PDFDestination(%1 /FitR %2 %3 %4 %5)").arg(dst.page()).arg(dst.left()).arg(dst.rect().bottom()).arg(dst.rect().right()).arg(dst.top());
+
+  // Check explicit destinations with a page number that doesn't exist
+  constexpr int invalidPageNum = 10000;
+  dst.setPage(invalidPageNum);
+  {
+    QRectF zoom1Rect{QPointF(1.5, 3), QSizeF(4.5, 6)};
+    QRectF zoom2Rect{QPointF(0.75, 1.5), QSizeF(2.25, 3)};
+
+    // XYZ destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_XYZ);
+    QTest::newRow("XYZ invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_XYZ << 1.5 <<
+      viewport << zoom1Rect << zoom1Rect << zoom1Rect << zoom1Rect << zoom2Rect <<
+      QStringLiteral("PDFDestination(%1 /XYZ %2 %3 %4)").arg(dst.page()).arg(dst.left()).arg(dst.top()).arg(dst.zoom());
+  }
+
+  {
+    // Fit destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_Fit);
+    QTest::newRow("Fit invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_Fit << 1.5 <<
+      viewport << viewport << viewport << viewport << viewport << viewport <<
+      QStringLiteral("PDFDestination(%1 /Fit)").arg(dst.page());
+
+    // FitB destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitB);
+    QTest::newRow("FitB invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitB << 1.5 <<
+      viewport << viewport << viewport << viewport << viewport << viewport <<
+      QStringLiteral("PDFDestination(%1 /FitB)").arg(dst.page());
+  }
+
+  {
+    // FitH destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitH);
+    QTest::newRow("FitH invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitH << 1.5 <<
+      viewport << viewport << viewport << viewport << viewport << viewport <<
+      QStringLiteral("PDFDestination(%1 /FitH %2)").arg(dst.page()).arg(dst.top());
+
+    // FitBH destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitBH);
+    QTest::newRow("FitBH invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitBH << 1.5 <<
+      viewport << viewport << viewport << viewport << viewport << viewport <<
+      QStringLiteral("PDFDestination(%1 /FitBH %2)").arg(dst.page()).arg(dst.top());
+  }
+
+  {
+    // FitV destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitV);
+    QTest::newRow("FitV invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitV << 1.5 <<
+      viewport << viewport << viewport << viewport << viewport << viewport <<
+      QStringLiteral("PDFDestination(%1 /FitV %2)").arg(dst.page()).arg(dst.left());
+
+    // FitBV destination
+    dst.setType(QtPDF::PDFDestination::Type::Destination_FitBV);
+    QTest::newRow("FitBV invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
+      QtPDF::PDFDestination::Type::Destination_FitBV << 1.5 <<
+      viewport << viewport << viewport << viewport << viewport << viewport <<
+      QStringLiteral("PDFDestination(%1 /FitBV %2)").arg(dst.page()).arg(dst.left());
+  }
+
+  // FitR destination
+  dst.setType(QtPDF::PDFDestination::Type::Destination_FitR);
+  QTest::newRow("FitR invalid page") << dst << true << true << invalidPageNum << QStringLiteral() <<
     QtPDF::PDFDestination::Type::Destination_FitR << 1.5 <<
     viewport << viewport << viewport << viewport << viewport << viewport <<
     QStringLiteral("PDFDestination(%1 /FitR %2 %3 %4 %5)").arg(dst.page()).arg(dst.left()).arg(dst.rect().bottom()).arg(dst.rect().right()).arg(dst.top());
@@ -508,6 +579,70 @@ void TestQtPDF::destinationComparison()
   }
 }
 
+void TestQtPDF::PDFUriAction()
+{
+  QUrl urlTw(QStringLiteral("http://www.tug.org/texworks/"));
+  QtPDF::PDFURIAction a(urlTw);
+
+  QCOMPARE(a.type(), QtPDF::PDFAction::ActionTypeURI);
+  QCOMPARE(a.url(), urlTw);
+
+  QtPDF::PDFAction * c = a.clone();
+  Q_ASSERT(c != nullptr);
+  QVERIFY(c != &a);
+  QCOMPARE(*c, a);
+  delete c;
+}
+
+void TestQtPDF::PDFGotoAction()
+{
+  QtPDF::PDFDestination dst(0);
+  QString filename(QStringLiteral("test.pdf"));
+  QtPDF::PDFGotoAction a;
+
+  // Defaults
+  QCOMPARE(a.type(), QtPDF::PDFAction::ActionTypeGoTo);
+  QCOMPARE(a.destination(), QtPDF::PDFDestination());
+  QCOMPARE(a.isRemote(), false);
+  QCOMPARE(a.filename(), QString());
+  QCOMPARE(a.openInNewWindow(), false);
+
+  a.setDestination(dst);
+  QCOMPARE(a.destination(), dst);
+
+  a.setRemote(true);
+  QCOMPARE(a.isRemote(), true);
+
+  a.setFilename(filename);
+  QCOMPARE(a.filename(), filename);
+
+  a.setOpenInNewWindow(true);
+  QCOMPARE(a.openInNewWindow(), true);
+
+  QtPDF::PDFAction * c = a.clone();
+  Q_ASSERT(c != nullptr);
+  QVERIFY(c != &a);
+  QCOMPARE(*c, a);
+  delete c;
+}
+
+void TestQtPDF::PDFLaunchAction()
+{
+  QString empty, cmd(QStringLiteral("cmd"));
+  QtPDF::PDFLaunchAction a(empty);
+
+  QCOMPARE(a.type(), QtPDF::PDFAction::ActionTypeLaunch);
+  QCOMPARE(a.command(), empty);
+  a.setCommand(cmd);
+  QCOMPARE(a.command(), cmd);
+
+  QtPDF::PDFAction * c = a.clone();
+  Q_ASSERT(c != nullptr);
+  QVERIFY(c != &a);
+  QCOMPARE(*c, a);
+  delete c;
+}
+
 void TestQtPDF::actionComparison()
 {
   // Can't use QScopedPointer here as that does not work with QVector's <<
@@ -523,9 +658,13 @@ void TestQtPDF::actionComparison()
           << QSP(new QtPDF::PDFLaunchAction(QStringLiteral("cmd")));
 
   for (int i = 0; i < actions.size(); ++i) {
-    QCOMPARE(*actions[i], *actions[i]);
-    for (int j = i + 1; j < actions.size(); ++j) {
-      QVERIFY2(!(*actions[i] == *actions[j]), qPrintable(QStringLiteral("actions[%1] == actions[%2]").arg(i).arg(j)));
+    for (int j = 0; j < actions.size(); ++j) {
+      if (i == j) {
+        QCOMPARE(*actions[i], *actions[i]);
+      }
+      else {
+        QVERIFY2(!(*actions[i] == *actions[j]), qPrintable(QStringLiteral("actions[%1] == actions[%2]").arg(i).arg(j)));
+      }
     }
   }
 }
