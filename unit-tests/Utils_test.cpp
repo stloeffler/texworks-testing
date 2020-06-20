@@ -34,6 +34,10 @@
 #include <QTemporaryFile>
 #include <QToolBar>
 
+#ifdef Q_OS_DARWIN
+extern QString GetMacOSVersionString();
+#endif // defined(Q_OS_DARWIN)
+
 namespace Tw {
 namespace Utils {
 bool operator==(const FileVersionDatabase::Record & r1, const FileVersionDatabase::Record & r2)
@@ -527,7 +531,6 @@ void TestUtils::FullscreenManager()
 }
 
 #ifdef Q_OS_DARWIN
-extern QString GetMacOSVersionString();
 void TestUtils::OSVersionString()
 {
 	QString version = GetMacOSVersionString();
@@ -535,7 +538,6 @@ void TestUtils::OSVersionString()
 	QVERIFY2(version.contains(pattern), qPrintable(version));
 }
 #endif // defined(Q_OS_DARWIN)
-
 
 } // namespace UnitTest
 
