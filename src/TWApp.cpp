@@ -56,7 +56,7 @@
 #include <QUrl>
 
 #if defined(Q_OS_DARWIN)
-extern QString GetMacOSVersionString()
+extern QString GetMacOSVersionString();
 #endif
 
 #if defined(Q_OS_WIN)
