@@ -50,9 +50,13 @@ class TestQtPDF : public QObject
 
 private slots:
   void backendInterface();
+  void abstractBaseClasses();
 
   void loadDocs();
 //  virtual void reload() = 0;
+
+  void parsePDFDate_data();
+  void parsePDFDate();
 
   void isValid_data();
   void isValid();
@@ -124,11 +128,20 @@ private slots:
   void permissions_data();
   void permissions();
 
+  void fontDescriptor_data();
+  void fontDescriptor();
+
+  void fontDescriptorComparison();
+
   void fonts_data();
   void fonts();
 
+  void ToCItem();
+
   void toc_data();
   void toc();
+
+  void annotationComparison();
 
   void page_renderToImage_data();
   void page_renderToImage();

@@ -15,7 +15,9 @@
 #define PDFBackend_H
 
 #include "PDFAnnotations.h"
+#include "PDFFontDescriptor.h"
 #include "PDFPageTile.h"
+#include "PDFToC.h"
 #include "PDFTransitions.h"
 
 #include <QCache>
@@ -45,60 +47,6 @@ class Document;
 
 // TODO: Find a better place to put this
 QDateTime fromPDFDate(QString pdfDate);
-
-class PDFFontDescriptor
-{
-public:
-  enum FontStretch { FontStretch_UltraCondensed, FontStretch_ExtraCondensed, \
-                     FontStretch_Condensed, FontStretch_SemiCondensed, \
-                     FontStretch_Normal, FontStretch_SemiExpanded, \
-                     FontStretch_Expanded, FontStretch_ExtraExpanded, \
-                     FontStretch_UltraExpanded };
-  enum Flag { Flag_FixedPitch = 0x01, Flag_Serif = 0x02, Flag_Symbolic = 0x04, \
-              Flag_Script = 0x08, Flag_Nonsymbolic = 0x20, Flag_Italic = 0x40, \
-              Flag_AllCap = 0x10000, Flag_SmallCap = 0x20000, \
-              Flag_ForceBold = 0x40000 };
-  Q_DECLARE_FLAGS(Flags, Flag)
-
-  PDFFontDescriptor(const QString & fontName = QString());
-  virtual ~PDFFontDescriptor() = default;
-
-  bool isSubset() const;
-
-  QString name() const { return _name; }
-  // pureName() removes the subset tag
-  QString pureName() const;
-
-  void setName(const QString name) { _name = name; }
-  // TODO: Accessor methods for all other properties
-
-protected:
-  // From pdf specs
-  QString _name;
-  QString _family;
-  enum FontStretch _stretch{FontStretch_Normal};
-  int _weight{400};
-  Flags _flags;
-  QRectF _bbox;
-  float _italicAngle{0};
-  float _ascent{0};
-  float _descent{0};
-  float _leading{0};
-  float _capHeight{0};
-  float _xHeight{0};
-  float _stemV{0};
-  float _stemH{0};
-  float _avgWidth{0};
-  float _maxWidth{0};
-  float _missingWidth{0};
-  QString _charSet;
-
-  // From pdf specs for CID fonts only
-  // _style
-  // _lang
-  // _fD
-  // _CIDSet
-};
 
 // Note: This is a hack, but since all the information (with the exception of
 // the type of font) we use (and that is provided by poppler) is encapsulated in
@@ -137,6 +85,12 @@ public:
   void setDescriptor(const PDFFontDescriptor descriptor) { _descriptor = descriptor; }
   void setFileName(const QFileInfo file) { _source = Source_File; _substitutionFile = file; }
   void setSource(const FontSource source) { _source = source; }
+
+  bool operator==(const PDFFontInfo & o) const {
+    return (_source == o._source && _descriptor == o._descriptor &&
+      _substitutionFile == o._substitutionFile && _fontType == o._fontType &&
+      _CIDType == o._CIDType && _fontProgramType == o._fontProgramType);
+  }
 
 protected:
   FontSource _source{Source_Builtin};
@@ -340,47 +294,6 @@ private:
 
 };
 
-class PDFToCItem
-{
-public:
-  enum PDFToCItemFlag { Flag_Italic = 0x1, Flag_Bold = 0x2 };
-  Q_DECLARE_FLAGS(PDFToCItemFlags, PDFToCItemFlag)
-
-  PDFToCItem(const QString label = QString()) : _label(label) { }
-  PDFToCItem(const PDFToCItem & o) : _label(o._label), _isOpen(o._isOpen), _color(o._color), _children(o._children), _flags(o._flags) {
-    _action = (o._action ? o._action->clone() : nullptr);
-  }
-  virtual ~PDFToCItem() { if (_action) delete _action; }
-
-  QString label() const { return _label; }
-  bool isOpen() const { return _isOpen; }
-  PDFAction * action() const { return _action; }
-  QColor color() const { return _color; }
-  const QList<PDFToCItem> & children() const { return _children; }
-  QList<PDFToCItem> & children() { return _children; }
-  PDFToCItemFlags flags() const { return _flags; }
-  PDFToCItemFlags & flags() { return _flags; }
-
-  void setLabel(const QString label) { _label = label; }
-  void setOpen(const bool isOpen = true) { _isOpen = isOpen; }
-  void setAction(PDFAction * action) {
-    if (_action)
-      delete _action;
-    _action = action;
-  }
-  void setColor(const QColor color) { _color = color; }
-
-protected:
-  QString _label;
-  bool _isOpen{false}; // derived from the sign of the `Count` member of the outline item dictionary
-  PDFAction * _action{nullptr}; // if the `Dest` member of the outline item dictionary is set, it must be converted to a PDFGotoAction
-  QColor _color;
-  QList<PDFToCItem> _children;
-  PDFToCItemFlags _flags;
-};
-
-typedef QList<PDFToCItem> PDFToC;
-
 enum SearchFlag { Search_WrapAround = 0x01, Search_CaseInsensitive = 0x02, Search_Backwards = 0x04};
 Q_DECLARE_FLAGS(SearchFlags, SearchFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(SearchFlags)
@@ -397,6 +310,10 @@ struct SearchResult
 {
   unsigned int pageNum;
   QRectF bbox;
+
+  bool operator==(const SearchResult & o) const {
+    return (pageNum == o.pageNum && bbox == o.bbox);
+  }
 };
 
 
@@ -442,7 +359,7 @@ public:
   // Uses doc-read-lock and may use doc-write-lock
   // NB: no const variant exists as we may need to create a new Page (if it was
   // not cached in _pages), which requires a non-const `this` pointer as parent
-  virtual QWeakPointer<Page> page(int at) = 0;
+  virtual QWeakPointer<Page> page(int at);
   virtual PDFDestination resolveDestination(const PDFDestination & namedDestination) const {
     return (namedDestination.isExplicit() ? namedDestination : PDFDestination());
   }
@@ -553,6 +470,10 @@ public:
   public:
     QRectF boundingBox;
     QList<Box> subBoxes;
+
+    bool operator==(const Box & o) const {
+      return (boundingBox == o.boundingBox && subBoxes == o.subBoxes);
+    }
   };
 
   virtual ~Page() = default;

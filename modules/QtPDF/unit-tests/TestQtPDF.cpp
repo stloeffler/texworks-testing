@@ -94,6 +94,38 @@ public:
   }
 };
 
+class GenericDocument;
+
+class GenericPage : public QtPDF::Backend::Page
+{
+public:
+  GenericPage(GenericDocument * parent, int at, QSharedPointer<QReadWriteLock> docLock);
+  QSizeF pageSizeF() const override { return {}; }
+  QList<QSharedPointer<QtPDF::Annotation::Link> > loadLinks() override { return {}; }
+  QList<QtPDF::Backend::SearchResult> search(const QString &searchText, const QtPDF::Backend::SearchFlags &flags) override {
+    Q_UNUSED(searchText) Q_UNUSED(flags) return {};
+  }
+  QImage renderToImage(double xres, double yres, QRect render_box = QRect(), bool cache = false) const override {
+    Q_UNUSED(xres) Q_UNUSED(yres) Q_UNUSED(render_box) Q_UNUSED(cache)
+    return {};
+  }
+};
+
+class GenericDocument : public QtPDF::Backend::Document
+{
+public:
+  GenericDocument(const QString & filename = QString()) : QtPDF::Backend::Document(filename) {
+    _numPages = 1;
+    _pages.append(QSharedPointer<QtPDF::Backend::Page>(new GenericPage(this, 0, _docLock)));
+  }
+  bool isValid() const override { return true; }
+  bool isLocked() const override { return false; }
+  bool unlock(const QString password) override { Q_UNUSED(password) return true; }
+  void reload() override { }
+};
+
+GenericPage::GenericPage(GenericDocument * parent, int at, QSharedPointer<QReadWriteLock> docLock) : QtPDF::Backend::Page(parent, at, docLock) { }
+
 inline void sleep(int ms)
 {
 #ifdef Q_OS_MACOS
@@ -139,6 +171,64 @@ void TestQtPDF::backendInterface()
   QVERIFY(!backend.canHandleFile(QString::fromLatin1("test.tex")));
 }
 
+void TestQtPDF::abstractBaseClasses()
+{
+  QString filename = QStringLiteral("test.pdf");
+  GenericDocument doc(filename);
+  QMap<QString, QString> metaDataOther;
+  QtPDF::PDFDestination dstExplicit(0), dstNamed(QStringLiteral("name"));
+
+  // Document
+  QCOMPARE(doc.numPages(), 1);
+  QCOMPARE(doc.fileName(), filename);
+  QCOMPARE(doc.resolveDestination(dstExplicit), dstExplicit);
+  QCOMPARE(doc.resolveDestination(dstNamed), QtPDF::PDFDestination());
+  QCOMPARE(doc.permissions(), QtPDF::Backend::Document::Permissions());
+  QCOMPARE(doc.isValid(), true);
+  QCOMPARE(doc.isLocked(), false);
+  doc.reload();
+  QCOMPARE(doc.unlock(QStringLiteral()), true);
+  QCOMPARE(doc.toc(), QtPDF::Backend::PDFToC());
+  QCOMPARE(doc.fonts(), QList<QtPDF::Backend::PDFFontInfo>());
+  QCOMPARE(doc.title(), QString());
+  QCOMPARE(doc.author(), QString());
+  QCOMPARE(doc.subject(), QString());
+  QCOMPARE(doc.keywords(), QString());
+  QCOMPARE(doc.creator(), QString());
+  QCOMPARE(doc.producer(), QString());
+  QCOMPARE(doc.creationDate(), QDateTime());
+  QCOMPARE(doc.modDate(), QDateTime());
+  QCOMPARE(doc.pageSize(), QSizeF());
+  QCOMPARE(doc.fileSize(), static_cast<qint64>(0));
+  QCOMPARE(doc.trapped(), QtPDF::Backend::Document::Trapped_Unknown);
+  QCOMPARE(doc.metaDataOther(), metaDataOther);
+  QCOMPARE(doc.search(QStringLiteral(), {}), QList<QtPDF::Backend::SearchResult>());
+
+  // Page
+  QSharedPointer<QtPDF::Backend::Page> page = doc.page(0).toStrongRef();
+  QVERIFY(!page.isNull());
+  QCOMPARE(page->document(), &doc);
+  QCOMPARE(page->pageNum(), 0);
+  QCOMPARE(page->pageSizeF(), QSizeF());
+  QCOMPARE(page->getContentBoundingBox(), QRectF());
+  QVERIFY(page->transition() == nullptr);
+  QCOMPARE(page->loadLinks(), QList< QSharedPointer<QtPDF::Annotation::Link> >());
+  QCOMPARE(page->boxes(), QList<QtPDF::Backend::Page::Box>());
+
+  QMap<int, QRectF> wordBoxes,  charBoxes;
+  wordBoxes.insert(0, QRectF());
+  charBoxes.insert(0, QRectF());
+  QCOMPARE(page->selectedText({}, &wordBoxes, &charBoxes), QString());
+  QVERIFY(wordBoxes.isEmpty());
+  QVERIFY(charBoxes.isEmpty());
+
+  QVERIFY(page->renderToImage(1, 1).isNull());
+  QVERIFY(page->getTileImage(nullptr, 1, 1).isNull());
+
+  QCOMPARE(page->loadAnnotations(), QList< QSharedPointer<QtPDF::Annotation::AbstractAnnotation> >());
+  QCOMPARE(page->search(QStringLiteral(), {}), QList<QtPDF::Backend::SearchResult>());
+}
+
 void TestQtPDF::loadDocs()
 {
   Backend backend;
@@ -157,6 +247,35 @@ void TestQtPDF::loadDocs()
     _docs[QString::fromLatin1("page-rotation")] = backend.newDocument(QString::fromLatin1("page-rotation.pdf"));
     _docs[QString::fromLatin1("annotations")] = backend.newDocument(QString::fromLatin1("annotations.pdf"));
   }
+}
+
+void TestQtPDF::parsePDFDate_data()
+{
+  QTest::addColumn<QString>("str");
+  QTest::addColumn<QDateTime>("result");
+
+  // NB: fromPDFDate always returns local time
+  QTest::newRow("empty") << QString() << QDateTime();
+  QTest::newRow("yyyy") << QStringLiteral("D:2000") << QDateTime(QDate(2000, 1, 1));
+  QTest::newRow("yyyymm") << QStringLiteral("D:200002") << QDateTime(QDate(2000, 2, 1));
+  QTest::newRow("yyyymmdd") << QStringLiteral("D:20000202") << QDateTime(QDate(2000, 2, 2));
+  QTest::newRow("yyyymmddHH") << QStringLiteral("D:2000020213") << QDateTime(QDate(2000, 2, 2), QTime(13, 0, 0));
+  QTest::newRow("yyyymmddHHMM") << QStringLiteral("D:200002021342") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 0));
+  QTest::newRow("yyyymmddHHMMSS") << QStringLiteral("D:20000202134221") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 21));
+  QTest::newRow("yyyymmddHHMMSSZ") << QStringLiteral("D:20000202134221Z") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 21), Qt::UTC).toLocalTime();
+  QTest::newRow("yyyymmddHHMMSS+07'30") << QStringLiteral("D:20000202134221+07'30") << QDateTime(QDate(2000, 2, 2), QTime(6, 12, 21), Qt::UTC).toLocalTime();
+  QTest::newRow("yyyymmddHHMMSS-08'00") << QStringLiteral("D:20000202134221-08'00") << QDateTime(QDate(2000, 2, 2), QTime(21, 42, 21), Qt::UTC).toLocalTime();
+  QTest::newRow("yyyymmddHHMMSS;08'00") << QStringLiteral("D:20000202134221;08'00") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 21));
+  QTest::newRow("yyyymmddHHMMSS-0800") << QStringLiteral("D:20000202134221-0800") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 21));
+  QTest::newRow("yyyymmddHHMMSS-0a'00") << QStringLiteral("D:20000202134221-0a'00") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 21));
+}
+
+void TestQtPDF::parsePDFDate()
+{
+  QFETCH(QString, str);
+  QFETCH(QDateTime, result);
+
+  QCOMPARE(QtPDF::Backend::fromPDFDate(str), result);
 }
 
 void TestQtPDF::isValid_data()
@@ -965,6 +1084,53 @@ void TestQtPDF::permissions()
   QCOMPARE(doc->permissions(), permissions);
 }
 
+void TestQtPDF::fontDescriptor_data()
+{
+  QTest::addColumn<QString>("fontName");
+  QTest::addColumn<QString>("pureName");
+  QTest::addColumn<bool>("isSubset");
+
+  QTest::newRow("default") << QString() << QString() << false;
+  QTest::newRow("full") << QStringLiteral("Font") << QStringLiteral("Font") << false;
+  QTest::newRow("subset") << QStringLiteral("ABCDEF+font") << QStringLiteral("font") << true;
+  QTest::newRow("not-subset") << QStringLiteral("Font56+") << QStringLiteral("Font56+") << false;
+}
+
+void TestQtPDF::fontDescriptor()
+{
+  QFETCH(QString, fontName);
+  QFETCH(QString, pureName);
+  QFETCH(bool, isSubset);
+
+  QtPDF::Backend::PDFFontDescriptor fd;
+  fd.setName(fontName);
+  QCOMPARE(fd.name(), fontName);
+  QCOMPARE(fd.pureName(), pureName);
+  QCOMPARE(fd.isSubset(), isSubset);
+}
+
+void TestQtPDF::fontDescriptorComparison()
+{
+  QVector<QtPDF::Backend::PDFFontDescriptor> fds;
+
+  fds << QtPDF::Backend::PDFFontDescriptor()
+      << QtPDF::Backend::PDFFontDescriptor(QStringLiteral("font1"))
+      << QtPDF::Backend::PDFFontDescriptor(QStringLiteral("Font2"))
+      << QtPDF::Backend::PDFFontDescriptor(QStringLiteral("Font56+"))
+      << QtPDF::Backend::PDFFontDescriptor(QStringLiteral("ABCDEF+font1"))
+      << QtPDF::Backend::PDFFontDescriptor(QStringLiteral("ABCDEF+Font2"));
+  for (int i = 0; i < fds.size(); ++i) {
+    for (int j = 0; j < fds.size(); ++j) {
+      if (i == j) {
+        QCOMPARE(fds[i], fds[i]);
+      }
+      else {
+        QVERIFY2(!(fds[i] == fds[j]), qPrintable(QStringLiteral("fds[%1] == fds[%2]").arg(i).arg(j)));
+      }
+    }
+  }
+}
+
 void TestQtPDF::fonts_data()
 {
   QTest::addColumn<pDoc>("doc");
@@ -1003,6 +1169,65 @@ void TestQtPDF::fonts()
     actualFontNames.append(fonts[i].descriptor().pureName());
 
   QCOMPARE(actualFontNames, fontNames);
+}
+
+void TestQtPDF::ToCItem()
+{
+  QtPDF::Backend::PDFToCItem ti, def, act;
+  QString label(QStringLiteral("label"));
+
+  act.setAction(new QtPDF::PDFGotoAction(QtPDF::PDFDestination(0)));
+
+  // Defaults
+  QCOMPARE(ti.label(), QString());
+  QCOMPARE(ti.isOpen(), false);
+  QVERIFY(ti.action() == nullptr);
+  QCOMPARE(ti.color(), QColor());
+  QCOMPARE(ti.children(), QList<QtPDF::Backend::PDFToCItem>());
+  // ensure the const variant of PDFToCItem::flags() is called
+  QCOMPARE(static_cast<const QtPDF::Backend::PDFToCItem&>(ti).flags(), QtPDF::Backend::PDFToCItem::PDFToCItemFlags());
+  QVERIFY(ti == ti);
+  QVERIFY(ti == def);
+  QVERIFY(!(ti == act));
+
+  // Setters
+  ti.setLabel(label);
+  QCOMPARE(ti.label(), label);
+  QVERIFY(!(ti == def));
+  QVERIFY(!(ti == act));
+  ti = def;
+  QVERIFY(ti == def);
+
+  ti.setOpen();
+  QCOMPARE(ti.isOpen(), true);
+  QVERIFY(!(ti == def));
+  QVERIFY(!(ti == act));
+  ti = def;
+  QVERIFY(ti == def);
+
+  ti.setColor(Qt::red);
+  QCOMPARE(ti.color(), QColor(Qt::red));
+  QVERIFY(!(ti == def));
+  QVERIFY(!(ti == act));
+  ti = def;
+  QVERIFY(ti == def);
+
+  ti.flags() |= QtPDF::Backend::PDFToCItem::Flag_Bold;
+  QCOMPARE(ti.flags(), QtPDF::Backend::PDFToCItem::PDFToCItemFlags(QtPDF::Backend::PDFToCItem::Flag_Bold));
+  QVERIFY(!(ti == def));
+  QVERIFY(!(ti == act));
+  ti = def;
+  QVERIFY(ti == def);
+
+  QtPDF::PDFGotoAction actGoto1 = QtPDF::PDFGotoAction(QtPDF::PDFDestination(1));
+  ti.setAction(new QtPDF::PDFGotoAction(actGoto1));
+  QVERIFY(ti.action() != nullptr);
+  QCOMPARE(*ti.action(), dynamic_cast<const QtPDF::PDFAction&>(actGoto1));
+  QVERIFY(!(ti == def));
+  QVERIFY(!(ti == act));
+
+  // Self-assignment (ensure it does not crash)
+  ti = ti;
 }
 
 // static
@@ -1054,6 +1279,73 @@ void TestQtPDF::toc()
     printToC(doc->toc());
     qDebug() << "Expected:";
     printToC(toc);
+  }
+}
+
+void TestQtPDF::annotationComparison()
+{
+  using SAP = QSharedPointer<QtPDF::Annotation::AbstractAnnotation>;
+  QVector<SAP> annots;
+
+  annots << SAP(new QtPDF::Annotation::Link())
+         << SAP(new QtPDF::Annotation::Text())
+         << SAP(new QtPDF::Annotation::FreeText())
+         << SAP(new QtPDF::Annotation::Caret())
+         << SAP(new QtPDF::Annotation::Highlight())
+         << SAP(new QtPDF::Annotation::Underline())
+         << SAP(new QtPDF::Annotation::Squiggly())
+         << SAP(new QtPDF::Annotation::StrikeOut());
+  {
+    QtPDF::Annotation::Text t;
+    t.setName(QStringLiteral("name"));
+    annots << SAP(new QtPDF::Annotation::Text(t));
+  }
+  {
+    QtPDF::Annotation::Text t;
+    t.setTitle(QStringLiteral("title"));
+    annots << SAP(new QtPDF::Annotation::Text(t));
+  }
+  {
+    QtPDF::Annotation::Text t;
+    t.setPopup(new QtPDF::Annotation::Popup);
+    annots << SAP(new QtPDF::Annotation::Text(t));
+  }
+  {
+    QtPDF::Annotation::Text t;
+    t.setPopup(new QtPDF::Annotation::Popup);
+    t.popup()->setOpen();
+    annots << SAP(new QtPDF::Annotation::Text(t));
+  }
+  {
+    QtPDF::Annotation::Link l;
+    l.setHighlightingMode(QtPDF::Annotation::Link::HighlightingInvert);
+    annots << SAP(new QtPDF::Annotation::Link(l));
+  }
+  {
+    QtPDF::Annotation::Link l;
+    l.setActionOnActivation(QtPDF::PDFGotoAction(QtPDF::PDFDestination(0)).clone());
+    annots << SAP(new QtPDF::Annotation::Link(l));
+  }
+  {
+    QtPDF::Annotation::Link l;
+    l.setActionOnActivation(QtPDF::PDFGotoAction(QtPDF::PDFDestination(1)).clone());
+    annots << SAP(new QtPDF::Annotation::Link(l));
+  }
+  {
+    QtPDF::Annotation::Popup p;
+    p.setOpen();
+    annots << SAP(new QtPDF::Annotation::Popup(p));
+  }
+
+  for (int i = 0; i < annots.size(); ++i) {
+    for (int j = 0; j < annots.size(); ++j) {
+      if (i == j) {
+        QCOMPARE(*annots[i], *annots[j]);
+      }
+      else {
+        QVERIFY2(!(*annots[i] == *annots[j]), qPrintable(QStringLiteral("annots[%1] == annots[%2]").arg(i).arg(j)));
+      }
+    }
   }
 }
 

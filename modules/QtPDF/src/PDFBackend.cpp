@@ -107,37 +107,6 @@ void PDFPageProcessingThread::dumpWorkStack(const QStack<PageProcessingRequest*>
 #endif
 
 
-
-
-// Fonts
-// =================
-
-PDFFontDescriptor::PDFFontDescriptor(const QString & fontName /* = QString() */) :
-  _name(fontName)
-{
-}
-
-bool PDFFontDescriptor::isSubset() const
-{
-  // Subset fonts have a tag of 6 upper-case letters, followed by a '+',
-  // prefixed to the font name
-  if (_name.length() < 7 || _name[6] != QChar::fromLatin1('+'))
-    return false;
-  for (int i = 0; i < 6; ++i) {
-    if (!_name[i].isUpper())
-      return false;
-  }
-  return true;
-}
-
-QString PDFFontDescriptor::pureName() const
-{
-  if (!isSubset())
-    return _name;
-  return _name.mid(7);
-}
-
-
 // Backend Rendering
 // =================
 
@@ -443,6 +412,15 @@ int Document::numPages() { QReadLocker docLocker(_docLock.data()); return _numPa
 PDFPageProcessingThread &Document::processingThread() { QReadLocker docLocker(_docLock.data()); return _processingThread; }
 PDFPageCache &Document::pageCache() { QReadLocker docLocker(_docLock.data()); return _pageCache; }
 
+QWeakPointer<Page> Document::page(int at)
+{
+  QReadLocker l(_docLock.data());
+  if (at < 0 || at >= _pages.size()) {
+    return QWeakPointer<Page>();
+  }
+  return _pages[at];
+}
+
 QList<SearchResult> Document::search(const QString & searchText, const SearchFlags & flags, const int startPage)
 {
   QReadLocker docLocker(_docLock.data());
@@ -568,6 +546,9 @@ QRectF Page::getContentBoundingBox() const
   // render the page into a 100x100 px image (this should be fast and will allow
   // estimating the content bounding box to about 1% of the page size)
   QImage img = renderToImage(100. * 72 / pageSize.width(), 100. * 72 / pageSize.height());
+
+  if (img.isNull())
+    return QRectF();
 
   // Make sure the image is in a format we can handle here
   switch (img.format()) {
