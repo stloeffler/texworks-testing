@@ -256,9 +256,9 @@ void TestQtPDF::parsePDFDate_data()
 
   // NB: fromPDFDate always returns local time
   QTest::newRow("empty") << QString() << QDateTime();
-  QTest::newRow("yyyy") << QStringLiteral("D:2000") << QDateTime(QDate(2000, 1, 1));
-  QTest::newRow("yyyymm") << QStringLiteral("D:200002") << QDateTime(QDate(2000, 2, 1));
-  QTest::newRow("yyyymmdd") << QStringLiteral("D:20000202") << QDateTime(QDate(2000, 2, 2));
+  QTest::newRow("yyyy") << QStringLiteral("D:2000") << QDateTime(QDate(2000, 1, 1), QTime());
+  QTest::newRow("yyyymm") << QStringLiteral("D:200002") << QDateTime(QDate(2000, 2, 1), QTime());
+  QTest::newRow("yyyymmdd") << QStringLiteral("D:20000202") << QDateTime(QDate(2000, 2, 2), QTime());
   QTest::newRow("yyyymmddHH") << QStringLiteral("D:2000020213") << QDateTime(QDate(2000, 2, 2), QTime(13, 0, 0));
   QTest::newRow("yyyymmddHHMM") << QStringLiteral("D:200002021342") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 0));
   QTest::newRow("yyyymmddHHMMSS") << QStringLiteral("D:20000202134221") << QDateTime(QDate(2000, 2, 2), QTime(13, 42, 21));
@@ -1378,43 +1378,6 @@ void TestQtPDF::page_renderToImage()
   QVERIFY(render == ref);
 }
 
-// static
-void TestQtPDF::printAction(const QtPDF::PDFAction & a)
-{
-  switch (a.type()) {
-  case QtPDF::PDFAction::ActionTypeGoTo:
-  {
-    const QtPDF::PDFGotoAction & A = reinterpret_cast<const QtPDF::PDFGotoAction &>(a);
-    qDebug() << "   GotoAction" << A.filename()
-             << "remote:" << A.isRemote()
-             << "newWindow:" << A.openInNewWindow()
-             << "page:" << A.destination().page()
-             << "destName:" << A.destination().destinationName()
-             << "rect:" << A.destination().rect()
-             << "zoom:" << A.destination().zoom();
-    break;
-  }
-  case QtPDF::PDFAction::ActionTypeURI:
-  {
-    const QtPDF::PDFURIAction & A = reinterpret_cast<const QtPDF::PDFURIAction &>(a);
-    qDebug() << "   URIAction" << A.url();
-    break;
-  }
-  default:
-    qDebug() << "   Type:" << a.type();
-  }
-}
-
-// static
-void TestQtPDF::compareLinks(const QtPDF::Annotation::Link & actual, const QtPDF::Annotation::Link & expected)
-{
-  QCOMPARE(actual.quadPoints(), expected.quadPoints());
-  QTEST_ASSERT(actual.actionOnActivation());
-  QTEST_ASSERT(expected.actionOnActivation());
-  QCOMPARE(*(actual.actionOnActivation()), *(expected.actionOnActivation()));
-
-}
-
 void TestQtPDF::page_loadLinks_data()
 {
   QTest::addColumn<pPage>("page");
@@ -1460,7 +1423,7 @@ void TestQtPDF::page_loadLinks()
   QCOMPARE(actual.size(), links.size());
 
   for (int i = 0; i < actual.size(); ++i) {
-    compareLinks(*(actual[i]), links[i]);
+    QCOMPARE(*(actual[i]), links[i]);
 
 #ifdef DEBUG
     if (QTest::currentTestFailed()) {
@@ -1867,8 +1830,8 @@ void TestQtPDF::pageTile()
     for (int j = i + 1; j < tiles.size(); ++j) {
       auto t1 = tiles[i];
       auto t2 = tiles[j];
-      uint h1{QtPDF::Backend::qHash(t1)};
-      uint h2{QtPDF::Backend::qHash(t2)};
+      uint h1{qHash(t1)};
+      uint h2{qHash(t2)};
 
       QVERIFY(t1 == t1);
       QVERIFY(t2 == t2);

@@ -23,7 +23,11 @@
 
 #include "PDFBackend.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <poppler-qt6.h>
+#else
 #include <poppler-qt5.h>
+#endif
 
 namespace QtPDF {
 
@@ -41,7 +45,11 @@ class Document: public Backend::Document
 
   QSharedPointer< ::Poppler::Document > _poppler_doc;
 
+#if POPPLER_HAS_OUTLINE
+  void recursiveConvertToC(QList<PDFToCItem> & items, const QVector<Poppler::OutlineItem> & popplerItems) const;
+#else
   void recursiveConvertToC(QList<PDFToCItem> & items, QDomNode node) const;
+#endif
 
 protected:
   // Poppler is not threadsafe, so some operations need to be serialized with a
