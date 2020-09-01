@@ -58,4 +58,7 @@ public:
 
 } // namespace QtPDF
 
+// ### Cache for Rendered Images
+uint qHash(const QtPDF::Backend::PDFPageTile &tile);
+
 #endif // !defined(PDFPageTile_H)
