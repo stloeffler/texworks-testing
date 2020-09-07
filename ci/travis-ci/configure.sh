@@ -38,7 +38,7 @@ elif [ "${TARGET_OS}" = "win" -a "${TRAVIS_OS_NAME}" = "linux" ]; then
 		${CMAKE_OPTS} \
 		-DPLATFORM_DEPENDENCIES='freetype;harfbuzz_too;freetype;bz2' \
 		-DPoppler_ADDITIONAL_DEPENDENCIES='freetype;harfbuzz;freetype_too;glib-2.0;intl;iconv;ws2_32;winmm;tiff;webp;jpeg;openjp2;png;lcms2;lzma;bz2;pcre16;wtsapi32' \
-		-DTEXWORKS_ADDITIONAL_LIBS='wtsapi32;opengl32;imm32;shlwapi;dwmapi;uxtheme' \
+		-DTEXWORKS_ADDITIONAL_LIBS='wtsapi32;opengl32;imm32;shlwapi;dwmapi;uxtheme;iphlpapi;crypto' \
 		-Dgp_tool='none'"
 	if [ -f "CMakeFiles/CMakeError.log" ]; then
 		echo "=== CMake Error Log ==="
