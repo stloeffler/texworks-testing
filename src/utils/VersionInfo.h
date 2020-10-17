@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2019  Stefan Löffler
+	Copyright (C) 2020  Stefan Löffler
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,38 +18,36 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
-#include <QtTest/QtTest>
+#ifndef VersionInfo_H
+#define VersionInfo_H
 
-namespace UnitTest {
+#include <QDateTime>
+#include <QString>
 
-class TestUtils : public QObject
+namespace Tw {
+
+namespace Utils {
+
+class VersionInfo
 {
-	Q_OBJECT
-private slots:
-	void FileVersionDatabase_comparisons();
-	void FileVersionDatabase_hashForFile();
-	void FileVersionDatabase_addFileRecord();
-	void FileVersionDatabase_load();
-	void FileVersionDatabase_save();
+public:
+	static bool isGitInfoAvailable();
+	static QString gitCommitHash();
+	static QDateTime gitCommitDate();
 
-	void SystemCommand_wait();
-	void SystemCommand_getResult_data();
-	void SystemCommand_getResult();
+	static QString versionString();
+	static QString buildIdString();
 
-	void CommandLineParser_parse();
-	void CommandLineParser_printUsage();
+	// return the version of Tw (0xMMNNPP)
+	static int getVersion();
 
-	void MacCentralEurRomanCodec();
-
-	void FullscreenManager();
-
-	void ResourcesLibrary_getLibraryPath_data();
-	void ResourcesLibrary_getLibraryPath();
-	void ResourcesLibrary_portableLibPath();
-
-#ifdef Q_OS_DARWIN
-	void OSVersionString();
-#endif // defined(Q_OS_DARWIN)
+	static int getVersionMajor();
+	static int getVersionMinor();
+	static int getVersionBugfix();
 };
 
-} // namespace UnitTest
+} // namespace Utils
+
+} // namespace Tw
+
+#endif // !defined(VersionInfo_H)

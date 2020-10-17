@@ -46,13 +46,6 @@ class TWScriptManager;
 #define EXE
 #endif
 
-#ifndef TW_BUILD_ID
-#define TW_BUILD_ID unknown build
-#endif
-#define STRINGIFY_2(s) #s
-#define STRINGIFY(s) STRINGIFY_2(s)
-#define TW_BUILD_ID_STR STRINGIFY(TW_BUILD_ID)
-
 #define DEFAULT_ENGINE_NAME "pdfLaTeX"
 
 // general constants used by multiple document types
@@ -105,7 +98,6 @@ public:
 	static TWApp *instance();
 
 	static QStringList getTranslationList();
-	QString getPortableLibPath() const { return portableLibPath; }
 
 	TWScriptManager* getScriptManager() { return scriptManager; }
 
@@ -246,7 +238,6 @@ private:
 	QStringList *defaultBinPaths;
 	QList<Engine> *engineList;
 	int defaultEngineIndex;
-	QString portableLibPath;
 
 	QList<QTranslator*> translators;
 
