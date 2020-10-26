@@ -121,7 +121,6 @@ void PDFDocumentWindow::init()
 	setupUi(this);
 
 	setAttribute(Qt::WA_DeleteOnClose, true);
-	setAttribute(Qt::WA_MacNoClickThrough, true);
 
 	QIcon winIcon;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
@@ -689,17 +688,6 @@ PDFDocumentWindow *PDFDocumentWindow::findDocument(const QString &fileName)
 	return nullptr;
 }
 
-void PDFDocumentWindow::zoomToRight(QWidget *otherWindow)
-{
-	QDesktopWidget *desktop = QApplication::desktop();
-	QRect screenRect = desktop->availableGeometry(otherWindow ? otherWindow : this);
-	screenRect.setTop(screenRect.top() + 22);
-	screenRect.setLeft((screenRect.left() + screenRect.right()) / 2 + 1);
-	screenRect.setBottom(screenRect.bottom() - 1);
-	screenRect.setRight(screenRect.right() - 1);
-	setGeometry(screenRect);
-}
-
 void PDFDocumentWindow::showPage(int page)
 {
 	pageLabel->setText(tr("page %1 of %2").arg(page).arg(pdfWidget->lastPage()));
@@ -1022,7 +1010,17 @@ void PDFDocumentWindow::maybeOpenPdf(const QString & filename, const QtPDF::PDFD
 	// PDFDocument (e.g., in the TeXDocument associated with it) to notify the
 	// other parts of the code that a completely new and unrelated document is
 	// loaded here now.
-	PDFDocumentWindow * pdf = qobject_cast<PDFDocumentWindow*>(TWApp::instance()->openFile(filename));
+	// NB: TWApp::openFile() requires an absolute filename. Therefore, we have
+	// to make it absolute (using the current file's folder as base) if it isn't
+	// already
+	PDFDocumentWindow * pdf = qobject_cast<PDFDocumentWindow*>(TWApp::instance()->openFile([this] (const QString & filename) {
+			const QFileInfo fi(filename);
+			if (fi.isAbsolute()) {
+				return filename;
+			}
+			return QFileInfo(this->fileName()).dir().filePath(filename);
+		}(filename)
+	));
 	if (!pdf || !pdf->widget())
 		return;
 	pdf->widget()->goToPDFDestination(destination, false);

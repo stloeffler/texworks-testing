@@ -26,7 +26,6 @@
 #include "document/TeXDocument.h"
 #include "utils/ResourcesLibrary.h"
 
-#include <QDirModel>
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
@@ -70,7 +69,7 @@ void TemplateDialog::init()
 
 void TemplateDialog::itemActivated(const QModelIndex & index)
 {
-	QDirModel * model = qobject_cast<QDirModel*>(treeView->model());
+	QFileSystemModel * model = qobject_cast<QFileSystemModel*>(treeView->model());
 	if (model && !model->isDir(index))
 		accept();
 }
@@ -127,7 +126,9 @@ void TemplateDialog::showEvent(QShowEvent * event)
 	_shouldResizeColumns = false;
 
 	QHeaderView * h = treeView->header();
-	Q_ASSERT(h != nullptr);
+	if (!h) {
+		return;
+	}
 	// Do not use the real section sizes as reference, as the last section might
 	// be expanding and is hence larger than necessary. The default section size
 	// seems to work well here.

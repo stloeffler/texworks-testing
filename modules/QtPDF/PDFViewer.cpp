@@ -19,15 +19,7 @@ PDFViewer::PDFViewer(const QString & pdf_doc, QWidget *parent, Qt::WindowFlags f
   QtPDF::PDFDocumentWidget *docWidget = new QtPDF::PDFDocumentWidget(this);
   connect(this, SIGNAL(switchInterfaceLocale(QLocale)), docWidget, SLOT(switchInterfaceLocale(QLocale)));
 
-#ifdef USE_MUPDF
-  docWidget->setDefaultBackend(QString::fromLatin1("mupdf"));
-#elif USE_POPPLERQT
-  docWidget->setDefaultBackend(QString::fromLatin1("poppler-qt"));
-#else
-  #error At least one backend is required
-#endif
-
-  if (!pdf_doc.isEmpty() && docWidget)
+  if (!pdf_doc.isEmpty())
     docWidget->load(pdf_doc);
   docWidget->goFirst();
 
@@ -104,7 +96,9 @@ void PDFViewer::open()
     return;
 
   QtPDF::PDFDocumentWidget * docWidget = qobject_cast<QtPDF::PDFDocumentWidget*>(centralWidget());
-  Q_ASSERT(docWidget != nullptr);
+  if (!docWidget) {
+    return;
+  }
   docWidget->load(pdf_doc);
 }
 
