@@ -219,54 +219,54 @@ void TWApp::init()
 	actionNew = new QAction(tr("New"), this);
 	actionNew->setIcon(QIcon::fromTheme(QStringLiteral("document-new")));
 	menuFile->addAction(actionNew);
-	connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
+	connect(actionNew, &QAction::triggered, this, &TWApp::newFile);
 
 	actionNew_from_Template = new QAction(tr("New from Template..."), this);
 	menuFile->addAction(actionNew_from_Template);
-	connect(actionNew_from_Template, SIGNAL(triggered()), this, SLOT(newFromTemplate()));
+	connect(actionNew_from_Template, &QAction::triggered, this, &TWApp::newFromTemplate);
 
 	actionPreferences = new QAction(tr("Preferences..."), this);
 	actionPreferences->setIcon(QIcon::fromTheme(QStringLiteral("preferences-system")));
 	actionPreferences->setMenuRole(QAction::PreferencesRole);
 	menuFile->addAction(actionPreferences);
-	connect(actionPreferences, SIGNAL(triggered()), this, SLOT(preferences()));
+	connect(actionPreferences, &QAction::triggered, this, &TWApp::preferences);
 
 	actionOpen = new QAction(tr("Open..."), this);
 	actionOpen->setIcon(QIcon::fromTheme(QStringLiteral("document-open")));
 	menuFile->addAction(actionOpen);
-	connect(actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+	connect(actionOpen, &QAction::triggered, this, &TWApp::open);
 
 	menuRecent = new QMenu(tr("Open Recent"));
 	actionClear_Recent_Files = menuRecent->addAction(tr("Clear Recent Files"));
 	actionClear_Recent_Files->setEnabled(false);
-	connect(actionClear_Recent_Files, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
+	connect(actionClear_Recent_Files, &QAction::triggered, this, &TWApp::clearRecentFiles);
 	updateRecentFileActions();
 	menuFile->addMenu(menuRecent);
 
 	actionQuit = new QAction(tr("Quit TeXworks"), this);
 	actionQuit->setMenuRole(QAction::QuitRole);
 	menuFile->addAction(actionQuit);
-	connect(actionQuit, SIGNAL(triggered()), this, SLOT(quit()));
+	connect(actionQuit, &QAction::triggered, this, &TWApp::quit);
 
 	menuHelp = menuBar->addMenu(tr("Help"));
 
 	homePageAction = new QAction(tr("Go to TeXworks home page"), this);
 	menuHelp->addAction(homePageAction);
-	connect(homePageAction, SIGNAL(triggered()), this, SLOT(goToHomePage()));
+	connect(homePageAction, &QAction::triggered, this, &TWApp::goToHomePage);
 	mailingListAction = new QAction(tr("Email to the mailing list"), this);
 	menuHelp->addAction(mailingListAction);
-	connect(mailingListAction, SIGNAL(triggered()), this, SLOT(writeToMailingList()));
+	connect(mailingListAction, &QAction::triggered, this, &TWApp::writeToMailingList);
 	QAction* sep = new QAction(this);
 	sep->setSeparator(true);
 	menuHelp->addAction(sep);
 	aboutAction = new QAction(tr("About " TEXWORKS_NAME "..."), this);
 	aboutAction->setMenuRole(QAction::AboutRole);
 	menuHelp->addAction(aboutAction);
-	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+	connect(aboutAction, &QAction::triggered, this, &TWApp::about);
 
 	TWUtils::insertHelpMenuItems(menuHelp);
 
-	connect(this, SIGNAL(updatedTranslators()), this, SLOT(changeLanguage()));
+	connect(this, &TWApp::updatedTranslators, this, &TWApp::changeLanguage);
 	changeLanguage();
 #endif
 }
@@ -1091,9 +1091,15 @@ void TWApp::applyTranslation(const QString& locale)
 		names << QString::fromLatin1("qt_") + locale \
 					<< QString::fromLatin1("QtPDF_") + locale \
 					<< QString::fromLatin1(TEXWORKS_NAME) + QString::fromLatin1("_") + locale;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 		directories << QString::fromLatin1(":/resfiles/translations") \
-								<< QLibraryInfo::location(QLibraryInfo::TranslationsPath) \
-								<< Tw::Utils::ResourcesLibrary::getLibraryPath(QStringLiteral("translations"));
+					<< QLibraryInfo::location(QLibraryInfo::TranslationsPath) \
+					<< Tw::Utils::ResourcesLibrary::getLibraryPath(QStringLiteral("translations"));
+#else
+		directories << QStringLiteral(":/resfiles/translations") \
+					<< QLibraryInfo::path(QLibraryInfo::TranslationsPath) \
+					<< Tw::Utils::ResourcesLibrary::getLibraryPath(QStringLiteral("translations"));
+#endif
 
 		foreach (QString name, names) {
 			foreach (QString dir, directories) {
@@ -1213,9 +1219,13 @@ void TWApp::setGlobal(const QString& key, const QVariant& val)
 
 	// For objects on the heap make sure we are notified when their lifetimes
 	// end so that we can remove them from our hash accordingly
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 	switch (static_cast<QMetaType::Type>(val.type())) {
+#else
+	switch (val.metaType().id()) {
+#endif
 		case QMetaType::QObjectStar:
-			connect(v.value<QObject*>(), SIGNAL(destroyed(QObject*)), this, SLOT(globalDestroyed(QObject*)));
+			connect(v.value<QObject*>(), &QObject::destroyed, this, &TWApp::globalDestroyed);
 			break;
 		default: break;
 	}
@@ -1227,7 +1237,11 @@ void TWApp::globalDestroyed(QObject * obj)
 	QHash<QString, QVariant>::iterator i = m_globals.begin();
 
 	while (i != m_globals.end()) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 		switch (static_cast<QMetaType::Type>(i.value().type())) {
+#else
+		switch (i.value().metaType().id()) {
+#endif
 			case QMetaType::QObjectStar:
 				if (i.value().value<QObject*>() == obj)
 					i = m_globals.erase(i);
