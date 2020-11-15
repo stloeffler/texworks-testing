@@ -33,5 +33,5 @@ jobs:
       run: |
         ls -lisa
         find .
-        gtimeout 5 ./TeXworks.app
+        gtimeout 5 ./TeXworks.app/Contents/MacOS/TeXworks
       working-directory: build
