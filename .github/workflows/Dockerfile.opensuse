@@ -9,6 +9,7 @@ RUN zypper install -y --no-recommends \
 	lua-devel \
 	libpoppler-qt5-devel \
 	libqt5-qtbase-devel \
+	libqt5-qtdeclarative-devel \
 	libqt5-qtscript-devel \
 	libqt5-qttools-devel \
 	zlib-devel \
