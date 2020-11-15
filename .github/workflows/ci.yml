@@ -70,6 +70,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Xcode Info
+      run: |
+        xcode-select -print-path
+
     - name: Install Dependencies
       run: |
         # Temporary fix for https://github.com/actions/virtual-environments/issues/1811
