@@ -77,7 +77,7 @@ jobs:
         brew untap local/homebrew-python2
         # End of fix
         brew update > brew_update.log || { print_error "Updating homebrew failed"; cat brew_update.log; exit 1; }
-        brew install hunspell poppler lua qt5
+        brew install coreutils hunspell poppler lua qt5
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
@@ -90,6 +90,10 @@ jobs:
       run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
       working-directory: build
 
+    - name: Try run
+      run: |
+        gtimeout 5 ./TeXworks.app/Contents/MacOS/TeXworks
+      working-directory: build
 
 ################################################################################
 
