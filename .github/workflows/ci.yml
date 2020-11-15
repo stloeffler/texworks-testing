@@ -92,7 +92,7 @@ jobs:
 
     - name: Try run
       run: |
-        gtimeout 5 ./TeXworks.app/Contents/MacOS/TeXworks
+        gtimeout 5 open ./TeXworks.app
       working-directory: build
 
 ################################################################################
