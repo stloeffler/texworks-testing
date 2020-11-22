@@ -1,4 +1,6 @@
-import base64, datetime, json, os, sys, urllib, urllib.error, urllib.request
+import base64, datetime, json, os, sys
+import urllib.request
+import urllib.error
 
 subject = os.environ['BINTRAY_SUBJECT']
 repo = os.environ['BINTRAY_REPO']
