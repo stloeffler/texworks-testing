@@ -33,7 +33,12 @@ runs:
   steps:
     - run: python3 -V
       shell: bash
-    - run: python3 ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
+    - run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          python ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
+        else
+          python3 ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
+        fi
       shell: bash
       working-directory: ${{ github.workspace }}
       env:
