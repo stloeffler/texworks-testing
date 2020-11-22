@@ -10,7 +10,7 @@ inputs:
 
 outputs:
   file:
-    description: 'The filename of the packaged artifact'
+    description: 'The filename of the packaged artifact (relative to builddir)'
     value: ${{ steps.rename-dmg.outputs.file }}
 
 runs:
@@ -23,23 +23,15 @@ runs:
         echo "::set-output name=TW_VERSION::$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)"
         echo "::set-output name=GIT_HASH::$(git --git-dir=".git" show --no-patch --pretty="%h")"
         echo "::set-output name=DATE_HASH::$(date -u +"%Y%m%d%H%M")"
-        
-        echo "DEBUG: $(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)"
     - name: 'Running CPack'
       shell: bash
-#      run: cpack --verbose
-      run: cpack --version
+      run: cpack --verbose
       working-directory: ${{ inputs.builddir }}
     - name: 'Renaming .dmg'
       id: rename-dmg
       shell: bash
       run: |
-        echo "DEBUG: ${{ steps.version-info.outputs }}"
-        echo "DEBUG: ${{ steps.version-info.outputs.TW_VERSION }}"
-        
         FILENAME="TeXworks-osx-${{ steps.version-info.outputs.TW_VERSION }}-${{ steps.version-info.outputs.DATE_HASH }}-git_${{ steps.version-info.outputs.GIT_HASH }}.dmg"
-        # mv "TeXworks.*.dmg" "${FILENAME}"
+        mv "TeXworks.*.dmg" "${FILENAME}"
         echo "::set-output name=file::${FILENAME}"
-        
-        echo "DEBUG: ${FILENAME}"
       working-directory: ${{ inputs.builddir }}
