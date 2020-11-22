@@ -31,9 +31,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: python -V
+    - run: python3 -V
       shell: bash
-    - run: python ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
+    - run: python3 ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
       shell: bash
       working-directory: ${{ github.workspace }}
       env:
