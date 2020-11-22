@@ -27,6 +27,7 @@ jobs:
   win:
     name: Windows
     runs-on: windows-latest
+    if: false
 
     steps:
     - name: Checkout
@@ -48,20 +49,13 @@ jobs:
   macos:
     name: Mac OS X (Homebrew)
     runs-on: macos-latest
-    if: false
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Bintray deploy
-      uses: ./.github/actions/deploy-bintray
-      with:
-          file: README.md
-          subject: stloeffler
-          repo: generic
-          pkg: test
-          version: 4
-          username: stloeffler
-          key: ${{ secrets.bintray_key }}
+    - run: mkdir build
+
+    - name: Package
+      uses: ./.github/actions/package-macos
 

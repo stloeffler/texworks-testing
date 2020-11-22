@@ -1,0 +1,38 @@
+name: 'Package TeXworks for macOS'
+author: 'Stefan Löffler'
+description: ''
+
+inputs:
+  builddir:
+    description: 'Directory the program was built in (default: build)'
+    required: false
+    default: build
+
+outputs:
+  file:
+    description: 'The filename of the packaged artifact'
+    value: ${{ steps.rename-dmg.outputs.file }}
+
+runs:
+  using: composite
+  steps:
+    - name: 'Determining version info'
+      id: version-info
+      shell: bash
+      run: |
+        echo "set-output name=TW_VERSION::$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)""
+        echo "set-output name=GIT_HASH::$(git --git-dir=".git" show --no-patch --pretty="%h")"
+        echo "set-output name=DATE_HASH::$(date -u +"%Y%m%d%H%M")"
+    - name: 'Running CPack'
+      shell: bash
+#      run: cpack --verbose
+      run: cpack --version
+      working-directory: ${{ inputs.builddir }}
+    - name: 'Renaming .dmg'
+      shell: bash
+      run: |
+        FILENAME="TeXworks-osx-${{ steps.version-info.outputs.TW_VERSION }}-${{ steps.version-info.outputs.DATE_HASH }}-git_${{ steps.version-info.outputs.GIT_HASH }}.dmg"
+#        mv "TeXworks.*.dmg" "${FILENAME}"
+        echo "set-output name=file::${FILENAME}"
+      working-directory: ${{ inputs.builddir }}
+
