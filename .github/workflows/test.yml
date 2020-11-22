@@ -57,5 +57,7 @@ jobs:
     - run: mkdir build
 
     - name: Package
+      id: package
       uses: ./.github/actions/package-macos
 
+    - run: echo "${{ steps.package.outputs.file }}"
