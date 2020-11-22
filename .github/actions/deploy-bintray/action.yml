@@ -31,8 +31,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
-      shell: python
+    - run: python ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
       working-directory: ${{ github.workspace }}
       env:
         BINTRAY_SUBJECT: ${{ inputs.subject }}
