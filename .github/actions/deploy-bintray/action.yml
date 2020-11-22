@@ -33,7 +33,7 @@ runs:
   steps:
     - run: |
         if [ "$RUNNER_OS" == "Windows" ]; then
-          python `${{ github.action_path }}/upload2bintray.py` ${{ inputs.file }}
+          python '${{ github.action_path }}/upload2bintray.py' ${{ inputs.file }}
         else
           python3 ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
         fi
