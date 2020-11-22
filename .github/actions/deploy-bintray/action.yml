@@ -31,8 +31,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: python3 -V
-      shell: bash
     - run: |
         if [ "$RUNNER_OS" == "Windows" ]; then
           python ${{ github.action_path }}/upload2bintray.py ${{ inputs.file }}
