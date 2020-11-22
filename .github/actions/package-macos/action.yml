@@ -36,7 +36,7 @@ runs:
       run: |
         VERSION="${{ steps.version-info.outputs.TW_VERSION }}-${{ steps.version-info.outputs.DATE_HASH }}-git_${{ steps.version-info.outputs.GIT_HASH }}"
         FILENAME="TeXworks-osx-${VERSION}.dmg"
-        mv "TeXworks.*.dmg" "${FILENAME}"
+        mv TeXworks.*.dmg "${FILENAME}"
         echo "::set-output name=version::${VERSION}"
         echo "::set-output name=file::${FILENAME}"
       working-directory: ${{ inputs.builddir }}
