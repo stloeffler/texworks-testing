@@ -39,7 +39,7 @@ runs:
         
         FILENAME="TeXworks-osx-${{ steps.version-info.outputs.TW_VERSION }}-${{ steps.version-info.outputs.DATE_HASH }}-git_${{ steps.version-info.outputs.GIT_HASH }}.dmg"
         # mv "TeXworks.*.dmg" "${FILENAME}"
-        echo "::set-output name=${{ inputs.builddir }}/file::${FILENAME}"
+        echo "::set-output name=file::${FILENAME}"
         
         echo "DEBUG: ${FILENAME}"
       working-directory: ${{ inputs.builddir }}
