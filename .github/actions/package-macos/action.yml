@@ -29,9 +29,10 @@ runs:
       run: cpack --version
       working-directory: ${{ inputs.builddir }}
     - name: 'Renaming .dmg'
+      id: rename-dmg
       shell: bash
       run: |
         FILENAME="TeXworks-osx-${{ steps.version-info.outputs.TW_VERSION }}-${{ steps.version-info.outputs.DATE_HASH }}-git_${{ steps.version-info.outputs.GIT_HASH }}.dmg"
         # mv "TeXworks.*.dmg" "${FILENAME}"
-        echo "::set-output name=file::${FILENAME}"
+        echo "::set-output name=${{ inputs.builddir }}/file::${FILENAME}"
       working-directory: ${{ inputs.builddir }}
