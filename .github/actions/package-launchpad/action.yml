@@ -22,6 +22,10 @@ runs:
     - id: get-ubuntu-series
       run: python3 ${{ github.action_path }}/get-ubuntu-series.py
       shell: bash
+    - run: echo "${{ steps.get-ubuntu-series.outputs }}"
+      shell: bash
+    - run: echo "${{ steps.get-ubuntu-series.outputs.SERIES }}"
+      shell: bash
     - id: package
       run: ${{ github.action_path }}/package.sh
       shell: bash
