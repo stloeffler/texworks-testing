@@ -1,0 +1,29 @@
+name: 'Package TeXworks for Launchpad'
+author: 'Stefan Löffler'
+description: ''
+
+outputs:
+  changes_files:
+    description: 'The paths to the .changes files produced'
+    value: ${{ steps.package.outputs.CHANGES }}
+
+runs:
+  using: composite
+  steps:
+    - run: echo "${{ github.event_name }}"
+      shell: bash
+    - run: echo "${{ github.event.before }} .. ${{ github.event.after }}"
+      shell: bash
+    - id: get-ubuntu-series
+      run: python3 get-ubuntu-series.py
+      shell: bash
+    - id: package
+      run: ${{ github.action_path }}/package.sh
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        PREV_COMMIT: ${{ github.event.before }}
+        DEB_MAINTAINER_NAME: "Stefan Löffler"
+        DEB_MAINTAINER_EMAIL: "st.loeffler@gmail.com"
+        LAUNCHPAD_SERIES: ${{ steps.get-ubuntu-series.outputs.SERIES }}
+        DEB_PASSPHRASE: ${{ secrets.DEB_PASSPHRASE }}
