@@ -35,7 +35,7 @@ echo_var "DEB_MAINTAINER_NAME"
 echo_var "DEB_MAINTAINER_EMAIL"
 if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PASSPHRASE}" -o -z "${LAUNCHPAD_SERIES}" ]; then
 	print_error "DEB_MAINTAINER_NAME and/or DEB_MAINTAINER_EMAIL and/or DEB_PASSPHRASE and/or LAUNCHPAD_SERIES are not set"
-	exit 0
+	exit 1
 fi
 
 BUILDDIR="launchpad-build"
