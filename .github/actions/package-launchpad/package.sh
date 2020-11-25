@@ -3,7 +3,7 @@
 # Exit on errors
 set -e
 
-UNSUPPORTED_SERIES="hoary precise"
+UNSUPPORTED_SERIES="precise"
 
 print_error() {
 	echo "::error file=${0}::${1}"
