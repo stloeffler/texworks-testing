@@ -12,6 +12,8 @@ jobs:
 
     - name: Package for Launchpad
       uses: ./.github/actions/package-launchpad
+      with:
+        DEB_PASSPHRASE: ${{ secrets.DEB_PASSPHRASE }}
 
 ################################################################################
 

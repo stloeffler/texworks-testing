@@ -2,6 +2,11 @@ name: 'Package TeXworks for Launchpad'
 author: 'Stefan Löffler'
 description: ''
 
+inputs:
+  DEB_PASSPHRASE:
+    description: 'Passphrase to unlock the debian signing key'
+    required: true
+
 outputs:
   changes_files:
     description: 'The paths to the .changes files produced'
@@ -26,4 +31,4 @@ runs:
         DEB_MAINTAINER_NAME: "Stefan Löffler"
         DEB_MAINTAINER_EMAIL: "st.loeffler@gmail.com"
         LAUNCHPAD_SERIES: ${{ steps.get-ubuntu-series.outputs.SERIES }}
-        DEB_PASSPHRASE: ${{ secrets.DEB_PASSPHRASE }}
+        DEB_PASSPHRASE: ${{ inputs.DEB_PASSPHRASE }}
