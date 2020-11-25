@@ -20,7 +20,7 @@ runs:
     - run: echo "${{ github.event.before }} .. ${{ github.event.after }}"
       shell: bash
     - id: get-ubuntu-series
-      run: python3 ${{ github.action_path }}/get-ubuntu-series.py
+      run: echo "::set-output name=SERIES::$(python3 ${{ github.action_path }}/get-ubuntu-series.py)"
       shell: bash
     - run: echo "${{ steps.get-ubuntu-series.outputs }}"
       shell: bash
