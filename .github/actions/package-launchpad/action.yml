@@ -20,7 +20,7 @@ runs:
     - run: echo "${{ github.event.before }} .. ${{ github.event.after }}"
       shell: bash
     - id: get-ubuntu-series
-      run: python3 get-ubuntu-series.py
+      run: python3 ${{ github.action_path }}/get-ubuntu-series.py
       shell: bash
     - id: package
       run: ${{ github.action_path }}/package.sh
