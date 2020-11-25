@@ -12,6 +12,9 @@ jobs:
       with:
         fetch-depth: 0 # fetch the entire history so we can create the changelog
 
+    - name: Install packaging dependencies
+      run: sudo apt install debhelper dput
+
     - name: Package for Launchpad
       uses: ./.github/actions/package-launchpad
       with:
