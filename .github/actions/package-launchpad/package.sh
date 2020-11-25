@@ -73,9 +73,9 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 	tar -x -C "${DEBDIR}" --strip-components=1 -f "${BUILDDIR}/${ORIGFILENAME}"
 
 	echo "   copying debian directory"
-	cp -r ".github/workflows/launchpad/debian" "${DEBDIR}"
+	cp -r ".github/actions/package-launchpad/launchpad/debian" "${DEBDIR}"
 
-	PATCHFILE=".github/workflows/launchpad/${SERIES}.patch"
+	PATCHFILE=".github/actions/package-launchpad/launchpad/${SERIES}.patch"
 	if [ -f "${PATCHFILE}" ]; then
 		echo "   applying ${SERIES}.patch"
 		patch -d "${DEBDIR}" -p0 < "${PATCHFILE}"
