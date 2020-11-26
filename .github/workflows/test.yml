@@ -14,10 +14,18 @@ jobs:
 
     - name: Prepare for packaging
       run: |
+        echo "::group::Install dependencies"
         sudo apt install ubuntu-dev-tools debhelper dput
+        echo "::endgroup::"
+        echo "::group::Import signing keys"
+        echo "::group::Setup"
         mkdir -p "${HOME}/.gnupg"
         chmod 700 "${HOME}/.gnupg"
+        echo "::endgroup::"
+        echo "::group::Import"
         echo '${{ secrets.DECRYPTION_KEY }}' | gpg --quiet --batch --yes --decrypt --passphrase-fd=0 ./.github/actions/package-launchpad/launchpad/key.asc.gpg | gpg --batch --import
+        echo "::endgroup::"
+        echo "::endgroup::"
 
     - name: Package for Launchpad
       uses: ./.github/actions/package-launchpad
