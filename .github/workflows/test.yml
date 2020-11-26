@@ -16,6 +16,8 @@ jobs:
       run: |
         sudo apt install ubuntu-dev-tools debhelper dput
         mkdir -p "${HOME}/.gnupg"
+        # DEBUG
+        gpg --list-keys
         echo '${{ secrets.DECRYPTION_KEY }}' | gpg --quiet --batch --yes --decrypt --passphrase-fd=0 ./.github/actions/package-launchpad/launchpad/key.asc.gpg | gpg --batch --import
 
     - name: Package for Launchpad
