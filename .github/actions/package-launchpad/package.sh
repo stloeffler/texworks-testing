@@ -18,6 +18,8 @@ echo_var () {
 
 # Gather information
 
+echo "::group::Info"
+
 # GNU extensions for sed are not supported; on Linux, --posix mimicks this behaviour
 TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
 echo "TW_VERSION = ${TW_VERSION}"
@@ -34,6 +36,9 @@ echo_var "DEBDATE"
 echo_var "DEB_MAINTAINER_NAME"
 echo_var "DEB_MAINTAINER_EMAIL"
 echo_var "LAUNCHPAD_SERIES"
+
+echo "::endgroup::"
+
 if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PASSPHRASE}" -o -z "${LAUNCHPAD_SERIES}" ]; then
 	print_error "DEB_MAINTAINER_NAME and/or DEB_MAINTAINER_EMAIL and/or DEB_PASSPHRASE and/or LAUNCHPAD_SERIES are not set"
 	exit 1
@@ -62,17 +67,16 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 		continue
 	fi
 
-	echo "Packging for ${SERIES}"
+	echo "::group::Packaging for ${SERIES}"
 	DEB_VERSION="${ORIG_VERSION}-1${SERIES}"
-	echo -n "   "
 	echo_var "DEB_VERSION"
 
 	DEBDIR="${BUILDDIR}/texworks-${DEB_VERSION}"
-	echo "   exporting sources to ${DEBDIR}"
+	echo "exporting sources to ${DEBDIR}"
 	mkdir -p "${DEBDIR}"
 	tar -x -C "${DEBDIR}" --strip-components=1 -f "${BUILDDIR}/${ORIGFILENAME}"
 
-	echo "   copying debian directory"
+	echo "copying debian directory"
 	cp -r ".github/actions/package-launchpad/launchpad/debian" "${DEBDIR}"
 
 	PATCHFILE=".github/actions/package-launchpad/launchpad/${SERIES}.patch"
@@ -82,10 +86,10 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 	fi
 
 
-	echo "   preparing copyright"
+	echo "preparing copyright"
 	sed -i -e "s/<AUTHOR>/${DEB_MAINTAINER_NAME}/g" -e "s/<DATE>/${DEBDATE}/g" "${DEBDIR}/debian/copyright"
 
-	echo "   preparing changelog"
+	echo "preparing changelog"
 	printf "texworks (${DEB_VERSION}) ${SERIES}; urgency=low\n\n" > "${DEBDIR}/debian/changelog"
 	case "${GITHUB_REF}" in
 		refs/tags/*)
@@ -99,7 +103,8 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 	esac
 	printf "\n -- ${DEB_MAINTAINER_NAME} <${DEB_MAINTAINER_EMAIL}>  ${DEBDATE}\n" >> "${DEBDIR}/debian/changelog"
 
-	echo "   building package"
+	echo "building package"
+	echo ""
 	cd "${DEBDIR}"
 
 	PASSPHRASE_FILE="${TOPDIR}/passphrase.txt"
@@ -116,6 +121,7 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 	cd "${TOPDIR}"
 
 	OUTPUT_FILES="${BUILDDIR}/texworks_${DEB_VERSION}_source.changes ${OUTPUT_FILES}"
+	echo "::endgroup::"
 done
 
 echo "::set-output name=CHANGES::${OUTPUT_FILES}"
