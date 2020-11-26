@@ -26,6 +26,8 @@ runs:
             ;;
         esac
         for FILE in ${{ inputs.changes_files }}; do
+          echo "::group::Uploading ${FILE}"
           dput ${REPO} "$FILE"
+          echo "::endgroup::"
         done
       shell: bash
