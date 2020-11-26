@@ -15,16 +15,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - run: echo "${{ github.event_name }}"
-      shell: bash
-    - run: echo "${{ github.event.before }} .. ${{ github.event.after }}"
-      shell: bash
     - id: get-ubuntu-series
       run: echo "::set-output name=SERIES::$(python3 ${{ github.action_path }}/get-ubuntu-series.py)"
-      shell: bash
-    - run: echo "${{ steps.get-ubuntu-series.outputs }}"
-      shell: bash
-    - run: echo "${{ steps.get-ubuntu-series.outputs.SERIES }}"
       shell: bash
     - id: package
       run: ${{ github.action_path }}/package.sh
