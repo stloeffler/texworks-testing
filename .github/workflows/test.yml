@@ -12,8 +12,10 @@ jobs:
       with:
         fetch-depth: 0 # fetch the entire history so we can create the changelog
 
-    - name: Install packaging dependencies
-      run: sudo apt install ubuntu-dev-tools debhelper dput
+    - name: Prepare for packaging
+      run: |
+        sudo apt install ubuntu-dev-tools debhelper dput
+        echo '${{ secrets.DECRYPTION_KEY }}' | gpg --quiet --batch --yes --decrypt --passphrase-fd=0 ./.github/actions/package-launchpad/launchpad/key.asc.gpg | gpg --batch --import
 
     - name: Package for Launchpad
       uses: ./.github/actions/package-launchpad
