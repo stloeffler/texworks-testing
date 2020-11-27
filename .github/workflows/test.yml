@@ -30,9 +30,23 @@ jobs:
 
 ################################################################################
 
+  wsl:
+    name: WSL
+    runs-on: windows-latest
+
+    steps:
+      - run: wsl -l
+      - run: wsl -l --all
+      - run: wsl -l -v
+      - run: wsl -l
+      - run: wsl sudo apt update
+
+################################################################################
+
   win:
     name: Windows
     runs-on: windows-latest
+    if: false
     defaults:
       run:
         shell: msys2 {0}
