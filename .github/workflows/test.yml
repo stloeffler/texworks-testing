@@ -45,7 +45,7 @@ jobs:
         run: |
           uname -a
           echo "add-apt-repository"
-          echo 'deb https://pkg.mxe.cc/repos/apt stretch main/binary-amd64' | sudo tee -a /etc/apt/sources.list
+          echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
           cat /etc/apt/sources.list
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
           echo "apt search"
