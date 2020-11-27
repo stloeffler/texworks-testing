@@ -38,7 +38,7 @@ jobs:
       - uses: Vampire/setup-wsl@v1
         with:
 #          update: true
-          additional-packages: apt-transport-https
+          additional-packages: apt-transport-https dirmngr
 # software-properties-common for add-apt-repository
 
       - shell: wsl-bash {0}
