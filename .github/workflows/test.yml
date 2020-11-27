@@ -35,13 +35,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - run: wsl -e lsb_release -a
-      - run: wsl -e sudo apt update
-      - run: wsl -l
-      - run: wsl -l --all
-      - run: wsl -l -v
-      - run: wsl -l
-      - run: wsl sudo apt update
+      - uses: Vampire/setup-wsl@v1
+
+      - shell: wsl_bash {0}
+        run: |
+          sudo apt update
+          lsb_release -a
 
 ################################################################################
 
