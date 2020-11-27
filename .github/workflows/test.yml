@@ -42,7 +42,13 @@ jobs:
 
       - shell: wsl-bash {0}
         run: |
-          sudo add-apt-repository https://pkg.mxe.cc/repos/apt
+          echo "add-apt-repository"
+          sudo add-apt-repository --debug https://pkg.mxe.cc/repos/apt
+          echo "apt search"
+          apt search qtbase
+          sudo apt update
+          echo "apt search"
+          apt search qtbase
           sudo apt install mxe-i686-w64-mingw32.static-qtbase
           MXEDIR="/usr/lib/mxe"
           MXETARGET=i686-w64-mingw32.static
