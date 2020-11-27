@@ -38,12 +38,12 @@ jobs:
       - uses: Vampire/setup-wsl@v1
         with:
 #          update: true
-          additional-packages: software-properties-common
+          additional-packages: software-properties-common # for add-apt-repository
 
       - shell: wsl-bash {0}
         run: |
           echo "add-apt-repository"
-          sudo add-apt-repository --debug https://pkg.mxe.cc/repos/apt
+          sudo add-apt-repository 'deb https://pkg.mxe.cc/repos/apt stretch main'
           echo "apt search"
           apt search qtbase
           sudo apt update
