@@ -45,7 +45,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         update: true
-        install: grep mingw-w64-x86_64-cmake make mingw-w64-x86_64-gcc mingw-w64-x86_64-qt5-static
+        install: mingw-w64-x86_64-cmake make mingw-w64-x86_64-gcc mingw-w64-x86_64-qt5-static sed
 #        install: mingw-w64-x86_64-cmake git make mingw-w64-x86_64-gcc mingw-w64-x86_64-hunspell mingw-w64-x86_64-lua mingw-w64-x86_64-poppler mingw-w64-x86_64-qt5
 
     - name: Configure
@@ -56,7 +56,7 @@ jobs:
       run: make -j VERBOSE=1
       working-directory: test/build
 
-    - run: objdump -x test.exe | grep -e 'DLL Name'
+    - run: objdump -x test.exe | sed -ne 's/\s*DLL Name:\s+//p'
       working-directory: test/build
 
     - name: Strip
@@ -69,7 +69,7 @@ jobs:
         name: artifact
         path: test/build/test.exe
 
-    - run: find / -name 'libstdc++-6.dll'
+    - run: find /mingw64/bin/ -iname '*.dll'
 
 ################################################################################
 
