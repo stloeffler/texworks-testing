@@ -37,7 +37,8 @@ jobs:
     steps:
       - uses: Vampire/setup-wsl@v1
         with:
-          update: true
+#          update: true
+          additional-packages: software-properties-common
 
       - shell: wsl-bash {0}
         run: |
