@@ -53,7 +53,7 @@ jobs:
       working-directory: test
 
     - name: Build
-      run: make -j
+      run: make -j VERBOSE=1
       working-directory: test/build
 
     - name: Strip
