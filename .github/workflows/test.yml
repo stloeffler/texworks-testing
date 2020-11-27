@@ -38,13 +38,14 @@ jobs:
       - uses: Vampire/setup-wsl@v1
         with:
 #          update: true
-          additional-packages: apt-transport-https software-properties-common
+          additional-packages: apt-transport-https
 # software-properties-common for add-apt-repository
 
       - shell: wsl-bash {0}
         run: |
           echo "add-apt-repository"
-          sudo add-apt-repository 'deb https://pkg.mxe.cc/repos/apt stretch main'
+          echo 'deb https://pkg.mxe.cc/repos/apt stretch main' | sudo tee -a /etc/apt/sources.list
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
           echo "apt search"
           apt search qtbase
           sudo apt update
