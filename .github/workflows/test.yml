@@ -35,32 +35,32 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: Vampire/setup-wsl@v1
-        with:
-#          update: true
-          additional-packages: apt-transport-https ca-certificates dirmngr
+    - uses: Vampire/setup-wsl@v1
+      with:
+#        update: true
+        additional-packages: apt-transport-https ca-certificates dirmngr
 # software-properties-common for add-apt-repository
 
-      - shell: wsl-bash {0}
-        run: |
-          uname -a
-          echo "add-apt-repository"
-          echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
-          cat /etc/apt/sources.list
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
-          echo "apt search"
-          apt search qtbase
-          sudo apt update
-          echo "apt search"
-          apt search qtbase
-          sudo apt install --assume-yes mxe-i686-w64-mingw32.static-qtbase
-          MXEDIR="/usr/lib/mxe"
-          MXETARGET=i686-w64-mingw32.static
-          cd test
-          ${MXEDIR}/usr/bin/${MXETARGET}-cmake -B build
-          cd build
-          make
-          ls
+    - shell: wsl-bash {0}
+      run: |
+        uname -a
+        echo "add-apt-repository"
+        echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
+        cat /etc/apt/sources.list
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
+        echo "apt search"
+        apt search qtbase
+        sudo apt update
+        echo "apt search"
+        apt search qtbase
+        sudo apt install --assume-yes mxe-i686-w64-mingw32.static-qtbase
+        MXEDIR="/usr/lib/mxe"
+        MXETARGET=i686-w64-mingw32.static
+        cd test
+        ${MXEDIR}/usr/bin/${MXETARGET}-cmake -B build
+        cd build
+        make
+        ls
 
     - name: Upload
       uses: actions/upload-artifact@v2
