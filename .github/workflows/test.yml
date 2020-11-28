@@ -70,19 +70,32 @@ jobs:
         make build-only-poppler_${MXETARGET}
         echo "::endgroup::"
 
-    - shell: wsl-bash {0}
+    - name: Configure
+      shell: wsl-bash {0}
       run: |
-        mkdir test/build
-        cd test/build
-        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake -DMXE_USE_CCACHE=OFF ..
-        make
-        ls
+        mkdir build && cd build
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake -DTW_BUILD_ID='github' .. \
+          -DPLATFORM_DEPENDENCIES='freetype;harfbuzz_too;freetype;bz2;iphlpapi;ssl;crypto;crypt32;ws2_32' \
+          -DPoppler_ADDITIONAL_DEPENDENCIES='freetype;harfbuzz;freetype_too;glib-2.0;intl;iconv;ws2_32;winmm;tiff;webp;jpeg;openjp2;png;lcms2;lzma;bz2;pcre16;wtsapi32' \
+          -DTEXWORKS_ADDITIONAL_LIBS='wtsapi32;opengl32;imm32;shlwapi;dwmapi;uxtheme' \
+          -Dgp_tool='none'"
+        if [ -f "CMakeFiles/CMakeError.log" ]; then
+          echo "=== CMake Error Log ==="
+          cat "CMakeFiles/CMakeError.log"
+        fi
+
+    - name: Build
+      shell: wsl-bash {0}
+      run: |
+        cd build
+        make -j && /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all *.exe
+        ls -lisah
 
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
         name: artifact
-        path: test/build/tst.exe
+        path: build/TeXworks.exe
 
 
 ################################################################################
