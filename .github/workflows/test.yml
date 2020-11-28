@@ -57,7 +57,7 @@ jobs:
         MXEDIR=/usr/lib/mxe
         MXETARGET=i686-w64-mingw32.static
         sudo chmod --recursive a+w ${MXEDIR}
-        echo "MXE_TARGETS := ${MXETARGET}" >> ${MXEDIR}/settings.mk
+        #echo "MXE_TARGETS := ${MXETARGET}" >> ${MXEDIR}/settings.mk
         echo "MXE_USE_CCACHE=" >> ${MXEDIR}/settings.mk
         echo "::endgroup::"
 
@@ -65,7 +65,8 @@ jobs:
         rm -f ${MXEDIR}/src/poppler*
         cp ci/travis-ci/mxe/poppler* ${MXEDIR}/src/
         cd ${MXEDIR}
-        make poppler
+        make download-only-poppler
+        make build-only-poppler_${MXETARGET}
         echo "::endgroup::"
 
     - shell: wsl-bash {0}
