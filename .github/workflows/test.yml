@@ -58,7 +58,8 @@ jobs:
         MXETARGET=i686-w64-mingw32.static
         sudo chmod --recursive a+w ${MXEDIR}
         #echo "MXE_TARGETS := ${MXETARGET}" >> ${MXEDIR}/settings.mk
-        echo "MXE_USE_CCACHE=" >> ${MXEDIR}/settings.mk
+        #echo "MXE_USE_CCACHE=" >> ${MXEDIR}/settings.mk
+        rm -f "${MXEDIR}/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.d/ccache.cmake"
         echo "::endgroup::"
 
         echo "::group::Build poppler"
