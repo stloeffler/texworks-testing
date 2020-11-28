@@ -88,7 +88,8 @@ jobs:
       shell: wsl-bash {0}
       run: |
         cd build
-        make -j && /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all *.exe
+        make VERBOSE=1
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all *.exe
         ls -lisah
 
     - name: Upload
