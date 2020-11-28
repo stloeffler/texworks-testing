@@ -62,6 +62,8 @@ jobs:
         sudo apt install --assume-yes mxe-i686-w64-mingw32.static-cc
         MXEDIR="/usr/lib/mxe"
         MXETARGET=i686-w64-mingw32.static
+        ls -lisa ${MXEDIR}/usr/bin/
+        ls -lisa ${MXEDIR}/usr/x86_64-pc-linux-gnu/bin/
         mkdir test/build
         cd test/build
         ${MXEDIR}/usr/bin/${MXETARGET}-cmake ..
