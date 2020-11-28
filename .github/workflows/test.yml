@@ -68,7 +68,7 @@ jobs:
         ls -lisa ${MXEDIR}/usr/x86_64-pc-linux-gnu/bin/
         mkdir test/build
         cd test/build
-        ${MXEDIR}/usr/bin/${MXETARGET}-cmake ..
+        ${MXEDIR}/usr/bin/${MXETARGET}-cmake -DMXE_USE_CCACHE=OFF ..
         make
         ls
 
