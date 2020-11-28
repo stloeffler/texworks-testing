@@ -92,6 +92,26 @@ jobs:
         /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all *.exe
         ls -lisah
 
+    - run: echo "${{ github.workspace }}"
+
+    - name: Prepare testing
+      shell: wsl-bash {0}
+      run: |
+        ORIG=$(pwd)
+        cd build
+        find . -name CTestTestfile.cmake
+        for FILE in $(find . -name CTestTestfile.cmake); do
+          echo ">> $FILE <<"
+          cat "$FILE"
+          sed -ie "s|${ORIG}|${{ github.workspace }}|g" "$FILE"
+          echo "---"
+          cat "$FILE"
+        done
+
+    - name: Test
+      run: ctest -V
+      working-directory: build
+
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
