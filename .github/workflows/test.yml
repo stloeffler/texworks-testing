@@ -60,7 +60,7 @@ jobs:
         echo "apt search"
         apt search qtbase
         #sudo apt install --assume-yes mxe-i686-w64-mingw32.static-qtbase
-        sudo apt install --assume-yes mxe-i686-w64-mingw32.static-cc
+        sudo apt install --assume-yes mxe-i686-w64-mingw32.static-cc mxe-i686-w64-mingw32.static-cmake
         MXEDIR="/usr/lib/mxe"
         MXETARGET=i686-w64-mingw32.static
         echo "::endgroup::"
