@@ -61,9 +61,9 @@ jobs:
         sudo apt install --assume-yes mxe-i686-w64-mingw32.static-qtbase
         MXEDIR="/usr/lib/mxe"
         MXETARGET=i686-w64-mingw32.static
-        cd test
-        ${MXEDIR}/usr/bin/${MXETARGET}-cmake -B build
-        cd build
+        mkdir test/build
+        cd test/build
+        ${MXEDIR}/usr/bin/${MXETARGET}-cmake ..
         make
         ls
 
