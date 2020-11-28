@@ -2,6 +2,12 @@
 
 include_directories("${CMAKE_SOURCE_DIR}/src" ${TeXworks_INCLUDE_DIRS})
 
+if (WIN32)
+	# FIXME: This should only apply to tests
+	# Tests should be console applications so they can output to the terminal
+	set(CMAKE_WIN32_EXECUTABLE OFF)
+endif (WIN32)
+
 # BiBTeXFile
 add_executable(test_BibTeXFile BibTeXFile_test.cpp BibTeXFile_test.h "${CMAKE_SOURCE_DIR}/src/BibTeXFile.cpp" "${CMAKE_SOURCE_DIR}/src/BibTeXFile.h")
 target_compile_options(test_BibTeXFile PRIVATE ${WARNING_OPTIONS})
