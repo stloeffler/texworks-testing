@@ -38,10 +38,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup MSYS
-      uses: msys2/setup-msys2@v2
-      with:
-        install: mingw-w64-x86_64-cmake
+#    - name: Setup MSYS
+#      uses: msys2/setup-msys2@v2
+#      with:
+#        install: mingw-w64-x86_64-cmake
 
     - name: Setup WSL
       uses: Vampire/setup-wsl@v1
@@ -116,32 +116,32 @@ jobs:
 
     - run: ../build/test_BibTeXFile.exe
       working-directory: testcases
-      shell: msys2 {0}
+#      shell: msys2 {0}
 
     - run: ../build/test_Document.exe
       working-directory: testcases
-      shell: msys2 {0}
+#      shell: msys2 {0}
 
     - run: ../build/test_Utils.exe
       working-directory: testcases
-      shell: msys2 {0}
+#      shell: msys2 {0}
 
     - run: ../build/test_Scripting.exe
       working-directory: testcases
-      shell: msys2 {0}
+#      shell: msys2 {0}
 
     - run: ../build/test_LuaScripting.exe
       working-directory: testcases
-      shell: msys2 {0}
+#      shell: msys2 {0}
 
     - run: ../build/test_UI.exe
       working-directory: testcases
-      shell: msys2 {0}
+#      shell: msys2 {0}
 
     - name: Test
       run: ctest -V
       working-directory: build
-      shell: msys2 {0}
+#      shell: msys2 {0}
 
     - name: Upload
       uses: actions/upload-artifact@v2
