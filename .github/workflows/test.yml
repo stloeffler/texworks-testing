@@ -38,32 +38,41 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - uses: Vampire/setup-wsl@v1
+    - name: Setup WSL
+      uses: Vampire/setup-wsl@v1
       with:
 #        update: true
         additional-packages: apt-transport-https ca-certificates dirmngr
 # software-properties-common for add-apt-repository
 
+    - name: Install Dependencies
+      shell: wsl-bash {0}
+      run: |
+        echo "::group::Install MXE"
+        echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
+        sudo apt update
+        sudo apt install --assume-yes mxe-i686-w64-mingw32.static-cairo mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-glib mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-lcms mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-libwebp mxe-i686-w64-mingw32.static-lua mxe-i686-w64-mingw32.static-openjpeg mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtdeclarative mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff mxe-i686-w64-mingw32.static-zlib
+
+        MXEDIR=/usr/lib/mxe
+        MXETARGET=i686-w64-mingw32.static
+        sudo chmod --recursive a+w ${MXEDIR}
+        echo "MXE_TARGETS := ${MXETARGET}" >> ${MXEDIR}/settings.mk
+        echo "MXE_USE_CCACHE=" >> ${MXEDIR}/settings.mk
+
+        echo "MXEDIR=${MXEDIR}" >> $GITHUB_ENV
+        echo "MXETARGET=${MXETARGET}" >> $GITHUB_ENV
+        echo "::endgroup::"
+
+        echo "::group::Build poppler"
+        rm -f ${MXEDIR}/src/poppler*
+        cp ci/travis-ci/mxe/poppler* ${MXEDIR}/src/
+        cd ${MXEDIR}
+        make poppler
+        echo "::endgroup::"
+
     - shell: wsl-bash {0}
       run: |
-        pwd
-        ls
-        uname -a
-        echo "::group::Install MXE"
-        echo "add-apt-repository"
-        echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
-        cat /etc/apt/sources.list
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
-        echo "apt search"
-        apt search qtbase
-        sudo apt update
-        echo "apt search"
-        apt search qtbase
-        #sudo apt install --assume-yes mxe-i686-w64-mingw32.static-qtbase
-        sudo apt install --assume-yes mxe-i686-w64-mingw32.static-cc mxe-i686-w64-mingw32.static-cmake
-        MXEDIR="/usr/lib/mxe"
-        MXETARGET=i686-w64-mingw32.static
-        echo "::endgroup::"
         ls -lisa ${MXEDIR}/usr/bin/
         ls -lisa ${MXEDIR}/usr/x86_64-pc-linux-gnu/bin/
         mkdir test/build
