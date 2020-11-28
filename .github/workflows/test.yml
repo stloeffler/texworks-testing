@@ -109,6 +109,24 @@ jobs:
           cat "$FILE"
         done
 
+    - run: ../build/test_BibTeXFile.exe
+      working-directory: testcases
+
+    - run: ../build/test_Document.exe
+      working-directory: testcases
+
+    - run: ../build/test_Utils.exe
+      working-directory: testcases
+
+    - run: ../build/test_Scripting.exe
+      working-directory: testcases
+
+    - run: ../build/test_LuaScripting.exe
+      working-directory: testcases
+
+    - run: ../build/test_UI.exe
+      working-directory: testcases
+
     - name: Test
       run: ctest -V
       working-directory: build
