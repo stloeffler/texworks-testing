@@ -97,13 +97,14 @@ jobs:
     - name: Prepare testing
       shell: wsl-bash {0}
       run: |
-        ORIG=$(pwd)
+        SRC=$(pwd)
+        DST=$(echo "${{ github.workspace }}" | tr '\\' '/')
         cd build
         find . -name CTestTestfile.cmake
         for FILE in $(find . -name CTestTestfile.cmake); do
           echo ">> $FILE <<"
           cat "$FILE"
-          sed -ie "s|${ORIG}|${{ github.workspace }}|g" "$FILE"
+          sed -ie "s|${SRC}|${DST}|g" "$FILE"
           echo "---"
           cat "$FILE"
         done
