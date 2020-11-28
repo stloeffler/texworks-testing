@@ -59,9 +59,6 @@ jobs:
         sudo chmod --recursive a+w ${MXEDIR}
         echo "MXE_TARGETS := ${MXETARGET}" >> ${MXEDIR}/settings.mk
         echo "MXE_USE_CCACHE=" >> ${MXEDIR}/settings.mk
-
-        echo "MXEDIR=${MXEDIR}" >> $GITHUB_ENV
-        echo "MXETARGET=${MXETARGET}" >> $GITHUB_ENV
         echo "::endgroup::"
 
         echo "::group::Build poppler"
@@ -73,11 +70,9 @@ jobs:
 
     - shell: wsl-bash {0}
       run: |
-        ls -lisa ${MXEDIR}/usr/bin/
-        ls -lisa ${MXEDIR}/usr/x86_64-pc-linux-gnu/bin/
         mkdir test/build
         cd test/build
-        ${MXEDIR}/usr/bin/${MXETARGET}-cmake -DMXE_USE_CCACHE=OFF ..
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake -DMXE_USE_CCACHE=OFF ..
         make
         ls
 
