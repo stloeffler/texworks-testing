@@ -76,7 +76,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: artifact
-        path: test/build/test.exe
+        path: test/build/tst.exe
 
 
 ################################################################################

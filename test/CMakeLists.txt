@@ -5,5 +5,5 @@ project(test)
 
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libstdc++")
 
-add_executable(test test.cpp)
+add_executable(tst test.cpp)
 #target_link_libraries(test Qt5::Core Qt5::Widgets)
