@@ -11,7 +11,16 @@ int main(int argc, char * argv[]) {
 
 #include <QDebug>
 #include <iostream>
+
+
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+	std::cout << qUtf8Printable(msg) << "\n";
+}
+
 int main() {
+	qInstallMessageHandler(messageHandler);
+
 	std::cout << "OK" << std::endl;
 	qDebug() << "Hello World";
 	std::cout << "OK2" << std::endl;
