@@ -19,7 +19,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 }
 
 int main() {
-	qInstallMessageHandler(messageHandler);
+//	qInstallMessageHandler(messageHandler);
 
 	std::cout << "OK" << std::endl;
 	qDebug() << "Hello World";

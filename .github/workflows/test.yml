@@ -68,7 +68,7 @@ jobs:
       run: |
         pwd
         ls
-        export QT_LOGGING_RULES="*.debug=true"
+        export QT_FORCE_STDERR_LOGGING=1
         ./tst.exe
         echo "OK"
 
