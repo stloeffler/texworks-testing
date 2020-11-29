@@ -64,8 +64,11 @@ jobs:
 
     - name: Run
       working-directory: test/build
+      shell: bash
       run: |
-        tst.exe
+        pwd
+        ls
+        ./tst.exe
         echo "OK"
 
 ################################################################################
