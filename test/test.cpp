@@ -1,9 +1,20 @@
+/*
 #include <QApplication>
 #include <QMessageBox>
 
 int main(int argc, char * argv[]) {
 	QApplication app(argc, argv);
 	QMessageBox::information(nullptr, QStringLiteral("It works!"), QStringLiteral("Hello World"));
+	return 0;
+}
+*/
+
+#include <QDebug>
+#include <iostream>
+int main() {
+	std::cout << "OK" << std::endl;
+	qDebug() << "Hello World";
+	std::cout << "OK2" << std::endl;
 	return 0;
 }
 

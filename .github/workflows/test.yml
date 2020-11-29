@@ -30,9 +30,50 @@ jobs:
 
 ################################################################################
 
+  wsl-test:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup WSL
+      uses: Vampire/setup-wsl@v1
+      with:
+        additional-packages: apt-transport-https ca-certificates dirmngr
+
+    - name: Install Dependencies
+      shell: wsl-bash {0}
+      run: |
+        echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
+        sudo apt update
+        sudo apt install --assume-yes mxe-i686-w64-mingw32.static-qtbase
+
+        MXEDIR=/usr/lib/mxe
+        MXETARGET=i686-w64-mingw32.static
+        sudo rm -f "${MXEDIR}/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.d/ccache.cmake"
+
+    - name: Build
+      shell: wsl-bash {0}
+      working-directory: test
+      run: |
+        mkdir build && cd build
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake ..
+        make
+
+    - name: Run
+      working-directory: test/build
+      run: |
+        tst.exe
+        echo "OK"
+
+################################################################################
+
   wsl:
     name: WSL
     runs-on: windows-latest
+    if: false
 
     steps:
     - name: Checkout
