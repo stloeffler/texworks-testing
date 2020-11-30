@@ -161,11 +161,16 @@ jobs:
           cat "$FILE"
         done
 
-    - name: Upload test_BibTeXFile
+    - name: Upload test_poppler-qt5
       uses: actions/upload-artifact@v2
       with:
-        name: test_BibTeXFile
-        path: build/test_BibTeXFile.exe
+        name: test_poppler-qt5
+        path: build/test_poppler-qt5.exe
+
+    - run: ../../../build/test_poppler-qt5.exe
+      working-directory: modules/QtPDF/unit-tests
+      shell: bash
+#      shell: msys2 {0}
 
     - run: ../build/test_BibTeXFile.exe
       working-directory: testcases
