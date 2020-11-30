@@ -141,7 +141,7 @@ jobs:
       run: |
         cd build
         make VERBOSE=1
-#        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all *.exe
+        #/usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all *.exe
         ls -lisah
 
     - run: echo "${{ github.workspace }}"
