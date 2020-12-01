@@ -114,6 +114,10 @@ jobs:
         echo "9"
         sed -ne 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)!\1!p' src/TWVersion.h
         echo "10"
+        sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\),\1,p' src/TWVersion.h
+        echo "11"
+        sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\),\1,p' src/TWVersion.h
+        echo "12"
         TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
         echo "TW_VERSION = ${TW_VERSION}"
         GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
