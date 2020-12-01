@@ -80,8 +80,18 @@ jobs:
     runs-on: windows-latest
     env:
       QT_FORCE_STDERR_LOGGING: 1
+      env:
+        POPPLER_DATA_VERSION: "0.4.10"
+        POPPLER_DATA_SUBDIR: "poppler-data-${POPPLER_DATA_VERSION}"
+        POPPLER_DATA_FILE: "poppler-data-${POPPLER_DATA_VERSION}.tar.gz"
+        POPPLER_DATA_URL: "https://poppler.freedesktop.org/${POPPLER_DATA_FILE}"
+        POPPLERDATA_SHA256: "6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30"
 
     steps:
+    - run: echo "${POPPLER_DATA_URL}
+      shell: bash
+
+
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -96,6 +106,9 @@ jobs:
 #        update: true
         additional-packages: apt-transport-https ca-certificates dirmngr
 # software-properties-common for add-apt-repository
+
+    - run: echo "${POPPLER_DATA_URL}
+      shell: wsl-bash {0}
 
     - name: Install Dependencies
       shell: wsl-bash {0}
@@ -149,6 +162,18 @@ jobs:
     - name: Prepare testing
       shell: wsl-bash {0}
       run: |
+        echo "::group::Fetch poppler-data"
+        wget "${POPPLER_DATA_URL}"
+        CHKSUM=$(openssl dgst -sha256 "${POPPLERDATA_FILE}" 2> /dev/null)
+        if [ "${CHKSUM}" != "SHA256(${POPPLERDATA_FILE})= ${POPPLERDATA_SHA256}" ]; then
+          print_error "Wrong checksum"
+          print_error "${CHKSUM}"
+          print_error "(expected: ${POPPLERDATA_SHA256})"
+          exit 1
+        fi
+        tar -x -C "build/share/" -f "${POPPLERDATA_FILE}" && mv "build/share/${POPPLERDATA_SUBDIR}" "build/share/poppler"
+        echo "::endgroup::"
+        echo "::group::Fixup CTest files"
         SRC=$(pwd)
         DST=$(echo "${{ github.workspace }}" | tr '\\' '/')
         cd build
@@ -160,6 +185,7 @@ jobs:
           echo "---"
           cat "$FILE"
         done
+        echo "::endgroup::"
 
     - name: Upload test_poppler-qt5
       uses: actions/upload-artifact@v2
