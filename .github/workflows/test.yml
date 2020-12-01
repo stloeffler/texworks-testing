@@ -151,11 +151,11 @@ jobs:
       run: |
         echo "::group::Fetch poppler-data"
         POPPLERDATA_VERSION="0.4.10"
-        POPPLERDATA_SUBDIR="poppler-data-${POPPLER_DATA_VERSION}"
-        POPPLERDATA_FILE="poppler-data-${POPPLER_DATA_VERSION}.tar.gz"
-        POPPLERDATA_URL="https://poppler.freedesktop.org/${POPPLER_DATA_FILE}"
+        POPPLERDATA_SUBDIR="poppler-data-${POPPLERDATA_VERSION}"
+        POPPLERDATA_FILE="poppler-data-${POPPLERDATA_VERSION}.tar.gz"
+        POPPLERDATA_URL="https://poppler.freedesktop.org/${POPPLERDATA_FILE}"
         POPPLERDATA_SHA256="6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30"
-        wget "${POPPLER_DATA_URL}"
+        wget "${POPPLERDATA_URL}"
         CHKSUM=$(openssl dgst -sha256 "${POPPLERDATA_FILE}" 2> /dev/null)
         if [ "${CHKSUM}" != "SHA256(${POPPLERDATA_FILE})= ${POPPLERDATA_SHA256}" ]; then
           print_error "Wrong checksum"
