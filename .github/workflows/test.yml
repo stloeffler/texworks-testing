@@ -163,6 +163,7 @@ jobs:
           print_error "(expected: ${POPPLERDATA_SHA256})"
           exit 1
         fi
+        mkdir -p build/share
         tar -x -C "build/share/" -f "${POPPLERDATA_FILE}" && mv "build/share/${POPPLERDATA_SUBDIR}" "build/share/poppler"
         echo "::endgroup::"
         echo "::group::Fixup CTest files"
