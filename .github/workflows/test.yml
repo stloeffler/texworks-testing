@@ -87,7 +87,7 @@ jobs:
       POPPLERDATA_SHA256: "6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30"
 
     steps:
-    - run: echo "${POPPLER_DATA_URL}
+    - run: echo "${POPPLER_DATA_URL}"
       shell: bash
 
 
@@ -106,7 +106,7 @@ jobs:
         additional-packages: apt-transport-https ca-certificates dirmngr
 # software-properties-common for add-apt-repository
 
-    - run: echo "${POPPLER_DATA_URL}
+    - run: echo "${POPPLER_DATA_URL}"
       shell: wsl-bash {0}
 
     - name: Install Dependencies
