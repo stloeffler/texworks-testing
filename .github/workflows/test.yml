@@ -78,24 +78,15 @@ jobs:
   wsl:
     name: WSL
     runs-on: windows-latest
-    env:
-      QT_FORCE_STDERR_LOGGING: 1
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-#    - name: Setup MSYS
-#      uses: msys2/setup-msys2@v2
-#      with:
-#        install: mingw-w64-x86_64-cmake
-
     - name: Setup WSL
       uses: Vampire/setup-wsl@v1
       with:
-#        update: true
         additional-packages: apt-transport-https ca-certificates dirmngr
-# software-properties-common for add-apt-repository
 
     - name: Install Dependencies
       shell: wsl-bash {0}
@@ -109,8 +100,6 @@ jobs:
         MXEDIR=/usr/lib/mxe
         MXETARGET=i686-w64-mingw32.static
         sudo chmod --recursive a+w ${MXEDIR}
-        #echo "MXE_TARGETS := ${MXETARGET}" >> ${MXEDIR}/settings.mk
-        #echo "MXE_USE_CCACHE=" >> ${MXEDIR}/settings.mk
         rm -f "${MXEDIR}/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.d/ccache.cmake"
         echo "::endgroup::"
 
@@ -141,10 +130,7 @@ jobs:
       run: |
         cd build
         make VERBOSE=1
-        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all *.exe
-        ls -lisah
-
-    - run: echo "${{ github.workspace }}"
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all TeXworks.exe
 
     - name: Prepare testing
       shell: wsl-bash {0}
@@ -170,62 +156,18 @@ jobs:
         SRC=$(pwd)
         DST=$(echo "${{ github.workspace }}" | tr '\\' '/')
         cd build
-        find . -name CTestTestfile.cmake
         for FILE in $(find . -name CTestTestfile.cmake); do
-          echo ">> $FILE <<"
-          cat "$FILE"
+          echo "Fixing $FILE"
           sed -ie "s|${SRC}|${DST}|g" "$FILE"
-          echo "---"
-          cat "$FILE"
         done
         echo "::endgroup::"
-
-    - name: Upload test_poppler-qt5
-      uses: actions/upload-artifact@v2
-      with:
-        name: test_poppler-qt5
-        path: build/test_poppler-qt5.exe
-
-    - run: ../../../build/test_poppler-qt5.exe
-      working-directory: modules/QtPDF/unit-tests
-      shell: bash
-#      shell: msys2 {0}
-
-    - run: ../build/test_BibTeXFile.exe
-      working-directory: testcases
-      shell: bash
-#      shell: msys2 {0}
-
-    - run: ../build/test_Utils.exe
-      working-directory: testcases
-      shell: bash
-#      shell: msys2 {0}
-
-    - run: ../build/test_Scripting.exe
-      working-directory: testcases
-      shell: bash
-#      shell: msys2 {0}
-
-    - run: ../build/test_LuaScripting.exe
-      working-directory: testcases
-      shell: bash
-#      shell: msys2 {0}
-
-    - run: ../build/test_UI.exe
-      working-directory: testcases
-      shell: bash
-#      shell: msys2 {0}
-
-    - run: ../build/test_Document.exe
-      working-directory: testcases
-      shell: bash
-#      shell: msys2 {0}
 
     - name: Test
       run: ctest -V
       working-directory: build
-      shell: bash
-#      shell: msys2 {0}
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
+#      shell: bash
 
     - name: Upload
       uses: actions/upload-artifact@v2
