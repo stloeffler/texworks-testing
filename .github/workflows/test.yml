@@ -104,7 +104,7 @@ jobs:
         echo "4"
         sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]),XXX,p' src/TWVersion.h
         echo "5"
-        sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]),\1,p' src/TWVersion.h
+        sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),\1,p' src/TWVersion.h
         echo "6"
         sed -ne 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)"$!\1!p' src/TWVersion.h
         echo "7"
