@@ -94,6 +94,11 @@ jobs:
         echo "::group::Determine version info"
         cat src/TWVersion.h
         sed -ne 's,^#define TEXWORKS_VERSION,XXX,p' src/TWVersion.h
+        echo "1"
+        sed -ne 's,^#define TEXWORKS_VERSION[[:space:]],XXX,p' src/TWVersion.h
+        echo "2"
+        sed -ne 's,^#define TEXWORKS_VERSION\s,XXX,p' src/TWVersion.h
+        echo "3"
         sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h
         TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
         echo "TW_VERSION = ${TW_VERSION}"
