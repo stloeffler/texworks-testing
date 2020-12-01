@@ -88,6 +88,22 @@ jobs:
       with:
         additional-packages: apt-transport-https ca-certificates dirmngr
 
+    # DEBUG
+    - shell: wsl-bash
+      run: |
+        echo "::group::Determine version info"
+        TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
+        echo "TW_VERSION = ${TW_VERSION}"
+        GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
+        echo "GIT_HASH = ${GIT_HASH}"
+        DATE_HASH=$(date -u +"%Y%m%d%H%M")
+        echo "DATE_HASH = ${DATE_HASH}"
+        VERSION="${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
+        echo "VERSION = ${VERSION}"
+        echo "::set-output name=version::${VERSION}"
+        echo "::endgroup::"
+    # /DEBUG
+
     - name: Install Dependencies
       shell: wsl-bash {0}
       run: |
@@ -127,14 +143,41 @@ jobs:
 
     - name: Build
       shell: wsl-bash {0}
-      run: |
-        cd build
-        make VERBOSE=1
-        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all TeXworks.exe
+      run: make VERBOSE=1
+      working-directory: build
 
-    - name: Prepare testing
+    - name: Package
       shell: wsl-bash {0}
+      id: package
       run: |
+        TOPDIR=$(pwd)
+
+        echo "::group::Determine version info"
+        TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
+        echo "TW_VERSION = ${TW_VERSION}"
+        GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
+        echo "GIT_HASH = ${GIT_HASH}"
+        DATE_HASH=$(date -u +"%Y%m%d%H%M")
+        echo "DATE_HASH = ${DATE_HASH}"
+        VERSION="${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
+        echo "VERSION = ${VERSION}"
+        echo "::set-output name=version::${VERSION}"
+        echo "::endgroup::"
+
+        echo "::group::Strip TeXworks.exe"
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all TeXworks.exe
+        echo "::endgroup::"
+
+        echo "::group::Assemble package"
+        mkdir -p package-zip/share
+        cp build/TeXworks.exe package-zip/
+        cp COPYING package-zip/
+        cp -r win32/fonts package-zip/share/
+        cp -r ci/travis-ci/README.win package-zip/README.txt
+        echo "::endgroup::"
+
+        # FIXME: Manual for releases
+
         echo "::group::Fetch poppler-data"
         POPPLERDATA_VERSION="0.4.10"
         POPPLERDATA_SUBDIR="poppler-data-${POPPLERDATA_VERSION}"
@@ -144,14 +187,40 @@ jobs:
         wget "${POPPLERDATA_URL}"
         CHKSUM=$(openssl dgst -sha256 "${POPPLERDATA_FILE}" 2> /dev/null)
         if [ "${CHKSUM}" != "SHA256(${POPPLERDATA_FILE})= ${POPPLERDATA_SHA256}" ]; then
-          print_error "Wrong checksum"
-          print_error "${CHKSUM}"
-          print_error "(expected: ${POPPLERDATA_SHA256})"
+          echo "::error::Wrong poppler-data checksum {CHKSUM} (expected: ${POPPLERDATA_SHA256})"
           exit 1
         fi
-        mkdir -p build/share
-        tar -x -C "build/share/" -f "${POPPLERDATA_FILE}" && mv "build/share/${POPPLERDATA_SUBDIR}" "build/share/poppler"
         echo "::endgroup::"
+
+        echo "::group::Extracting poppler-data"
+        tar -xf "${POPPLERDATA_FILE}"
+        cd "${POPPLERDATA_SUBDIR}"
+        make install prefix="${TOPDIR}/package-zip"
+        # Cleanup unused pkgconfig data
+        rm -rf "${TOPDIR}/package-zip/share/pkgconfig"
+        # Install to build (required for testing)
+        make install prefix="${TOPDIR}/build"
+        cd "${TOPDIR}
+        echo "::endgroup::"
+
+        # Fixme: installer for releases
+
+        echo "::group::Bundle zip archive"
+        cd package-zip && zip -r "${TOPDIR}/TeXworks-win-${VERSION}.zip" *
+        echo "::set-output name=file::TeXworks-win-${VERSION}.zip"
+        cd "${TOPDIR}
+        echo "::endgroup::"
+
+        echo "::group::Checksums"
+        echo "MD5"
+        md5sum TeXworks-win-${VERSION}.zip
+        echo "SHA256"
+        sha256sum TeXworks-win-${VERSION}.zip
+        echo "::endgroup::"
+
+    - name: Prepare testing
+      shell: wsl-bash {0}
+      run: |
         echo "::group::Fixup CTest files"
         SRC=$(pwd)
         DST=$(echo "${{ github.workspace }}" | tr '\\' '/')
@@ -169,12 +238,16 @@ jobs:
         QT_FORCE_STDERR_LOGGING: 1
 #      shell: bash
 
-    - name: Upload
-      uses: actions/upload-artifact@v2
+    - name: Deploy to Bintray
+      uses: ./.github/actions/deploy-bintray
       with:
-        name: artifact
-        path: build/TeXworks.exe
-
+          file: build/${{ steps.package.outputs.file }}
+          subject: stloeffler
+          repo: generic
+          pkg: Latest-TeXworks-Win
+          version: ${{ steps.package.outputs.version }}
+          username: stloeffler
+          key: ${{ secrets.bintray_key }}
 
 ################################################################################
 
