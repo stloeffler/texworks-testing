@@ -86,7 +86,7 @@ jobs:
     - name: Setup WSL
       uses: Vampire/setup-wsl@v1
       with:
-        additional-packages: apt-transport-https ca-certificates dirmngr
+        additional-packages: apt-transport-https ca-certificates dirmngr git
 
     # DEBUG
     - shell: wsl-bash {0}
