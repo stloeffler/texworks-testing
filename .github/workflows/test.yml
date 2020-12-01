@@ -80,12 +80,11 @@ jobs:
     runs-on: windows-latest
     env:
       QT_FORCE_STDERR_LOGGING: 1
-      env:
-        POPPLER_DATA_VERSION: "0.4.10"
-        POPPLER_DATA_SUBDIR: "poppler-data-${POPPLER_DATA_VERSION}"
-        POPPLER_DATA_FILE: "poppler-data-${POPPLER_DATA_VERSION}.tar.gz"
-        POPPLER_DATA_URL: "https://poppler.freedesktop.org/${POPPLER_DATA_FILE}"
-        POPPLERDATA_SHA256: "6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30"
+      POPPLER_DATA_VERSION: "0.4.10"
+      POPPLER_DATA_SUBDIR: "poppler-data-${POPPLER_DATA_VERSION}"
+      POPPLER_DATA_FILE: "poppler-data-${POPPLER_DATA_VERSION}.tar.gz"
+      POPPLER_DATA_URL: "https://poppler.freedesktop.org/${POPPLER_DATA_FILE}"
+      POPPLERDATA_SHA256: "6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30"
 
     steps:
     - run: echo "${POPPLER_DATA_URL}
