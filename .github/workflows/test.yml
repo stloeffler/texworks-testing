@@ -104,19 +104,23 @@ jobs:
         echo "4"
         sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]),XXX,p' src/TWVersion.h
         echo "5"
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),\1,p' src/TWVersion.h
+        #sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),\1,p' src/TWVersion.h
+        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]+),\1,p' src/TWVersion.h
         echo "6"
-        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)!\1!p' src/TWVersion.h
+        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)!\1!p' src/TWVersion.h
+        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]\+),\1,p' src/TWVersion.h
         echo "7"
-        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]{3,}\)!\1!p' src/TWVersion.h
+        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,}),\1,p' src/TWVersion.h
+        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]{3,}\)!\1!p' src/TWVersion.h
         echo "8"
-        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\)!\1!p' src/TWVersion.h
+        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]\{3,\})!\1!,p' src/TWVersion.h
+        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\)!\1!p' src/TWVersion.h
         echo "9"
-        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)"$!\1!p' src/TWVersion.h
+        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)"$!\1!p' src/TWVersion.h
         echo "10"
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\),\1,p' src/TWVersion.h
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\),\1,p' src/TWVersion.h
         echo "11"
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\),\1,p' src/TWVersion.h
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\),\1,p' src/TWVersion.h
         echo "12"
         TW_VERSION=$(sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
         echo "TW_VERSION = ${TW_VERSION}"
