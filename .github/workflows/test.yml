@@ -208,7 +208,7 @@ jobs:
         echo "::endgroup::"
 
         echo "::group::Strip TeXworks.exe"
-        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all TeXworks.exe
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all build/TeXworks.exe
         echo "::endgroup::"
 
         echo "::group::Assemble package"
