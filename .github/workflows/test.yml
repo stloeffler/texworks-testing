@@ -243,7 +243,7 @@ jobs:
         rm -rf "${TOPDIR}/package-zip/share/pkgconfig"
         # Install to build (required for testing)
         make install prefix="${TOPDIR}/build"
-        cd "${TOPDIR}
+        cd "${TOPDIR}"
         echo "::endgroup::"
 
         # Fixme: installer for releases
@@ -251,7 +251,7 @@ jobs:
         echo "::group::Bundle zip archive"
         cd package-zip && zip -r "${TOPDIR}/TeXworks-win-${VERSION}.zip" *
         echo "::set-output name=file::TeXworks-win-${VERSION}.zip"
-        cd "${TOPDIR}
+        cd "${TOPDIR}"
         echo "::endgroup::"
 
         echo "::group::Checksums"
