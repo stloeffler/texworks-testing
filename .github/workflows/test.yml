@@ -102,7 +102,9 @@ jobs:
         sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"$/\1/p' src/TWVersion.h
         echo "d"
         sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"[[:space:]]{0,}$/\1/p' src/TWVersion.h
-        echo "d"
+        echo "e"
+        sed -ne 's/^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)"[[:space:]]*$/\1/p' src/TWVersion.h
+        echo "f"
         #sed -nEe 's,^#define TEXWORKS_VERSION,XXX,p' src/TWVersion.h
         #echo "1"
         #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]],XXX,p' src/TWVersion.h
