@@ -284,7 +284,7 @@ jobs:
     - name: Deploy to Bintray
       uses: ./.github/actions/deploy-bintray
       with:
-          file: build/${{ steps.package.outputs.file }}
+          file: ${{ steps.package.outputs.file }}
           subject: stloeffler
           repo: generic
           pkg: Latest-TeXworks-Win
