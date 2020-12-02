@@ -184,7 +184,7 @@ void TestUtils::SystemCommand_getResult_data()
 	QString progInvalid{QStringLiteral("invalid-command")};
 	QStringList progInvalidArgs{};
 	QString outputQuiet;
-#ifdef Q_OS_WINDOWS
+#ifdef Q_OS_WIN
 	QString outputOK{QStringLiteral("OK\r\n")};
 #else
 	QString outputOK{QStringLiteral("OK\n")};
