@@ -92,43 +92,43 @@ jobs:
     - shell: wsl-bash {0}
       run: |
         echo "::group::Determine version info"
-        cat src/TWVersion.h
-        sed --version
-        echo "a"
-        sed -ne 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)"$!\1!p' src/TWVersion.h
-        echo "b"
-        sed -ne 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)"$!\1!p' src/TWVersion.h
-        echo "c"
-        sed -nEe 's,^#define TEXWORKS_VERSION,XXX,p' src/TWVersion.h
-        echo "1"
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]],XXX,p' src/TWVersion.h
-        echo "2"
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"[0-9.],XXX,p' src/TWVersion.h
-        echo "3"
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),XXX,p' src/TWVersion.h
-        echo "4"
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]),XXX,p' src/TWVersion.h
-        echo "5"
-        #sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),\1,p' src/TWVersion.h
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]+),\1,p' src/TWVersion.h
-        echo "6"
-        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)!\1!p' src/TWVersion.h
-        sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]\+),\1,p' src/TWVersion.h
-        echo "7"
-        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})!\1!p' src/TWVersion.h
-        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]{3,}\)!\1!p' src/TWVersion.h
-        echo "8"
-        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"!\1!p' src/TWVersion.h
-        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\)!\1!p' src/TWVersion.h
-        echo "9"
-        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)"$!\1!p' src/TWVersion.h
-        sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"$!\1!p' src/TWVersion.h
-        echo "10"
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\),\1,p' src/TWVersion.h
-        echo "11"
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\),\1,p' src/TWVersion.h
-        echo "12"
-        TW_VERSION=$(sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
+        #cat src/TWVersion.h
+        #sed --version
+        #echo "a"
+        #sed -ne 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)"$!\1!p' src/TWVersion.h
+        #echo "b"
+        #sed -ne 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)"$!\1!p' src/TWVersion.h
+        #echo "c"
+        #sed -nEe 's,^#define TEXWORKS_VERSION,XXX,p' src/TWVersion.h
+        #echo "1"
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]],XXX,p' src/TWVersion.h
+        #echo "2"
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"[0-9.],XXX,p' src/TWVersion.h
+        #echo "3"
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),XXX,p' src/TWVersion.h
+        #echo "4"
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]),XXX,p' src/TWVersion.h
+        #echo "5"
+        ##sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),\1,p' src/TWVersion.h
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]+),\1,p' src/TWVersion.h
+        #echo "6"
+        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)!\1!p' src/TWVersion.h
+        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]\+),\1,p' src/TWVersion.h
+        #echo "7"
+        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})!\1!p' src/TWVersion.h
+        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]{3,}\)!\1!p' src/TWVersion.h
+        #echo "8"
+        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"!\1!p' src/TWVersion.h
+        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\)!\1!p' src/TWVersion.h
+        #echo "9"
+        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)"$!\1!p' src/TWVersion.h
+        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"$!\1!p' src/TWVersion.h
+        #echo "10"
+        ##sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\),\1,p' src/TWVersion.h
+        #echo "11"
+        ##sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\),\1,p' src/TWVersion.h
+        #echo "12"
+        TW_VERSION=$(sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"$/\1/p' src/TWVersion.h)
         echo "TW_VERSION = ${TW_VERSION}"
         GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
         echo "GIT_HASH = ${GIT_HASH}"
@@ -189,7 +189,7 @@ jobs:
         TOPDIR=$(pwd)
 
         echo "::group::Determine version info"
-        TW_VERSION=$(sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3\,\}\)"$,\1,p' src/TWVersion.h)
+        TW_VERSION=$(sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"$/\1/p' src/TWVersion.h)
         echo "TW_VERSION = ${TW_VERSION}"
         GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
         echo "GIT_HASH = ${GIT_HASH}"
