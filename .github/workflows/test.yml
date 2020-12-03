@@ -83,33 +83,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup WSL
-      uses: Vampire/setup-wsl@v1
-      with:
-        additional-packages: apt-transport-https ca-certificates dirmngr git
-
-    - name: Install Dependencies
-      shell: wsl-bash {0}
-      run: |
-        echo "::group::Install MXE"
-        echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
-        sudo apt update
-        sudo apt install --assume-yes libgdk-pixbuf2.0-dev lzip mxe-i686-w64-mingw32.static-cairo mxe-i686-w64-mingw32.static-curl mxe-i686-w64-mingw32.static-freetype mxe-i686-w64-mingw32.static-glib mxe-i686-w64-mingw32.static-hunspell mxe-i686-w64-mingw32.static-jpeg mxe-i686-w64-mingw32.static-lcms mxe-i686-w64-mingw32.static-libpng mxe-i686-w64-mingw32.static-libwebp mxe-i686-w64-mingw32.static-lua mxe-i686-w64-mingw32.static-openjpeg mxe-i686-w64-mingw32.static-qtbase mxe-i686-w64-mingw32.static-qtdeclarative mxe-i686-w64-mingw32.static-qtscript mxe-i686-w64-mingw32.static-qttools mxe-i686-w64-mingw32.static-tiff mxe-i686-w64-mingw32.static-zlib
-
-        MXEDIR=/usr/lib/mxe
-        MXETARGET=i686-w64-mingw32.static
-        sudo chmod --recursive a+w ${MXEDIR}
-        rm -f "${MXEDIR}/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.d/ccache.cmake"
-        echo "::endgroup::"
-
-        echo "::group::Build poppler"
-        rm -f ${MXEDIR}/src/poppler*
-        cp ci/travis-ci/mxe/poppler* ${MXEDIR}/src/
-        cd ${MXEDIR}
-        make download-only-poppler
-        make build-only-poppler_${MXETARGET}
-        echo "::endgroup::"
+    - name: Setup
+      uses: .github/actions/setup-windows
 
     - name: Configure
       shell: wsl-bash {0}
@@ -131,77 +106,8 @@ jobs:
       working-directory: build
 
     - name: Package
-      shell: wsl-bash {0}
+      uses: .github/actions/package-windows
       id: package
-      run: |
-        TOPDIR=$(pwd)
-
-        echo "::group::Determine version info"
-        # NB: On Windows, there might be a stray \r at the end!
-        TW_VERSION=$(sed -ne 's/^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)"[[:space:]]*$/\1/p' src/TWVersion.h)
-        echo "TW_VERSION = ${TW_VERSION}"
-        GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
-        echo "GIT_HASH = ${GIT_HASH}"
-        DATE_HASH=$(date -u +"%Y%m%d%H%M")
-        echo "DATE_HASH = ${DATE_HASH}"
-        VERSION="${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
-        echo "VERSION = ${VERSION}"
-        echo "::set-output name=version::${VERSION}"
-        echo "::endgroup::"
-
-        echo "::group::Strip TeXworks.exe"
-        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-strip --strip-all build/TeXworks.exe
-        echo "::endgroup::"
-
-        echo "::group::Assemble package"
-        mkdir -p package-zip/share
-        cp build/TeXworks.exe package-zip/
-        cp COPYING package-zip/
-        cp -r win32/fonts package-zip/share/
-        cp -r ci/travis-ci/README.win package-zip/README.txt
-        echo "::endgroup::"
-
-        # FIXME: Manual for releases
-
-        echo "::group::Fetch poppler-data"
-        POPPLERDATA_VERSION="0.4.10"
-        POPPLERDATA_SUBDIR="poppler-data-${POPPLERDATA_VERSION}"
-        POPPLERDATA_FILE="poppler-data-${POPPLERDATA_VERSION}.tar.gz"
-        POPPLERDATA_URL="https://poppler.freedesktop.org/${POPPLERDATA_FILE}"
-        POPPLERDATA_SHA256="6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30"
-        wget "${POPPLERDATA_URL}"
-        CHKSUM=$(openssl dgst -sha256 "${POPPLERDATA_FILE}" 2> /dev/null)
-        if [ "${CHKSUM}" != "SHA256(${POPPLERDATA_FILE})= ${POPPLERDATA_SHA256}" ]; then
-          echo "::error::Wrong poppler-data checksum {CHKSUM} (expected: ${POPPLERDATA_SHA256})"
-          exit 1
-        fi
-        echo "::endgroup::"
-
-        echo "::group::Extracting poppler-data"
-        tar -xf "${POPPLERDATA_FILE}"
-        cd "${POPPLERDATA_SUBDIR}"
-        make install prefix="${TOPDIR}/package-zip"
-        # Cleanup unused pkgconfig data
-        rm -rf "${TOPDIR}/package-zip/share/pkgconfig"
-        # Install to build (required for testing)
-        make install prefix="${TOPDIR}/build"
-        cd "${TOPDIR}"
-        echo "::endgroup::"
-
-        # Fixme: installer for releases
-
-        echo "::group::Bundle zip archive"
-        cd package-zip && zip -r "${TOPDIR}/TeXworks-win-${VERSION}.zip" *
-        echo "::set-output name=file::TeXworks-win-${VERSION}.zip"
-        cd "${TOPDIR}"
-        echo "::endgroup::"
-
-        echo "::group::Checksums"
-        echo "MD5"
-        md5sum TeXworks-win-${VERSION}.zip
-        echo "SHA256"
-        sha256sum TeXworks-win-${VERSION}.zip
-        echo "::endgroup::"
 
     - name: Prepare testing
       shell: wsl-bash {0}
