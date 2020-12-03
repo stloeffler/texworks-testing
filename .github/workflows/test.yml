@@ -88,64 +88,6 @@ jobs:
       with:
         additional-packages: apt-transport-https ca-certificates dirmngr git
 
-    # DEBUG
-    - shell: wsl-bash {0}
-      run: |
-        echo "::group::Determine version info"
-        #cat src/TWVersion.h
-        #sed --version
-        echo "a"
-        sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})/\1/p' src/TWVersion.h
-        echo "b"
-        sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"/\1/p' src/TWVersion.h
-        echo "c"
-        sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"$/\1/p' src/TWVersion.h
-        echo "d"
-        sed -nEe 's/^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"[[:space:]]{0,}$/\1/p' src/TWVersion.h
-        echo "e"
-        sed -ne 's/^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)"[[:space:]]*$/\1/p' src/TWVersion.h
-        echo "f"
-        #sed -nEe 's,^#define TEXWORKS_VERSION,XXX,p' src/TWVersion.h
-        #echo "1"
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]],XXX,p' src/TWVersion.h
-        #echo "2"
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"[0-9.],XXX,p' src/TWVersion.h
-        #echo "3"
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),XXX,p' src/TWVersion.h
-        #echo "4"
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]),XXX,p' src/TWVersion.h
-        #echo "5"
-        ##sed -ne 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\),\1,p' src/TWVersion.h
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]+),\1,p' src/TWVersion.h
-        #echo "6"
-        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)!\1!p' src/TWVersion.h
-        #sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"([0-9.]\+),\1,p' src/TWVersion.h
-        #echo "7"
-        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})!\1!p' src/TWVersion.h
-        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]{3,}\)!\1!p' src/TWVersion.h
-        #echo "8"
-        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"!\1!p' src/TWVersion.h
-        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\)!\1!p' src/TWVersion.h
-        #echo "9"
-        ##sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\)"$!\1!p' src/TWVersion.h
-        #sed -nEe 's!^#define TEXWORKS_VERSION[[:space:]]"([0-9.]{3,})"$!\1!p' src/TWVersion.h
-        #echo "10"
-        ##sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]+\),\1,p' src/TWVersion.h
-        #echo "11"
-        ##sed -nEe 's,^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\+\),\1,p' src/TWVersion.h
-        #echo "12"
-        TW_VERSION=$(sed -ne 's/^#define TEXWORKS_VERSION[[:space:]]"\([0-9.]\{3,\}\)"[[:space:]]*$/\1/p' src/TWVersion.h)
-        echo "TW_VERSION = ${TW_VERSION}"
-        GIT_HASH=$(git --git-dir=".git" show --no-patch --pretty="%h")
-        echo "GIT_HASH = ${GIT_HASH}"
-        DATE_HASH=$(date -u +"%Y%m%d%H%M")
-        echo "DATE_HASH = ${DATE_HASH}"
-        VERSION="${TW_VERSION}-${DATE_HASH}-git_${GIT_HASH}"
-        echo "VERSION = ${VERSION}"
-        echo "::set-output name=version::${VERSION}"
-        echo "::endgroup::"
-    # /DEBUG
-
     - name: Install Dependencies
       shell: wsl-bash {0}
       run: |
@@ -279,7 +221,6 @@ jobs:
       working-directory: build
       env:
         QT_FORCE_STDERR_LOGGING: 1
-#      shell: bash
 
     - name: Deploy to Bintray
       uses: ./.github/actions/deploy-bintray
