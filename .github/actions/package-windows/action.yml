@@ -85,7 +85,7 @@ runs:
       shell: wsl-bash {0}
       id: bundle-zip
       run: |
-        cd package-zip && zip -r "${TOPDIR}/TeXworks-win-${{ steps.version-info.outputs.version }}.zip" *
+        cd package-zip && zip -r "../TeXworks-win-${{ steps.version-info.outputs.version }}.zip" *
         echo "::set-output name=file::TeXworks-win-${{ steps.version-info.outputs.version }}.zip"
 
     - name: Checksums
