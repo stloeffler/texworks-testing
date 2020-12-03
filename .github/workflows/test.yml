@@ -83,7 +83,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup
+    - name: Setup WSL
+      uses: Vampire/setup-wsl@v1
+
+    - name: Install dependencies
       uses: ./.github/actions/setup-windows
 
     - name: Configure
