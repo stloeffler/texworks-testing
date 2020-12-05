@@ -6,7 +6,6 @@ jobs:
   linux:
     name: Linux
     runs-on: ubuntu-latest
-    if: false
 
     steps:
     - name: Checkout
@@ -78,6 +77,7 @@ jobs:
   wsl:
     name: WSL
     runs-on: windows-latest
+    if: false
 
     steps:
     - name: Checkout
