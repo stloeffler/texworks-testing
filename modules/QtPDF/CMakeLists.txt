@@ -147,14 +147,6 @@ else ()
     ${QT_PLATFORM_LIBRARIES}
     Qt5::Test
   )
-  message("WIN32 = ${WIN32}")
-  message("BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}")
-  message("QT_PLATFORM_LIBRARIES = ${QT_PLATFORM_LIBRARIES}")
-  message("QTPDF_LIBS = ${QTPDF_LIBS}")
-  message("QTPDF_TEST_LIBS = ${QTPDF_TEST_LIBS}")
-
-  get_target_property(_tmp Qt5::WindowsPlatformSupport INTERFACE_COMPILE_DEFINITIONS)
-  message("INTERFACE_COMPILE_DEFINITIONS = ${_tmp}")
 endif ()
 
 # Expose the major version number of Qt to the preprocessor. This is necessary
