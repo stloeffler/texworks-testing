@@ -1,0 +1,22 @@
+name: CI
+on:
+  - push
+  - pull_request
+
+jobs:
+  texlive:
+    name: TeXLive (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: sudo apt install --assume-yes --no-install-recommends ghostscript imagemagick lmodern netpbm tex4ht texlive-fonts-recommended texlive-lang-french texlive-latex-base texlive-latex-extra texlive-luatex tidy
+    - name: Typeset
+      run: make dist
+
+# fakeroot
+# debhelper
+# dput
+# ubuntu-dev-tools
