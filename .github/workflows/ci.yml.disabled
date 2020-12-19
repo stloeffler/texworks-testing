@@ -31,6 +31,7 @@ jobs:
   build-win-msys:
     name: Windows (MSYS)
     runs-on: windows-latest
+    if: false
     defaults:
       run:
         shell: msys2 {0}
@@ -59,6 +60,8 @@ jobs:
     - name: Test
       run: ctest -V
       working-directory: build
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
 
 ################################################################################
 
@@ -104,7 +107,6 @@ jobs:
           version: ${{ steps.package.outputs.version }}
           username: stloeffler
           key: ${{ secrets.bintray_key }}
-
 
 ################################################################################
 

@@ -222,7 +222,11 @@ void TestUtils::SystemCommand_getResult()
 
 	cmd->start(program, args);
 	QCOMPARE(cmd->waitForFinished(), success);
+#ifdef Q_OS_WIN
+	QCOMPARE(cmd->getResult().replace(QStringLiteral("\r\n"), QStringLiteral("\n")), output);
+#else
 	QCOMPARE(cmd->getResult(), output);
+#endif
 
 	if (!runInBackground) {
 		cmd->deleteLater();
