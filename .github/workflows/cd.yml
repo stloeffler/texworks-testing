@@ -88,9 +88,9 @@ jobs:
       uses: ./.github/actions/deploy-bintray
       with:
           file: ${{ steps.package.outputs.file }}
-          subject: texworks
-          repo: Windows-latest
-          pkg: TeXworks-for-Windows:latest
+          subject: stloeffler
+          repo: generic
+          pkg: Latest-TeXworks-Win
           version: ${{ steps.package.outputs.version }}
           username: stloeffler
           key: ${{ secrets.bintray_key }}
@@ -134,9 +134,9 @@ jobs:
       uses: ./.github/actions/deploy-bintray
       with:
         file: build/${{ steps.package.outputs.file }}
-        subject: texworks
-        repo: OSX-latest
-        pkg: TeXworks-for-Mac:latest
+        subject: stloeffler
+        repo: generic
+        pkg: Latest-TeXworks-Mac
         version: ${{ steps.package.outputs.version }}
         username: stloeffler
         key: ${{ secrets.bintray_key }}
