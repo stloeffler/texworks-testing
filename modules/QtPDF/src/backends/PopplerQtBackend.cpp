@@ -1059,32 +1059,33 @@ QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF>
 
 } // namespace Backend
 
-// NOLINTNEXTLINE(modernize-use-equals-default)
-PopplerQtBackend::PopplerQtBackend() {
+QSharedPointer<Backend::Document> PopplerQtBackend::newDocument(const QString & fileName) {
 #if defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
-  #if defined(POPPLER_HAS_GLOBALPARAMSINITER)
-    QDir dataDir{QCoreApplication::applicationDirPath()};
-    if (dataDir.cd(QStringLiteral("../poppler-data")))
-      GlobalParamsIniter::setCustomDataDir(qPrintable(dataDir.path()));
-  #else // defined(POPPLER_HAS_GLOBALPARAMSINITER)
-    static bool globalParamsInitialized = false;
-    if (!globalParamsInitialized) {
-      globalParamsInitialized = true;
+  static bool globalParamsInitialized = false;
+  if (!globalParamsInitialized) {
+    globalParamsInitialized = true;
+    #if defined(POPPLER_HAS_GLOBALPARAMSINITER)
+      QDir dataDir{QCoreApplication::applicationDirPath()};
+      if (dataDir.cd(QStringLiteral("../share/poppler"))) {
+        GlobalParamsIniter::setCustomDataDir(qPrintable(dataDir.path()));
+      }
+    #else // defined(POPPLER_HAS_GLOBALPARAMSINITER)
       // for Mac, support "local" poppler-data directory
       // (requires patched poppler-qt lib to be effective,
       // otherwise the GlobalParams gets overwritten when a
       // document is opened)
-      QDir popplerDataDir(QCoreApplication::applicationDirPath() + QLatin1String("/../poppler-data"));
-      if (popplerDataDir.exists()) {
+      QDir dataDir{QCoreApplication::applicationDirPath()};
+      if (dataDir.cd(QStringLiteral("../share/poppler"))) {
         #if defined(POPPLER_GLOBALPARAMS_IS_UNIQUE)
-          globalParams = std::move(std::unique_ptr<GlobalParams>(new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data())));
+          globalParams = std::move(std::unique_ptr<GlobalParams>(new GlobalParams(qPrintable(dataDir.path()))));
         #else
-          globalParams = new GlobalParams(popplerDataDir.canonicalPath().toUtf8().data());
+          globalParams = new GlobalParams(qPrintable(dataDir.path()));
         #endif
       }
-    }
-  #endif // defined(POPPLER_HAS_GLOBALPARAMSINITER)
+    #endif // defined(POPPLER_HAS_GLOBALPARAMSINITER)
+  }
 #endif // defined(HAVE_POPPLER_XPDF_HEADERS) && defined(Q_OS_DARWIN)
+  return QSharedPointer<Backend::Document>(new Backend::PopplerQt::Document(fileName));
 }
 
 } // namespace QtPDF

@@ -784,18 +784,19 @@
     <message>
         <location filename="../src/PDFDocumentWindow.cpp" line="999"/>
         <source>Open URL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">打开 URL</translation>
     </message>
     <message>
         <location filename="../src/PDFDocumentWindow.cpp" line="999"/>
         <source>You are in the process of opening the URL %1. Opening unknown or untrusted web adresses can be a security risk.
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">您正在打开 URL %1。打开未知或不受信任的网址会有安全风险。
+您要继续吗？</translation>
     </message>
     <message>
         <location filename="../src/PDFDocumentWindow.cpp" line="1051"/>
         <source>Custom...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">自定义...</translation>
     </message>
     <message>
         <location filename="../src/PDFDocumentWindow.cpp" line="1122"/>
@@ -995,7 +996,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../src/PrefsDialog.ui" line="261"/>
         <source>Line Spacing:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">行距：</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="315"/>
@@ -1025,7 +1026,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../src/PrefsDialog.ui" line="548"/>
         <source>Enable auto-follow focus</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">启用自动跟踪焦点</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="582"/>
@@ -1274,7 +1275,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../src/PrefsDialog.ui" line="770"/>
         <source>Source &gt; Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">源文件 &gt; 预览：</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.ui" line="784"/>
@@ -1297,7 +1298,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../src/PrefsDialog.ui" line="802"/>
         <source>Preview &gt; Source:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">预览 &gt; 源文件：</translation>
     </message>
     <message>
         <location filename="../src/PrefsDialog.cpp" line="550"/>
@@ -1521,7 +1522,7 @@ Use the context menu to change the units.</source>
     <message>
         <location filename="../src/scripting/ScriptAPI.cpp" line="241"/>
         <source>Failed to execute system command: %1</source>
-        <translation type="unfinished">系统命令运行失败：%1 </translation>
+        <translation type="unfinished">未能执行系统命令：%1 </translation>
     </message>
     <message>
         <location filename="../src/scripting/ScriptAPI.cpp" line="250"/>
@@ -1532,7 +1533,7 @@ Use the context menu to change the units.</source>
         <location filename="../src/scripting/ScriptAPI.cpp" line="267"/>
         <location filename="../src/scripting/ScriptAPI.cpp" line="289"/>
         <source>System command execution is disabled (see Preferences)</source>
-        <translation type="unfinished">运行系统命令已被禁止（见＜首选项＞）</translation>
+        <translation type="unfinished">已禁止执行系统命令（见＜首选项＞）</translation>
     </message>
     <message>
         <location filename="../src/scripting/ScriptAPI.cpp" line="285"/>
@@ -1547,7 +1548,7 @@ Use the context menu to change the units.</source>
     <message>
         <location filename="../src/scripting/ScriptAPI.cpp" line="339"/>
         <source>The file &quot;%1&quot; could not be opened for reading</source>
-        <translation type="unfinished">无法打开文件“%1”以便读取内容</translation>
+        <translation type="unfinished">无法打开文件“%1”进行读取</translation>
     </message>
 </context>
 <context>
@@ -1580,7 +1581,7 @@ Use the context menu to change the units.</source>
     <message>
         <location filename="../src/ScriptManagerWidget.cpp" line="194"/>
         <source>Description: </source>
-        <translation type="unfinished">描诉：</translation>
+        <translation type="unfinished">描述：</translation>
     </message>
     <message>
         <location filename="../src/ScriptManagerWidget.cpp" line="195"/>
@@ -1716,7 +1717,7 @@ Use the context menu to change the units.</source>
         <location filename="../src/TWApp.cpp" line="222"/>
         <location filename="../src/TWApp.cpp" line="269"/>
         <source>Email to the mailing list</source>
-        <translation>发送 Email 至邮件列表</translation>
+        <translation>发送 Email 到邮件列表</translation>
     </message>
     <message>
         <location filename="../src/TWApp.cpp" line="256"/>
@@ -1736,7 +1737,7 @@ Use the context menu to change the units.</source>
     <message>
         <location filename="../src/TWApp.cpp" line="276"/>
         <source>&lt;p&gt;%1 is a simple environment for editing, typesetting, and previewing TeX documents.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;%1 是一个用于编辑、排版和预览 TeX 文档的简洁集成环境。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;%1 是用于编辑、排版和预览 TeX 文档的简易集成环境。&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/TWApp.cpp" line="285"/>
