@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2019  Stefan Löffler
+ * Copyright (C) 2013-2020  Stefan Löffler
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -45,7 +45,7 @@ public:
   virtual ~AbstractTool() = default;
 
   virtual Type type() const { return Tool_None; }
-  virtual bool operator==(const AbstractTool & o) { return (type() == o.type()); }
+  virtual bool operator==(const AbstractTool & o) const { return (type() == o.type()); }
 protected:
   virtual void arm();
   virtual void disarm();
