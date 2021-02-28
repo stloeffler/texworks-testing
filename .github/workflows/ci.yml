@@ -16,6 +16,21 @@ jobs:
     - name: Typeset
       run: make dist
 
+    - name: Package (Launchpad)
+      id: package-launchpad
+      uses: ./.github/actions/package-launchpad
+      with:
+        DEB_PASSPHRASE: ${{ secrets.DEB_PASSPHRASE }}
+        DECRYPTION_KEY: ${{ secrets.DECRYPTION_KEY }}
+
+    - name: Deploy (Launchpad)
+      if: github.event_name == 'push'
+      uses: ./.github/actions/deploy-launchpad
+      with:
+        changes_files: ${{ steps.package-launchpad.outputs.changes_files }}
+        devel-repo: "ppa:st.loeffler/test"
+        stable-repo: "ppa:st.loeffler/test"
+
 # fakeroot
 # debhelper
 # dput
