@@ -95,14 +95,11 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 			echo "$NEWS" >> "${DEBDIR}/debian/changelog"
 			;;
 		*)
-			echo "OK"
 			git log --reverse --pretty=format:"%w(80,4,6)* %s" "${PREV_COMMIT}.." >> "${DEBDIR}/debian/changelog"
 			echo "" >> "${DEBDIR}/debian/changelog" # git log does not append a newline
 			;;
 	esac
 	printf "\n -- ${DEB_MAINTAINER_NAME} <${DEB_MAINTAINER_EMAIL}>  ${DEBDATE}\n" >> "${DEBDIR}/debian/changelog"
-
-	cat "${DEBDIR}/debian/changelog"
 
 	echo "building package"
 	echo ""
