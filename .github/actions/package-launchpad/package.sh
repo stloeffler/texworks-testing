@@ -40,10 +40,11 @@ if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PA
 	exit 1
 fi
 
-BUILDDIR="launchpad-build"
+PACKAGE_NAME="texworks-help"
 VERSION="0.1.1"
+BUILDDIR="launchpad-build"
 ORIG_VERSION="${VERSION}~${DATE_HASH}~git~${GIT_HASH}"
-ORIGNAME="texworks-help_${ORIG_VERSION}"
+ORIGNAME="${PACKAGE_NAME}_${ORIG_VERSION}"
 ORIGFILENAME="${ORIGNAME}.orig.tar.gz"
 
 echo "   exporting sources to ${BUILDDIR}/${ORIGFILENAME}"
@@ -68,7 +69,7 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 	DEB_VERSION="${ORIG_VERSION}-1${SERIES}"
 	echo_var "DEB_VERSION"
 
-	DEBDIR="${BUILDDIR}/texworks-${DEB_VERSION}"
+	DEBDIR="${BUILDDIR}/${PACKAGE_NAME}_${DEB_VERSION}"
 	echo "exporting sources to ${DEBDIR}"
 	mkdir -p "${DEBDIR}"
 	tar -x -C "${DEBDIR}" --strip-components=1 -f "${BUILDDIR}/${ORIGFILENAME}"
@@ -87,7 +88,7 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 	sed -i -e "s/<AUTHOR>/${DEB_MAINTAINER_NAME}/g" -e "s/<DATE>/${DEBDATE}/g" "${DEBDIR}/debian/copyright"
 
 	echo "preparing changelog"
-	printf "texworks (${DEB_VERSION}) ${SERIES}; urgency=low\n\n" > "${DEBDIR}/debian/changelog"
+	printf "${PACKAGE_NAME} (${DEB_VERSION}) ${SERIES}; urgency=low\n\n" > "${DEBDIR}/debian/changelog"
 	case "${GITHUB_REF}" in
 		refs/tags/*)
 			NEWS=$(sed -n "/^Release ${VERSION}/,/^Release/p" "NEWS" | sed -e '/^Release/d' -e 's/^\t/    /')
@@ -117,7 +118,7 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 	fi
 	cd "${TOPDIR}"
 
-	OUTPUT_FILES="${BUILDDIR}/texworks-help_${DEB_VERSION}_source.changes ${OUTPUT_FILES}"
+	OUTPUT_FILES="${BUILDDIR}/${PACKAGE_NAME}_${DEB_VERSION}_source.changes ${OUTPUT_FILES}"
 	echo "::endgroup::"
 done
 
