@@ -95,7 +95,10 @@ for SERIES in ${LAUNCHPAD_SERIES}; do
 			echo "$NEWS" >> "${DEBDIR}/debian/changelog"
 			;;
 		*)
-			git log --reverse --pretty=format:"%w(80,4,6)* %s" "${PREV_COMMIT}.." >> "${DEBDIR}/debian/changelog"
+			git log --reverse --pretty=format:"%w(80,4,6)* %s" "${PREV_COMMIT}.." || echo "a failed"
+			git log --reverse --pretty=format:"%w(80,4,6)* %s" ${PREV_COMMIT}.. || echo "b failed"
+			git log --reverse --pretty=format:"%w(80,4,6)* %s" || echo "c failed"
+#			git log --reverse --pretty=format:"%w(80,4,6)* %s" "${PREV_COMMIT}.." >> "${DEBDIR}/debian/changelog"
 			echo "" >> "${DEBDIR}/debian/changelog" # git log does not append a newline
 			;;
 	esac
