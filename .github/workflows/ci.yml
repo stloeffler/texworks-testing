@@ -18,6 +18,13 @@ jobs:
     - name: Typeset
       run: make dist
 
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        path: |
+          pdf/**/*.pdf
+          html/*.zip
+
     - name: Package (Launchpad)
       id: package-launchpad
       uses: ./.github/actions/package-launchpad
