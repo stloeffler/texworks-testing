@@ -15,6 +15,7 @@ jobs:
 
     - name: Install dependencies
       run: sudo apt install --assume-yes --no-install-recommends ghostscript imagemagick lmodern netpbm tex4ht texlive-fonts-recommended texlive-lang-french texlive-latex-base texlive-latex-extra texlive-luatex tidy
+
     - name: Typeset
       run: make dist
 
@@ -39,8 +40,3 @@ jobs:
         changes_files: ${{ steps.package-launchpad.outputs.changes_files }}
         devel-repo: "ppa:st.loeffler/test"
         stable-repo: "ppa:st.loeffler/test"
-
-# fakeroot
-# debhelper
-# dput
-# ubuntu-dev-tools
