@@ -39,6 +39,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - run: ISCC /?
+
     - name: Setup WSL
       uses: Vampire/setup-wsl@v1
 
