@@ -9,7 +9,7 @@ runs:
       shell: wsl-bash {0}
       run: |
         sudo apt update
-        sudo apt install --assume-yes --no-install-recommends apt-transport-https ca-certificates dirmngr
+        sudo apt install --assume-yes --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg
         echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
         sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
         sudo apt update
