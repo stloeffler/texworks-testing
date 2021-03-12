@@ -121,8 +121,6 @@ jobs:
   macosx-artifactory:
     name: Mac OS X (Artifactory)
     runs-on: macos-latest
-    env:
-      MACOSX_DEPLOYMENT_TARGET: 10.14
 
     steps:
     - name: Checkout
@@ -134,15 +132,10 @@ jobs:
         # but prevents the homebrew install from succeeding
         rm -f /usr/local/bin/2to3
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
-        brew install qt5
-        # Build these packages from source so they use the correct
-        # MACOSX_DEPLOYMENT_TARGET env var; pass --env=std to ensure the the
-        # env vars get through
-        brew install --build-from-source --env=std fontconfig hunspell lua
-        HOMEBREW_CCCFG="xg" brew install --build-from-source --env=std poppler
+        brew install hunspell poppler lua qt5
 
     - name: Configure
-      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
+      run: MACOSX_DEPLOYMENT_TARGET=10.14 cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
 
     - name: Build
       run: make -j
