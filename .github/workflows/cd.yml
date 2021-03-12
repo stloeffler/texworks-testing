@@ -138,7 +138,8 @@ jobs:
         # Build these packages from source so they use the correct
         # MACOSX_DEPLOYMENT_TARGET env var; pass --env=std to ensure the the
         # env vars get through
-        brew install --build-from-source --env=std fontconfig hunspell poppler lua
+        brew install --build-from-source --env=std fontconfig hunspell lua
+        HOMEBREW_CCCFG="xg" brew install --build-from-source --env=std poppler
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
