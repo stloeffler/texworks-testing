@@ -136,8 +136,9 @@ jobs:
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install qt5
         # Build these packages from source so they use the correct
-        # MACOSX_DEPLOYMENT_TARGET env var
-        brew install --build-from-source fontconfig hunspell poppler lua
+        # MACOSX_DEPLOYMENT_TARGET env var; pass --env=std to ensure the the
+        # env vars get through
+        brew install --build-from-source --env=std fontconfig hunspell poppler lua
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
