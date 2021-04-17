@@ -66,6 +66,7 @@ jobs:
         lcov --list coverage.info #debug info
         echo "::endgroup::"
         echo "::group::Upload to Codecov"
+        env
         bash <(curl -s https://codecov.io/bash) || echo "::warning::Codecov did not collect coverage reports"
         echo "::endgroup::"
 
