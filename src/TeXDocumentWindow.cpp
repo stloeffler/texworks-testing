@@ -1100,9 +1100,12 @@ void TeXDocumentWindow::loadFile(const QFileInfo & fileInfo, bool asTemplate, bo
 				QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 			}
 			if (tries >= 10) {
-				QMessageBox::warning(this, tr("Layout Problem"), tr("A problem occured while laying out the loaded document in the editor. This is caused by an issue in the underlying Qt framework and can cause TeXworks to crash under certain circumstances. The symptoms of this problem are hidden or overlapping lines. To work around this, please try one of the following:\n -) Turn syntax highlighting off and on\n -) Turn line numbers off and on\n -) Resize the window\n\nWe are sorry for the inconvenience."));
+				QMessageBox::warning(this, tr("Layout Problem"), tr("A problem occurred while laying out the loaded document in the editor. This is caused by an issue in the underlying Qt framework and can cause TeXworks to crash under certain circumstances. The symptoms of this problem are hidden or overlapping lines. To work around this, please try one of the following:\n -) Turn syntax highlighting off and on\n -) Turn line numbers off and on\n -) Resize the window\n\nWe are sorry for the inconvenience."));
 			}
 		}
+
+		// Reset the line spacing as setPlainText() clears all text formatting
+		setLineSpacing(m_lineSpacing);
 
 		QApplication::restoreOverrideCursor();
 	}
@@ -1724,7 +1727,6 @@ void TeXDocumentWindow::encodingPopup(const QPoint loc)
 			}
 			clearFileWatcher(); // stop watching until next save or reload
 			loadFile(textDoc()->getFileInfo(), false, true, true, codec);
-			; // FIXME
 		}
 		else if (result == BOMAction) {
 			utf8BOM = BOMAction->isChecked();
@@ -2194,6 +2196,8 @@ void TeXDocumentWindow::setLineSpacing(qreal percent)
 		return;
 
 	Q_ASSERT(textDoc() != nullptr);
+
+	m_lineSpacing = percent;
 
 	QTextBlockFormat fmt;
 	fmt.setLineHeight(percent, QTextBlockFormat::ProportionalHeight);
