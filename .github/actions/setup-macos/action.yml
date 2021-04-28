@@ -5,12 +5,6 @@ description: ''
 runs:
   using: composite
   steps:
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        modules:
-          - qtscript
-
     - name: Install Homebrew dependencies
       run: |
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }

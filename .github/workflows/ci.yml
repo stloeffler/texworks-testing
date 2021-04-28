@@ -119,6 +119,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        modules:
+          - qtscript
+
     - name: Install dependencies
       uses: ./.github/actions/setup-macos
 
