@@ -128,7 +128,7 @@ jobs:
       uses: ./.github/actions/setup-macos
 
     - name: Configure
-      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="${RUNNER_WORKSPACE}/tw-deps"
+      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="${RUNNER_WORKSPACE}/tw-deps" -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE
 
     - name: Build
       run: cmake --build build -j
