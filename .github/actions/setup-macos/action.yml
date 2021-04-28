@@ -6,11 +6,13 @@ runs:
   using: composite
   steps:
     - name: Install Homebrew dependencies
+      shell: bash
       run: |
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install automake gettext libtool pkg-config
 
     - name: Build dependencies
+      shell: bash
       run: |
         env
         cmake -S "${{ github.action_path }}" -B "${{ github.action_path }}/build"
