@@ -1,8 +1,9 @@
-# MACOSX_DEPLOYMENT_TARGET=10.14 cmake .. -DCMAKE_PREFIX_PATH="/opt/qt/5.15.2/clang_64"
+# MACOSX_DEPLOYMENT_TARGET=10.14 cmake -B build -DCMAKE_PREFIX_PATH="/opt/qt/5.15.2/clang_64" -DCMAKE_INSTALL_PREFIX=/opt/tw-deps
+# PKG_CONFIG_PATH=/opt/tw-deps/lib/pkgconfig cmake --build build
 
 
 # Tw:
-# MACOSX_DEPLOYMENT_TARGET=10.14 cmake -DCMAKE_PREFIX_PATH=/opt/qt/5.15.2/clang_64 -D CMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE ..
+# MACOSX_DEPLOYMENT_TARGET=10.14 cmake -DCMAKE_PREFIX_PATH="/opt/qt/5.15.2/clang_64;/opt/tw-deps/" -D CMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE ..
 # make -j
 # MACOSX_DEPLOYMENT_TARGET=10.14 cpack -V
 
@@ -19,8 +20,9 @@ list(INSERT _font_dirs 0 /System/Library/Fonts /Library/Fonts ~/Library/Fonts)
 string(REPLACE ";" "," _font_dirs "${_font_dirs}")
 
 set(CONFIGURE_ENV CFLAGS=-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} CXXFLAGS=-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET})
+set(CONFIGURE_ARGS --prefix=${CMAKE_INSTALL_PREFIX})
 
-set(CMAKE_ARGS -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -DCMAKE_MACOSX_RPATH=TRUE)
+set(CMAKE_ARGS -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -DCMAKE_MACOSX_RPATH=TRUE -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX})
 
 include(ExternalProject)
 
@@ -30,7 +32,7 @@ ExternalProject_Add(hunspell
 	GIT_REPOSITORY https://github.com/hunspell/hunspell.git
 	GIT_TAG v1.7.0
 	GIT_SHALLOW TRUE
-	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure
+	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 )
 
@@ -53,15 +55,16 @@ ExternalProject_Add(freetype
 ExternalProject_Add(fontconfig
 	GIT_REPOSITORY https://gitlab.freedesktop.org/fontconfig/fontconfig.git
 	GIT_TAG 2.13.1
-	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure --with-add-fonts="${_font_dirs}"
+	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --with-add-fonts="${_font_dirs}"
 	BUILD_IN_SOURCE TRUE
+	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
 	DEPENDS freetype
 )
 
 ExternalProject_Add(libjpeg
 	URL https://ijg.org/files/jpegsrc.v9d.tar.gz
 	URL_HASH SHA256=6c434a3be59f8f62425b2e3c077e785c9ce30ee5874ea1c270e843f273ba71ee
-	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure
+	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 )
 
@@ -86,7 +89,7 @@ ExternalProject_Add(lcms2
 	GIT_REPOSITORY https://github.com/mm2/Little-CMS.git
 	GIT_TAG lcms2.12
 	GIT_SHALLOW TRUE
-	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure
+	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 )
 
@@ -95,7 +98,7 @@ ExternalProject_Add(poppler
 	GIT_REPOSITORY https://anongit.freedesktop.org/git/poppler/poppler.git
 	GIT_TAG poppler-21.04.0
 	GIT_SHALLOW TRUE
-	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_CPP=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
+	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_CPP=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
 
@@ -108,6 +111,6 @@ ExternalProject_Add(lua
 	URL http://www.lua.org/ftp/lua-5.4.3.tar.gz
 	URL_HASH SHA1=1dda2ef23a9828492b4595c0197766de6e784bc7
 	CONFIGURE_COMMAND ""
-	BUILD_COMMAND make MYCFLAGS="-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+	BUILD_COMMAND make MYCFLAGS="-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}" INSTALL_TOP="${CMAKE_INSTALL_PREFIX}"
 	BUILD_IN_SOURCE TRUE
 )
