@@ -14,5 +14,5 @@ runs:
     - name: Build dependencies
       shell: bash
       run: |
-        cmake -v -DCMAKE_INSTALL_PREFIX=${RUNNER_WORKSPACE}/tw-deps -S "${{ github.action_path }}" -B "${{ github.action_path }}/build"
+        cmake -S "${{ github.action_path }}" -B "${{ github.action_path }}/build" -DCMAKE_INSTALL_PREFIX=${RUNNER_WORKSPACE}/tw-deps
         PKG_CONFIG_PATH=${RUNNER_WORKSPACE}/tw-deps/lib/pkgconfig cmake --build "${{ github.action_path }}/build" -v
