@@ -110,6 +110,35 @@ jobs:
 ################################################################################
 
   build-macosx-macports:
+    name: Mac OS X (build-all)
+    runs-on: macos-latest
+    env:
+      MACOSX_DEPLOYMENT_TARGET: 10.14
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      uses: ./.github/actions/setup-macos
+
+    - name: Configure
+      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE}
+
+    - name: Build
+      run: cmake --build build -j
+
+    - name: Test
+      run: ctest -V
+      working-directory: build
+
+    - name: Package
+      run: cpack -V
+      working-directory: build
+
+################################################################################
+
+  build-macosx-macports:
     name: Mac OS X (MacPorts)
     runs-on: macos-latest
     if: false

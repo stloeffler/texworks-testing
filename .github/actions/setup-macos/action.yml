@@ -1,0 +1,24 @@
+name: 'Set up build environment for TeXworks for macOS'
+author: 'Stefan Löffler'
+description: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        modules:
+          - qtscript
+
+    - name: Install Homebrew dependencies
+      run: |
+        brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
+        brew install automake gettext libtool pkg-config
+
+    - name: Build dependencies
+      run: |
+        env
+        cmake -S "${{ github.action_path }}" -B "${{ github.action_path }}/build"
+        cmake --build "${{ github.action_path }}/build" -j
+
