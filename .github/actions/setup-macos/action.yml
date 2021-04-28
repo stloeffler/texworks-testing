@@ -14,7 +14,5 @@ runs:
     - name: Build dependencies
       shell: bash
       run: |
-        env
         cmake -S "${{ github.action_path }}" -B "${{ github.action_path }}/build"
-        cmake --build "${{ github.action_path }}/build" -j
-
+        cmake --build "${{ github.action_path }}/build"

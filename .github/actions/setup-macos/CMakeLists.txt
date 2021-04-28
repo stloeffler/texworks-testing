@@ -24,6 +24,8 @@ set(CMAKE_ARGS -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} -DCM
 
 include(ExternalProject)
 
+
+# FIXME: ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
 ExternalProject_Add(hunspell
 	GIT_REPOSITORY https://github.com/hunspell/hunspell.git
 	GIT_TAG v1.7.0
