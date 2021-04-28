@@ -138,8 +138,12 @@ jobs:
       working-directory: build
 
     - name: Package
-      run: cpack -V
-      working-directory: build
+      id: package
+      uses: ./.github/actions/package-macos
+
+    - uses: actions/upload-artifact@v2
+      with:
+        path: build/${{ steps.package.outputs.file }}
 
 ################################################################################
 
