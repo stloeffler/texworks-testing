@@ -79,8 +79,9 @@ ExternalProject_Add(hunspell
 	GIT_REPOSITORY https://github.com/hunspell/hunspell.git
 	GIT_TAG v1.7.0
 	GIT_SHALLOW TRUE
-	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
+	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
+	DEPENDS gettext
 )
 ADD_GH_GROUP(hunspell)
 
