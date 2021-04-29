@@ -74,16 +74,6 @@ macro(ADD_GH_GROUP target)
 	ExternalProject_Add_Step(${target} post COMMENT "${target} end" COMMAND ${CMAKE_COMMAND} -E echo "::endgroup::" DEPENDEES install ALWAYS TRUE)
 endmacro(ADD_GH_GROUP)
 
-# FIXME: ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-ExternalProject_Add(hunspell
-	GIT_REPOSITORY https://github.com/hunspell/hunspell.git
-	GIT_TAG v1.7.0
-	GIT_SHALLOW TRUE
-	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS}
-	BUILD_IN_SOURCE TRUE
-	DEPENDS gettext
-)
-ADD_GH_GROUP(hunspell)
 
 ExternalProject_Add(libpng
 	GIT_REPOSITORY git://git.code.sf.net/p/libpng/code
@@ -111,6 +101,17 @@ ExternalProject_Add(gettext
 	BUILD_IN_SOURCE TRUE
 )
 ADD_GH_GROUP(gettext)
+
+# FIXME: ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
+ExternalProject_Add(hunspell
+	GIT_REPOSITORY https://github.com/hunspell/hunspell.git
+	GIT_TAG v1.7.0
+	GIT_SHALLOW TRUE
+	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS}
+	BUILD_IN_SOURCE TRUE
+	DEPENDS gettext
+)
+ADD_GH_GROUP(hunspell)
 
 ExternalProject_Add(fontconfig
 	URL https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.1.tar.gz
