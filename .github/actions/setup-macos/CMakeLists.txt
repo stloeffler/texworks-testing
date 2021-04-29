@@ -132,8 +132,9 @@ ExternalProject_Add(lcms2
 	GIT_REPOSITORY https://github.com/mm2/Little-CMS.git
 	GIT_TAG lcms2.12
 	GIT_SHALLOW TRUE
-	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
+	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --with-tiff="${CMAKE_INSTALL_PREFIX}" --with-jpeg="${CMAKE_INSTALL_PREFIX}"
 	BUILD_IN_SOURCE TRUE
+	DEPENDS libtiff libjpeg
 )
 
 # cairo?
