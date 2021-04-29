@@ -113,9 +113,9 @@ ADD_GH_GROUP(gettext)
 
 set(FONTCONFIG_ARGS ${CONFIGURE_ARGS} --with-add-fonts="${_font_dirs}" --with-libintl-prefix="${CMAKE_INSTALL_PREFIX}")
 ExternalProject_Add(fontconfig
-	GIT_REPOSITORY https://gitlab.freedesktop.org/fontconfig/fontconfig.git
-	GIT_TAG 2.13.1
-	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${FONTCONFIG_ARGS}
+	URL https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.1.tar.gz
+	URL_HASH SHA256=9f0d852b39d75fc655f9f53850eb32555394f36104a044bb2b2fc9e66dbbfa7f
+	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${FONTCONFIG_ARGS}
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
 	DEPENDS freetype gettext
