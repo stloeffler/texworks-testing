@@ -95,13 +95,21 @@ ExternalProject_Add(freetype
 	DEPENDS libpng
 )
 
+# Modeled after https://github.com/Homebrew/homebrew-core/blob/72ca636/Formula/gettext.rb
+ExternalProject_Add(gettext
+	URL https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz
+	URL_HASH SHA256=d20fcbb537e02dcf1383197ba05bd0734ef7bf5db06bdb241eb69b7d16b73192
+	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz
+	BUILD_IN_SOURCE TRUE
+)
+
 ExternalProject_Add(fontconfig
 	GIT_REPOSITORY https://gitlab.freedesktop.org/fontconfig/fontconfig.git
 	GIT_TAG 2.13.1
 	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --with-add-fonts="${_font_dirs}"
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
-	DEPENDS freetype
+	DEPENDS freetype gettext
 )
 
 ExternalProject_Add(libjpeg
