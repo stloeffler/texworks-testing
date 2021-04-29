@@ -106,7 +106,7 @@ ExternalProject_Add(gettext
 ExternalProject_Add(fontconfig
 	GIT_REPOSITORY https://gitlab.freedesktop.org/fontconfig/fontconfig.git
 	GIT_TAG 2.13.1
-	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --with-add-fonts="${_font_dirs}"
+	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --with-add-fonts="${_font_dirs}" --with-libintl-prefix="${CMAKE_INSTALL_PREFIX}"
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
 	DEPENDS freetype gettext
