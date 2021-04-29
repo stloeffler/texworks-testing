@@ -90,7 +90,7 @@ ExternalProject_Add(freetype
 	GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
 	GIT_TAG VER-2-10-4
 	GIT_SHALLOW TRUE
-	CMAKE_ARGS ${CMAKE_ARGS} -DFT_WITH_HARFBUZZ=FALSE -DBUILD_SHARED_LIBS=TRUE
+	CMAKE_ARGS ${CMAKE_ARGS} -DBUILD_SHARED_LIBS=TRUE
 	PATCH_COMMAND patch --forward -p1 < ${CMAKE_CURRENT_LIST_DIR}/freetype-bz2.patch || test \\\$? -le 1
 	DEPENDS libpng
 )
