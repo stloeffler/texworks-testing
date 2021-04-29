@@ -69,6 +69,10 @@ set(CMAKE_ARGS -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} -DCM
 
 include(ExternalProject)
 
+macro(ADD_GH_GROUP target)
+	ExternalProject_Add_Step(${target} pre COMMENT "${target} start" COMMAND ${CMAKE_COMMAND} -E echo "::group::${target}" DEPENDERS mkdir ALWAYS TRUE)
+	ExternalProject_Add_Step(${target} post COMMENT "${target} end" COMMAND ${CMAKE_COMMAND} -E echo "::endgroup::" DEPENDEES install ALWAYS TRUE)
+endmacro(ADD_GH_GROUP)
 
 # FIXME: ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
 ExternalProject_Add(hunspell
@@ -78,12 +82,14 @@ ExternalProject_Add(hunspell
 	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 )
+ADD_GH_GROUP(hunspell)
 
 ExternalProject_Add(libpng
 	GIT_REPOSITORY git://git.code.sf.net/p/libpng/code
 	GIT_TAG v1.6.37
 	CMAKE_ARGS ${CMAKE_ARGS}
 )
+ADD_GH_GROUP(libpng)
 
 # TODO: harfbuzz?
 ExternalProject_Add(freetype
@@ -94,6 +100,7 @@ ExternalProject_Add(freetype
 	PATCH_COMMAND patch --forward -p1 < ${CMAKE_CURRENT_LIST_DIR}/freetype-bz2.patch || test \\\$? -le 1
 	DEPENDS libpng
 )
+ADD_GH_GROUP(freetype)
 
 # Modeled after https://github.com/Homebrew/homebrew-core/blob/72ca636/Formula/gettext.rb
 ExternalProject_Add(gettext
@@ -102,6 +109,7 @@ ExternalProject_Add(gettext
 	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz
 	BUILD_IN_SOURCE TRUE
 )
+ADD_GH_GROUP(gettext)
 
 ExternalProject_Add(fontconfig
 	GIT_REPOSITORY https://gitlab.freedesktop.org/fontconfig/fontconfig.git
@@ -111,6 +119,7 @@ ExternalProject_Add(fontconfig
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
 	DEPENDS freetype gettext
 )
+ADD_GH_GROUP(fontconfig)
 
 ExternalProject_Add(libjpeg
 	URL https://ijg.org/files/jpegsrc.v9d.tar.gz
@@ -118,6 +127,7 @@ ExternalProject_Add(libjpeg
 	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 )
+ADD_GH_GROUP(libjpeg)
 
 # jbig? Lzma?
 ExternalProject_Add(libtiff
@@ -127,6 +137,7 @@ ExternalProject_Add(libtiff
 	CMAKE_ARGS ${CMAKE_ARGS}
 	DEPENDS libjpeg
 )
+ADD_GH_GROUP(libtiff)
 
 ExternalProject_Add(libopenjpeg
 	GIT_REPOSITORY https://github.com/uclouvain/openjpeg.git
@@ -135,6 +146,7 @@ ExternalProject_Add(libopenjpeg
 	CMAKE_ARGS ${CMAKE_ARGS}
 	DEPENDS libtiff
 )
+ADD_GH_GROUP(libopenjpeg)
 
 ExternalProject_Add(lcms2
 	GIT_REPOSITORY https://github.com/mm2/Little-CMS.git
@@ -144,6 +156,7 @@ ExternalProject_Add(lcms2
 	BUILD_IN_SOURCE TRUE
 	DEPENDS libtiff libjpeg
 )
+ADD_GH_GROUP(lcms2)
 
 # cairo?
 ExternalProject_Add(poppler
@@ -153,11 +166,13 @@ ExternalProject_Add(poppler
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_CPP=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
+ADD_GH_GROUP(poppler)
 
 ExternalProject_Add(poppler-data
 	URL https://poppler.freedesktop.org/poppler-data-0.4.10.tar.gz
 	URL_HASH SHA256=6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30
 )
+ADD_GH_GROUP(poppler-data)
 
 ExternalProject_Add(lua
 	URL http://www.lua.org/ftp/lua-5.4.3.tar.gz
@@ -167,3 +182,5 @@ ExternalProject_Add(lua
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install INSTALL_TOP="${CMAKE_INSTALL_PREFIX}"
 )
+ADD_GH_GROUP(lua)
+
