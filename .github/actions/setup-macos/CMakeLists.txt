@@ -8,48 +8,6 @@
 # MACOSX_DEPLOYMENT_TARGET=10.14 cpack -V
 
 
-#FIXME
-# [freetype]
-# 2021-04-28T15:19:41.8755120Z ld: warning: dylib (/usr/local/Cellar/brotli/1.0.9/lib/libbrotlidec.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:19:41.8756260Z ld: warning: dylib (/usr/local/lib/libpng.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:19:41.8757260Z ld: warning: dylib (/usr/local/Cellar/brotli/1.0.9/lib/libbrotlidec.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:19:41.8758570Z ld: warning: dylib (/usr/local/lib/libpng.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-
-# [tiff]
-# 2021-04-28T15:20:43.2231540Z ld: warning: ld: warning: dylib (/usr/local/lib/libzstd.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:20:43.2233130Z ld: warning: dylib (/usr/local/lib/libwebp.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:20:53.0581800Z ld: warning: dylib (/usr/local/lib/libjpeg.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-
-# [openjpeg]
-# 2021-04-28T15:21:28.7765890Z ld: warning: dylib (/usr/local/lib/libpng.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:28.7768030Z ld: warning: dylib (/usr/local/lib/libtiff.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:28.7769450Z ld: warning: dylib (/usr/local/lib/libtiff.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:30.6459280Z ld: warning: dylib (/usr/local/lib/libpng.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:30.6473310Z ld: warning: dylib (/usr/local/lib/libtiff.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:30.6490880Z ld: warning: dylib (/usr/local/lib/libtiff.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:31.2584850Z ld: warning: dylib (/usr/local/lib/libpng.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:31.2587330Z ld: warning: dylib (/usr/local/lib/libtiff.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:21:31.2588770Z ld: warning: dylib (/usr/local/lib/libtiff.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-
-# [fontconfig]
-# 2021-04-28T15:22:52.6155330Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:53.1002720Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:53.5535440Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:54.0098160Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:54.4370320Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:54.8748830Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:55.3002630Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:55.6929290Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:56.0960330Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:22:56.5748470Z ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-
-# [poppler]
-# 2021-04-28T15:26:11.1789020Z ld: warning: dylib (/usr/local/lib/libfontconfig.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:26:11.1891780Z ld: warning: dylib (/usr/local/lib/libfreetype.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:26:11.1921440Z ld: warning: dylib (/usr/local/lib/libjpeg.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:26:11.1923020Z ld: warning: dylib (/usr/local/lib/libpng.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-# 2021-04-28T15:26:11.1924120Z ld: warning: dylib (/usr/local/lib/libtiff.dylib) was built for newer macOS version (10.15) than being linked (10.14)
-
 cmake_minimum_required(VERSION 3.6)
 # 3.6 is required for GIT_SHALLOW
 
@@ -88,7 +46,7 @@ ExternalProject_Add(freetype
 	GIT_TAG VER-2-10-4
 	GIT_SHALLOW TRUE
 	CMAKE_ARGS ${CMAKE_ARGS} -DBUILD_SHARED_LIBS=TRUE
-	PATCH_COMMAND patch --forward -p1 < ${CMAKE_CURRENT_LIST_DIR}/freetype-bz2.patch || test \\\$? -le 1
+	PATCH_COMMAND patch --forward -p1 < ${CMAKE_CURRENT_LIST_DIR}/freetype-bz2.patch
 	DEPENDS libpng
 )
 ADD_GH_GROUP(freetype)
@@ -102,7 +60,6 @@ ExternalProject_Add(gettext
 )
 ADD_GH_GROUP(gettext)
 
-# FIXME: ld: warning: dylib (/usr/local/lib/libintl.dylib) was built for newer macOS version (10.15) than being linked (10.14)
 ExternalProject_Add(hunspell
 	GIT_REPOSITORY https://github.com/hunspell/hunspell.git
 	GIT_TAG v1.7.0
