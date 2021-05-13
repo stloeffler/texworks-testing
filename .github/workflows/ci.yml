@@ -109,7 +109,7 @@ jobs:
 
 ################################################################################
 
-  build-win-msys:
+  build-win-msvc:
     name: Windows (MSVC)
     runs-on: windows-latest
 
