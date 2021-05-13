@@ -139,7 +139,7 @@ jobs:
     - name: Prepare for testing
       run: |
         dir build/Release/
-        cmake -E copy build/share build/Release/
+        cmake -E copy_directory build/share build/Release/share
         dir build/Release/
         dir build/Release/share
         cd "${{ runner.workspace }}/tw-deps/bin"
