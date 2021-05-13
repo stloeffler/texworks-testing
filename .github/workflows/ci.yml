@@ -136,6 +136,11 @@ jobs:
     - name: Build
       run: cmake --build build --config Release
 
+    - name: Copy DLLs
+      run: |
+        cp lcms2.dll libhunspell.dll libpng16.dll openjp2.dll poppler-qt5.dll zlib.dll "${{ github.workspace }}/build/Release/
+      working-directory: ${{ runner.workspace }}/tw-deps/bin
+
     - name: Test
       run: ctest -V -C Release
       working-directory: build
