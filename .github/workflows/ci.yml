@@ -109,6 +109,41 @@ jobs:
 
 ################################################################################
 
+  build-win-msys:
+    name: Windows (MSVC)
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        modules: qtscript
+
+#    - name: Setup MSVC
+#      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install dependencies
+      run: |
+        cmake -B "${RUNNER_WORKSPACE}/tw-deps-build" -S "${GITHUB_WORKSPACE}/.github/actions/msvc-dependencies" -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/tw-deps"
+        cmake --build "${RUNNER_WORKSPACE}/tw-deps-build" --config Release
+
+    - name: Configure
+      run: cmake -B build -DTW_BUILD_ID='github' -DCMAKE_PREFIX_PATH="${RUNNER_WORKSPACE}/tw-deps"
+
+    - name: Build
+      run: cmake --build build
+
+    - name: Test
+      run: ctest -V
+      working-directory: build
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
+
+################################################################################
+
   build-macosx-buildall:
     name: Mac OS X (build-all)
     runs-on: macos-latest
