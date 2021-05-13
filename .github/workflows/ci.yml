@@ -138,7 +138,7 @@ jobs:
 
     - name: Copy DLLs
       run: |
-        cp lcms2.dll libhunspell.dll libpng16.dll openjp2.dll poppler-qt5.dll zlib.dll "${{ github.workspace }}/build/Release/
+        cp lcms2.dll libhunspell.dll libpng16.dll openjp2.dll poppler-qt5.dll zlib.dll "${{ github.workspace }}/build/Release/"
       working-directory: ${{ runner.workspace }}/tw-deps/bin
 
     - name: Test
