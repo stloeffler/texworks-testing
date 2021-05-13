@@ -137,7 +137,7 @@ jobs:
       run: cmake --build build
 
     - name: Test
-      run: ctest -V
+      run: ctest -V -C Release
       working-directory: build
       env:
         QT_FORCE_STDERR_LOGGING: 1
