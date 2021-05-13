@@ -134,7 +134,7 @@ jobs:
       run: cmake -B build -DTW_BUILD_ID='github' -DCMAKE_PREFIX_PATH="${{ runner.workspace }}/tw-deps"
 
     - name: Build
-      run: cmake --build build
+      run: cmake --build build --config Release
 
     - name: Test
       run: ctest -V -C Release
