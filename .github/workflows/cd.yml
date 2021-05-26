@@ -99,7 +99,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: TeXworks-Windows
-        path: build/${{ steps.package.outputs.file }}
+        path: ${{ steps.package.outputs.file }}
 
     - name: Build installer
       run: ISCC texworks-setup-script.iss
@@ -115,7 +115,7 @@ jobs:
       if: github.event_name == 'push'
       uses: ./.github/actions/deploy-artifactory
       with:
-          file: build/${{ steps.package.outputs.file }}
+          file: ${{ steps.package.outputs.file }}
           baseurl: https://texworks.jfrog.io
           repo: testing-windows
           remotePath: ${{ steps.package.outputs.version }}
@@ -159,13 +159,13 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: TeXworks-macOS
-        path: build/${{ steps.package.outputs.file }}
+        path: ${{ steps.package.outputs.file }}
 
     - name: Deploy to Artifactory
       if: github.event_name == 'push'
       uses: ./.github/actions/deploy-artifactory
       with:
-        file: build/${{ steps.package.outputs.file }}
+        file: ${{ steps.package.outputs.file }}
         baseurl: https://texworks.jfrog.io
         repo: testing-macos
         remotePath: ${{ steps.package.outputs.version }}
