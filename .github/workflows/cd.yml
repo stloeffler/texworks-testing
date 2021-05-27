@@ -62,16 +62,6 @@ jobs:
       run: make VERBOSE=1 && make VERBOSE=1 install
       working-directory: build
 
-    - name: Build installer
-      run: ISCC.exe texworks-setup-script.iss
-      working-directory: win32
-
-    - name: Upload installer artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: installer-win
-        path: win32/Output/*.exe
-
     - name: Prepare testing
       shell: wsl-bash {0}
       run: |
