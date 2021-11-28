@@ -21,6 +21,7 @@
 #include "poppler-config.h"
 #include "GlobalParams.h"
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <memory>
 #endif
@@ -1076,7 +1077,10 @@ QSharedPointer<Backend::Document> PopplerQtBackend::newDocument(const QString & 
     globalParamsInitialized = true;
     #if defined(POPPLER_HAS_GLOBALPARAMSINITER)
       QDir dataDir{QCoreApplication::applicationDirPath()};
+      qDebug() << "PopplerQtBackend::newDocument" << fileName;
+      qDebug() << "QCoreApplication::applicationDirPath" << dataDir;
       if (dataDir.cd(QStringLiteral("../share/poppler"))) {
+        qDebug() << "GlobalParamsIniter::setCustomDataDir" << dataDir;
         GlobalParamsIniter::setCustomDataDir(qPrintable(dataDir.path()));
       }
     #else // defined(POPPLER_HAS_GLOBALPARAMSINITER)
