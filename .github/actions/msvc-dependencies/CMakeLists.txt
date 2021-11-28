@@ -17,6 +17,7 @@ ExternalProject_Add(lua
 
 ExternalProject_Add(hunspell
 	URL "https://github.com/hunspell/hunspell/archive/refs/tags/v1.7.0.tar.gz"
+	URL_HASH SHA256=bb27b86eb910a8285407cf3ca33b62643a02798cf2eef468c0a74f6c3ee6bc8a
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND msbuild msvc\\libhunspell.vcxproj ${MSBUILD_ARGS} /p:Configuration=Release_dll
 	BUILD_IN_SOURCE TRUE
@@ -64,8 +65,8 @@ ExternalProject_Add(libtiff
 )
 
 ExternalProject_Add(lcms2
-	URL "https://download.sourceforge.net/lcms/lcms2-2.12.tar.gz"
-	URL_HASH SHA256=18663985e864100455ac3e507625c438c3710354d85e5cbb7cd4043e11fe10f5
+	URL "https://github.com/mm2/Little-CMS/archive/refs/tags/lcms2.12.tar.gz"
+	URL_HASH SHA256=e90e77e43be35ec149d39f1ee7fe1c50c73309773a55b13839090f7138fbdcde
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND MSBUILD Projects\\VC2019\\lcms2_DLL ${MSBUILD_ARGS}
 	BUILD_IN_SOURCE TRUE
@@ -92,10 +93,10 @@ ExternalProject_Add(freetype
 )
 
 ExternalProject_Add(poppler
-	URL "https://poppler.freedesktop.org/poppler-21.05.0.tar.xz"
-	URL_HASH SHA256=dafd537b680fad1215bc40fc53d1f38e8449d7c185bc60d5a89e1d26c90dbd8c
-	PATCH_COMMAND git apply --ignore-whitespace ${CMAKE_CURRENT_LIST_DIR}/poppler-msvc.patch
-		COMMAND git apply --ignore-whitespace ${CMAKE_CURRENT_LIST_DIR}/../setup-windows/mxe/poppler-2-custom_fonts_dir.patch
-	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_CPP=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE -DBUILD_MANUAL_TESTS=FALSE -DBUILD_QT5_TESTS=FALSE
+	URL "https://poppler.freedesktop.org/poppler-21.07.0.tar.xz"
+	URL_HASH SHA256=e26ab29f68065de4d6562f0a3e2b5435a83ca92be573b99a1c81998fa286a4d4
+	PATCH_COMMAND git --git-dir=. apply --verbose --ignore-whitespace ${CMAKE_CURRENT_LIST_DIR}/poppler-msvc.patch
+		COMMAND git --git-dir=. apply --verbose --ignore-whitespace ${CMAKE_CURRENT_LIST_DIR}/../setup-windows/mxe/poppler-2-custom_dirs.patch
+	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE -DBUILD_MANUAL_TESTS=FALSE -DBUILD_QT5_TESTS=FALSE
 	DEPENDS freetype lcms2 libjpeg libpng libtiff
 )
