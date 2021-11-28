@@ -150,8 +150,8 @@ jobs:
       if: steps.cache-dependencies.cache-hit == false
       shell: bash
       run: |
-        cmake -S "${{ github.action_path }}" -B "${{ github.action_path }}/build" -DCMAKE_INSTALL_PREFIX=${RUNNER_WORKSPACE}/tw-deps
-        PKG_CONFIG_PATH=${RUNNER_WORKSPACE}/tw-deps/lib/pkgconfig cmake --build "${{ github.action_path }}/build" -v
+        cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX=${RUNNER_WORKSPACE}/tw-deps
+        PKG_CONFIG_PATH=${RUNNER_WORKSPACE}/tw-deps/lib/pkgconfig cmake --build ".github/actions/setup-macos/build" -v
 
 #    - name: Install Dependencies
 #      uses: ./.github/actions/setup-macos
