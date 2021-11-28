@@ -147,7 +147,7 @@ jobs:
           ${{ runner.temp }}/tw-deps
 
     - name: Build dependencies
-      if: steps.cache-dependencies.cache-hit == false
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX=${RUNNER_TEMP}/tw-deps
