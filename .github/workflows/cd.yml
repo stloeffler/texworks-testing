@@ -144,7 +144,7 @@ jobs:
       with:
         key: ${{ runner.os }}-deps-${{ hashFiles('./.github/actions/setup-macos/*') }}
         path: |
-          ${{ runner.temp }/tw-deps
+          ${{ runner.temp }}/tw-deps
 
     - name: Build dependencies
       if: steps.cache-dependencies.cache-hit == false
