@@ -61,7 +61,6 @@ jobs:
     - name: Build
       shell: wsl-bash {0}
       run: /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake --build build -v && /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake --install build -v
-      working-directory: build
 
     - name: Prepare testing
       shell: wsl-bash {0}
