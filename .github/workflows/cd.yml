@@ -61,7 +61,7 @@ jobs:
 
     - name: Build
       shell: wsl-bash {0}
-      run: make VERBOSE=1 && make VERBOSE=1 install
+      run: make -j VERBOSE=1 && make VERBOSE=1 install
       working-directory: build
 
     - name: Prepare testing
