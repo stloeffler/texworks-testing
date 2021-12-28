@@ -118,7 +118,7 @@ jobs:
     name: Mac OS X
     runs-on: macos-latest
     env:
-      MACOSX_DEPLOYMENT_TARGET: 10.14
+      MACOSX_DEPLOYMENT_TARGET: 10.13 # min. macOS version supported by Qt 5.15.2
 
     steps:
     - name: Checkout
@@ -127,6 +127,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
+        version: 5.15.2
         modules: qtscript
 
     - name: Install Homebrew dependencies
@@ -140,7 +141,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        key: twdeps-${{ runner.os }}-${{ hashFiles('./.github/actions/setup-macos/*') }}
+        key: twdeps-${{ runner.os }}-${{ env.MACOSX_DEPLOYMENT_TARGET }}-${{ hashFiles('./.github/actions/setup-macos/*') }}
         path: |
           ${{ runner.temp }}/tw-deps
 
