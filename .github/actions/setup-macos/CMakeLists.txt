@@ -103,16 +103,16 @@ ADD_GH_GROUP(lcms2)
 
 # cairo?
 ExternalProject_Add(poppler
-	URL "https://poppler.freedesktop.org/poppler-21.07.0.tar.xz"
-	URL_HASH SHA256=e26ab29f68065de4d6562f0a3e2b5435a83ca92be573b99a1c81998fa286a4d4
+	URL "https://poppler.freedesktop.org/poppler-21.12.0.tar.xz"
+	URL_HASH SHA256=acb840c2c1ec07d07e53c57c4b3a1ff3e3ee2d888d44e1e9f2f01aaf16814de7
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
 ADD_GH_GROUP(poppler)
 
 ExternalProject_Add(poppler-data
-	URL https://poppler.freedesktop.org/poppler-data-0.4.10.tar.gz
-	URL_HASH SHA256=6e2fcef66ec8c44625f94292ccf8af9f1d918b410d5aa69c274ce67387967b30
+	URL https://poppler.freedesktop.org/poppler-data-0.4.11.tar.gz
+	URL_HASH SHA256=2cec05cd1bb03af98a8b06a1e22f6e6e1a65b1e2f3816cb3069bb0874825f08c
 	CMAKE_ARGS ${CMAKE_ARGS}
 )
 ADD_GH_GROUP(poppler-data)

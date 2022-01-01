@@ -3,12 +3,12 @@
 PKG             := poppler
 $(PKG)_WEBSITE  := https://poppler.freedesktop.org/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 21.07.0
-$(PKG)_CHECKSUM := e26ab29f68065de4d6562f0a3e2b5435a83ca92be573b99a1c81998fa286a4d4
+$(PKG)_VERSION  := 21.12.0
+$(PKG)_CHECKSUM := acb840c2c1ec07d07e53c57c4b3a1ff3e3ee2d888d44e1e9f2f01aaf16814de7
 $(PKG)_SUBDIR   := poppler-$($(PKG)_VERSION)
 $(PKG)_FILE     := poppler-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://poppler.freedesktop.org/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc cairo curl freetype glib jpeg lcms libpng libwebp openjpeg qtbase tiff zlib
+$(PKG)_DEPS     := cc boost cairo curl freetype glib jpeg lcms libpng libwebp openjpeg qtbase tiff zlib
 
 define $(PKG)_UPDATE
     $(call GET_LATEST_VERSION, https://poppler.freedesktop.org/releases.html, poppler-)
