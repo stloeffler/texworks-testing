@@ -47,8 +47,8 @@ ExternalProject_Add(libpng
 )
 
 ExternalProject_Add(libjpeg
-	URL "https://ijg.org/files/jpegsrc.v9d.tar.gz"
-	URL_HASH SHA256=6c434a3be59f8f62425b2e3c077e785c9ce30ee5874ea1c270e843f273ba71ee
+	URL https://ijg.org/files/jpegsrc.v9e.tar.gz
+	URL_HASH SHA256=4077d6a6a75aeb01884f708919d25934c93305e49f7e3f36db9129320e6f4f3d
 	CONFIGURE_COMMAND NMAKE /f makefile.vs setupcopy-v16
 	BUILD_COMMAND MSBUILD jpeg.sln ${MSBUILD_ARGS}
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_LIBDIR}
@@ -86,8 +86,8 @@ ExternalProject_Add(libopenjpeg
 )
 
 ExternalProject_Add(freetype
-	URL https://download.savannah.gnu.org/releases/freetype/freetype-2.10.4.tar.xz
-	URL_HASH SHA256=86a854d8905b19698bbc8f23b860bc104246ce4854dcea8e3b0fb21284f75784
+	URL https://download.savannah.gnu.org/releases/freetype/freetype-2.11.1.tar.xz
+	URL_HASH SHA256=3333ae7cfda88429c97a7ae63b7d01ab398076c3b67182e960e5684050f2c5c8
 	CMAKE_ARGS ${CMAKE_ARGS}
 	DEPENDS libpng
 )
