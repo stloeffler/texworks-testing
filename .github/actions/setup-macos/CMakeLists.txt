@@ -34,7 +34,6 @@ ExternalProject_Add(freetype
 	URL https://download.savannah.gnu.org/releases/freetype/freetype-2.11.1.tar.xz
 	URL_HASH SHA256=3333ae7cfda88429c97a7ae63b7d01ab398076c3b67182e960e5684050f2c5c8
 	CMAKE_ARGS ${CMAKE_ARGS} -DBUILD_SHARED_LIBS=TRUE
-	PATCH_COMMAND patch --forward -p1 < ${CMAKE_CURRENT_LIST_DIR}/freetype-bz2.patch
 	DEPENDS libpng
 )
 ADD_GH_GROUP(freetype)
@@ -103,8 +102,8 @@ ADD_GH_GROUP(lcms2)
 
 # cairo?
 ExternalProject_Add(poppler
-	URL "https://poppler.freedesktop.org/poppler-21.12.0.tar.xz"
-	URL_HASH SHA256=acb840c2c1ec07d07e53c57c4b3a1ff3e3ee2d888d44e1e9f2f01aaf16814de7
+	URL "https://poppler.freedesktop.org/poppler-22.01.0.tar.xz"
+	URL_HASH SHA256=7d3493056b5b86413e5c693c2cae02c5c06cd8e618d14c2c31e2c84b67b2313e
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
