@@ -53,7 +53,7 @@ jobs:
       shell: wsl-bash {0}
       # ./release is where Inno Setup looks for distribution files
       run: |
-        /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-cmake -B build -DTW_BUILD_ID='github' \
+        /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake -B build -DTW_BUILD_ID='github' \
           -DCMAKE_INSTALL_PREFIX="./release" \
           -DPLATFORM_DEPENDENCIES='freetype;harfbuzz;freetype_too;bz2;iphlpapi;ssl;crypto;crypt32;ws2_32' \
           -DPoppler_ADDITIONAL_DEPENDENCIES='freetype;harfbuzz;freetype_too;glib-2.0;intl;iconv;ws2_32;winmm;tiff;webp;jpeg;openjp2;png;lcms2;lzma;bz2;pcre16;wtsapi32' \
@@ -62,7 +62,7 @@ jobs:
 
     - name: Build
       shell: wsl-bash {0}
-      run: /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-cmake --build build -v && /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-cmake --install build -v
+      run: /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake --build build -v && /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake --install build -v
 
     - name: Prepare testing
       shell: wsl-bash {0}
