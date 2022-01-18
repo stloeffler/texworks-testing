@@ -56,9 +56,10 @@ ExternalProject_Add(hunspell
 )
 ADD_GH_GROUP(hunspell)
 
+# fontconfig 2.13.93 is broken (configure.ac doesn't determine/handle default fonts correctly)
 ExternalProject_Add(fontconfig
-	URL https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.94.tar.xz
-	URL_HASH SHA256=a5f052cb73fd479ffb7b697980510903b563bbb55b8f7a2b001fcfb94026003c
+	URL https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.93.tar.xz
+	URL_HASH SHA256=ea968631eadc5739bc7c8856cef5c77da812d1f67b763f5e51b57b8026c1a0a0
 	CONFIGURE_COMMAND ${CONFIGURE_ENV} CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS} --with-add-fonts=${_font_dirs} --disable-docs
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
