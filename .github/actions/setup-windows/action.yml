@@ -8,28 +8,21 @@ runs:
     - name: Install MXE
       shell: wsl-bash {0}
       run: |
-        #time sudo apt update
-        #time sudo apt install --assume-yes --no-install-recommends apt-transport-https ca-certificates dirmngr gnupg software-properties-common
-        #echo "deb https://pkg.mxe.cc/repos/apt stretch main" | sudo tee -a /etc/apt/sources.list
-        #time sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
-        #time sudo add-apt-repository --yes ppa:st.loeffler/mxe-texworks
-        #time sudo apt update
-        #time sudo apt install --assume-yes --no-install-recommends cmake git libgdk-pixbuf2.0-dev lzip make patch python wget xz-utils zip \
-        #  mxe-x86-64-w64-mingw32.static-cairo mxe-x86-64-w64-mingw32.static-curl mxe-x86-64-w64-mingw32.static-freetype mxe-x86-64-w64-mingw32.static-glib mxe-x86-64-w64-mingw32.static-hunspell mxe-x86-64-w64-mingw32.static-jpeg mxe-x86-64-w64-mingw32.static-lcms mxe-x86-64-w64-mingw32.static-libpng mxe-x86-64-w64-mingw32.static-libwebp mxe-x86-64-w64-mingw32.static-lua mxe-x86-64-w64-mingw32.static-openjpeg mxe-x86-64-w64-mingw32.static-qtbase mxe-x86-64-w64-mingw32.static-qtdeclarative mxe-x86-64-w64-mingw32.static-qtscript mxe-x86-64-w64-mingw32.static-qttools mxe-x86-64-w64-mingw32.static-tiff mxe-x86-64-w64-mingw32.static-zlib
-        #time sudo chmod --recursive a+w /usr/lib/mxe
-        #time rm -f "/usr/lib/mxe/usr/x86_64-w64-mingw32.static/share/cmake/mxe-conf.d/ccache.cmake"
-        sudo apt install make
+        sudo sed -ie 's/main$/main universe/' /etc/apt/sources.list
+        sudo apt update
+        sudo apt install --assume-yes --no-install-recommends cmake git libgdk-pixbuf2.0-dev lzip make patch python-is-python3 wget xz-utils zip
         wget -O /tmp/mxe-texworks.tar.xz https://github.com/stloeffler/mxe/releases/latest/download/mxe-texworks.tar.xz
         sudo mkdir -p /usr/lib/mxe
         tar -C /usr/lib/mxe --xz -xf /tmp/mxe-texworks.tar.xz
+        sudo chmod --recursive a+w /usr/lib/mxe
+        rm -f "/usr/lib/mxe/usr/i686-w64-mingw32.static/share/cmake/mxe-conf.d/ccache.cmake"
 
-
-#    - name: Build poppler
-#      shell: wsl-bash {0}
-#      run: |
-#        time rm -f /usr/lib/mxe/src/poppler*
-#        time cp .github/actions/setup-windows/mxe/poppler* /usr/lib/mxe/src/
-#        time cd /usr/lib/mxe
-#        time make download-only-poppler
-#        time make build-only-poppler_i686-w64-mingw32.static
+    - name: Build poppler
+      shell: wsl-bash {0}
+      run: |
+        rm -f /usr/lib/mxe/src/poppler*
+        cp .github/actions/setup-windows/mxe/poppler* /usr/lib/mxe/src/
+        cd /usr/lib/mxe
+        make download-only-poppler
+        make build-only-poppler_i686-w64-mingw32.static
 

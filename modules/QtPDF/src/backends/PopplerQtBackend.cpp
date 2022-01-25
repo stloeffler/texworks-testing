@@ -801,7 +801,7 @@ QList< QSharedPointer<Annotation::AbstractAnnotation> > Page::loadAnnotations()
   return _annotations;
 }
 
-QList<SearchResult> Page::search(const QString & searchText, const SearchFlags & flags)
+QList<SearchResult> Page::search(const QString & searchText, const SearchFlags & flags) const
 {
   QList<SearchResult> results;
   SearchResult result;
@@ -926,7 +926,7 @@ void Page::loadTransitionData()
   }
 }
 
-QList< Backend::Page::Box > Page::boxes()
+QList< Backend::Page::Box > Page::boxes() const
 {
   QReadLocker pageLocker(_pageLock);
   Q_ASSERT(_poppler_page != nullptr);
@@ -947,7 +947,7 @@ QList< Backend::Page::Box > Page::boxes()
   return retVal;
 }
 
-QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF> * wordBoxes /* = nullptr */, QMap<int, QRectF> * charBoxes /* = nullptr */, const bool onlyFullyEnclosed /* = false */)
+QString Page::selectedText(const QList<QPolygonF> & selection, QMap<int, QRectF> * wordBoxes /* = nullptr */, QMap<int, QRectF> * charBoxes /* = nullptr */, const bool onlyFullyEnclosed /* = false */) const
 {
   QReadLocker pageLocker(_pageLock);
   Q_ASSERT(_poppler_page != nullptr);

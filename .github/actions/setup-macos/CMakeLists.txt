@@ -56,7 +56,7 @@ ExternalProject_Add(hunspell
 )
 ADD_GH_GROUP(hunspell)
 
-# fontconfig 2.13.93 is broken (configure.ac doesn't determine/handle default fonts correctly)
+# fontconfig 2.13.94 is broken (configure.ac doesn't determine/handle default fonts correctly)
 ExternalProject_Add(fontconfig
 	URL https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.93.tar.xz
 	URL_HASH SHA256=ea968631eadc5739bc7c8856cef5c77da812d1f67b763f5e51b57b8026c1a0a0

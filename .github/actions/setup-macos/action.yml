@@ -1,8 +1,0 @@
-name: 'Set up build environment for TeXworks for macOS'
-author: 'Stefan Löffler'
-description: ''
-
-runs:
-  using: composite
-  steps:
-
