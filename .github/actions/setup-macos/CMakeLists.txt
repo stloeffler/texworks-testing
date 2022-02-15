@@ -127,7 +127,7 @@ ADD_GH_GROUP(poppler-data)
 
 ExternalProject_Add(lua
 	URL "https://www.lua.org/ftp/lua-5.4.4.tar.gz"
-	URL_HASH SHA1=164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61
+	URL_HASH SHA256=164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND make MYCFLAGS="-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
 	BUILD_IN_SOURCE TRUE

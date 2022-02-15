@@ -10,7 +10,7 @@ set(MSBUILD_ARGS /t:rebuild /p:Configuration=Release /p:Platform=$(Platform) /p:
 
 ExternalProject_Add(lua
 	URL "https://www.lua.org/ftp/lua-5.4.4.tar.gz"
-	URL_HASH SHA1=164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61
+	URL_HASH SHA256=164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61
 	PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/lua.cmake <SOURCE_DIR>/CMakeLists.txt
 	CMAKE_ARGS ${CMAKE_ARGS}
 )
