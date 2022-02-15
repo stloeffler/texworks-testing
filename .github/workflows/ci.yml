@@ -123,12 +123,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        choco uninstall objdump
         cmake -B "${{ runner.workspace }}/tw-deps-build" -S "${{ github.workspace }}/.github/actions/msvc-dependencies" -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/tw-deps"
         cmake --build "${{ runner.workspace }}/tw-deps-build" --config Release
 
     - name: Configure
-      run: cmake -B build -DTW_BUILD_ID='github' -DCMAKE_PREFIX_PATH="${{ runner.workspace }}/tw-deps"
+      run: cmake -B build -DTW_BUILD_ID='github' -DCMAKE_PREFIX_PATH="${{ runner.workspace }}/tw-deps" -Dgp_tool='none'
 
     - name: Build
       run: cmake --build build --config Release
