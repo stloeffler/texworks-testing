@@ -44,6 +44,8 @@ const bool kDefault_CircularMagnifier = true;
 const int kDefault_PreviewScaleOption = 1;
 const int kDefault_PreviewScale = 200;
 const QtPDF::PDFDocumentView::PageMode kDefault_PDFPageMode = QtPDF::PDFDocumentView::PageMode_OneColumnContinuous;
+const bool kDefault_PreviewRulerShow = false;
+const int kDefault_PreviewRulerUnits = QtPDF::Physical::Length::Centimeters;
 
 const int kPDFWindowStateVersion = 1;
 
@@ -77,7 +79,6 @@ public:
 	void setResolution(const double res);
 	void resetMagnifier();
 	void enableTypesetAction(bool enabled);
-	void updateTypesettingAction(bool processRunning);
 	void linkToSource(TeXDocumentWindow *texDoc);
 	bool hasSyncData() const { return _synchronizer != nullptr; }
 
@@ -112,6 +113,7 @@ public slots:
 	void clearSyncHighlight();
 	void clearSearchResultHighlight();
 	void copySelectedTextToClipboard();
+	void updateTypesettingAction();
 
 private slots:
 	void changedDocument(const QWeakPointer<QtPDF::Backend::Document> & newDoc);

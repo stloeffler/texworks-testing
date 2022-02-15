@@ -5,7 +5,7 @@
 
 
 print_headline "Installing dependencies"
-pacman --noconfirm -S mingw-w64-x86_64-boost mingw-w64-x86_64-freetype mingw-w64-x86_64-openjpeg2 mingw-w64-x86_64-lcms2 mingw-w64-x86_64-libpng mingw-w64-x86_64-libtiff mingw-w64-x86_64-curl mingw-w64-x86_64-lua
+pacman --noconfirm -S autotools mingw-w64-x86_64-boost mingw-w64-x86_64-freetype mingw-w64-x86_64-openjpeg2 mingw-w64-x86_64-lcms2 mingw-w64-x86_64-libpng mingw-w64-x86_64-libtiff mingw-w64-x86_64-curl mingw-w64-x86_64-lua
 
 # /mingw64/ssl/certs/ca-bundle.crt seems to be invalid (empty)
 # It is installed by mingw-w64-x86_64-ca-certificates, a dependency of curl
@@ -40,4 +40,4 @@ print_info "Extracting hunspell"
 7z x "${hunspell_ARCHIVE}" -so | 7z x -si -ttar
 print_info "Building hunspell"
 cd "${hunspell_DIRNAME}"
-autoreconf -i && ./configure && make -j && make install
+autoreconf --install --force && ./configure && make -j && make install

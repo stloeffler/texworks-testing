@@ -14,6 +14,7 @@
 
 #include "PaperSizes.h"
 #include "PDFDocumentView.h"
+#include "PDFGuideline.h"
 
 #include <QtConcurrent>
 
@@ -99,6 +100,27 @@ PDFDocumentView::PDFDocumentView(QWidget *parent /* = nullptr */):
 
   connect(&_searchResultWatcher, &QFutureWatcher< QList<Backend::SearchResult> >::resultReadyAt, this, &PDFDocumentView::searchResultReady);
   connect(&_searchResultWatcher, &QFutureWatcher< QList<Backend::SearchResult> >::progressValueChanged, this, &PDFDocumentView::searchProgressValueChanged);
+
+  showRuler(false);
+  connect(&_ruler, &PDFRuler::dragStart, this, [this](QPoint pos, Qt::Edge origin) {
+    const Qt::Orientation orientation = [](Qt::Edge origin) {
+      switch (origin) {
+        case Qt::TopEdge:
+        case Qt::BottomEdge:
+          return Qt::Horizontal;
+        case Qt::LeftEdge:
+        case Qt::RightEdge:
+          return Qt::Vertical;
+      }
+      return Qt::Horizontal;
+    }(origin);
+    PDFGuideline * line = new PDFGuideline(this, pos, orientation);
+    connect(&_ruler, &PDFRuler::dragMove, line, &PDFGuideline::dragMove);
+    connect(&_ruler, &PDFRuler::dragStop, line, [this,line](const QPoint p){
+      disconnect(&_ruler, nullptr, line, nullptr);
+      line->dragStop(p);
+    });
+  });
 }
 
 PDFDocumentView::~PDFDocumentView()
@@ -1333,6 +1355,8 @@ void PDFDocumentView::paintEvent(QPaintEvent *event)
 
   if (_armedTool)
     _armedTool->paintEvent(event);
+
+  emit updated();
 }
 
 void PDFDocumentView::keyPressEvent(QKeyEvent *event)
@@ -1525,6 +1549,12 @@ void PDFDocumentView::changeEvent(QEvent * event)
   Super::changeEvent(event);
 }
 
+void PDFDocumentView::resizeEvent(QResizeEvent * event)
+{
+  _ruler.resize(size());
+  Super::resizeEvent(event);
+}
+
 void PDFDocumentView::armTool(const DocumentTool::AbstractTool::Type toolType)
 {
   armTool(getToolByType(toolType));
@@ -1547,6 +1577,18 @@ void PDFDocumentView::disarmTool()
     return;
   _armedTool->disarm();
   _armedTool = nullptr;
+}
+
+void PDFDocumentView::showRuler(const bool show)
+{
+  if (show) {
+    _ruler.show();
+    setViewportMargins(PDFRuler::rulerSize, PDFRuler::rulerSize, 0, 0);
+  }
+  else {
+    _ruler.hide();
+    setViewportMargins(0, 0, 0, 0);
+  }
 }
 
 
@@ -1592,6 +1634,7 @@ void PDFDocumentMagnifierView::prepareToShow()
   // Ensure we have enough padding at the border that we can display the
   // magnifier even beyond the edge
   setSceneRect(_parent_view->sceneRect().adjusted(-width() / _zoomLevel, -height() / _zoomLevel, width() / _zoomLevel, height() / _zoomLevel));
+  raise();
 }
 
 void PDFDocumentMagnifierView::setZoomFactor(const qreal zoomFactor)
@@ -1904,7 +1947,7 @@ QList<QGraphicsItem*> PDFDocumentScene::pages(const QPolygonF &polygon)
 
 // Convenience function to avoid moving the complete list of pages around
 // between functions if only one page is needed
-QGraphicsItem* PDFDocumentScene::pageAt(const int idx)
+QGraphicsItem* PDFDocumentScene::pageAt(const int idx) const
 {
   if (idx < 0 || idx >= _pages.size())
     return nullptr;
@@ -1914,7 +1957,7 @@ QGraphicsItem* PDFDocumentScene::pageAt(const int idx)
 // Overloaded method that returns all page objects at a given point. First,
 // `items` is used to grab all items at the point. This list is then filtered by
 // item type so that it contains only references to `PDFPageGraphicsItem` objects.
-QGraphicsItem* PDFDocumentScene::pageAt(const QPointF &pt)
+QGraphicsItem* PDFDocumentScene::pageAt(const QPointF &pt) const
 {
   QList<QGraphicsItem*> pageList = items(pt);
   QtConcurrent::blockingFilter(pageList, isPageItem);

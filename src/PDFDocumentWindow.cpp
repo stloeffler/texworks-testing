@@ -211,6 +211,7 @@ void PDFDocumentWindow::init()
 	connect(actionZoom_In, &QAction::triggered, pdfWidget, [=]() { pdfWidget->zoomIn(); });
 	connect(actionZoom_Out, &QAction::triggered, pdfWidget, [=]() { pdfWidget->zoomOut(); });
 	connect(actionFull_Screen, &QAction::triggered, this, &PDFDocumentWindow::toggleFullScreen);
+	connect(actionRuler, &QAction::toggled, pdfWidget, &QtPDF::PDFDocumentView::showRuler);
 	connect(pdfWidget, &QtPDF::PDFDocumentWidget::contextClick, this, &PDFDocumentWindow::syncClick);
 	pageModeSignalMapper.setMapping(actionPageMode_Single, QtPDF::PDFDocumentView::PageMode_SinglePage);
 	pageModeSignalMapper.setMapping(actionPageMode_Continuous, QtPDF::PDFDocumentView::PageMode_OneColumnContinuous);
@@ -301,6 +302,15 @@ void PDFDocumentWindow::init()
 			setPageMode(kDefault_PDFPageMode);
 			break;
 	}
+
+	const int pdfRulerUnits = settings.value(QStringLiteral("pdfRulerUnits"), kDefault_PreviewRulerUnits).toInt();
+	switch (pdfRulerUnits) {
+		case 0: pdfWidget->ruler()->setUnit(QtPDF::Physical::Length::Centimeters); break;
+		case 1: pdfWidget->ruler()->setUnit(QtPDF::Physical::Length::Inches); break;
+		case 2: pdfWidget->ruler()->setUnit(QtPDF::Physical::Length::Bigpoints); break;
+	}
+	actionRuler->setChecked(settings.value(QStringLiteral("pdfRulerShow"), kDefault_PreviewRulerShow).toBool());
+
 	resetMagnifier();
 
 	if (settings.contains(QString::fromLatin1("previewResolution"))) {
@@ -326,6 +336,9 @@ void PDFDocumentWindow::init()
 	_fullScreenManager->addShortcut(actionFull_Screen, SLOT(toggleFullScreen()));
 	connect(_fullScreenManager, &Tw::Utils::FullscreenManager::fullscreenChanged, actionFull_Screen, &QAction::setChecked);
 	connect(_fullScreenManager, &Tw::Utils::FullscreenManager::fullscreenChanged, this, &PDFDocumentWindow::maybeZoomToWindow, Qt::QueuedConnection);
+
+	connect(&(TWApp::instance()->typesetManager()), &Tw::Utils::TypesetManager::typesettingStarted, this, &PDFDocumentWindow::updateTypesettingAction);
+	connect(&(TWApp::instance()->typesetManager()), &Tw::Utils::TypesetManager::typesettingStopped, this, &PDFDocumentWindow::updateTypesettingAction);
 }
 
 void PDFDocumentWindow::changeEvent(QEvent *event)
@@ -728,8 +741,11 @@ void PDFDocumentWindow::retypeset()
 
 void PDFDocumentWindow::interrupt()
 {
-	if (sourceDocList.count() > 0)
-		sourceDocList.first()->interrupt();
+	Q_FOREACH(TeXDocumentWindow * win, sourceDocList) {
+		if (win->isTypesetting()) {
+			win->interrupt();
+		}
+	}
 }
 
 void PDFDocumentWindow::goToSource()
@@ -816,17 +832,24 @@ void PDFDocumentWindow::enableTypesetAction(bool enabled)
 	actionTypeset->setEnabled(enabled);
 }
 
-void PDFDocumentWindow::updateTypesettingAction(bool processRunning)
+void PDFDocumentWindow::updateTypesettingAction()
 {
-	if (processRunning) {
-		disconnect(actionTypeset, &QAction::triggered, this, &PDFDocumentWindow::retypeset);
+	const bool isSourceTypesetting = [&]() {
+		Q_FOREACH(TeXDocumentWindow * const win, sourceDocList) {
+			if (win->isTypesetting()) {
+				return true;
+			}
+		}
+		return false;
+	}();
+
+	disconnect(actionTypeset, &QAction::triggered, this, nullptr);
+	if (isSourceTypesetting) {
 		actionTypeset->setIcon(QIcon::fromTheme(QStringLiteral("process-stop")));
 		actionTypeset->setText(tr("Abort typesetting"));
 		connect(actionTypeset, &QAction::triggered, this, &PDFDocumentWindow::interrupt);
-		enableTypesetAction(true);
 	}
 	else {
-		disconnect(actionTypeset, &QAction::triggered, this, &PDFDocumentWindow::interrupt);
 		actionTypeset->setIcon(QIcon::fromTheme(QStringLiteral("process-start")));
 		actionTypeset->setText(tr("Typeset"));
 		connect(actionTypeset, &QAction::triggered, this, &PDFDocumentWindow::retypeset);

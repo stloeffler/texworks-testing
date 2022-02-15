@@ -259,30 +259,37 @@ ENDIF()
 # Library
 # -------
 SET(QTPDF_SRCS
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/GuidelineEditDialog.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/GuidelineEditDialog.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentView.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentWidget.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentTools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFBackend.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFFontDescriptor.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageTile.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFRuler.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFToC.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFTransitions.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFActions.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFAnnotations.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFGuideline.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PaperSizes.cpp
 )
 
 SET(QTPDF_HDRS
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/GuidelineEditDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentView.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentWidget.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentTools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFBackend.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFFontDescriptor.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageTile.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFRuler.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFToC.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFTransitions.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFActions.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFAnnotations.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFGuideline.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PaperSizes.h
 )
 
