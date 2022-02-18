@@ -107,6 +107,16 @@ void PDFRuler::paintEvent(QPaintEvent * event)
       return 5 * magnitude;
   };
 
+  // TODO: make constexpr once we switch to C++17
+  const auto roundZero = [](const qreal x) {
+    // Round (very) small numbers to avoid 0 being displayed as something like
+    // 1.23e-16
+    constexpr double threshold = 8 * std::numeric_limits<qreal>::epsilon();
+    if (qAbs(x) < threshold)
+      return 0.;
+    return x;
+  };
+
   {
     // Horizontal ruler
     painter.save();
@@ -118,10 +128,10 @@ void PDFRuler::paintEvent(QPaintEvent * event)
     const qreal xMin = qFloor(physRect.left() / dxMajor) * dxMajor;
     for (int i = 0; xMin + i * dxMinor <= physRect.right(); ++i) {
       const Qt::Alignment alignment = Qt::AlignHCenter | Qt::AlignTop;
-      const qreal xPhys = xMin + i * dxMinor;
+      const qreal xPhys = roundZero(xMin + i * dxMinor);
       const qreal x = phys2px.map(QPointF(xPhys, 0)).x();
       if (i % nMinor == 0) {
-        const QString label = QString::number(xPhys);
+        const QString label = QStringLiteral("%L1").arg(xPhys);
         painter.drawLine(QPointF(x, .7 * rulerSize), QPointF(x, rulerSize));
         QRectF boundingRect = painter.boundingRect(QRectF(QPointF(x, 0), QSizeF(0, rulerSize / 2)), alignment, label);
         painter.drawText(boundingRect, alignment, label);
@@ -145,12 +155,12 @@ void PDFRuler::paintEvent(QPaintEvent * event)
     const qreal yMin = qFloor(physRect.top() / dyMajor) * dyMajor;
     for (int i = 0; yMin + i * dyMinor <= physRect.bottom(); ++i) {
       const Qt::Alignment alignment = Qt::AlignHCenter | Qt::AlignTop;
-      const qreal yPhys = yMin + i * dyMinor;
+      const qreal yPhys = roundZero(yMin + i * dyMinor);
       const qreal y = phys2px.map(QPointF(0, yPhys)).y();
       if (y < rulerSize)
         continue;
       if (i % nMinor == 0) {
-        const QString label = QString::number(yPhys);
+        const QString label = QStringLiteral("%L1").arg(yPhys);
         painter.drawLine(QPointF(-y, .7 * rulerSize), QPointF(-y, rulerSize));
         QRectF boundingRect = painter.boundingRect(QRectF(QPointF(-y, 0), QSizeF(0, rulerSize / 2)), alignment, label);
         painter.drawText(boundingRect, alignment, label);
@@ -234,7 +244,10 @@ QRectF PDFRuler::pageRectPx(const int pageIdx) const
   if (!page)
     return {};
 
-  return docView->mapFromScene(page->mapToScene(QRectF(QPointF(0, 0), page->pageSizeF()))).boundingRect().translated(rulerSize + 1, rulerSize + 1);
+  const QRectF rv = docView->mapFromScene(page->mapToScene(QRectF(QPointF(0, 0), page->pageSizeF()))).boundingRect();
+  if (!isVisible())
+    return rv;
+  return rv.translated(rulerSize + 1, rulerSize + 1);
 }
 
 QRectF PDFRuler::pageRectBp(const int pageIdx) const
