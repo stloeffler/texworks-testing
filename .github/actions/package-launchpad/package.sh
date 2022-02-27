@@ -37,6 +37,11 @@ echo_var "DEB_MAINTAINER_NAME"
 echo_var "DEB_MAINTAINER_EMAIL"
 echo_var "LAUNCHPAD_SERIES"
 
+if [[ "${PREV_COMMIT}" = "0000000000000000000000000000000000000000" ]]; then
+	print_warning "PREV_COMMIT was 0000000, replacing it by HEAD^"
+	PREV_COMMIT="HEAD^"
+fi
+
 echo "::endgroup::"
 
 if [ -z "${DEB_MAINTAINER_NAME}" -o -z "${DEB_MAINTAINER_EMAIL}" -o -z "${DEB_PASSPHRASE}" -o -z "${LAUNCHPAD_SERIES}" ]; then
