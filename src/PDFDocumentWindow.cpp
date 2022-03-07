@@ -79,7 +79,6 @@ PDFDocumentWindow::PDFDocumentWindow(const QString &fileName, TeXDocumentWindow 
 	, _fullScreenManager(nullptr)
 	, _syncHighlight(nullptr)
 	, openedManually(false)
-	, _synchronizer(nullptr)
 {
 	init();
 
@@ -116,6 +115,11 @@ PDFDocumentWindow::PDFDocumentWindow(const QString &fileName, TeXDocumentWindow 
 
 PDFDocumentWindow::~PDFDocumentWindow()
 {
+	// Disconnect from windowListChanged notifications to avoid getting the
+	// signal after our TeXDocumentWindow is destroyed (but before the base
+	// QObject is destroyed, in which case the system wouldn't know what to do
+	// with the signal)
+	disconnect(TWApp::instance(), &TWApp::windowListChanged, this, nullptr);
 	docList.removeAll(this);
 #if defined(Q_OS_DARWIN)
 	// Work around QTBUG-17941
@@ -477,18 +481,14 @@ void PDFDocumentWindow::reload()
 
 void PDFDocumentWindow::loadSyncData()
 {
-	if (_synchronizer) {
-		delete _synchronizer;
-		_synchronizer = nullptr;
-	}
-	_synchronizer = new TWSyncTeXSynchronizer(curFile, [](const QString & filename) {
+	_synchronizer = std::unique_ptr<TWSyncTeXSynchronizer>(new TWSyncTeXSynchronizer(curFile, [](const QString & filename) {
 			const TeXDocumentWindow * win = TeXDocumentWindow::openDocument(filename, false, false);
 			return (win ? win->textDoc() : nullptr);
 		}, [](const QString & filename) {
 			PDFDocumentWindow * pdfWin = PDFDocumentWindow::findDocument(filename);
 			return (pdfWin && pdfWin->widget() ? pdfWin->widget()->document().toStrongRef() : QSharedPointer<QtPDF::Backend::Document>());
 		}
-	);
+	));
 	if (!_synchronizer)
 		statusBar()->showMessage(tr("Error initializing SyncTeX"), kStatusMessageDuration);
 	else if (!_synchronizer->isValid())

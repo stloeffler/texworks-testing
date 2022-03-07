@@ -82,6 +82,11 @@ TeXDocumentWindow::TeXDocumentWindow(const QString &fileName, bool asTemplate)
 
 TeXDocumentWindow::~TeXDocumentWindow()
 {
+	// Disconnect from windowListChanged notifications to avoid getting the
+	// signal after our TeXDocumentWindow is destroyed (but before the base
+	// QObject is destroyed, in which case the system wouldn't know what to do
+	// with the signal)
+	disconnect(TWApp::instance(), &TWApp::windowListChanged, this, nullptr);
 	docList.removeAll(this);
 	updateWindowMenu();
 	// Because _texDoc->parent() == this, _texDoc will be destroyed
@@ -547,7 +552,7 @@ void TeXDocumentWindow::reloadSpellcheckerMenu()
 					label = tr("%1 (%2)").arg(QLocale::languageToString(loc.language()), dict);
 			}
 
-			QAction * act = new QAction(label, nullptr);
+			QAction * act = new QAction(label, menuSpelling);
 			act->setCheckable(true);
 			if (!oldSelected.isEmpty() && label == oldSelected)
 				act->setChecked(true);
