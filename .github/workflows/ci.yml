@@ -168,14 +168,15 @@ jobs:
         find /usr/local/opt -type d
 
     - name: Configure
-      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
+      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_DEFAULT_MAJOR_VERSION=6
 
     - name: Build
       run: make -j
       working-directory: build
 
     - name: Test
-      run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
+#      run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
+      run: ctest -V
       working-directory: build
 
     - name: Package
