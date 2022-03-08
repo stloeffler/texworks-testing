@@ -168,7 +168,7 @@ jobs:
         find /usr/local/Cellar/qt -type d
 
     - name: Configure
-      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_DEFAULT_MAJOR_VERSION=6
+      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_DEFAULT_MAJOR_VERSION=6 -DQT_LIBRARY_DIR=/usr/local/lib
 
     - name: Build
       run: make -j
