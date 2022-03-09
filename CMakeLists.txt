@@ -266,9 +266,14 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 	  list(APPEND QT_LIBRARIES Qt6::WindowsPlatformSupport)
 	endif ()
 	if (APPLE)
-		find_package(Qt6QCocoaIntegrationPlugin)
-		get_target_property(_plugin_location Qt6::QCocoaIntegrationPlugin LOCATION)
-		list(APPEND QT_PLUGINS _plugin_location)
+		# Inspired by https://github.com/MaximAlien/macdeployqt/blob/bc9c0ba199f323a42e3f1cc04d4b66e3e59ac995/macdeployqt/shared.cpp
+		get_target_property(_pluginDir Qt6::Widgets LOCATION)
+		get_filename_component(_pluginDir "${_pluginDir}" PATH)
+		set(_pluginDir "${_pluginDir}/../plugins")
+
+		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
+		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
+		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
 	endif ()
 
 	set(QT_VERSION_MAJOR "${Qt6_VERSION_MAJOR}")
