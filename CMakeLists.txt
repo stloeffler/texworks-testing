@@ -244,10 +244,7 @@ use_cxx11()
 
 if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 	# Check for Qt6
-	if (APPLE)
-		set(_additional_qt_components QCocoaIntegrationPlugin)
-	endif ()
-	find_package(Qt6 REQUIRED COMPONENTS Core Core5Compat Widgets Gui UiTools Concurrent Xml LinguistTools Qml ${_additional_qt_components})
+	find_package(Qt6 REQUIRED COMPONENTS Core Core5Compat Widgets Gui UiTools Concurrent Xml LinguistTools Qml)
 	set(QT_LIBRARIES Qt6::Core Qt6::Core5Compat Qt6::Widgets Qt6::Gui Qt6::UiTools Qt6::Concurrent Qt6::Xml Qt6::Qml)
 
 	if (UNIX AND NOT APPLE)
@@ -283,9 +280,9 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 #		)
 #		list(APPEND QT_PLUGINS "${QtQCocoa_LIBRARIES}")
 #
-#		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
-#		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
-#		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
+		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
+		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
+		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
 	endif ()
 
 	set(QT_VERSION_MAJOR "${Qt6_VERSION_MAJOR}")
