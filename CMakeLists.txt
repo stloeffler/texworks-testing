@@ -244,7 +244,10 @@ use_cxx11()
 
 if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 	# Check for Qt6
-	find_package(Qt6 REQUIRED COMPONENTS Core Core5Compat Widgets Gui UiTools Concurrent Xml LinguistTools Qml)
+	if (APPLE)
+		set(_additional_qt_components QCocoaIntegrationPlugin)
+	endif ()
+	find_package(Qt6 REQUIRED COMPONENTS Core Core5Compat Widgets Gui UiTools Concurrent Xml LinguistTools Qml ${_additional_qt_components})
 	set(QT_LIBRARIES Qt6::Core Qt6::Core5Compat Qt6::Widgets Qt6::Gui Qt6::UiTools Qt6::Concurrent Qt6::Xml Qt6::Qml)
 
 	if (UNIX AND NOT APPLE)
@@ -266,14 +269,21 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 	  list(APPEND QT_LIBRARIES Qt6::WindowsPlatformSupport)
 	endif ()
 	if (APPLE)
-		# Inspired by https://github.com/MaximAlien/macdeployqt/blob/bc9c0ba199f323a42e3f1cc04d4b66e3e59ac995/macdeployqt/shared.cpp
-		get_target_property(_pluginDir Qt6::Widgets LOCATION)
-		get_filename_component(_pluginDir "${_pluginDir}" PATH)
-		set(_pluginDir "${_pluginDir}/../plugins")
-
-		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
-		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
-		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
+		get_target_property(_plugin_path QCocoaIntegrationPlugin LOCATION)
+		list(APPEND QT_PLUGINS "${_plugin_path}")
+#		# Inspired by https://github.com/MaximAlien/macdeployqt/blob/bc9c0ba199f323a42e3f1cc04d4b66e3e59ac995/macdeployqt/shared.cpp
+#		get_target_property(_pluginDir Qt6::Widgets LOCATION)
+#		get_filename_component(_pluginDir "${_pluginDir}" PATH)
+#		set(_pluginDir "${_pluginDir}/../plugins")
+#
+#		find_library(QtQCocoa_LIBRARIES qcocoa
+#			HINTS "${QT_LIB_DIR}/../plugins/platforms"
+#		)
+#		list(APPEND QT_PLUGINS "${QtQCocoa_LIBRARIES}")
+#
+#		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
+#		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
+#		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
 	endif ()
 
 	set(QT_VERSION_MAJOR "${Qt6_VERSION_MAJOR}")
