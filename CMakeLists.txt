@@ -269,12 +269,14 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 	  list(APPEND QT_LIBRARIES Qt6::WindowsPlatformSupport)
 	endif ()
 	if (APPLE)
-		get_target_property(_plugin_path QCocoaIntegrationPlugin LOCATION)
-		list(APPEND QT_PLUGINS "${_plugin_path}")
 #		# Inspired by https://github.com/MaximAlien/macdeployqt/blob/bc9c0ba199f323a42e3f1cc04d4b66e3e59ac995/macdeployqt/shared.cpp
-#		get_target_property(_pluginDir Qt6::Widgets LOCATION)
-#		get_filename_component(_pluginDir "${_pluginDir}" PATH)
-#		set(_pluginDir "${_pluginDir}/../plugins")
+		if (DEFINED ENV{QT_PLUGIN_PATH})
+			set(_pluginDir "$ENV{QT_PLUGIN_PATH}")
+		else ()
+			get_target_property(_pluginDir Qt6::Widgets LOCATION)
+			get_filename_component(_pluginDir "${_pluginDir}" PATH)
+			set(_pluginDir "${_pluginDir}/../plugins")
+		endif ()
 #
 #		find_library(QtQCocoa_LIBRARIES qcocoa
 #			HINTS "${QT_LIB_DIR}/../plugins/platforms"
