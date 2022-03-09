@@ -163,7 +163,7 @@ jobs:
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX=${RUNNER_TEMP}/tw-deps
+        cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX=${RUNNER_TEMP}/tw-deps -DQT_VERSION=${{ matrix.qtVersion }}
         PKG_CONFIG_PATH=${RUNNER_TEMP}/tw-deps/lib/pkgconfig cmake --build ".github/actions/setup-macos/build" -v
 
     - name: Configure
