@@ -444,7 +444,7 @@ ENDIF (WITH_TESTS)
 
 # Gather all libraries related to Qt plugins used by TeXworks so that they can
 # be bundled into packages. (Required on APPLE for a consistent macOS look&feel)
-foreach (_target ${Qt5Gui_PLUGINS} ${Qt5Widgets_PLUGINS})
+foreach (_target ${Qt${QT_VERSION_MAJOR}Gui_PLUGINS} ${Qt${QT_VERSION_MAJOR}Widgets_PLUGINS})
 	get_target_property(_path ${_target} LOCATION_Release)
 	list(APPEND QT_PLUGINS ${_path})
 endforeach()
