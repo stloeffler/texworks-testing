@@ -123,12 +123,12 @@ jobs:
       matrix:
         macVersion: [10.15, 10.12]
         include:
-            # Latest Qt5 release [https://download.qt.io/official_releases/qt/]
-            # Qt 5.15.2 supports macOS >= 10.13 [https://doc.qt.io/qt-5/macos.html]
+            # Latest Qt6 release [https://download.qt.io/official_releases/qt/]
+            # Qt 6.2 supports macOS >= 10.14 [https://doc.qt.io/qt-6/macos.html]
             # poppler >= 22.01.0 uses std::filesystem, which seems to only be (fully)
             # supported on macOS 10.15 and up
           - macVersion: 10.15
-            qtVersion: 5.15.2
+            qtVersion: 6.2.3
             # Qt 5.12 supports macOS >= 10.12 [https://doc.qt.io/qt-5.12/macos.html]
           - macVersion: 10.12
             qtVersion: 5.12.12
@@ -143,7 +143,7 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with:
         version: ${{ matrix.qtVersion }}
-        modules: qtscript
+        modules: qt5compat
 
     - name: Install Homebrew dependencies
       shell: bash
@@ -156,7 +156,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        key: twdeps-${{ runner.os }}-${{ env.MACOSX_DEPLOYMENT_TARGET }}-${{ hashFiles('./.github/actions/setup-macos/*') }}
+        key: twdeps-${{ runner.os }}-${{ env.MACOSX_DEPLOYMENT_TARGET }}-qt${{ matrix.qtVersion }}-${{ hashFiles('./.github/actions/setup-macos/*') }}
         path: ${{ runner.temp }}/tw-deps
 
     - name: Build dependencies
