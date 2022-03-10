@@ -168,9 +168,10 @@ jobs:
         echo "-----------------------------------------------------"
         find /usr/local/Cellar/qt -type d
         echo "-----------------------------------------------------"
-        find /usr -iname '*cocoa*.dylib'
-        echo "-----------------------------------------------------"
-        find /opt -iname '*cocoa*.dylib'
+#        find /usr -iname '*cocoa*.dylib'
+# /usr/local/Cellar/qt/6.2.3_1/share/qt/plugins/platforms/libqcocoa.dylib
+#        echo "-----------------------------------------------------"
+#        find /opt -iname '*cocoa*.dylib'
 #        find /usr/local/Cellar/qt/6.2.3_1/share/qt/plugins
 #        echo "-----------------------------------------------------"
 #        find /usr/local/lib
