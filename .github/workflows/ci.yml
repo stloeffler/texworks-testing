@@ -168,11 +168,12 @@ jobs:
         echo "-----------------------------------------------------"
         find /usr/local/Cellar/qt -type d
         echo "-----------------------------------------------------"
-        find /usr/local/Cellar/qt/6.2.3_1/share/qt/plugins
-        echo "-----------------------------------------------------"
-        find /usr/local/lib
-        echo "-----------------------------------------------------"
-        find /usr/local/share
+        find / -iname '*cocoa*.dylib'
+#        find /usr/local/Cellar/qt/6.2.3_1/share/qt/plugins
+#        echo "-----------------------------------------------------"
+#        find /usr/local/lib
+#        echo "-----------------------------------------------------"
+#        find /usr/local/share
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_DEFAULT_MAJOR_VERSION=6 -DQT_LIBRARY_DIR=/usr/local/lib
