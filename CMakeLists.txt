@@ -281,8 +281,8 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 #		list(APPEND QT_PLUGINS "${QtQCocoa_LIBRARIES}")
 #
 		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
-		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
-		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
+#		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
+#		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
 	endif ()
 
 	set(QT_VERSION_MAJOR "${Qt6_VERSION_MAJOR}")
