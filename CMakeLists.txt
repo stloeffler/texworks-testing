@@ -274,6 +274,8 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 			get_filename_component(_pluginDir "${_pluginDir}" PATH)
 			set(_pluginDir "${_pluginDir}/../plugins")
 		endif ()
+
+		message("_pluginDir = ${_pluginDir}")
 #
 #		find_library(QtQCocoa_LIBRARIES qcocoa
 #			HINTS "${QT_LIB_DIR}/../plugins/platforms"
