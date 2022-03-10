@@ -276,7 +276,7 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 			message("${_pluginDir}")
 			set(_pluginDir "${_pluginDir}/../plugins")
 			message("${_pluginDir}")
-			get_filename_component(_pluginDir "${_pluginDir} REALPATH)
+			get_filename_component(_pluginDir "${_pluginDir}" REALPATH)
 			message("${_pluginDir}")
 		endif ()
 
