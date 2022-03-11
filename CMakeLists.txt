@@ -289,7 +289,7 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 			if (NOT _plugin_${_lib_name})
 				message(FATAL_ERROR "Could not find plugin ${_lib}")
 			else ()
-				list(APPEND QT_PLUGINS "_plugin_${_lib_name}")
+				list(APPEND QT_PLUGINS "${_plugin_${_lib_name}}")
 			endif ()
 		endforeach ()
 
