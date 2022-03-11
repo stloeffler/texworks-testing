@@ -280,21 +280,30 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 			message("${_pluginDir}")
 			get_filename_component(_pluginDir "${_pluginDir}" REALPATH)
 			message("${_pluginDir}")
-
-			file(GLOB _tmp "${_pluginDir}/*")
-			message("${_tmp}")
 		endif ()
 
+		foreach (_lib IN ITEMS platforms/qcocoa styles/qmacstyle)
+			get_filename_component(_lib_name ${_lib} NAME)
+			get_filename_component(_lib_dir ${_lib} DIRECTORY)
+			find_library(_plugin_${_lib_name} NAMES ${_lib_name} HINTS ${_pluginDir} PATH_SUFFIXES ${_lib_dir})
+			if (NOT _plugin_${_lib_name})
+				message(FATAL_ERROR "Could not find plugin ${_lib}")
+			else ()
+				list(APPEND QT_PLUGINS "_plugin_${_lib_name}")
+			endif ()
+		endforeach ()
+
 		message("_pluginDir = ${_pluginDir}")
+		message("QT_PLUGINS = ${QT_PLUGINS}")
 #
 #		find_library(QtQCocoa_LIBRARIES qcocoa
 #			HINTS "${QT_LIB_DIR}/../plugins/platforms"
 #		)
 #		list(APPEND QT_PLUGINS "${QtQCocoa_LIBRARIES}")
 #
-		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
+#		list(APPEND QT_PLUGINS "${_pluginDir}/platforms/libqcocoa.dylib")
 #		list(APPEND QT_PLUGINS "${_pluginDir}/renderers/libopenglrenderer.dylib")
-		list(APPEND QT_PLUGINS "${_pluginDir}/styles/libqmacstyle.dylib")
+#		list(APPEND QT_PLUGINS "${_pluginDir}/styles/libqmacstyle.dylib")
 #		list(APPEND QT_PLUGINS "${_pluginDir}/printsupport/libcocoaprintersupport.dylib")
 #		list(APPEND QT_PLUGINS "${_pluginDir}/accessible/libqtaccessiblewidgets.dylib")
 	endif ()
