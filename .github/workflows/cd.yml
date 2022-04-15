@@ -149,10 +149,6 @@ jobs:
         version: ${{ matrix.qtVersion }}
         modules: ${{ matrix.qtModules }}
 
-    - name: Debug
-      shell: bash
-      run: find ${QT_PLUGIN_PATH}
-
     - name: Install Homebrew dependencies
       shell: bash
       run: |

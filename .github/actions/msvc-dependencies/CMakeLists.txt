@@ -34,8 +34,8 @@ ExternalProject_Add(hunspell
 )
 
 ExternalProject_Add(zlib
-	URL "http://zlib.net/zlib-1.2.11.tar.xz"
-	URL_HASH SHA256=4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066
+	URL "https://github.com/madler/zlib/archive/refs/tags/v1.2.12.tar.gz"
+	URL_HASH SHA256=d8688496ea40fb61787500e863cc63c9afcbc524468cedeb478068924eb54932
 	CMAKE_ARGS ${CMAKE_ARGS}
 )
 

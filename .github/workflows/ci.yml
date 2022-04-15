@@ -162,22 +162,6 @@ jobs:
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install hunspell poppler lua qt
 
-    - name: Debug
-      run: |
-        env
-        echo "-----------------------------------------------------"
-        find /usr/local/Cellar/qt -type d
-        echo "-----------------------------------------------------"
-#        find /usr -iname '*cocoa*.dylib'
-# /usr/local/Cellar/qt/6.2.3_1/share/qt/plugins/platforms/libqcocoa.dylib
-#        echo "-----------------------------------------------------"
-#        find /opt -iname '*cocoa*.dylib'
-#        find /usr/local/Cellar/qt/6.2.3_1/share/qt/plugins
-#        echo "-----------------------------------------------------"
-#        find /usr/local/lib
-#        echo "-----------------------------------------------------"
-#        find /usr/local/share
-
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_DEFAULT_MAJOR_VERSION=6 -DQT_LIBRARY_DIR=/usr/local/lib
 
@@ -186,7 +170,6 @@ jobs:
       working-directory: build
 
     - name: Test
-#      run: QT_QPA_PLATFORM_PLUGIN_PATH="${Qt5_DIR}/plugins/platforms" ctest -V
       run: ctest -V
       working-directory: build
 
