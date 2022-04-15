@@ -196,7 +196,7 @@ void ScriptManagerWidget::treeSelectionChanged()
 	addDetailsRow(rows, tr("Shortcut: "), s->getKeySequence().toString());
 	addDetailsRow(rows, tr("File: "), QFileInfo(s->getFilename()).fileName());
 
-	const Tw::Scripting::ScriptLanguageInterface * sli = qobject_cast<Tw::Scripting::ScriptLanguageInterface*>(s->getScriptLanguagePlugin());
+	const Tw::Scripting::ScriptLanguageInterface * sli = qobject_cast<const Tw::Scripting::ScriptLanguageInterface*>(s->getScriptLanguagePlugin());
 	if(sli) {
 		QString url = sli->scriptLanguageURL();
 		QString str = sli->scriptLanguageName();
