@@ -60,6 +60,8 @@ protected:
   mutable QList<PDFFontInfo> _fonts;
   mutable bool _fontsLoaded{false};
 
+  bool load(const QString & filename);
+
   // The following two methods are not thread-safe because they don't acquire a
   // read lock. This is to enable methods that have a write lock to use them.
   bool _isValid() const { return (_poppler_doc != nullptr); }
@@ -81,6 +83,8 @@ public:
   PDFToC toc() const override;
   QList<PDFFontInfo> fonts() const override;
 
+  QColor paperColor() const override;
+  void setPaperColor(const QColor & color) override;
 private:
   void parseDocument();
 };

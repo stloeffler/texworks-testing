@@ -105,6 +105,12 @@ protected:
 class PDFPageCache : protected QCache<PDFPageTile, QSharedPointer<QImage> >
 {
   typedef QCache<PDFPageTile, QSharedPointer<QImage> > Super;
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  using size_type = int;
+#else
+  using size_type = qsizetype;
+#endif
 public:
   enum TileStatus { UNKNOWN, PLACEHOLDER, CURRENT, OUTDATED };
 
@@ -112,8 +118,8 @@ public:
   virtual ~PDFPageCache() = default;
 
   // Note: Each image has a cost of 1
-  int maxSize() const { return maxCost(); }
-  void setMaxSize(const int num) { setMaxCost(num); }
+  size_type maxSize() const { return maxCost(); }
+  void setMaxSize(const size_type num) { setMaxCost(num); }
 
   // Returns the image under the key `tile` or nullptr if it doesn't exist
   QSharedPointer<QImage> getImage(const PDFPageTile & tile) const;
@@ -404,6 +410,9 @@ public:
   TrappedState trapped() const { QReadLocker docLocker(_docLock.data()); return _meta_trapped; }
   QMap<QString, QString> metaDataOther() const { QReadLocker docLocker(_docLock.data()); return _meta_other; }
   // </metadata>
+
+  virtual QColor paperColor() const { return Qt::white; }
+  virtual void setPaperColor(const QColor & color) { Q_UNUSED(color); }
 
   // Searches the entire document for the given string and returns a list of
   // boxes that contain that text.
