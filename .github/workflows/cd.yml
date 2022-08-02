@@ -140,6 +140,10 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macVersion }}
 
     steps:
+    - name: Debug
+      shell: bash
+      run: ls -lisa /usr/local/lib/
+
     - name: Checkout
       uses: actions/checkout@v2
 
