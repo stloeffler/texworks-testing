@@ -166,7 +166,7 @@ jobs:
         
         find /usr/local
         
-        brew link --force poppler-qt5 qt@5
+        #brew link --force poppler-qt5 qt@5
 
     - name: Configure
       run: QT5_DIR=/usr/local/opt/qt5/lib/cmake/Qt5/ cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_LIBRARY_DIR=/usr/local/lib
