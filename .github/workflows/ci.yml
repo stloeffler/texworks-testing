@@ -161,6 +161,7 @@ jobs:
         rm -f /usr/local/bin/2to3
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install hunspell poppler-qt5 lua qt@5
+        brew link --force poppler-qt5 qt@5
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_LIBRARY_DIR=/usr/local/lib
