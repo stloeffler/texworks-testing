@@ -22,6 +22,9 @@
 #include "document/TeXDocument.h"
 #include "TeXHighlighter.h"
 
+#include <QDir>
+#include <QFileInfo>
+
 namespace Tw {
 namespace Document {
 
@@ -81,6 +84,20 @@ void TeXDocument::parseModeLines()
 		_modelines = newModeLines;
 		emit modelinesChanged(changedKeys, removedKeys);
 	}
+}
+
+QString TeXDocument::getRootFilePath() const
+{
+	if (hasModeLine(QStringLiteral("root"))) {
+		const QString rootName{getModeLineValue(QStringLiteral("root")).trimmed()};
+		const QFileInfo rootFileInfo{getFileInfo().dir(), rootName};
+		return rootFileInfo.absoluteFilePath();
+	}
+
+	if (!isStoredInFilesystem()) {
+		return {};
+	}
+	return absoluteFilePath();
 }
 
 void TeXDocument::maybeUpdateModeLines(int position, int charsRemoved, int charsAdded)
