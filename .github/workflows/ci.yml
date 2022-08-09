@@ -170,7 +170,8 @@ jobs:
         #brew link --force poppler-qt5 qt@5
 
     - name: Configure
-      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_LIBRARY_DIR=/usr/local/opt/qt5/lib
+      run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
+      # -DQT_LIBRARY_DIR=/usr/local/opt/qt5/lib
       #-DQT5_DIR=/usr/local/opt/qt5/lib/cmake/Qt5
 
     - name: Build
@@ -181,9 +182,9 @@ jobs:
       run: ctest -V
       working-directory: build
 
-    - name: Package
-      id: package
-      uses: ./.github/actions/package-macos
+#    - name: Package
+#      id: package
+#      uses: ./.github/actions/package-macos
 
 ################################################################################
 
