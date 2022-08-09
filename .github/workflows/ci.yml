@@ -164,12 +164,13 @@ jobs:
         
         ls -lisa /usr/local/opt/qt5
         
-        find /usr/local
+        #find /usr/local
+        find /usr/local/opt/qt5/
         
         #brew link --force poppler-qt5 qt@5
 
     - name: Configure
-      run: QT5_DIR=/usr/local/opt/qt5/lib/cmake/Qt5/ cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_LIBRARY_DIR=/usr/local/lib
+      run: QT5_DIR=/usr/local/opt/qt5/lib/cmake/ cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DQT_LIBRARY_DIR=/usr/local/lib
 
     - name: Build
       run: make -j
