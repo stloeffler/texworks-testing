@@ -161,19 +161,11 @@ jobs:
         rm -f /usr/local/bin/2to3
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install hunspell poppler-qt5 lua qt@5
-        
-        #ls -lisa /usr/local/opt/qt5
-        
-        #find /usr/local
-        #find /usr/local/opt/qt5/
-        
-        #brew link --force poppler-qt5 qt@5
+        # As poppler-qt5 conflicts with poppler, we need to force-link it
         brew link --force poppler-qt5
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5"
-      # -DQT_LIBRARY_DIR=/usr/local/opt/qt5/lib
-      #-DQT5_DIR=/usr/local/opt/qt5/lib/cmake/Qt5
 
     - name: Build
       run: make -j
@@ -182,10 +174,6 @@ jobs:
     - name: Test
       run: ctest -V
       working-directory: build
-
-#    - name: Package
-#      id: package
-#      uses: ./.github/actions/package-macos
 
 ################################################################################
 
