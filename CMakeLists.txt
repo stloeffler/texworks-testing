@@ -303,7 +303,7 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
 			message("${_pluginDir}")
 		endif ()
 
-		foreach (_lib IN ITEMS platforms/qcocoa styles/qmacstyle)
+		foreach (_lib IN ITEMS platforms/qcocoa styles/qmacstyle imageformats/qjpeg imageformats/qtiff)
 			get_filename_component(_lib_name ${_lib} NAME)
 			get_filename_component(_lib_dir ${_lib} DIRECTORY)
 			find_library(_plugin_${_lib_name} NAMES ${_lib_name} HINTS ${_pluginDir} PATH_SUFFIXES ${_lib_dir})
