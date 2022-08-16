@@ -188,6 +188,12 @@ jobs:
       id: package
       uses: ./.github/actions/package-macos
 
+
+
+    - name: Debug
+      run: |
+        otool -L build/test_poppler-qt6
+        otool -L ${RUNNER_TEMP}/tw-deps/lib/libpoppler.dylib
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       with:
