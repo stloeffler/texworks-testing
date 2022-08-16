@@ -200,10 +200,12 @@ jobs:
         limit-access-to-actor: true
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: TeXworks-macOS
-        path: ${{ steps.package.outputs.file }}
+        path: |
+          ${{ steps.package.outputs.file }}
+          build/test_poppler-qt6
 
 #    - name: Deploy to Artifactory
 #      if: github.event_name == 'push'
