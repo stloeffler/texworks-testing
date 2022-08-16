@@ -188,6 +188,11 @@ jobs:
       id: package
       uses: ./.github/actions/package-macos
 
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true
+
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
