@@ -205,7 +205,6 @@ jobs:
         name: TeXworks-macOS
         path: |
           ${{ steps.package.outputs.file }}
-          build/test_poppler-qt*
 
 #    - name: Deploy to Artifactory
 #      if: github.event_name == 'push'
