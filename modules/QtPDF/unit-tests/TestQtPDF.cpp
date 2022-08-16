@@ -1413,7 +1413,7 @@ void TestQtPDF::page_renderToImage()
   QSharedPointer<QtPDF::Backend::Page> page = doc->page(iPage).toStrongRef();
   QVERIFY(page);
   ComparableImage render(page->renderToImage(150, 150).copy(rect), threshold);
-//  render.save(filename);
+  render.save(QStringLiteral("out_%1").arg(filename));
   ComparableImage ref(QImage(filename).copy(rect));
   // Check if the images are both homogeneous (or both not homogeneous)
   // This is intended to catch problems such in base14 tests in which the exact
