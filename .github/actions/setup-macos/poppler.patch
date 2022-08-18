@@ -1,0 +1,58 @@
+diff -ru a/poppler/DCTStream.cc b/poppler/DCTStream.cc
+--- a/poppler/DCTStream.cc	2022-02-01 23:30:47.000000000 +0100
++++ b/poppler/DCTStream.cc	2022-08-18 15:12:24.400253827 +0200
+@@ -58,6 +58,7 @@
+ 
+ DCTStream::DCTStream(Stream *strA, int colorXformA, Dict *dict, int recursion) : FilterStream(strA)
+ {
++fprintf(stderr, "> DCTStream::DCTStream\n");
+     colorXform = colorXformA;
+     if (dict != nullptr) {
+         Object obj = dict->lookup("Width", recursion);
+@@ -67,10 +68,12 @@
+     } else
+         err.height = err.width = 0;
+     init();
++fprintf(stderr, "< DCTStream::DCTStream\n");
+ }
+ 
+ DCTStream::~DCTStream()
+ {
++fprintf(stderr, "> DCTStream::~DCTStream\n");
+     jpeg_destroy_decompress(&cinfo);
+     delete str;
+ }
+@@ -89,6 +92,7 @@
+ 
+ void DCTStream::init()
+ {
++fprintf(stderr, "> DCTStream::init\n");
+     jpeg_std_error(&err.pub);
+     err.pub.error_exit = &exitErrorHandler;
+     src.pub.init_source = str_init_source;
+@@ -109,10 +113,12 @@
+         cinfo.src = (jpeg_source_mgr *)&src;
+     }
+     row_buffer = nullptr;
++fprintf(stderr, "< DCTStream::init\n");
+ }
+ 
+ void DCTStream::reset()
+ {
++fprintf(stderr, "> DCTStream::reset\n");
+     int row_stride;
+ 
+     str->reset();
+@@ -182,10 +188,12 @@
+             row_buffer = cinfo.mem->alloc_sarray((j_common_ptr)&cinfo, JPOOL_IMAGE, row_stride, 1);
+         }
+     }
++fprintf(stderr, "< DCTStream::reset\n");
+ }
+ 
+ bool DCTStream::readLine()
+ {
++fprintf(stderr, "  DCTStream::readLine %d/%d\n", cinfo.output_scanline, cinfo.output_height);
+     if (cinfo.output_scanline < cinfo.output_height) {
+         if (!setjmp(err.setjmp_buffer)) {
+             if (!jpeg_read_scanlines(&cinfo, row_buffer, 1))

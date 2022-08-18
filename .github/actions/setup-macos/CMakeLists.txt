@@ -111,6 +111,7 @@ ExternalProject_Add(poppler
 	URL_HASH SHA256=acb840c2c1ec07d07e53c57c4b3a1ff3e3ee2d888d44e1e9f2f01aaf16814de7
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
+	PATCH_COMMAND patch -p1 < "${CMAKE_CURRENT_SOUCE_DIR}/poppler.patch"
 )
 else ()
 ExternalProject_Add(poppler
