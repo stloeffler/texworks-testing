@@ -90,7 +90,7 @@ ADD_GH_GROUP(libtiff)
 ExternalProject_Add(libopenjpeg
 	URL https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.0.tar.gz
 	URL_HASH SHA256=0333806d6adecc6f7a91243b2b839ff4d2053823634d4f6ed7a59bc87409122a
-	CMAKE_ARGS ${CMAKE_ARGS}
+	CMAKE_ARGS ${CMAKE_ARGS} -DBUILD_CODEC=OFF
 	DEPENDS libtiff
 )
 ADD_GH_GROUP(libopenjpeg)
