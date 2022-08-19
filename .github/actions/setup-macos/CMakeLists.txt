@@ -119,7 +119,6 @@ ExternalProject_Add(poppler
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
-#	PATCH_COMMAND patch -p1 < "$ENV{GITHUB_WORKSPACE}/.github/actions/setup-macos/poppler.patch"
 endif ()
 ADD_GH_GROUP(poppler)
 
