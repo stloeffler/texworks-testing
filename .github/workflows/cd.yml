@@ -131,12 +131,12 @@ jobs:
           - macVersion: 10.15
             qtVersionMajor: 6
             qtVersion: 6.2.3
-            qtModules: qtimageformats qt5compat
+            qtModules: qt5compat
             # Qt 5.12 supports macOS >= 10.12 [https://doc.qt.io/qt-5.12/macos.html]
           - macVersion: 10.12
             qtVersionMajor: 5
             qtVersion: 5.12.12
-            qtModules: qtimageformats qtscript
+            qtModules: qtscript
     env:
       MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macVersion }}
 
@@ -192,23 +192,11 @@ jobs:
       id: package
       uses: ./.github/actions/package-macos
 
-
-
-    - name: Debug
-      run: |
-        otool -L build/test_poppler-qt*
-        otool -L ${RUNNER_TEMP}/tw-deps/lib/libpoppler.dylib
-#    - name: Setup tmate session
-#      uses: mxschmitt/action-tmate@v3
-#      with:
-#        limit-access-to-actor: true
-
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: TeXworks-macOS
-        path: |
-          ${{ steps.package.outputs.file }}
+        path: ${{ steps.package.outputs.file }}
 
 #    - name: Deploy to Artifactory
 #      if: github.event_name == 'push'
