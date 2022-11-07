@@ -50,13 +50,15 @@ jobs:
       shell: bash
       run: |
         echo "$GITHUB_OUTPUT"
-        echo "${{ env.GITHUB_OUTPUT }}"
+        echo "${{ github.output }}"
 
     - name: Test 2
       shell: wsl-bash {0}
+      env:
+        GITHUB_OUTPUT: $GITHUB_OUTPUT
       run: |
         echo "$GITHUB_OUTPUT"
-        echo "${{ env.GITHUB_OUTPUT }}"
+        echo "${{ github.output }}"
 
 
     - name: Install dependencies
