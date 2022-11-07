@@ -154,7 +154,13 @@ void PDFDocumentWindow::init()
 	connect(pdfWidget, &QtPDF::PDFDocumentWidget::changedPage, this, &PDFDocumentWindow::updateStatusBar);
 	connect(pdfWidget, &QtPDF::PDFDocumentWidget::changedZoom, this, &PDFDocumentWindow::updateStatusBar);
 	connect(pdfWidget, &QtPDF::PDFDocumentWidget::changedDocument, this, &PDFDocumentWindow::changedDocument);
-	connect(pdfWidget, &QtPDF::PDFDocumentWidget::searchResultHighlighted, this, &PDFDocumentWindow::searchResultHighlighted);
+	// NB: Using a queued connection ensures the signal has to pass through the
+	// event loop. If searching effectively blocks the GUI for a while (e.g., by
+	// spawning too many threads), this ensures that the highlighting processing
+	// (including clearing the highlighting after kPDFHighlightDuration) only
+	// starts when the GUI is responsive (i.e., the highlight is actually
+	// displayed)
+	connect(pdfWidget, &QtPDF::PDFDocumentWidget::searchResultHighlighted, this, &PDFDocumentWindow::searchResultHighlighted, Qt::QueuedConnection);
 	connect(pdfWidget, &QtPDF::PDFDocumentWidget::changedPageMode, this, &PDFDocumentWindow::updatePageMode);
 	connect(pdfWidget, &QtPDF::PDFDocumentWidget::requestOpenPdf, this, &PDFDocumentWindow::maybeOpenPdf);
 	connect(pdfWidget, &QtPDF::PDFDocumentWidget::requestOpenUrl, this, &PDFDocumentWindow::maybeOpenUrl);
@@ -454,6 +460,59 @@ void PDFDocumentWindow::saveRecentFileInfo()
 	TWApp::instance()->addToRecentFiles(fileProperties);
 }
 
+QString PDFDocumentWindow::getMainSourceFilename() const
+{
+	// If there are any open source documents, use their root path
+	for (TeXDocumentWindow * const win : sourceDocList) {
+		if (win == nullptr) {
+			continue;
+		}
+		const Tw::Document::TeXDocument * const doc = win->textDoc();
+		if (doc == nullptr) {
+			continue;
+		}
+		const QString path = doc->getRootFilePath();
+		if (QFileInfo::exists(path)) {
+				return path;
+		}
+	}
+	// If we have synchronization data, use the document that corresponds to the
+	// top left corner of the first page
+	// TODO: Is this necessarily a TeX file (and not, e.g., an aux file in case
+	// the first page is not a standard text page such as a toc, titlepage, or
+	// index/bibliography)?
+	if (_synchronizer) {
+		const TWSynchronizer::TeXSyncPoint syncPt = _synchronizer->syncFromPDF({fileName(), 0, QList<QRectF>() << QRectF()}, TWSynchronizer::LineResolution);
+		if (QFileInfo::exists(syncPt.filename)) {
+			return syncPt.filename;
+		}
+	}
+	// If all else fails, assume a .tex file with the same base name as the pdf
+	// is the root source file (this might be flakey, though, e.g. in case
+	// \jobname is redefined or non-standard typesetting tools are used)
+	QString src = fileName();
+	if (src.endsWith(QStringLiteral(".pdf"))) {
+		src.replace(src.length() - 3, 3, QStringLiteral("tex"));
+		if (QFileInfo::exists(src)) {
+			return src;
+		}
+	}
+	return {};
+}
+
+TeXDocumentWindow * PDFDocumentWindow::getFirstTeXDocumentWindow(const bool openIfNecessary)
+{
+	for (TeXDocumentWindow * const src : sourceDocList) {
+		if (src != nullptr) {
+			return src;
+		}
+	}
+	if (!openIfNecessary) {
+		return nullptr;
+	}
+	return TeXDocumentWindow::openDocument(getMainSourceFilename(), false);
+}
+
 void PDFDocumentWindow::loadFile(const QString &fileName)
 {
 	setCurrentFile(fileName);
@@ -481,6 +540,7 @@ void PDFDocumentWindow::reload()
 	else {
 		statusBar()->showMessage(tr("Failed to load file \"%1\"; perhaps it is not a valid PDF document.").arg(TWUtils::strippedName(curFile)));
 	}
+	updateTypesettingAction();
 	QApplication::restoreOverrideCursor();
 }
 
@@ -740,8 +800,10 @@ void PDFDocumentWindow::showScale(qreal scale)
 
 void PDFDocumentWindow::retypeset()
 {
-	if (sourceDocList.count() > 0)
-		sourceDocList.first()->typeset();
+	TeXDocumentWindow * src = getFirstTeXDocumentWindow(true);
+	if (src != nullptr) {
+		src->typeset();
+	}
 }
 
 void PDFDocumentWindow::interrupt()
@@ -847,17 +909,23 @@ void PDFDocumentWindow::updateTypesettingAction()
 		}
 		return false;
 	}();
+	const bool canTypeset = [&]() {
+		return !getMainSourceFilename().isEmpty();
+	}();
+
 
 	disconnect(actionTypeset, &QAction::triggered, this, nullptr);
 	if (isSourceTypesetting) {
 		actionTypeset->setIcon(QIcon::fromTheme(QStringLiteral("process-stop")));
 		actionTypeset->setText(tr("Abort typesetting"));
 		connect(actionTypeset, &QAction::triggered, this, &PDFDocumentWindow::interrupt);
+		enableTypesetAction(true);
 	}
 	else {
 		actionTypeset->setIcon(QIcon::fromTheme(QStringLiteral("process-start")));
 		actionTypeset->setText(tr("Typeset"));
 		connect(actionTypeset, &QAction::triggered, this, &PDFDocumentWindow::retypeset);
+		enableTypesetAction(canTypeset);
 	}
 }
 

@@ -82,11 +82,11 @@ TeXDocumentWindow::TeXDocumentWindow(const QString &fileName, bool asTemplate)
 
 TeXDocumentWindow::~TeXDocumentWindow()
 {
-	// Disconnect from windowListChanged notifications to avoid getting the
-	// signal after our TeXDocumentWindow is destroyed (but before the base
-	// QObject is destroyed, in which case the system wouldn't know what to do
-	// with the signal)
+	// Disconnect from notifications to avoid getting signals after our
+	// TeXDocumentWindow is destroyed (but before the base QObject is destroyed,
+	// in which case the system wouldn't know what to do with the signal)
 	disconnect(TWApp::instance(), &TWApp::windowListChanged, this, nullptr);
+	disconnect(TWApp::instance(), &TWApp::recentFileActionsChanged, this, nullptr);
 	docList.removeAll(this);
 	updateWindowMenu();
 	// Because _texDoc->parent() == this, _texDoc will be destroyed
@@ -2779,8 +2779,13 @@ void TeXDocumentWindow::typeset()
 		}
 		// ensure the window is visible - otherwise we can't see the output
 		// panel (and the typeset process appears to hang in case of an error)
+		// Also ensure the window is activated (in case it wasn't; e.g. when
+		// starting typesetting from the preview) so it can receive focus (to
+		// the input line)
 		consoleTabs->setCurrentIndex(0);
+		show();
 		raise();
+		activateWindow();
 
 		inputLine->setFocus(Qt::OtherFocusReason);
 		showPdfWhenFinished = e.showPdf();

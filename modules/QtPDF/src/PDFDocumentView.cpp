@@ -811,13 +811,10 @@ void PDFDocumentView::search(QString searchText, Backend::SearchFlags flags /* =
   // change the search text in that case (e.g., to something meaningless and
   // then back again to abort the previous search and restart at the new
   // location).
-  if (searchText == _searchString) {
-    // FIXME: If flags changed we need to do a full search!
+  if (searchText == _searchString && flags == _searchFlags) {
     nextSearchResult();
     return;
   }
-
-  clearSearchResults();
 
   // Construct a list of requests that can be passed to QtConcurrent::mapped()
   QList<Backend::SearchRequest> requests;
@@ -844,9 +841,11 @@ void PDFDocumentView::search(QString searchText, Backend::SearchFlags flags /* =
     _searchResultWatcher.cancel();
     _searchResultWatcher.waitForFinished();
   }
+  clearSearchResults();
 
   _currentSearchResult = -1;
   _searchString = searchText;
+  _searchFlags = flags;
   _searchResultWatcher.setFuture(QtConcurrent::mapped(requests, Backend::Page::executeSearch));
 }
 
@@ -873,10 +872,13 @@ void PDFDocumentView::nextSearchResult()
     return;
 
   highlightPath->setBrush(_currentSearchResultHighlightBrush);
-  centerOn(highlightPath);
 
   PDFPageGraphicsItem * pageItem = dynamic_cast<PDFPageGraphicsItem *>(highlightPath->parentItem());
   if (pageItem) {
+    const QRectF bb = pageItem->mapRectFromItem(highlightPath, highlightPath->boundingRect());
+    const QRectF pdfRect = QRectF(pageItem->mapToPage(bb.topLeft()), pageItem->mapToPage(bb.bottomRight()));
+    goToPage(pageItem, pdfRect, false);
+
     QSharedPointer<Backend::Page> page = pageItem->page().toStrongRef();
     // FIXME: shape subpath coordinates seem to be in upside down pdf coordinates. We should find a better place to construct the proper transform (e.g., in PDFPageGraphicsItem)
     if (page)
@@ -906,10 +908,13 @@ void PDFDocumentView::previousSearchResult()
     return;
 
   highlightPath->setBrush(_currentSearchResultHighlightBrush);
-  centerOn(highlightPath);
 
   PDFPageGraphicsItem * pageItem = dynamic_cast<PDFPageGraphicsItem *>(highlightPath->parentItem());
   if (pageItem) {
+    const QRectF bb = pageItem->mapRectFromItem(highlightPath, highlightPath->boundingRect());
+    const QRectF pdfRect = QRectF(pageItem->mapToPage(bb.topLeft()), pageItem->mapToPage(bb.bottomRight()));
+    goToPage(pageItem, pdfRect, false);
+
     QSharedPointer<Backend::Page> page = pageItem->page().toStrongRef();
     // FIXME: shape subpath coordinates seem to be in upside down pdf coordinates. We should find a better place to construct the proper transform (e.g., in PDFPageGraphicsItem)
     if (page)
