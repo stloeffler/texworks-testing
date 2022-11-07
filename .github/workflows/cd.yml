@@ -58,7 +58,7 @@ jobs:
         echo "${{ github.output }}"
         GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/')
         echo "$GITHUB_OUTPUT"
-        GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/' | | sed -e 's!\([A-Za-z]\):/!/mnt/\L\1/!')
+        GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/' | sed -e 's!\([A-Za-z]\):/!/mnt/\L\1/!')
         echo "$GITHUB_OUTPUT"
         ls -lisa "$GITHUB_OUTPUT"
 
