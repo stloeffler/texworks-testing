@@ -54,11 +54,13 @@ jobs:
 
     - name: Test 2
       shell: wsl-bash {0}
-      env:
-        GITHUB_OUTPUT: $GITHUB_OUTPUT
       run: |
-        echo "$GITHUB_OUTPUT"
         echo "${{ github.output }}"
+        GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/')
+        echo "$GITHUB_OUTPUT"
+        GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/' | | sed -e 's!\([A-Za-z]\):/!/mnt/\L\1/!')
+        echo "$GITHUB_OUTPUT"
+        ls -lisa "$GITHUB_OUTPUT"
 
 
     - name: Install dependencies
