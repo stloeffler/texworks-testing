@@ -46,6 +46,19 @@ jobs:
       with:
         distribution: Ubuntu-20.04
 
+    - name: Test 1
+      shell: bash
+      run: |
+        echo "$GITHUB_OUTPUT"
+        echo "${{ env.GITHUB_OUTPUT }}"
+
+    - name: Test 2
+      shell: wsl-bash {0}
+      run: |
+        echo "$GITHUB_OUTPUT"
+        echo "${{ env.GITHUB_OUTPUT }}"
+
+
     - name: Install dependencies
       uses: ./.github/actions/setup-windows
 
