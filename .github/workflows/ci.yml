@@ -121,6 +121,9 @@ jobs:
       with:
         modules: qtscript
 
+    - name: Remove Strawberry Perl
+      run: rm -r -fo C:/Strawberry
+
     - name: Install dependencies
       run: |
         cmake -B "${{ runner.workspace }}/tw-deps-build" -S "${{ github.workspace }}/.github/actions/msvc-dependencies" -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/tw-deps"
