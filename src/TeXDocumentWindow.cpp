@@ -36,6 +36,8 @@
 #include "scripting/ScriptAPI.h"
 #include "ui/ClickableLabel.h"
 #include "ui/RemoveAuxFilesDialog.h"
+#include "ui/SelWinAction.h"
+#include "utils/CmdKeyFilter.h"
 
 #include <QAbstractButton>
 #include <QAbstractItemView>
@@ -250,8 +252,9 @@ void TeXDocumentWindow::init()
 
 	connect(menuEdit, &QMenu::aboutToShow, this, &TeXDocumentWindow::editMenuAboutToShow);
 
-#if defined(Q_OS_DARWIN)
-	textEdit->installEventFilter(CmdKeyFilter::filter());
+#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
+	// Work around QTBUG-36281
+	textEdit->installEventFilter(Tw::Utils::CmdKeyFilter::filter());
 #endif
 
 	connect(inputLine, &QLineEdit::returnPressed, this, &TeXDocumentWindow::acceptInputLine);
@@ -1579,7 +1582,7 @@ void TeXDocumentWindow::updateWindowMenu()
 	// well to uniquely identify the current file among all others open in
 	// TeXworks
 	Q_FOREACH(QAction * action, menuWindow->actions()) {
-		SelWinAction * selWinAction = qobject_cast<SelWinAction*>(action);
+		Tw::UI::SelWinAction * selWinAction = qobject_cast<Tw::UI::SelWinAction*>(action);
 		// If this is not an action related to an open window, skip it
 		if (!selWinAction)
 			continue;

@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2019  Stefan Löffler
+	Copyright (C) 2007-2022  Jonathan Kew, Stefan Löffler
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,27 +18,34 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
-#include <QtTest/QtTest>
 
-#include "scripting/ScriptLanguageInterface.h"
+#ifndef Utils_CmdKeyFilter_H
+#define Utils_CmdKeyFilter_H
 
-namespace UnitTest {
+#include <QObject>
 
-class TestLuaScripting : public QObject
+namespace Tw {
+
+namespace Utils {
+
+// filter used to stop Command-keys getting inserted into edit text items
+// (only used on Mac OS X)
+class CmdKeyFilter: public QObject
 {
 	Q_OBJECT
-private slots:
-	void initTestCase();
-	void cleanupTestCase();
 
-	void scriptLanguageName();
-	void scriptLanguageURL();
-	void canHandleFile();
+public:
+	static CmdKeyFilter *filter();
 
-	void execute();
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override;
+
 private:
-	Tw::Scripting::ScriptLanguageInterface * luaSI;
-	QPluginLoader loader;
+	static CmdKeyFilter *filterObj;
 };
 
-} // namespace UnitTest
+} // namespace Utils
+
+} // namespace Tw
+
+#endif // !defined(Utils_CmdKeyFilter_H)

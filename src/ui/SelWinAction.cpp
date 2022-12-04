@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2019  Stefan Löffler
+	Copyright (C) 2007-2022  Jonathan Kew, Stefan Löffler
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,27 +18,22 @@
 	For links to further information, or to contact the authors,
 	see <http://www.tug.org/texworks/>.
 */
-#include <QtTest/QtTest>
 
-#include "scripting/ScriptLanguageInterface.h"
+#include "SelWinAction.h"
 
-namespace UnitTest {
+namespace Tw {
 
-class TestLuaScripting : public QObject
+namespace UI {
+
+// action subclass used for dynamic window-selection items in the Window menu
+
+SelWinAction::SelWinAction(QObject *parent, const QString &fileName, const QString &label)
+	: QAction(parent)
 {
-	Q_OBJECT
-private slots:
-	void initTestCase();
-	void cleanupTestCase();
+	setText(label);
+	setData(fileName);
+}
 
-	void scriptLanguageName();
-	void scriptLanguageURL();
-	void canHandleFile();
+} // namespace UI
 
-	void execute();
-private:
-	Tw::Scripting::ScriptLanguageInterface * luaSI;
-	QPluginLoader loader;
-};
-
-} // namespace UnitTest
+} // namespace Tw

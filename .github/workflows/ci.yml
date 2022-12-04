@@ -121,6 +121,8 @@ jobs:
       with:
         modules: qtscript
 
+      # Strawberry perl comes with all sorts of libraries (without headers) that
+      # can wreak havoc when building some of the dependencies
     - name: Remove Strawberry Perl
       run: rm -r -fo C:/Strawberry
 

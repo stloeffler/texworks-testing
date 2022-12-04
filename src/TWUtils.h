@@ -109,30 +109,4 @@ private:
 	static QString sCleanupPatterns;
 };
 
-// this special QAction class is used in Window menus, so that it's easy to recognize the dynamically-created items
-class SelWinAction : public QAction
-{
-	Q_OBJECT
-
-public:
-	SelWinAction(QObject *parent, const QString & fileName, const QString &label);
-};
-
-// filter used to stop Command-keys getting inserted into edit text items
-// (only used on Mac OS X)
-class CmdKeyFilter: public QObject
-{
-	Q_OBJECT
-
-public:
-	static CmdKeyFilter *filter();
-
-protected:
-	bool eventFilter(QObject *obj, QEvent *event) override;
-
-private:
-	static CmdKeyFilter *filterObj;
-};
-
-
 #endif
