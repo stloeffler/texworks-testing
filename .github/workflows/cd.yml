@@ -80,6 +80,12 @@ jobs:
       with:
         qt: ${{ matrix.qtVersionMajor }}
 
+    = name: Strip libraries
+      shell: wsl-bash {0}
+      run: |
+        # See https://github.com/microsoft/WSL/issues/3023
+        strip --remove-section=.note.ABI-tag /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/*.so.*
+
     - name: Test 3
       shell: wsl-bash {0}
       run: |
