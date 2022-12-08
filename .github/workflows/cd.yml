@@ -84,6 +84,7 @@ jobs:
       shell: wsl-bash {0}
       run: |
         LD_LIBRARY_PATH=/usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/ ldd /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/bin/lrelease
+        ls -lisa /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib
 
     - name: Test 3a
       shell: wsl-bash {0}
