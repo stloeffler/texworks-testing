@@ -91,6 +91,13 @@ jobs:
       run: |
         readelf -d /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/bin/lrelease
 
+    - name: Test 3b
+      shell: wsl-bash {0}
+      run: |
+        file /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/bin/lrelease
+        file /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/libQt6Core.so
+        file -L /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/libQt6Core.so
+
     - name: Test 4
       shell: wsl-bash {0}
       run: |
