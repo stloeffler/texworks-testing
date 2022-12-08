@@ -36,6 +36,18 @@ jobs:
   win:
     name: Windows
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        winVersion: [7, 10]
+        include:
+            # Latest Qt6 release [https://download.qt.io/official_releases/qt/]
+            # Qt 6.2 supports Windows >= 10 [https://doc.qt.io/qt-6/windows.html]
+          - winVersion: 10
+            qtVersionMajor: 6
+            # Qt 5.15 supports Windows >= 7 [https://doc.qt.io/qt-5/windows.html]
+          - winVersion: 7
+            qtVersionMajor: 5
 
     steps:
     - name: Checkout
@@ -66,7 +78,7 @@ jobs:
     - name: Install dependencies
       uses: ./.github/actions/setup-windows
       with:
-        qt: 5
+        qt: ${{ matrix.qtVersionMajor }}
 
     - name: Configure
       shell: wsl-bash {0}
@@ -109,7 +121,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: TeXworks-Windows
+        name: TeXworks-Windows${{ matrix.winVersion }}
         path: ${{ steps.package.outputs.file }}
 
     - name: Build installer
@@ -119,7 +131,7 @@ jobs:
     - name: Upload installer artifact
       uses: actions/upload-artifact@v3
       with:
-        name: TeXworks-Windows-Setup
+        name: TeXworks-Windows${{ matrix.winVersion }}-Setup
         path: win32/Output/*.exe
 
 #    - name: Deploy to Artifactory
