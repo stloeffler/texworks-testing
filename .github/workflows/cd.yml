@@ -80,6 +80,16 @@ jobs:
       with:
         qt: ${{ matrix.qtVersionMajor }}
 
+    - name: Test 3
+      shell: wsl-bash {0}
+      run: |
+        ldd /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/bin/lrelease
+
+    - name: Test 4
+      shell: wsl-bash {0}
+      run: |
+        find /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/
+
     - name: Configure
       shell: wsl-bash {0}
       # ./release is where Inno Setup looks for distribution files
