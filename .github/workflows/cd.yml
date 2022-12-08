@@ -49,6 +49,9 @@ jobs:
           - winVersion: 7
             qtVersionMajor: 5
 
+    env:
+      LD_LIBRARY_PATH: /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
