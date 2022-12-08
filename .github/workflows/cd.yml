@@ -80,7 +80,7 @@ jobs:
       with:
         qt: ${{ matrix.qtVersionMajor }}
 
-    = name: Strip libraries
+    - name: Strip libraries
       shell: wsl-bash {0}
       run: |
         # See https://github.com/microsoft/WSL/issues/3023
