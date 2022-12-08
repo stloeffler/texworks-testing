@@ -100,6 +100,11 @@ jobs:
       run: |
         ldd /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/libQt6Core.so
 
+    - name: Test 6
+      shell: wsl-bash {0}
+      run: |
+        ls -lisa /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib
+
     - name: Configure
       shell: wsl-bash {0}
       # ./release is where Inno Setup looks for distribution files
