@@ -86,7 +86,7 @@ RUN cd /opt && \
 	tar -xf hunspell-${HUNSPELL_VERSION}.tar.gz && \
 	cd hunspell-${HUNSPELL_VERSION} && \
 	./configure && \
-	make -j && \
+	make && \
 	make install
 
 # Install Qt
@@ -102,7 +102,7 @@ RUN \
 	mkdir poppler-${POPPLER_VERSION}/build && \
 	cd poppler-${POPPLER_VERSION}/build && \
 	${CMAKE} .. -DCMAKE_PREFIX_PATH=/opt/qt/${QT_VERSION}/gcc_64/lib/cmake/ -DENABLE_CPP=OFF -DENABLE_GLIB=OFF -DENABLE_UTILS=OFF -DENABLE_UNSTABLE_API_ABI_HEADERS=ON && \
-	make -j && \
+	make && \
 	make install
 
 COPY . /home/tw
@@ -110,7 +110,7 @@ COPY . /home/tw
 # Build TeXworks
 RUN mkdir /home/tw/build && cd /home/tw/build && \
 ${CMAKE} -DTW_BUILD_ID='github' -DCMAKE_INSTALL_PREFIX=/usr .. -DCMAKE_PREFIX_PATH=/opt/qt/${QT_VERSION}/gcc_64 -DQT_DEFAULT_MAJOR_VERSION=6 && \
-make -j6 && \
+make && \
 xvfb-run ${CTEST} -V && \
 make install DESTDIR=AppDir
 
