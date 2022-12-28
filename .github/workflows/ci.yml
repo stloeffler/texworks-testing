@@ -161,8 +161,9 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        # /usr/local/bin/2to3 is symlinked to the native python2 installation
-        # but prevents the homebrew install from succeeding
+        # /usr/local/bin/2to3, as well as versioned variants (e.g. 2to3-3.11)
+        # are symlinked to the native python2 installation but prevent the
+        # homebrew install from succeeding
         rm -f /usr/local/bin/2to3
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew install hunspell poppler-qt5 lua qt@5
