@@ -60,23 +60,6 @@ jobs:
       with:
         distribution: Ubuntu-22.04
 
-    - name: Test 1
-      shell: bash
-      run: |
-        echo "$GITHUB_OUTPUT"
-        echo "${{ github.output }}"
-
-    - name: Test 2
-      shell: wsl-bash {0}
-      run: |
-        echo "${{ github.output }}"
-        GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/')
-        echo "$GITHUB_OUTPUT"
-        GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/' | sed -e 's!\([A-Za-z]\):/!/mnt/\L\1/!')
-        echo "$GITHUB_OUTPUT"
-        ls -lisa "$GITHUB_OUTPUT"
-
-
     - name: Install dependencies
       uses: ./.github/actions/setup-windows
       with:
@@ -86,41 +69,8 @@ jobs:
       shell: wsl-bash {0}
       if: matrix.qtVersionMajor == 6
       run: |
-        # See https://github.com/microsoft/WSL/issues/3023
+        # Work around https://github.com/microsoft/WSL/issues/3023
         strip --remove-section=.note.ABI-tag /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/*.so.*
-
-#    - name: Test 3
-#      shell: wsl-bash {0}
-#      run: |
-#        LD_LIBRARY_PATH=/usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/ ldd /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/bin/lrelease
-#        ls -lisa /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib
-#
-#    - name: Test 3a
-#      shell: wsl-bash {0}
-#      run: |
-#        readelf -d /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/bin/lrelease
-#
-#    - name: Test 3b
-#      shell: wsl-bash {0}
-#      run: |
-#        file /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/bin/lrelease
-#        file /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/libQt6Core.so
-#        file -L /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/libQt6Core.so
-#
-#    - name: Test 4
-#      shell: wsl-bash {0}
-#      run: |
-#        find /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/
-#
-#    - name: Test 5
-#      shell: wsl-bash {0}
-#      run: |
-#        ldd /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib/libQt6Core.so
-#
-#    - name: Test 6
-#      shell: wsl-bash {0}
-#      run: |
-#        ls -lisa /usr/lib/mxe/usr/x86_64-pc-linux-gnu/qt6/lib
 
     - name: Configure
       shell: wsl-bash {0}
