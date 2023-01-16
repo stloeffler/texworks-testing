@@ -1,3 +1,5 @@
+# NB: Don't use parallel builds (i.e., `make -j`) as that might require more RAM than is available on GitHub Actions, resulting in the run to hang and fail
+
 # Qt6 packages are built against glibc 2.28 [https://doc.qt.io/qt-6/supported-platforms.html#availability-of-packages]
 # This is the version bundled (among others) in Debian 10 [https://en.wikipedia.org/wiki/Glibc#Version_history]
 
@@ -122,4 +124,4 @@ RUN cd /home/tw/build && \
 
 # Copy the resulting AppImage into a blank docker image for easier further processing
 FROM scratch
-COPY --from=build-stage /home/tw/build/TeXworks-*-x86_64.AppImage /
+COPY --from=build-stage /home/tw/build/TeXworks-*.AppImage /
