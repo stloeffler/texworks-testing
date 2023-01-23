@@ -1,0 +1,19 @@
+name: Workflow
+on: push
+
+jobs:
+  win:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: OrbitalOwen/desktop-screenshot-action@0.1
+        with:
+          file-name: windows.jpg
+
+  mac:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - uses: OrbitalOwen/desktop-screenshot-action@0.1
+        with:
+          file-name: mac.jpg
