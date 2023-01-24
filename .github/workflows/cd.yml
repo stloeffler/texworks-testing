@@ -203,11 +203,8 @@ jobs:
       shell: bash
       run: |
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
-        ls -lisa /usr/local/lib/*jpeg*
         brew uninstall --ignore-dependencies --force brotli cairo fontconfig freetype harfbuzz jpeg-turbo libjpeg libpng libtiff little-cms2 openjpeg webp zstd
-        ls -lisa /usr/local/lib/*jpeg*
         brew install automake libtool pkg-config
-        ls -lisa /usr/local/lib/*jpeg*
 
     - name: Cache dependencies
       id: cache-dependencies
