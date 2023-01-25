@@ -206,6 +206,10 @@ jobs:
         brew uninstall --ignore-dependencies --force brotli cairo fontconfig freetype harfbuzz jpeg-turbo libjpeg libpng libtiff little-cms2 openjpeg webp zstd
         brew install automake libtool pkg-config
 
+    - name: Debug
+      shell: bash
+      run: ls -lisa /usr/local/lib/
+
     - name: Cache dependencies
       id: cache-dependencies
       uses: actions/cache@v3
@@ -225,6 +229,11 @@ jobs:
 
     - name: Build
       run: cmake --build build -j
+
+    - name: Debug
+      shell: bash
+      working-directory: build
+      run: otool -L test_poppler-qt5
 
     - name: Test
       run: ctest -V
