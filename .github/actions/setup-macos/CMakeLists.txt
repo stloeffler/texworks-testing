@@ -105,21 +105,21 @@ ExternalProject_Add(lcms2
 ADD_GH_GROUP(lcms2)
 
 # cairo?
-if (DEFINED ENV{MACOSX_DEPLOYMENT_TARGET} AND $ENV{MACOSX_DEPLOYMENT_TARGET} VERSION_LESS "10.15")
+#if (DEFINED ENV{MACOSX_DEPLOYMENT_TARGET} AND $ENV{MACOSX_DEPLOYMENT_TARGET} VERSION_LESS "10.15")
 ExternalProject_Add(poppler
 	URL "https://poppler.freedesktop.org/poppler-21.12.0.tar.xz"
 	URL_HASH SHA256=acb840c2c1ec07d07e53c57c4b3a1ff3e3ee2d888d44e1e9f2f01aaf16814de7
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
-else ()
-ExternalProject_Add(poppler
-	URL "https://poppler.freedesktop.org/poppler-23.01.0.tar.xz"
-	URL_HASH SHA256=fae9b88d3d5033117d38477b79220cfd0d8e252c278ec870ab1832501741fd94
-	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE -DRUN_GPERF_IF_PRESENT=FALSE
-	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
-)
-endif ()
+#else ()
+#ExternalProject_Add(poppler
+#	URL "https://poppler.freedesktop.org/poppler-23.01.0.tar.xz"
+#	URL_HASH SHA256=fae9b88d3d5033117d38477b79220cfd0d8e252c278ec870ab1832501741fd94
+#	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE -DRUN_GPERF_IF_PRESENT=FALSE
+#	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
+#)
+#endif ()
 ADD_GH_GROUP(poppler)
 
 ExternalProject_Add(poppler-data
