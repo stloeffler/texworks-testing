@@ -266,11 +266,11 @@ jobs:
         name: TeXworks-macOS${{ matrix.macVersion }}
         path: ${{ steps.package.outputs.file }}
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      if: ${{ always() }}
-      with:
-        limit-access-to-actor: true
+#    - name: Setup tmate session
+#      uses: mxschmitt/action-tmate@v3
+#      if: ${{ always() }}
+#      with:
+#        limit-access-to-actor: true
 
 #    - name: Deploy to Artifactory
 #      if: github.event_name == 'push'
