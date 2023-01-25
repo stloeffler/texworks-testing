@@ -190,11 +190,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      with:
-        limit-access-to-actor: true\
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -261,13 +256,21 @@ jobs:
 
     - name: Package
       id: package
+      if: ${{ always() }}
       uses: ./.github/actions/package-macos
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
+      if: ${{ always() }}
       with:
         name: TeXworks-macOS${{ matrix.macVersion }}
         path: ${{ steps.package.outputs.file }}
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ always() }}
+      with:
+        limit-access-to-actor: true
 
 #    - name: Deploy to Artifactory
 #      if: github.event_name == 'push'
