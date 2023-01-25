@@ -62,7 +62,7 @@ pkgs = dict([(p.name, p) for p in [
 	GithubPackage('lcms2', 'mm2/Little-CMS', tagFormat = 'lcms{}'),
 	Package('libjpeg', 'https://ijg.org/files/', r'jpegsrc.v[0-9.a-zA-Z]+\.tar\.gz', versionRegex = r'(?<=\.v)([0-9.a-zA-Z]+)(?=\.tar\.gz)'),
 	GithubPackage('libopenjpeg', 'uclouvain/openjpeg'),
-	Package('libpng', 'http://www.libpng.org/pub/png/libpng.html', r'libpng-[0-9.]+\.tar\.xz', 'https://downloads.sourceforge.net/project/libpng/libpng16/{0}/libpng-{0}.tar.xz'),
+	Package('libpng', 'http://www.libpng.org/pub/png/libpng.html', r'libpng-[0-9.]+\.tar\.xz', 'https://download.sourceforge.net/libpng/libpng-{}.tar.xz'),
 	Package('libtiff', 'https://download.osgeo.org/libtiff/', r'tiff-[0-9.]+\.tar\.gz'),
 	Package('lua', 'https://www.lua.org/ftp/', r'lua-[0-9.]+\.tar\.gz'),
 	Package('poppler', 'https://poppler.freedesktop.org/', r'poppler-[0-9.]+\.tar\.xz'),
