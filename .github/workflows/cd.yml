@@ -233,7 +233,9 @@ jobs:
     - name: Debug
       shell: bash
       working-directory: build
-      run: otool -L test_poppler-qt5
+      run: |
+        ls -lisa
+        otool -L test_poppler-*
 
     - name: Test
       run: ctest -V
