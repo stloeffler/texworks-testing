@@ -216,7 +216,8 @@ jobs:
         brew remove --cask --force $(brew list)
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew uninstall --ignore-dependencies --force brotli cairo fontconfig freetype harfbuzz jpeg-turbo libjpeg libpng libtiff little-cms2 openjpeg webp zstd
-        brew install automake cmake libtool pkg-config
+        brew install automake cmake gettext libtool pkg-config
+        # gettext provides autopoint required by hunspell
 
     - name: Debug
       shell: bash
