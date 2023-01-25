@@ -238,7 +238,7 @@ jobs:
         otool -L test_poppler-*
 
     - name: Test
-      run: ctest -V
+      run: DYLD_PRINT_LIBRARIES=1 ctest -V
       working-directory: build
 
     - name: Package
