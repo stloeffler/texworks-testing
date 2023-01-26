@@ -196,6 +196,9 @@ jobs:
         version: ${{ matrix.qtVersion }}
         modules: ${{ matrix.qtModules }}
 
+    - name: Env
+      run: env
+
     - name: Qt plugin debug
       run: find ${QT_PLUGIN_PATH}
 
