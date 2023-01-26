@@ -246,12 +246,12 @@ jobs:
     - name: Build
       run: cmake --build build -j
 
-    - name: Debug
-      shell: bash
+    - name: otool
       working-directory: build
       run: |
         ls -lisa
         otool -L test_poppler-*
+        otool -L ${RUNNER_TEMP}/tw-deps/lib/libpoppler*.dylib
 
     - name: Test
       run: DYLD_PRINT_LIBRARIES=1 ctest -V
