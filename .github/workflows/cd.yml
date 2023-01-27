@@ -194,6 +194,7 @@ jobs:
       run: |
         cat /usr/local/include/jconfig.h
         cat /usr/local/include/jmorecfg.h
+        cat /usr/local/include/jpeglib.h
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
@@ -249,6 +250,7 @@ jobs:
       run: |
         cat ${RUNNER_TEMP}/tw-deps/include/jconfig.h
         cat ${RUNNER_TEMP}/tw-deps/include/jmorecfg.h
+        cat ${RUNNER_TEMP}/tw-deps/include/jpeglib.h
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="${RUNNER_TEMP}/tw-deps" -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }} -DQT_PLUGIN_PATH=${QT_PLUGIN_PATH}
