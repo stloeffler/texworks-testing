@@ -71,8 +71,8 @@ ExternalProject_Add(fontconfig
 ADD_GH_GROUP(fontconfig)
 
 ExternalProject_Add(libjpeg
-	URL https://ijg.org/files/jpegsrc.v9e.tar.gz
-	URL_HASH SHA256=4077d6a6a75aeb01884f708919d25934c93305e49f7e3f36db9129320e6f4f3d
+	URL https://ijg.org/files/jpegsrc.v8d.tar.gz
+	URL_HASH SHA256=fdc4d4c11338ad028a7d23fb53f5bb9354671392a67fb1b52e0c32a7121891f8
 	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 	TEST_AFTER_INSTALL TRUE
