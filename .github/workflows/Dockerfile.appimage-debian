@@ -19,6 +19,7 @@ ARG CMAKE_VERSION=3.25.1
 ARG QT_VERSION=6.4.1
 ARG POPPLER_VERSION=23.01.0
 ARG HUNSPELL_VERSION=1.7.2
+ARG FREETYPE_VERSION=2.12.1
 
 # file is required by appimagetool
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends --assume-yes \
@@ -28,13 +29,15 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install 
 	git \
 	gsfonts \
 	libboost-container-dev \
+	libbrotli-dev \
+	libbz2-dev \
 	libcairo2-dev \
 	libcurl4-nss-dev \
 	libdbus-1-dev \
 	libegl1-mesa-dev \
 	libfontconfig-dev \
-	libfreetype6-dev \
 	libgl-dev \
+	libharfbuzz-dev \
 	libjpeg-dev \
 	liblcms2-dev \
 	liblua5.3-dev \
@@ -96,6 +99,17 @@ RUN cd /opt && \
 RUN pip3 install aqtinstall && \
 	aqt install-qt linux desktop ${QT_VERSION} --modules qt5compat -O /opt/qt
 
+# Build Freetype
+RUN \
+	cd /opt && \
+	wget https://download.savannah.gnu.org/releases/freetype/freetype-${FREETYPE_VERSION}.tar.xz && \
+	tar -xf freetype-${FREETYPE_VERSION}.tar.xz && \
+	mkdir freetype-${FREETYPE_VERSION}/build && \
+	cd freetype-${FREETYPE_VERSION}/build && \
+	${CMAKE} .. -DBUILD_SHARED_LIBS=ON && \
+	make && \
+	make install
+
 # Build Poppler
 RUN \
 	cd /opt && \
@@ -103,7 +117,7 @@ RUN \
 	tar -xf poppler-${POPPLER_VERSION}.tar.xz && \
 	mkdir poppler-${POPPLER_VERSION}/build && \
 	cd poppler-${POPPLER_VERSION}/build && \
-	${CMAKE} .. -DCMAKE_PREFIX_PATH=/opt/qt/${QT_VERSION}/gcc_64/lib/cmake/ -DENABLE_CPP=OFF -DENABLE_GLIB=OFF -DENABLE_UTILS=OFF -DENABLE_UNSTABLE_API_ABI_HEADERS=ON && \
+	${CMAKE} .. -DCMAKE_PREFIX_PATH=/opt/qt/${QT_VERSION}/gcc_64/lib/cmake/ -DENABLE_CPP=OFF -DENABLE_GLIB=OFF -DENABLE_UTILS=OFF -DENABLE_UNSTABLE_API_ABI_HEADERS=ON -DENABLE_BOOST=OFF && \
 	make && \
 	make install
 
