@@ -230,8 +230,7 @@ jobs:
         brew remove --cask --force $(brew list)
         brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
         brew uninstall --ignore-dependencies --force brotli cairo fontconfig freetype harfbuzz jpeg-turbo libjpeg libpng libtiff little-cms2 openjpeg webp zstd
-        brew install automake cmake gettext libtool pkg-config
-        # gettext provides autopoint required by hunspell
+        brew install automake cmake libtool pkg-config
 
     - name: Debug
       shell: bash
@@ -249,7 +248,7 @@ jobs:
       shell: bash
       run: |
         cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX="${RUNNER_TEMP}/tw-deps" -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }}
-        PKG_CONFIG_PATH=${RUNNER_TEMP}/tw-deps/lib/pkgconfig cmake --build ".github/actions/setup-macos/build" -v
+        PATH="${RUNNER_TEMP}/tw-deps/bin:$PATH" PKG_CONFIG_PATH=${RUNNER_TEMP}/tw-deps/lib/pkgconfig cmake --build ".github/actions/setup-macos/build" -v
 
     - name: poppler CMakeCache
       run: |
