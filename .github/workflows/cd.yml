@@ -195,46 +195,22 @@ jobs:
     - name: Uninstall Mono
       run: sudo /bin/sh -c "$(curl -fsSL https://github.com/gurza/cli-toolbox/raw/master/dotnet/mono-uninstall.sh)"
 
-    - name: jpeg config
+    - name: Install clean Homebrew dependencies
+      shell: bash
       run: |
-        cat /usr/local/include/jconfig.h
-        cat /usr/local/include/jmorecfg.h
-        cat /usr/local/include/jpeglib.h
+        # Uninstall all packages
+        brew remove --force $(brew list --formula)
+        brew remove --cask --force $(brew list)
+        # Update Homebrew
+        brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
+        # Install needed dependencies
+        brew install automake libtool pkg-config
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
         version: ${{ matrix.qtVersion }}
         modules: ${{ matrix.qtModules }}
-
-    - name: Env
-      run: env
-
-    - name: Qt plugin debug
-      run: find ${QT_PLUGIN_PATH}
-
-#    - name: Uninstall Homebrew
-#      shell: bash
-#      run: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
-#
-#    - name: Reinstall clean Homebrew
-#      shell: bash
-#      run: |
-#        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-#        brew install automake libtool pkg-config
-
-    - name: Install Homebrew dependencies
-      shell: bash
-      run: |
-        brew remove --force $(brew list --formula)
-        brew remove --cask --force $(brew list)
-        brew update > brew_update.log || { echo "::error::Updating homebrew failed"; cat brew_update.log; exit 1; }
-        brew uninstall --ignore-dependencies --force brotli cairo fontconfig freetype harfbuzz jpeg-turbo libjpeg libpng libtiff little-cms2 openjpeg webp zstd
-        brew install automake cmake libtool pkg-config
-
-    - name: Debug
-      shell: bash
-      run: ls -lisa /usr/local/lib/
 
     - name: Cache dependencies
       id: cache-dependencies
@@ -249,16 +225,6 @@ jobs:
       run: |
         cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX="${RUNNER_TEMP}/tw-deps" -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }}
         PATH="${RUNNER_TEMP}/tw-deps/bin:$PATH" PKG_CONFIG_PATH=${RUNNER_TEMP}/tw-deps/lib/pkgconfig cmake --build ".github/actions/setup-macos/build" -v
-
-    - name: poppler CMakeCache
-      run: |
-        cat .github/actions/setup-macos/build/poppler-prefix/src/poppler-build/CMakeCache.txt
-
-    - name: jpeg config
-      run: |
-        cat ${RUNNER_TEMP}/tw-deps/include/jconfig.h
-        cat ${RUNNER_TEMP}/tw-deps/include/jmorecfg.h
-        cat ${RUNNER_TEMP}/tw-deps/include/jpeglib.h
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="${RUNNER_TEMP}/tw-deps" -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }} -DQT_PLUGIN_PATH=${QT_PLUGIN_PATH}
