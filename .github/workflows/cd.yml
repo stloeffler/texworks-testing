@@ -190,6 +190,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+      # Mono seems to provide some (potentially incompatible) headers that CMake
+      # might pick up on instead of ours
+    - name: Uninstall Mono
+      run: /bin/sh -c "$(wget -fsSL https://github.com/gurza/cli-toolbox/raw/master/dotnet/mono-uninstall.sh)"
+
     - name: jpeg config
       run: |
         cat /usr/local/include/jconfig.h
