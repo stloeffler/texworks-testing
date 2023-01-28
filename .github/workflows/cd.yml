@@ -246,6 +246,10 @@ jobs:
         cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX="${RUNNER_TEMP}/tw-deps" -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }}
         PKG_CONFIG_PATH=${RUNNER_TEMP}/tw-deps/lib/pkgconfig cmake --build ".github/actions/setup-macos/build" -v
 
+    - name: poppler CMakeCache
+      run: |
+        cat .github/actions/setup-macos/build/poppler-prefix/src/poppler-build/CMakeCache.txt
+
     - name: jpeg config
       run: |
         cat ${RUNNER_TEMP}/tw-deps/include/jconfig.h
