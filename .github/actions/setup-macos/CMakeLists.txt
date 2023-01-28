@@ -32,7 +32,7 @@ endmacro(ADD_GH_GROUP)
 
 
 ExternalProject_Add(libpng
-	URL "https://downloads.sourceforge.net/project/libpng/libpng16/1.6.39/libpng-1.6.39.tar.xz"
+	URL "https://download.sourceforge.net/libpng/libpng-1.6.39.tar.xz"
 	URL_HASH SHA256=1f4696ce70b4ee5f85f1e1623dc1229b210029fa4b7aee573df3e2ba7b036937
 	CMAKE_ARGS ${CMAKE_ARGS}
 )
@@ -66,8 +66,8 @@ ExternalProject_Add(hunspell
 ADD_GH_GROUP(hunspell)
 
 ExternalProject_Add(fontconfig
-	URL "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.14.1.tar.xz"
-	URL_HASH SHA256=298e883f6e11d2c5e6d53c8a8394de58d563902cfab934e6be12fb5a5f361ef0
+	URL "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.14.2.tar.xz"
+	URL_HASH SHA256=dba695b57bce15023d2ceedef82062c2b925e51f5d4cc4aef736cf13f60a468b
 	CONFIGURE_COMMAND ${CONFIGURE_ENV} CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS} --with-add-fonts=${_font_dirs} --disable-docs
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
@@ -111,21 +111,21 @@ ExternalProject_Add(lcms2
 ADD_GH_GROUP(lcms2)
 
 # cairo?
-#if (DEFINED ENV{MACOSX_DEPLOYMENT_TARGET} AND $ENV{MACOSX_DEPLOYMENT_TARGET} VERSION_LESS "10.15")
+if (DEFINED ENV{MACOSX_DEPLOYMENT_TARGET} AND $ENV{MACOSX_DEPLOYMENT_TARGET} VERSION_LESS "10.15")
 ExternalProject_Add(poppler
 	URL "https://poppler.freedesktop.org/poppler-21.12.0.tar.xz"
 	URL_HASH SHA256=acb840c2c1ec07d07e53c57c4b3a1ff3e3ee2d888d44e1e9f2f01aaf16814de7
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
-#else ()
-#ExternalProject_Add(poppler
-#	URL "https://poppler.freedesktop.org/poppler-23.01.0.tar.xz"
-#	URL_HASH SHA256=fae9b88d3d5033117d38477b79220cfd0d8e252c278ec870ab1832501741fd94
-#	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE -DRUN_GPERF_IF_PRESENT=FALSE
-#	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
-#)
-#endif ()
+else ()
+ExternalProject_Add(poppler
+	URL "https://poppler.freedesktop.org/poppler-23.01.0.tar.xz"
+	URL_HASH SHA256=fae9b88d3d5033117d38477b79220cfd0d8e252c278ec870ab1832501741fd94
+	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=FALSE -DENABLE_CPP=FALSE -DENABLE_GLIB=FALSE -DENABLE_UTILS=FALSE -DENABLE_UNSTABLE_API_ABI_HEADERS=TRUE -DRUN_GPERF_IF_PRESENT=FALSE
+	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
+)
+endif ()
 ADD_GH_GROUP(poppler)
 
 ExternalProject_Add(poppler-data
