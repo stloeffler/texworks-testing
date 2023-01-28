@@ -17,8 +17,8 @@ FROM debian:10 as build-stage
 
 ARG CMAKE_VERSION=3.25.1
 ARG QT_VERSION=6.4.1
-ARG POPPLER_VERSION=22.12.0
-ARG HUNSPELL_VERSION=1.7.1
+ARG POPPLER_VERSION=23.01.0
+ARG HUNSPELL_VERSION=1.7.2
 
 # file is required by appimagetool
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends --assume-yes \
