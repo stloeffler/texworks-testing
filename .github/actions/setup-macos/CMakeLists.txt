@@ -123,6 +123,16 @@ ExternalProject_Add(poppler
 endif ()
 ADD_GH_GROUP(poppler)
 
+# Need to install poppler-data (system-wide) so the test-cases succeed
+# (NB: poppler-data is downloaded and installed separately during packaging,
+# but only in the TeXworks.app directory, which doesn't help the tests)
+ExternalProject_Add(poppler-data
+	URL https://poppler.freedesktop.org/poppler-data-0.4.12.tar.gz
+	URL_HASH SHA256=c835b640a40ce357e1b83666aabd95edffa24ddddd49b8daff63adb851cdab74
+	CMAKE_ARGS ${CMAKE_ARGS}
+)
+ADD_GH_GROUP(poppler-data)
+
 ExternalProject_Add(lua
 	URL "https://www.lua.org/ftp/lua-5.4.4.tar.gz"
 	URL_HASH SHA256=164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61
