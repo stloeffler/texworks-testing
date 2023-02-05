@@ -263,6 +263,7 @@ SET(QTPDF_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentTools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFBackend.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFFontDescriptor.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageProcessingThread.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageTile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFRuler.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFSearcher.cpp
@@ -272,6 +273,7 @@ SET(QTPDF_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFAnnotations.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFGuideline.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PaperSizes.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageCache.cpp
 )
 
 SET(QTPDF_HDRS
@@ -281,6 +283,8 @@ SET(QTPDF_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFDocumentTools.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFBackend.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFFontDescriptor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFFontInfo.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageProcessingThread.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageTile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFRuler.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFSearcher.h
@@ -290,6 +294,7 @@ SET(QTPDF_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFAnnotations.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFGuideline.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/PaperSizes.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/PDFPageCache.h
 )
 
 # FIXME: Is -fPIC required/appropriate for all situations/platforms?
