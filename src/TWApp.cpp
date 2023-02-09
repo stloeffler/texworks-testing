@@ -306,7 +306,7 @@ TWApp::CommandLineData TWApp::processCommandLine()
 Copyright (C) %1  %2\n\
 License GPLv2+: GNU GPL (version 2 or later) <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\n").arg(QString::fromLatin1("2007-2022"), QString::fromUtf8("Jonathan Kew, Stefan Löffler, Charlie Sharpsteen"));
+There is NO WARRANTY, to the extent permitted by law.\n\n").arg(QString::fromLatin1("2007-2023"), QString::fromUtf8("Jonathan Kew, Stefan Löffler, Charlie Sharpsteen"));
 			strm.flush();
 		}
 		if ((i = clp.getNextSwitch(QString::fromLatin1("help"))) >= 0) {
@@ -441,7 +441,7 @@ void TWApp::about()
 {
 	QString aboutText = tr("<p>%1 is a simple environment for editing, typesetting, and previewing TeX documents.</p>").arg(QString::fromLatin1(TEXWORKS_NAME));
 	aboutText += QLatin1String("<small>");
-	aboutText += QLatin1String("<p>&#xA9; 2007-2022  Jonathan Kew, Stefan L&#xF6;ffler, Charlie Sharpsteen");
+	aboutText += QLatin1String("<p>&#xA9; 2007-2023  Jonathan Kew, Stefan L&#xF6;ffler, Charlie Sharpsteen");
 	aboutText += tr("<br>Version %1").arg(Tw::Utils::VersionInfo::fullVersionString());
 	aboutText += tr("<p>Distributed under the <a href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GNU General Public License</a>, version 2 or (at your option) any later version.");
 	aboutText += tr("<p><a href=\"http://www.qt.io/\">Qt application framework</a> v%1 by The Qt Company.").arg(QString::fromLatin1(qVersion()));
@@ -496,13 +496,21 @@ QString TWApp::GetWindowsVersionString()
 	else
 		GetSystemInfo(&si);
 
+	// See https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexa
+	// and https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
 	if ( VER_PLATFORM_WIN32_NT == osvi.dwPlatformId && osvi.dwMajorVersion > 4 ) {
 		if ( osvi.dwMajorVersion == 10 ) {
 			if ( osvi.dwMinorVersion == 0 ) {
-				if ( osvi.wProductType == VER_NT_WORKSTATION )
-					result = QLatin1String("10");
+				if ( osvi.wProductType == VER_NT_WORKSTATION ) {
+					if (osvi.dwBuildNumber >= 22000)
+						result = QLatin1String("11");
+					else
+						result = QLatin1String("10");
+				}
 				else {
-					if (osvi.dwBuildNumber >= 17623)
+					if (osvi.dwBuildNumber >= 20348)
+						result = QLatin1String("Server 2022");
+					else if (osvi.dwBuildNumber >= 17763)
 						result = QLatin1String("Server 2019");
 					else
 						result = QLatin1String("Server 2016");
