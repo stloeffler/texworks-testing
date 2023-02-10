@@ -84,13 +84,22 @@ OPTION(WITH_MUPDF "Build MuPDF backend" OFF)
 # directory contains scripts that locate project components such as Poppler.
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake/Modules)
 
+# Recent poppler versions require C++17 (supported since CMake 3.8).
+# When building on older systems with a compiler that doesn't support the
+# requested standard, CMake automatically uses the highest standard available
+# [https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html]
+if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+  set (CMAKE_CXX_STANDARD 14)
+else ()
+  set (CMAKE_CXX_STANDARD 17)
+endif()
+
 # Core Components
 # ---------------
 
 FIND_PACKAGE(ZLIB REQUIRED)
 
 if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
-  set (CMAKE_CXX_STANDARD 17)
   find_package(Qt6 REQUIRED COMPONENTS Core Widgets Concurrent Xml LinguistTools)
 
   if (WITH_TESTS)
@@ -115,7 +124,6 @@ if (QT_DEFAULT_MAJOR_VERSION EQUAL 6)
     Qt6::Test
   )
 else ()
-  set (CMAKE_CXX_STANDARD 11)
   find_package(Qt5 REQUIRED COMPONENTS Core Widgets Concurrent Xml LinguistTools)
 
   if (WITH_TESTS)
