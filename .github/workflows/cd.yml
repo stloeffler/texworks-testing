@@ -98,9 +98,9 @@ jobs:
         /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake -B build -DTW_BUILD_ID='github' \
           -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }} \
           -DCMAKE_INSTALL_PREFIX="./release" \
-          -DPLATFORM_DEPENDENCIES='freetype;harfbuzz;freetype_too;bz2;iphlpapi;ssl;crypto;crypt32;ws2_32' \
+          -DPLATFORM_DEPENDENCIES='freetype;harfbuzz;freetype_too;bz2;iphlpapi;ssl;crypto;crypt32;ws2_32;sharpyuv' \
           -DPoppler_ADDITIONAL_DEPENDENCIES='freetype;harfbuzz;freetype_too;glib-2.0;intl;iconv;ws2_32;winmm;tiff;webp;jpeg;openjp2;png;lcms2;lzma;bz2;pcre16;wtsapi32;sharpyuv;${{ matrix.additionalLibs }}' \
-          -DTEXWORKS_ADDITIONAL_LIBS='freetype;harfbuzz;freetype_too;bz2;wtsapi32;opengl32;imm32;shlwapi;dwmapi;uxtheme;sharpyuv' \
+          -DTEXWORKS_ADDITIONAL_LIBS='freetype;harfbuzz;freetype_too;bz2;wtsapi32;opengl32;imm32;shlwapi;dwmapi;uxtheme' \
           -Dgp_tool='none'
 
     - name: Build
