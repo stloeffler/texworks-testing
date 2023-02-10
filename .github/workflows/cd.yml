@@ -103,6 +103,10 @@ jobs:
           -DTEXWORKS_ADDITIONAL_LIBS='freetype;harfbuzz;freetype_too;bz2;wtsapi32;opengl32;imm32;shlwapi;dwmapi;uxtheme' \
           -Dgp_tool='none'
 
+    - name: Debug
+      shell: wsl-bash {0}
+      run: cat build/unit-tests/CMakeFiles/test_BibTeXFile.dir/linklibs.rsp
+
     - name: Build
       shell: wsl-bash {0}
       run: /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake --build build -v && /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-cmake --install build -v
