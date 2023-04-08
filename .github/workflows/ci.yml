@@ -32,6 +32,20 @@ jobs:
 
 ################################################################################
 
+  build-address-sanitizer:
+    name: Address Sanitizer
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Build
+      # Use unconfined `docker run` instead of (confined) `docker build` as
+      # the latter blocks faccessat2 calls required by the latest pacman
+      run: docker run --security-opt seccomp=unconfined --volume $(pwd):/home/tw archlinux /bin/sh -c "/home/tw/.github/workflows/build.address-sanitizer"
+
+################################################################################
+
   coverage-linux:
     name: Coverage (Linux)
     runs-on: ubuntu-latest

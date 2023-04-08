@@ -1,0 +1,24 @@
+set -e # Exit on error
+
+mkdir -p /home/tw/build-clang-address-sanitizer && cd /home/tw/build-clang-address-sanitizer
+
+pacman --noconfirm -Syu \
+	clang \
+	cmake \
+	git \
+	make \
+	hunspell \
+	lua \
+	poppler-qt6 \
+	qt6-5compat \
+	qt6-base \
+	qt6-declarative \
+	qt6-tools \
+	gsfonts \
+	poppler-data \
+	xorg-server-xvfb
+
+CC=clang CXX=clang++ CXXFLAGS="-fsanitize=address -fsanitize=pointer-compare -fsanitize=pointer-subtract -fsanitize=leak -fsanitize=undefined" \
+cmake -DQT_DEFAULT_MAJOR_VERSION=6 .. -DCMAKE_BUILD_TYPE=Debug
+make -j
+xvfb-run ctest -V
