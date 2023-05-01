@@ -23,7 +23,7 @@
 #       └── packaging
 #           ├── <a href="CMake/packaging/CMakeLists.html">CMakeLists.txt</a>
 #           └── mac
-#               └── <a href="CMake/packaging/mac/MacPackagingTasks.cmake.html">MacPackagingTasks.cmake.in</a>
+#               └── <a href="CMake/packaging/mac/MacPackagingTasks.cmake.html">MacPackagingTasks.in.cmake</a>
 # </pre>
 #
 # Using CMake as a buildsystem offers some nice advantages:
@@ -94,6 +94,11 @@ SET(CMAKE_AUTOUIC TRUE)
 # Make the contents of `CMake/Modules` available. Among other things, this
 # directory contains scripts that locate project components such as hunspell.
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake/Modules ${PROJECT_SOURCE_DIR}/modules/QtPDF/CMake/Modules ${CMAKE_MODULE_PATH})
+SET(
+  CMAKE_MODULE_PATH
+  ${PROJECT_SOURCE_DIR}/CMake/Include
+  ${CMAKE_MODULE_PATH}
+)
 
 IF(WIN32 AND MINGW)
   # Ensure that no cpp flags are passed to windres, the Windows resource compiler.
@@ -384,7 +389,7 @@ SET(TeXworks_LIBS
 # -------------------------------
 
 IF ( WITH_LUA )
-  FIND_PACKAGE(Lua)
+  find_package(TwxLua)
 ENDIF()
 
 IF ( WITH_PYTHON )
