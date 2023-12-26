@@ -289,6 +289,9 @@ QDockWidget * PDFDocumentView::dockWidget(const Dock type, QWidget * parent /* =
       infoWidget = new PDFAnnotationsInfoWidget(dock);
       // TODO: possibility to jump to selected/activated annotation
       break;
+    case Dock_OptionalContent:
+      infoWidget = new PDFOptionalContentInfoWidget(dock);
+      break;
   }
   if (!infoWidget) {
     dock->deleteLater();
@@ -1237,6 +1240,42 @@ void PDFDocumentView::pdfActionTriggered(const PDFAction * action)
         emit requestExecuteCommand(actionLaunch->command());
       }
       break;
+    case PDFAction::ActionTypeSetOCGState:
+      {
+        const PDFOCGAction * actionOCG = dynamic_cast<const PDFOCGAction*>(action);
+        QSharedPointer<Backend::Document> doc(_pdf_scene->document().toStrongRef());
+        if (!actionOCG || !doc) {
+          break;
+        }
+        QAbstractItemModel * ocgModel = doc->optionalContentModel();
+        if (!ocgModel) {
+          break;
+        }
+        for (const auto & kv : actionOCG->changes()) {
+          const int & row = kv.first;
+          const PDFOCGAction::OCGStateChange & type = kv.second;
+          const QModelIndex idx = ocgModel->index(row, 0);
+          switch (type) {
+            case PDFOCGAction::OCGStateChange::NoChange:
+              break;
+            case PDFOCGAction::OCGStateChange::Show:
+              ocgModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
+              break;
+            case PDFOCGAction::OCGStateChange::Hide:
+              ocgModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+              break;
+            case PDFOCGAction::OCGStateChange::Toggle:
+              if (ocgModel->data(idx, Qt::CheckStateRole) == QVariant(Qt::Checked)) {
+                ocgModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+              }
+              else {
+                ocgModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
+              }
+              break;
+          }
+        }
+      }
+      break;
     // **TODO:**
     // We don't handle other actions yet, but the ActionTypes Quit, Presentation,
     // EndPresentation, Find, GoToPage, Close, and Print should be propagated to
@@ -1277,6 +1316,36 @@ void PDFDocumentView::reinitializeFromScene()
   _searcher.setSearchString(QString());
   _searchResults.clear();
   _currentSearchResult = -1;
+
+  QSharedPointer<Backend::Document> doc{document().toStrongRef()};
+  if (doc) {
+    QAbstractItemModel * ocgModel = doc.data()->optionalContentModel();
+    if (ocgModel) {
+      connect(ocgModel, &QAbstractItemModel::dataChanged, this, [this](const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles) {
+        Q_UNUSED(topLeft)
+        Q_UNUSED(bottomRight)
+        // Only repaint if the check state is modified (or all states are
+        // modified, i.e., roles is empty)
+        if (!roles.empty() && !roles.contains(Qt::CheckStateRole)) {
+          return;
+        }
+        QSharedPointer<Backend::Document> doc{document().toStrongRef()};
+        if (doc) {
+          // Invalidate all document tiles
+          QtPDF::Backend::Document::pageCache().removeDocumentTiles(doc.data());
+          // Update the view after returning to the event loop (in case other
+          // views also display this same document --- and consequently call
+          // pageCache().removeDocumentTiles() --- we don't want to recreate and
+          // re-remove tiles multiple times)
+#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
+          QTimer::singleShot(1, viewport(), SLOT(update()));
+#else
+          QTimer::singleShot(1, viewport(), static_cast<void (QWidget::*)()>(&QWidget::update));
+#endif
+        }
+      });
+    }
+  }
 }
 
 void PDFDocumentView::notifyTextSelectionChanged()
@@ -1903,6 +1972,7 @@ void PDFDocumentScene::handleActionEvent(const PDFActionEvent * action_event)
     case PDFAction::ActionTypeGoTo:
     case PDFAction::ActionTypeURI:
     case PDFAction::ActionTypeLaunch:
+    case PDFAction::ActionTypeSetOCGState:
       break;
     default:
       // All other link types are currently not supported
@@ -3771,6 +3841,38 @@ void PDFPageLayout::rearrange() {
       ++row;
     }
   }
+}
+
+PDFOptionalContentInfoWidget::PDFOptionalContentInfoWidget(QWidget *parent)
+  : PDFDocumentInfoWidget(parent)
+{
+  QVBoxLayout * layout{new QVBoxLayout(this)};
+  layout->setContentsMargins(0, 0, 0, 0);
+  _list = new QListView(this);
+  layout->addWidget(_list);
+  setLayout(layout);
+  retranslateUi();
+}
+
+void PDFOptionalContentInfoWidget::initFromDocument(const QWeakPointer<Backend::Document> newDoc)
+{
+  _doc = newDoc;
+  QSharedPointer<Backend::Document> doc{newDoc.toStrongRef()};
+  if (!doc) {
+    return;
+  }
+  _list->setModel(doc->optionalContentModel());
+}
+
+void PDFOptionalContentInfoWidget::clear()
+{
+  _list->disconnect(this);
+  _list->setModel(nullptr);
+}
+
+void PDFOptionalContentInfoWidget::retranslateUi()
+{
+  setWindowTitle(PDFDocumentView::tr("Layers"));
 }
 
 } // namespace QtPDF

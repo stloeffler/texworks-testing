@@ -528,6 +528,18 @@ QList<PDFFontInfo> Document::fonts() const
   return _fonts;
 }
 
+QAbstractItemModel *Document::optionalContentModel() const
+{
+  if (!_poppler_doc) {
+    return nullptr;
+  }
+  QMutexLocker l(_poppler_docLock);
+  if (_poppler_doc->isLocked() || !_poppler_doc->hasOptionalContent()) {
+    return nullptr;
+  }
+  return _poppler_doc->optionalContentModel();
+}
+
 QColor Document::paperColor() const
 {
   if (!_poppler_doc) {
@@ -744,6 +756,61 @@ QList< QSharedPointer<Annotation::Link> > Page::loadLinks()
       case ::Poppler::Link::JavaScript:
       case ::Poppler::Link::Rendition: // Since poppler 0.20
       */
+#if POPPLER_HAS_OCGSTATELINK
+      case ::Poppler::Link::OCGState: // Since poppler-qt 0.50
+      {
+        PDFOCGAction::MapType map;
+        std::vector<QVariant> origState;
+        Document * popplerDoc = dynamic_cast<Backend::PopplerQt::Document *>(_parent);
+        Poppler::OptContentModel * ocgModel = popplerDoc->_poppler_doc->optionalContentModel();
+        if (!ocgModel) {
+          break;
+        }
+
+        // Save original state
+        origState.reserve(ocgModel->rowCount());
+        for (int row = 0; row < ocgModel->rowCount(); ++row) {
+          origState.push_back(ocgModel->data(ocgModel->index(row, 0, {}), Qt::CheckStateRole));
+        }
+
+        // 1) Toggle alls ocg's off, apply poppler state change, and see which
+        // ones were turned back on
+        for (int row = 0; row < ocgModel->rowCount(); ++row) {
+          ocgModel->setData(ocgModel->index(row, 0, {}), Qt::Unchecked, Qt::CheckStateRole);
+        }
+        ocgModel->applyLink(dynamic_cast<::Poppler::LinkOCGState*>(popplerLink.get()));
+        for (int row = 0; row < ocgModel->rowCount(); ++row) {
+          if (ocgModel->data(ocgModel->index(row, 0, {}), Qt::CheckStateRole) == QVariant(Qt::Checked)) {
+            map.insert({row, PDFOCGAction::OCGStateChange::Show});
+          }
+        }
+
+        // 2) Toggle alls ocg's on, apply poppler state change, and see which
+        // ones were turned back off
+        for (int row = 0; row < ocgModel->rowCount(); ++row) {
+          ocgModel->setData(ocgModel->index(row, 0, {}), Qt::Checked, Qt::CheckStateRole);
+        }
+        ocgModel->applyLink(dynamic_cast<::Poppler::LinkOCGState*>(popplerLink.get()));
+        for (int row = 0; row < ocgModel->rowCount(); ++row) {
+          if (ocgModel->data(ocgModel->index(row, 0, {}), Qt::CheckStateRole) == QVariant(Qt::Unchecked)) {
+            if (map.find(row) != map.end()) {
+              map[row] = PDFOCGAction::OCGStateChange::Toggle;
+            }
+            else {
+              map.insert({row, PDFOCGAction::OCGStateChange::Hide});
+            }
+          }
+        }
+
+        // Restore original state
+        for (int row = 0; row < ocgModel->rowCount(); ++row) {
+          ocgModel->setData(ocgModel->index(row, 0, {}), origState[row], Qt::CheckStateRole);
+        }
+
+        link->setActionOnActivation(new PDFOCGAction(map));
+        break;
+      }
+#endif // POPPLER_HAS_OCGSTATELINK
       default:
         // We don't handle these types yet
         link.clear();
