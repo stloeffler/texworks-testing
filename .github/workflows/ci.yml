@@ -142,7 +142,8 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
-        modules: qtscript
+        version: 6.5.*
+        modules: qt5compat
 
       # Strawberry perl comes with all sorts of libraries (without headers) that
       # can wreak havoc when building some of the dependencies
