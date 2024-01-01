@@ -182,7 +182,7 @@ jobs:
             # supported on macOS 10.15 and up
           - macVersion: 10.13
             qtVersionMajor: 5
-            qtVersion: 5.15.12
+            qtVersion: 5.15.2
             qtModules: qtscript
     env:
       MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macVersion }}
