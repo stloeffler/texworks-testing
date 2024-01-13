@@ -61,7 +61,7 @@ jobs:
         winVersion: [7, 10]
         include:
             # Latest Qt6 release [https://download.qt.io/official_releases/qt/]
-            # Qt 6.2 supports Windows >= 10 [https://doc.qt.io/qt-6/windows.html]
+            # Qt 6.6 supports Windows >= 10 [https://doc.qt.io/qt-6/windows.html]
           - winVersion: 10
             qtVersionMajor: 6
             additionalLibs: 'zstd;z'
@@ -172,7 +172,7 @@ jobs:
         macVersion: [11, 10.13]
         include:
             # Latest open-source LTS Qt6 release [https://download.qt.io/official_releases/qt/]
-            # Qt 6.5 supports macOS >= 11 [https://doc.qt.io/qt-6/macos.html]
+            # Qt 6.5 supports macOS >= 11 [https://doc.qt.io/qt-6.5/macos.html]
           - macVersion: 11
             qtVersionMajor: 6
             qtVersion: 6.5.3
