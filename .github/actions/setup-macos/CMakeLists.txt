@@ -115,8 +115,8 @@ ExternalProject_Add(poppler
 )
 else ()
 ExternalProject_Add(poppler
-	URL "https://poppler.freedesktop.org/poppler-23.12.0.tar.xz"
-	URL_HASH SHA256=beba398c9d37a9b6d02486496635e08f1df3d437cfe61dab2593f47c4d14cdbb
+	URL "https://poppler.freedesktop.org/poppler-24.01.0.tar.xz"
+	URL_HASH SHA256=c7def693a7a492830f49d497a80cc6b9c85cb57b15e9be2d2d615153b79cae08
 	CMAKE_ARGS ${CMAKE_ARGS} -DENABLE_BOOST=OFF -DENABLE_CPP=OFF -DENABLE_GLIB=OFF -DENABLE_UTILS=OFF -DENABLE_UNSTABLE_API_ABI_HEADERS=ON -DRUN_GPERF_IF_PRESENT=OFF -DENABLE_QT5=OFF -DBUILD_MANUAL_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DENABLE_NSS3=OFF -DENABLE_GPGME=OFF -DENABLE_LIBCURL=OFF
 	DEPENDS fontconfig freetype lcms2 libjpeg libopenjpeg libpng libtiff
 )
