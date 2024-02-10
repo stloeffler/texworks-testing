@@ -110,6 +110,8 @@ RUN \
 	make install
 
 # Build Poppler
+# (without boost, nss3, gpgme, curl as those are not needed by TeXworks and are
+# not easily available (in a recent enough version) from the package manager)
 RUN \
 	cd /opt && \
 	wget https://poppler.freedesktop.org/poppler-${POPPLER_VERSION}.tar.xz && \

@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2007-2023  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2007-2024  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -335,7 +335,7 @@ TWApp::CommandLineData TWApp::processCommandLine()
 Copyright (C) %1  %2\n\
 License GPLv2+: GNU GPL (version 2 or later) <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n\n").arg(QString::fromLatin1("2007-2023"), QString::fromUtf8("Jonathan Kew, Stefan Löffler, Charlie Sharpsteen"));
+There is NO WARRANTY, to the extent permitted by law.\n\n").arg(QString::fromLatin1("2007-2024"), QString::fromUtf8("Stefan Löffler, Jonathan Kew, Charlie Sharpsteen"));
 			strm.flush();
 		}
 		if ((i = clp.getNextSwitch(QString::fromLatin1("help"))) >= 0) {
@@ -484,7 +484,7 @@ void TWApp::about()
 {
 	QString aboutText = tr("<p>%1 is a simple environment for editing, typesetting, and previewing TeX documents.</p>").arg(applicationName());
 	aboutText += QLatin1String("<small>");
-	aboutText += QLatin1String("<p>&#xA9; 2007-2023  Jonathan Kew, Stefan L&#xF6;ffler, Charlie Sharpsteen");
+	aboutText += QLatin1String("<p>&#xA9; 2007-2024  Stefan L&#xF6;ffler, Jonathan Kew, Charlie Sharpsteen");
 	aboutText += tr("<br>Version %1").arg(Tw::Utils::VersionInfo::fullVersionString());
 	aboutText += tr("<p>Distributed under the <a href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GNU General Public License</a>, version 2 or (at your option) any later version.");
 	aboutText += tr("<p><a href=\"http://www.qt.io/\">Qt application framework</a> v%1 by The Qt Company.").arg(QString::fromLatin1(qVersion()));
@@ -704,7 +704,35 @@ void TWApp::writeToMailingList()
 {
 	// The strings here are deliberately NOT localizable!
 	QString address(QLatin1String("texworks@tug.org"));
-	QString body(QLatin1String("Thank you for taking the time to write an email to the TeXworks mailing list. Please read the instructions below carefully as following them will greatly facilitate the communication.\n\nInstructions:\n-) Please write your message in English (it's in your own best interest; otherwise, many people will not be able to understand it and therefore will not answer).\n\n-) Please type something meaningful in the subject line.\n\n-) If you are having a problem, please describe it step-by-step in detail.\n\n-) After reading, please delete these instructions (up to the \"configuration info\" below which we may need to find the source of problems).\n\n\n\n----- configuration info -----\n"));
+	QString body(QLatin1String(
+		"Thank you for taking the time to write an email to the TeXworks mailing list. "
+		"Please note that this mailing list is intended for discussing the TeXworks "
+		"editor/previewer program only. For general questions about TeX typesetting "
+		"or problems with your own TeX code, please consult better suited resources like "
+		"tex.stackexchange.com or post to the texhax@tug.org mailing list instead.\n"
+		"\n"
+		"If you think the TeXworks mailing list is the right place for what's on your "
+		"mind, we're looking forward to receiving your message.\n"
+		"Please read the instructions below carefully as following them will greatly "
+		"facilitate the communication.\n"
+		"\n"
+		"Instructions:\n"
+		"-) Please write your message "
+		"in English (it's in your own best interest; otherwise, many people will not "
+		"be able to understand it and therefore will not answer).\n"
+		"\n"
+		"-) Please type something meaningful in the subject line.\n"
+		"\n"
+		"-) If you are having a problem, please describe it step-by-step in detail.\n"
+		"\n"
+		"-) After reading, please delete these instructions (up to the \"configuration info\" "
+		"below which we may need to find the source of problems) and type your own "
+		"message in their place.\n"
+		"\n"
+		"\n"
+		"\n"
+		"----- configuration info -----\n"
+	));
 
 	body += QStringLiteral("TeXworks version : %1\n").arg(Tw::Utils::VersionInfo::fullVersionString());
 #if defined(Q_OS_DARWIN)
