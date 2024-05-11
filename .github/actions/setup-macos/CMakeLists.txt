@@ -13,9 +13,9 @@ file(GLOB _font_dirs /System/Library/Assets*/com_apple_MobileAsset_Font*)
 list(INSERT _font_dirs 0 /System/Library/Fonts /Library/Fonts ~/Library/Fonts)
 string(REPLACE ";" "," _font_dirs "${_font_dirs}")
 
-set(CONFIGURE_CFLAGS "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
+set(CONFIGURE_CFLAGS -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET})
 foreach(ARCH IN LISTS CMAKE_OSX_ARCHITECTURES)
-	set(CONFIGURE_CFLAGS "${CONFIGURE_CFLAGS} -arch ${ARCH}")
+	set(CONFIGURE_CFLAGS ${CONFIGURE_CFLAGS} -arch ${ARCH})
 endforeach()
 
 set(CONFIGURE_ENV CFLAGS="${CONFIGURE_CFLAGS}" CXXFLAGS="${CONFIGURE_CFLAGS}")
