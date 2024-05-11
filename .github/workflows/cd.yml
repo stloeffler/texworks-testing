@@ -177,6 +177,7 @@ jobs:
             qtVersionMajor: 6
             qtVersion: 6.5.3
             qtModules: qt5compat
+            arch: x86_64;arm64
             # Qt 5.15 supports macOS >= 10.13 [https://doc.qt.io/qt-5.15/macos.html]
             # poppler >= 22.01.0 uses std::filesystem, which seems to only be (fully)
             # supported on macOS 10.15 and up
@@ -184,6 +185,7 @@ jobs:
             qtVersionMajor: 5
             qtVersion: 5.15.2
             qtModules: qtscript
+            arch: x86_64
     env:
       MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macVersion }}
 
@@ -224,7 +226,7 @@ jobs:
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX="${RUNNER_TEMP}/tw-deps" -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }}
+        cmake -S ".github/actions/setup-macos" -B ".github/actions/setup-macos/build" -DCMAKE_INSTALL_PREFIX="${RUNNER_TEMP}/tw-deps" -DQT_DEFAULT_MAJOR_VERSION=${{ matrix.qtVersionMajor }} -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
         PATH="${RUNNER_TEMP}/tw-deps/bin:$PATH" PKG_CONFIG_PATH=${RUNNER_TEMP}/tw-deps/lib/pkgconfig cmake --build ".github/actions/setup-macos/build" -v
 
     - name: Configure
