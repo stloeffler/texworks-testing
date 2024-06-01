@@ -34,7 +34,7 @@ ExternalProject_Add(lua
 	URL "https://www.lua.org/ftp/lua-5.4.6.tar.gz"
 	URL_HASH SHA256=7d5ea1b9cb6aa0b59ca3dde1c6adcb57ef83a1ba8e5432c0ecd06bf439b3ad88
 	CONFIGURE_COMMAND ""
-	BUILD_COMMAND env -S "TWCFLAGS=\"-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} ${ARCH_FLAGS}\"" make MYCFLAGS=\$TWCFLAGS
+	BUILD_COMMAND make MYCFLAGS="-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} ${ARCH_FLAGS}"
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install "INSTALL_TOP=${CMAKE_INSTALL_PREFIX}"
 )
