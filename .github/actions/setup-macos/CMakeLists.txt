@@ -30,17 +30,6 @@ macro(ADD_GH_GROUP target)
 	ExternalProject_Add_Step(${target} post COMMENT "${target} end" COMMAND ${CMAKE_COMMAND} -E echo "::endgroup::" DEPENDEES install ALWAYS TRUE)
 endmacro(ADD_GH_GROUP)
 
-ExternalProject_Add(lua
-	URL "https://www.lua.org/ftp/lua-5.4.6.tar.gz"
-	URL_HASH SHA256=7d5ea1b9cb6aa0b59ca3dde1c6adcb57ef83a1ba8e5432c0ecd06bf439b3ad88
-	PATCH_COMMAND patch -p0 -i ${CMAKE_CURRENT_LIST_DIR}/lua.patch
-	CONFIGURE_COMMAND ""
-	BUILD_COMMAND env -S "MYCFLAGS=\"-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} ${ARCH_FLAGS}\" MYLDFLAGS=\"${ARCH_FLAGS}\"" make
-	BUILD_IN_SOURCE TRUE
-	INSTALL_COMMAND make install "INSTALL_TOP=${CMAKE_INSTALL_PREFIX}"
-)
-ADD_GH_GROUP(lua)
-
 ExternalProject_Add(libpng
 	URL "https://github.com/glennrp/libpng/archive/refs/tags/v1.6.40.tar.gz"
 	URL_HASH SHA256=62d25af25e636454b005c93cae51ddcd5383c40fa14aa3dae8f6576feb5692c2
@@ -148,4 +137,13 @@ ExternalProject_Add(poppler-data
 )
 ADD_GH_GROUP(poppler-data)
 
-
+ExternalProject_Add(lua
+	URL "https://www.lua.org/ftp/lua-5.4.6.tar.gz"
+	URL_HASH SHA256=7d5ea1b9cb6aa0b59ca3dde1c6adcb57ef83a1ba8e5432c0ecd06bf439b3ad88
+	PATCH_COMMAND patch -p0 -i ${CMAKE_CURRENT_LIST_DIR}/lua.patch
+	CONFIGURE_COMMAND ""
+	BUILD_COMMAND env -S "MYCFLAGS=\"-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} ${ARCH_FLAGS}\" MYLDFLAGS=\"${ARCH_FLAGS}\"" make
+	BUILD_IN_SOURCE TRUE
+	INSTALL_COMMAND make install "INSTALL_TOP=${CMAKE_INSTALL_PREFIX}"
+)
+ADD_GH_GROUP(lua)
