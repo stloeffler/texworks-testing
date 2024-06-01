@@ -47,7 +47,6 @@ ExternalProject_Add(freetype
 )
 ADD_GH_GROUP(freetype)
 
-set(gettext_CONFIGURE_COMMAND "${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz")
 # Modeled after https://github.com/Homebrew/homebrew-core/blob/72ca636/Formula/gettext.rb
 ExternalProject_Add(gettext
 	URL "https://ftp.gnu.org/gnu/gettext/gettext-0.22.4.tar.xz"
@@ -60,7 +59,7 @@ ADD_GH_GROUP(gettext)
 ExternalProject_Add(hunspell
 	URL "https://github.com/hunspell/hunspell/archive/refs/tags/v1.7.2.tar.gz"
 	URL_HASH SHA256=69fa312d3586c988789266eaf7ffc9861d9f6396c31fc930a014d551b59bbd6e
-	CONFIGURE_COMMAND autoreconf -vfi && ${CONFIGURE_ENV} CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS}
+	CONFIGURE_COMMAND autoreconf -vfi && env -S "${CONFIGURE_ENV}" CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 	DEPENDS gettext
 )
@@ -69,7 +68,7 @@ ADD_GH_GROUP(hunspell)
 ExternalProject_Add(fontconfig
 	URL "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.xz"
 	URL_HASH SHA256=63a0658d0e06e0fa886106452b58ef04f21f58202ea02a94c39de0d3335d7c0e
-	CONFIGURE_COMMAND ${CONFIGURE_ENV} CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS} --with-add-fonts=${_font_dirs} --disable-docs
+	CONFIGURE_COMMAND env -S "${CONFIGURE_ENV}" CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS} --with-add-fonts=${_font_dirs} --disable-docs
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
 	DEPENDS freetype gettext
@@ -79,7 +78,7 @@ ADD_GH_GROUP(fontconfig)
 ExternalProject_Add(libjpeg
 	URL https://ijg.org/files/jpegsrc.v9f.tar.gz
 	URL_HASH SHA256=04705c110cb2469caa79fb71fba3d7bf834914706e9641a4589485c1f832565b
-	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS}
+	CONFIGURE_COMMAND env -S "${CONFIGURE_ENV}" ./configure ${CONFIGURE_ARGS}
 	BUILD_IN_SOURCE TRUE
 	TEST_AFTER_INSTALL TRUE
 )
@@ -105,7 +104,7 @@ ADD_GH_GROUP(libopenjpeg)
 ExternalProject_Add(lcms2
 	URL "https://github.com/mm2/Little-CMS/archive/refs/tags/lcms2.16.tar.gz"
 	URL_HASH SHA256=cb4bf968aa66e3d5d16d1f094a99595966d4330cbd6be46c66129f2747ad2b0d
-	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} "--with-tiff=${CMAKE_INSTALL_PREFIX}" "--with-jpeg=${CMAKE_INSTALL_PREFIX}"
+	CONFIGURE_COMMAND env -S "${CONFIGURE_ENV}" ./configure ${CONFIGURE_ARGS} "--with-tiff=${CMAKE_INSTALL_PREFIX}" "--with-jpeg=${CMAKE_INSTALL_PREFIX}"
 	BUILD_IN_SOURCE TRUE
 	DEPENDS libtiff libjpeg
 )
