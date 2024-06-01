@@ -18,7 +18,7 @@ foreach(ARCH IN LISTS CMAKE_OSX_ARCHITECTURES)
 	set(CONFIGURE_CFLAGS "${CONFIGURE_CFLAGS} -arch ${ARCH}")
 endforeach()
 
-set(CONFIGURE_ENV CFLAGS=${CONFIGURE_CFLAGS} CXXFLAGS=${CONFIGURE_CFLAGS})
+set(CONFIGURE_ENV "CFLAGS=\"${CONFIGURE_CFLAGS}\" CXXFLAGS=\"${CONFIGURE_CFLAGS}\"")
 set(CONFIGURE_ARGS --prefix=${CMAKE_INSTALL_PREFIX})
 
 set(CMAKE_ARGS -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES} "-DCMAKE_PREFIX_PATH=${CMAKE_INSTALL_PREFIX}\\;${CMAKE_PREFIX_PATH}" -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -DCMAKE_MACOSX_RPATH=TRUE -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX})
@@ -51,7 +51,7 @@ ADD_GH_GROUP(freetype)
 ExternalProject_Add(gettext
 	URL "https://ftp.gnu.org/gnu/gettext/gettext-0.22.4.tar.xz"
 	URL_HASH SHA256=29217f1816ee2e777fa9a01f9956a14139c0c23cc1b20368f06b2888e8a34116
-	CONFIGURE_COMMAND ${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz
+	CONFIGURE_COMMAND "${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz"
 	BUILD_IN_SOURCE TRUE
 )
 ADD_GH_GROUP(gettext)
