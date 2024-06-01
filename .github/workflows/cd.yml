@@ -219,7 +219,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v3
       with:
-        key: twdeps-${{ runner.os }}-${{ env.MACOSX_DEPLOYMENT_TARGET }}-qt${{ matrix.qtVersion }}-${{ hashFiles('./.github/actions/setup-macos/*') }}
+        key: twdeps-${{ runner.os }}-${{ env.MACOSX_DEPLOYMENT_TARGET }}-${{ matrix.arch }}-qt${{ matrix.qtVersion }}-${{ hashFiles('./.github/actions/setup-macos/*') }}
         path: ${{ runner.temp }}/tw-deps
 
     - name: Build dependencies
@@ -255,7 +255,7 @@ jobs:
       uses: actions/upload-artifact@v3
       if: ${{ always() }}
       with:
-        name: TeXworks-macOS${{ matrix.macVersion }}
+        name: TeXworks-macOS${{ matrix.macVersion }}-${{ matrix.arch }}
         path: ${{ steps.package.outputs.file }}
 
 #    - name: Setup tmate session
