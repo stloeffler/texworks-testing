@@ -47,11 +47,12 @@ ExternalProject_Add(freetype
 )
 ADD_GH_GROUP(freetype)
 
+set(gettext_CONFIGURE_COMMAND "${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz")
 # Modeled after https://github.com/Homebrew/homebrew-core/blob/72ca636/Formula/gettext.rb
 ExternalProject_Add(gettext
 	URL "https://ftp.gnu.org/gnu/gettext/gettext-0.22.4.tar.xz"
 	URL_HASH SHA256=29217f1816ee2e777fa9a01f9956a14139c0c23cc1b20368f06b2888e8a34116
-	CONFIGURE_COMMAND "${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz"
+	CONFIGURE_COMMAND ${gettext_CONFIGURE_COMMAND}
 	BUILD_IN_SOURCE TRUE
 )
 ADD_GH_GROUP(gettext)
