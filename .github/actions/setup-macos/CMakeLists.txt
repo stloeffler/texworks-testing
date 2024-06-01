@@ -52,7 +52,7 @@ set(gettext_CONFIGURE_COMMAND "${CONFIGURE_ENV} ./configure ${CONFIGURE_ARGS} --
 ExternalProject_Add(gettext
 	URL "https://ftp.gnu.org/gnu/gettext/gettext-0.22.4.tar.xz"
 	URL_HASH SHA256=29217f1816ee2e777fa9a01f9956a14139c0c23cc1b20368f06b2888e8a34116
-	CONFIGURE_COMMAND ${gettext_CONFIGURE_COMMAND}
+	CONFIGURE_COMMAND ${CMAKE_COMMAND} -E ${gettext_CONFIGURE_COMMAND}
 	BUILD_IN_SOURCE TRUE
 )
 ADD_GH_GROUP(gettext)
