@@ -198,8 +198,8 @@ jobs:
     - name: /usr/local/opt
       run: find /usr/local/opt
 
-    - name: /usr/local/Cellar
-      run: find /usr/local/Cellar
+    - name: /opt/homebrew/Cellar
+      run: /opt/homebrew/Cellar
 
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="/usr/local/opt/qt@5"
