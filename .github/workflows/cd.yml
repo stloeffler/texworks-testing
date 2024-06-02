@@ -169,15 +169,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        label: [macOS 11 x86, macOS 11 arm, macOS 10 x86]
         include:
             # Latest open-source LTS Qt6 release [https://download.qt.io/official_releases/qt/]
             # Qt 6.5 supports macOS >= 11 [https://doc.qt.io/qt-6.5/macos.html]
-          - macVersion: 11
+          - label: macOS 11 x86
+            macVersion: 11
             qtVersionMajor: 6
             qtVersion: 6.5.3
             qtModules: qt5compat
             arch: x86_64
-          - macVersion: 11
+          - label: macOS 11 arm
+            macVersion: 11
             qtVersionMajor: 6
             qtVersion: 6.5.3
             qtModules: qt5compat
@@ -185,7 +188,8 @@ jobs:
             # Qt 5.15 supports macOS >= 10.13 [https://doc.qt.io/qt-5.15/macos.html]
             # poppler >= 22.01.0 uses std::filesystem, which seems to only be (fully)
             # supported on macOS 10.15 and up
-          - macVersion: 10.13
+          - label: macOS 10 x86
+            macVersion: 10.13
             qtVersionMajor: 5
             qtVersion: 5.15.2
             qtModules: qtscript
