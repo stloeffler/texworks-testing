@@ -178,6 +178,11 @@ jobs:
             qtVersion: 6.5.3
             qtModules: qt5compat
             arch: x86_64
+          - macVersion: 11
+            qtVersionMajor: 6
+            qtVersion: 6.5.3
+            qtModules: qt5compat
+            arch: arm64
             # Qt 5.15 supports macOS >= 10.13 [https://doc.qt.io/qt-5.15/macos.html]
             # poppler >= 22.01.0 uses std::filesystem, which seems to only be (fully)
             # supported on macOS 10.15 and up
