@@ -59,6 +59,8 @@ ExternalProject_Add(gettext
 )
 ADD_GH_GROUP(gettext)
 
+# Need to specify CXX as apparently that is used somewhere down the line for
+# linking (!) but without getting passed the necessary flags
 ExternalProject_Add(hunspell
 	URL "https://github.com/hunspell/hunspell/archive/refs/tags/v1.7.2.tar.gz"
 	URL_HASH SHA256=69fa312d3586c988789266eaf7ffc9861d9f6396c31fc930a014d551b59bbd6e
@@ -68,6 +70,8 @@ ExternalProject_Add(hunspell
 )
 ADD_GH_GROUP(hunspell)
 
+# Need to specify CXX as apparently that is used somewhere down the line for
+# linking (!) but without getting passed the necessary flags
 ExternalProject_Add(fontconfig
 	URL "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.xz"
 	URL_HASH SHA256=63a0658d0e06e0fa886106452b58ef04f21f58202ea02a94c39de0d3335d7c0e
@@ -141,10 +145,14 @@ ExternalProject_Add(poppler-data
 )
 ADD_GH_GROUP(poppler-data)
 
+# Need to patch the Makefile to not override/clear custom flags, i.e., to allow
+# passing them as env variables as there seems to be no easy way to pass complex
+# arguments on the command line via ExternalProject_Add (due to weird quotation
+# schemes). NB: lua uses plain Makefiles instead of autoconf or cmake, ...
 ExternalProject_Add(lua
 	URL "https://www.lua.org/ftp/lua-5.4.6.tar.gz"
 	URL_HASH SHA256=7d5ea1b9cb6aa0b59ca3dde1c6adcb57ef83a1ba8e5432c0ecd06bf439b3ad88
-	PATCH_COMMAND patch -p0 -i ${CMAKE_CURRENT_LIST_DIR}/lua.patch
+	PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_LIST_DIR}/lua.patch
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND env -S "MYCFLAGS=\"-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} ${ARCH_FLAGS}\" MYLDFLAGS=\"${ARCH_FLAGS}\"" make
 	BUILD_IN_SOURCE TRUE

@@ -1,3 +1,5 @@
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/TeXworks/texworks/total?color=0f81c1)](https://github.com/TeXworks/texworks/releases)
+[![Packaging status](https://repology.org/badge/tiny-repos/texworks.svg?header=in+repos)](https://repology.org/project/texworks/versions)
 [![CD](https://github.com/TeXworks/texworks/actions/workflows/cd.yml/badge.svg)](https://github.com/TeXworks/texworks/actions/workflows/cd.yml)
 [![CI](https://github.com/TeXworks/texworks/actions/workflows/ci.yml/badge.svg)](https://github.com/TeXworks/texworks/actions/workflows/ci.yml)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/eb4e9108blt0pehr?svg=true)](https://ci.appveyor.com/project/stloeffler/texworks)
