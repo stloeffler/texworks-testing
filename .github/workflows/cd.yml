@@ -259,15 +259,6 @@ jobs:
       if: ${{ always() }}
       uses: ./.github/actions/package-macos
 
-    - name: Fixing signatures
-      run: |
-        codesign -v ${{ steps.package.outputs.file }}
-        # Some libs (notably Qt) are signed, but were modified during packaging
-        # (rpath changed, unused architectures removed, ...), thus invalidating
-        # the signature; hence we remove it
-        codesign --remove-signature --deep ${{ steps.package.outputs.file }}
-        codesign -v ${{ steps.package.outputs.file }}
-
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       if: ${{ always() }}

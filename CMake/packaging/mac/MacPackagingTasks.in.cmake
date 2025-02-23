@@ -148,5 +148,16 @@ IF ( ${CMAKE_INSTALL_PREFIX} MATCHES .*/_CPack_Packages/.* )
 
   MESSAGE(STATUS "Finished stripping architectures from bundled libraries.")
 
+  execute_process(COMMAND codesign -v ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app OUTPUT_VARIABLE _out)
+  message(STATUS "Codesign verification before fixing: ${_out}")
+
+  # Some libs (notably Qt) are signed, but were modified during packaging
+  # (rpath changed, unused architectures removed, ...), thus invalidating
+  # the signature; hence we remove it
+  message(STATUS "Removing signatures")
+  execute_process(COMMAND codesign --remove-signature --deep ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app)
+
+  execute_process(COMMAND codesign -v ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app OUTPUT_VARIABLE _out)
+  message(STATUS "Codesign verification after fixing: ${_out}")
 ENDIF ()
 
