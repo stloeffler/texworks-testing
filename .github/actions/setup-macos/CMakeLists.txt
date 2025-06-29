@@ -59,6 +59,7 @@ ADD_GH_GROUP(freetype)
 ExternalProject_Add(gettext
 	URL "https://ftp.gnu.org/gnu/gettext/gettext-0.23.tar.xz"
 	URL_HASH SHA256=bf31a9b6bdf3e364669c7bd9858f97e4a0c408a8d22940c5d4ab638b65460f85
+	CONFIGURE_COMMAND autoreconf --force
 	CONFIGURE_COMMAND env -S "${CONFIGURE_ENV} am_cv_func_iconv_works=yes" ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz
 	BUILD_IN_SOURCE TRUE
 )
