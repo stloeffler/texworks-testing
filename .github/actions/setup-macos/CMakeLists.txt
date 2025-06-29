@@ -59,7 +59,7 @@ ADD_GH_GROUP(freetype)
 ExternalProject_Add(gettext
 	URL "https://ftp.gnu.org/gnu/gettext/gettext-0.25.tar.xz"
 	URL_HASH SHA256=05240b29f5b0f422e5a4ef8e9b5f76d8fa059cc057693d2723cdb76f36a88ab0
-	CONFIGURE_COMMAND env -S "${CONFIGURE_ENV}" ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz
+	CONFIGURE_COMMAND autoreconf --force && env -S "${CONFIGURE_ENV}" ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz
 	BUILD_IN_SOURCE TRUE
 )
 #	CONFIGURE_COMMAND env -S "${CONFIGURE_ENV} am_cv_func_iconv_works=yes" ./configure ${CONFIGURE_ARGS} --disable-dependency-tracking --disable-silent-rules --disable-debug --with-included-glib --with-included-libcroco --with-included-libunistring --with-included-libxml --with-included-gettext --disable-java --disable-csharp --without-git --without-cvs --without-xz"
