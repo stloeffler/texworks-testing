@@ -105,7 +105,7 @@ ADD_GH_GROUP(libjpeg)
 ExternalProject_Add(libtiff
 	URL "https://download.osgeo.org/libtiff/tiff-4.7.0.tar.gz"
 	URL_HASH SHA256=67160e3457365ab96c5b3286a0903aa6e78bdc44c4bc737d2e486bcecb6ba976
-	CMAKE_ARGS ${CMAKE_ARGS}
+	CMAKE_ARGS ${CMAKE_ARGS} -Dtiff-docs=OFF
 	DEPENDS libjpeg
 )
 ADD_GH_GROUP(libtiff)
