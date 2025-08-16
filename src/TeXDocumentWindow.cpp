@@ -34,6 +34,8 @@
 #include "TeXHighlighter.h"
 #include "TemplateDialog.h"
 #include "scripting/ScriptAPI.h"
+#include "document/SpellChecker.h"
+#include "document/SpellCheckManager.h"
 #include "ui/ClickableLabel.h"
 #include "ui/RemoveAuxFilesDialog.h"
 #include "utils/CmdKeyFilter.h"
@@ -401,7 +403,7 @@ void TeXDocumentWindow::init()
 	group->addAction(actionNone);
 
 	reloadSpellcheckerMenu();
-	connect(Tw::Document::SpellChecker::instance(), &Tw::Document::SpellChecker::dictionaryListChanged, this, &TeXDocumentWindow::reloadSpellcheckerMenu);
+	connect(Tw::Document::SpellCheckManager::instance(), &Tw::Document::SpellCheckManager::dictionaryListChanged, this, &TeXDocumentWindow::reloadSpellcheckerMenu);
 
 	menuShow->addAction(toolBar_run->toggleViewAction());
 	menuShow->addAction(toolBar_edit->toggleViewAction());
@@ -450,25 +452,16 @@ void TeXDocumentWindow::changeEvent(QEvent *event)
 
 void TeXDocumentWindow::setLangInternal(const QString& lang)
 {
-	if (_texDoc == nullptr)
+	if (_texDoc == nullptr) {
 		return;
+	}
 
 	TeXHighlighter * highlighter = _texDoc->getHighlighter();
-	if (highlighter == nullptr)
+	if (highlighter == nullptr) {
 		return;
+	}
 
-	// called internally by the spelling menu actions;
-	// not for use from scripts as it won't update the menu
-	Tw::Document::SpellChecker::Dictionary * oldDictionary = highlighter->getSpellChecker();
-	Tw::Document::SpellChecker::Dictionary * newDictionary = Tw::Document::SpellChecker::getDictionary(lang);
-	// if the dictionary hasn't change, don't reset the spell checker as that
-	// can result in a serious delay for long documents
-	// NB: Don't delete the dictionaries; the pointers are kept by
-	// Tw::Document::SpellChecker
-	if (oldDictionary == newDictionary)
-		return;
-
-	highlighter->setSpellChecker(newDictionary);
+	highlighter->setSpellChecker(Tw::Document::SpellChecker(lang));
 }
 
 void TeXDocumentWindow::setSpellcheckLanguage(const QString& lang)
@@ -478,9 +471,9 @@ void TeXDocumentWindow::setSpellcheckLanguage(const QString& lang)
 
 	// Determine all aliases for the specified lang
 	QList<QString> langAliases;
-	foreach (const QString& dictKey, Tw::Document::SpellChecker::getDictionaryList()->uniqueKeys()) {
-		if(Tw::Document::SpellChecker::getDictionaryList()->values(dictKey).contains(lang))
-			langAliases += Tw::Document::SpellChecker::getDictionaryList()->values(dictKey);
+	foreach (const QString& dictKey, Tw::Document::SpellCheckManager::getDictionaryList()->uniqueKeys()) {
+		if(Tw::Document::SpellCheckManager::getDictionaryList()->values(dictKey).contains(lang))
+			langAliases += Tw::Document::SpellCheckManager::getDictionaryList()->values(dictKey);
 	}
 	langAliases.removeAll(lang);
 	langAliases.prepend(lang);
@@ -504,14 +497,14 @@ void TeXDocumentWindow::setSpellcheckLanguage(const QString& lang)
 
 QString TeXDocumentWindow::spellcheckLanguage() const
 {
-	if (_texDoc == nullptr)
-		return QString();
+	if (_texDoc == nullptr) {
+		return {};
+	}
 	TeXHighlighter * highlighter = _texDoc->getHighlighter();
-	if (highlighter == nullptr)
-		return QString();
-	Tw::Document::SpellChecker::Dictionary * dictionary = highlighter->getSpellChecker();
-	if (dictionary == nullptr) return QString();
-	return dictionary->getLanguage();
+	if (highlighter == nullptr) {
+		return {};
+	}
+	return highlighter->getSpellChecker().languages().join(QStringLiteral("\n"));
 }
 
 void TeXDocumentWindow::reloadSpellcheckerMenu()
@@ -536,9 +529,9 @@ void TeXDocumentWindow::reloadSpellcheckerMenu()
 	}
 
 	QList<QAction*> dictActions;
-	foreach (const QString& dictKey, Tw::Document::SpellChecker::getDictionaryList()->uniqueKeys()) {
-		foreach (QString dict, Tw::Document::SpellChecker::getDictionaryList()->values(dictKey)) {
-			const QString label{Tw::Document::SpellChecker::labelForDict(dict)};
+	foreach (const QString& dictKey, Tw::Document::SpellCheckManager::getDictionaryList()->uniqueKeys()) {
+		foreach (QString dict, Tw::Document::SpellCheckManager::getDictionaryList()->values(dictKey)) {
+			const QString label{Tw::Document::SpellCheckManager::labelForDict(dict)};
 
 			QAction * act = new QAction(label, menuSpelling);
 			act->setCheckable(true);
@@ -1456,7 +1449,8 @@ bool TeXDocumentWindow::saveFile(const QFileInfo & fileInfo)
 		if (codec->mibEnum() == 106 && utf8BOM)
 			file.write("\xEF\xBB\xBF");
 
-		if (file.write(codec->fromUnicode(theText)) == -1) {
+		file.write(codec->fromUnicode(theText));
+		if (file.commit() == false) {
 			QApplication::restoreOverrideCursor();
 			QMessageBox::warning(this, tr("Error writing file"),
 								 tr("An error may have occurred while saving the file. "
@@ -1465,7 +1459,6 @@ bool TeXDocumentWindow::saveFile(const QFileInfo & fileInfo)
 			showNotSavedMessage();
 			return false;
 		}
-		file.commit();
 		QApplication::restoreOverrideCursor();
 	}
 

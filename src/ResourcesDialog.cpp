@@ -22,7 +22,6 @@
 #include "ResourcesDialog.h"
 
 #include "Settings.h"
-#include "TWUtils.h"
 
 #include "utils/ResourcesLibrary.h"
 
@@ -49,8 +48,15 @@ void ResourcesDialog::init()
 
 	locationOfResources->setText(pathToLink(Tw::Utils::ResourcesLibrary::getLibraryPath(QString(), false)));
 
+	QStringList dictPaths;
+	for (const QString & dir : Tw::Utils::ResourcesLibrary::getLibraryPaths(QStringLiteral("dictionaries"), false)) {
+		dictPaths << pathToLink(dir);
+	}
+	locationOfDictionaries->setText(dictPaths.join(QStringLiteral("<br>")));
+
 	connect(locationOfSettings, &QLabel::linkActivated, this, &ResourcesDialog::openURL);
 	connect(locationOfResources, &QLabel::linkActivated, this, &ResourcesDialog::openURL);
+	connect(locationOfDictionaries, &QLabel::linkActivated, this, &ResourcesDialog::openURL);
 
 	adjustSize();
 

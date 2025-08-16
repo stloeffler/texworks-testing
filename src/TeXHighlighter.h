@@ -35,6 +35,7 @@ namespace Tw {
 namespace Document {
 
 class TeXDocument;
+class SpellChecker;
 
 } // namespace Document
 } // namespace Tw
@@ -107,8 +108,9 @@ public:
 	explicit TeXHighlighter(Tw::Document::TeXDocument * parent);
 	void setActiveIndex(int index);
 
-	void setSpellChecker(Tw::Document::SpellChecker::Dictionary * dictionary);
-	Tw::Document::SpellChecker::Dictionary * getSpellChecker() const { return _dictionary; }
+	void setSpellChecker(const Tw::Document::SpellChecker & spellChecker);
+	const Tw::Document::SpellChecker & getSpellChecker() const { return _spellChecker; }
+	Tw::Document::SpellChecker & getSpellChecker() { return _spellChecker; }
 
 	QString getSyntaxMode() const {
 		return (highlightIndex >= 0 && highlightIndex < syntaxOptions().size())
@@ -149,7 +151,7 @@ private:
 	int highlightIndex;
 	bool isTagging;
 
-	Tw::Document::SpellChecker::Dictionary * _dictionary;
+	Tw::Document::SpellChecker _spellChecker;
 
 	Tw::Document::TeXDocument * texDoc;
 };

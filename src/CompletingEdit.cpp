@@ -26,6 +26,7 @@
 #include "TWApp.h"
 #include "TWUtils.h"
 #include "TeXHighlighter.h"
+#include "document/SpellChecker.h"
 #include "document/TeXDocument.h"
 #include "utils/ResourcesLibrary.h"
 
@@ -144,7 +145,7 @@ void CompletingEdit::unPrefixLines(const QString &prefix)
 	}
 
 	while (cursor.position() < selection.selectionEnd() || cursor.position() == selection.selectionStart()) {
-		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, prefix.length());
+		cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, static_cast<decltype(cursor.position())>(prefix.length()));
 		if (cursor.selectedText() == prefix) {
 			cursor.removeSelectedText();
 		}
@@ -1095,15 +1096,15 @@ void CompletingEdit::contextMenuEvent(QContextMenuEvent *event)
 	menu->insertSeparator(menu->actions().first());
 	menu->insertAction(menu->actions().first(), act);
 
-	const Tw::Document::SpellChecker::Dictionary * dictionary = getSpellChecker();
-	if (dictionary) {
+	const Tw::Document::SpellChecker & spellChecker = getSpellChecker();
+	if (spellChecker) {
 		currentWord = cursorForPosition(event->pos());
 		currentWord.setPosition(currentWord.position());
 		if (selectWord(currentWord)) {
-			if (!dictionary->isWordCorrect(currentWord.selectedText())) {
+			if (!spellChecker.isWordCorrect(currentWord.selectedText())) {
 				QAction *sep = menu->insertSeparator(menu->actions().first());
 
-				QList<QString> suggestions = dictionary->suggestionsForWord(currentWord.selectedText());
+				QList<QString> suggestions = spellChecker.suggestionsForWord(currentWord.selectedText());
 				if (suggestions.size() == 0)
 					menu->insertAction(sep, new QAction(tr("No suggestions"), menu));
 				else {
@@ -1155,11 +1156,8 @@ void CompletingEdit::addToDictionary()
 
 void CompletingEdit::ignoreWord()
 {
-	Tw::Document::SpellChecker::Dictionary * dictionary = getSpellChecker();
-	if (dictionary == nullptr)
-		return;
 	// note that this is not persistent after quitting TW
-	dictionary->ignoreWord(currentWord.selectedText());
+	getSpellChecker().ignoreWord(currentWord.selectedText());
 	emit rehighlight();
 }
 
@@ -1408,14 +1406,14 @@ void CompletingEdit::scrollContentsBy(int dx, int dy)
 	QTextEdit::scrollContentsBy(dx, dy);
 }
 
-Tw::Document::SpellChecker::Dictionary * CompletingEdit::getSpellChecker() const
+Tw::Document::SpellChecker CompletingEdit::getSpellChecker() const
 {
 	Tw::Document::TeXDocument * doc = qobject_cast<Tw::Document::TeXDocument *>(document());
 	if (doc == nullptr)
-		return nullptr;
+		return {};
 	TeXHighlighter * highlighter = doc->getHighlighter();
 	if (highlighter == nullptr)
-		return nullptr;
+		return {};
 	return highlighter->getSpellChecker();
 }
 
