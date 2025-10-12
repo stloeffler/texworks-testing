@@ -79,6 +79,10 @@ jobs:
       with:
         distribution: Ubuntu-22.04
 
+    # InnoSetup is currently not included by default, see https://github.com/actions/runner-images/issues/11644
+    - name: Install InnoSetup
+      run: dotnet add package Tools.InnoSetup
+
     - name: Install dependencies
       uses: ./.github/actions/setup-windows
       with:
