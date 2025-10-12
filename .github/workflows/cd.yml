@@ -79,10 +79,6 @@ jobs:
       with:
         distribution: Ubuntu-22.04
 
-    # InnoSetup is currently not included by default, see https://github.com/actions/runner-images/issues/11644
-    - name: Install InnoSetup
-      run: choco install innosetup
-
     - name: Install dependencies
       uses: ./.github/actions/setup-windows
       with:
@@ -143,6 +139,10 @@ jobs:
       with:
         name: TeXworks-Windows${{ matrix.winVersion }}
         path: ${{ steps.package.outputs.file }}
+
+    # InnoSetup is currently not included by default, see https://github.com/actions/runner-images/issues/11644
+    - name: Install InnoSetup
+      run: choco install innosetup
 
     - name: Build installer
       run: ISCC texworks-setup-script.iss
