@@ -15,13 +15,13 @@
 
 FROM debian:11 AS build-stage
 
-ARG CMAKE_VERSION=3.31.3
-ARG FREETYPE_VERSION=2-13-3
+ARG CMAKE_VERSION=3.31.9
+ARG FREETYPE_VERSION=2-14-1
 # Qt open-source LTS version
-ARG QT_VERSION=6.8.1
-ARG POPPLER_VERSION=24.12.0
+ARG QT_VERSION=6.8.3
+ARG POPPLER_VERSION=25.10.0
 ARG HUNSPELL_VERSION=1.7.2
-ARG TIFF_VERSION=4.7.0
+ARG TIFF_VERSION=4.7.1
 
 # file is required by appimagetool
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends --assume-yes \
