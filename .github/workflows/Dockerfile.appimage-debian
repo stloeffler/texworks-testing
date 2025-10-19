@@ -13,7 +13,9 @@
 # RHEL 8.0.0+ [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/8.0_release_notes/rhel-8_0_0_release#platform-tools]
 # openSUSE 15.3+ [https://software.opensuse.org/package/glibc]
 
-FROM debian:11 AS build-stage
+# Poppler (25.01+) requires at least GCC-11
+
+FROM ubuntu:jammy AS build-stage
 
 ARG CMAKE_VERSION=3.31.9
 ARG FREETYPE_VERSION=2-14-1
