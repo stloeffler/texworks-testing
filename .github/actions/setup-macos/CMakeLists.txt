@@ -81,6 +81,7 @@ ADD_GH_GROUP(hunspell)
 ExternalProject_Add(fontconfig
 	URL "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.16.0.tar.xz"
 	URL_HASH SHA256=6a33dc555cc9ba8b10caf7695878ef134eeb36d0af366041f639b1da9b6ed220
+	PATCH_COMMAND ./autogen.sh
 	CONFIGURE_COMMAND env -S "${CONFIGURE_ENV} CXX=\"g++ ${ARCH_FLAGS}\"" CPPFLAGS=-I${CMAKE_INSTALL_PREFIX}/include LDFLAGS=-L${CMAKE_INSTALL_PREFIX}/lib ./configure ${CONFIGURE_ARGS} --disable-silent-rules --with-add-fonts=${_font_dirs} --disable-docs
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND make install RUN_FC_CACHE_TEST=false
