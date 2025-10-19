@@ -198,12 +198,6 @@ jobs:
         # As poppler-qt5 conflicts with poppler, we need to force-link it
         brew link --force poppler-qt5
 
-    - name: /usr/local/opt
-      run: find /usr/local/opt
-
-    - name: /opt/homebrew/Cellar
-      run: find /opt/homebrew/Cellar
-
     - name: Configure
       run: cmake -B build -DTW_BUILD_ID='github' ${GITHUB_WORKSPACE} -DCMAKE_PREFIX_PATH="`brew --prefix qt@5`" -DQT_DEFAULT_MAJOR_VERSION=5
 
