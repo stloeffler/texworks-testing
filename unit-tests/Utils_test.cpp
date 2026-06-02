@@ -13,10 +13,10 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	For links to further information, or to contact the authors,
-	see <http://www.tug.org/texworks/>.
+	see <https://tug.org/texworks/>.
 */
 
 #include "Utils_test.h"
@@ -645,7 +645,7 @@ void TestUtils::ResourcesLibrary_getLibraryPath_data()
 	QTest::newRow("does-not-exist") << QString() << sInvalid << stem + sInvalid;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) // *nix
 #	ifndef TW_DICPATH
-	QTest::newRow("dictionaries") << QString() << sDicts << QStringLiteral("/usr/share/hunspell:/usr/share/myspell/dicts");
+	QTest::newRow("dictionaries") << QString() << sDicts << QStringLiteral("/usr/share/hunspell:/usr/share/myspell/dicts:/usr/share/myspell");
 #	else
 	QTest::newRow("dictionaries") << QString() << sDicts << TW_DICPATH;
 #	endif

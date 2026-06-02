@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2007-2024  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2007-2025  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,10 +13,10 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	For links to further information, or to contact the authors,
-	see <http://www.tug.org/texworks/>.
+	see <https://tug.org/texworks/>.
 */
 
 #include "CompletingEdit.h"
@@ -112,10 +112,23 @@ CompletingEdit::CompletingEdit(QWidget *parent /* = nullptr */)
 
 void CompletingEdit::prefixLines(const QString &prefix)
 {
-	const QTextCursor selection{textCursor()};
+	QTextCursor selection{textCursor()};
 	QTextCursor cursor{selection};
 
 	cursor.beginEditBlock();
+
+	// Expand the front of the selection to include the newly added prefix
+	// if it is at the beginning of a block
+	// Note that selectionStart <= selectionEnd always holds, but position might
+	// be smaller than anchor (in case the user selected from right to left)
+	const bool expandFront = [](const QTextCursor & selection) {
+		if (!selection.hasSelection()) {
+			return false;
+		}
+		QTextCursor selectionStart{selection};
+		selectionStart.setPosition(selection.selectionStart());
+		return selectionStart.atBlockStart();
+	}(selection);
 
 	cursor.setPosition(cursor.selectionStart());
 	if (!cursor.atBlockStart()) {
@@ -127,6 +140,18 @@ void CompletingEdit::prefixLines(const QString &prefix)
 			// Reached end of file (no more blocks)
 			break;
 		}
+	}
+
+	if (expandFront) {
+		if (selection.position() == selection.selectionStart()) {
+			selection.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, static_cast<decltype(selection.position())>(prefix.size()));
+		}
+		else {
+			const auto selectionEnd = selection.selectionEnd();
+			selection.setPosition(static_cast<decltype(selection.position())>(selection.selectionStart() - prefix.size()));
+			selection.setPosition(selectionEnd, QTextCursor::KeepAnchor);
+		}
+		setTextCursor(selection);
 	}
 
 	cursor.endEditBlock();

@@ -1,6 +1,6 @@
 /*
 	This is part of TeXworks, an environment for working with TeX documents
-	Copyright (C) 2007-2024  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
+	Copyright (C) 2007-2025  Jonathan Kew, Stefan Löffler, Charlie Sharpsteen
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,10 +13,10 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	For links to further information, or to contact the authors,
-	see <http://www.tug.org/texworks/>.
+	see <https://tug.org/texworks/>.
 */
 
 #include "TeXDocumentWindow.h"
@@ -2819,11 +2819,11 @@ void TeXDocumentWindow::typeset()
 		QMessageBox msgBox(QMessageBox::Critical, tr("Unable to execute %1").arg(e.name()),
 		                      QLatin1String("<p>") + tr("The program \"%1\" was not found.").arg(e.program()) + QLatin1String("</p>") +
 #if defined(Q_OS_WIN)
-		                      QLatin1String("<p>") + tr("You need a <b>TeX distribution</b> like <a href=\"http://tug.org/texlive/\">TeX Live</a> or <a href=\"http://miktex.org/\">MiKTeX</a> installed on your system to typeset your document.") + QLatin1String("</p>") +
+		                      QLatin1String("<p>") + tr("You need a <b>TeX distribution</b> like <a href=\"https://tug.org/texlive/\">TeX Live</a> or <a href=\"https://miktex.org/\">MiKTeX</a> installed on your system to typeset your document.") + QLatin1String("</p>") +
 #elif defined(Q_OS_DARWIN)
-		                      QLatin1String("<p>") + tr("You need a <b>TeX distribution</b> like <a href=\"http://www.tug.org/mactex/\">MacTeX</a> installed on your system to typeset your document.") + QLatin1String("</p>") +
+		                      QLatin1String("<p>") + tr("You need a <b>TeX distribution</b> like <a href=\"https://tug.org/mactex/\">MacTeX</a> installed on your system to typeset your document.") + QLatin1String("</p>") +
 #else // defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
-		                      QLatin1String("<p>") + tr("You need a <b>TeX distribution</b> like <a href=\"http://tug.org/texlive/\">TeX Live</a> installed on your system to typeset your document. On most systems such a TeX distribution is available as prebuilt package.") + QLatin1String("</p>") +
+		                      QLatin1String("<p>") + tr("You need a <b>TeX distribution</b> like <a href=\"https://tug.org/texlive/\">TeX Live</a> installed on your system to typeset your document. On most systems such a TeX distribution is available as prebuilt package.") + QLatin1String("</p>") +
 #endif
 		                      QLatin1String("<p>") + tr("When a TeX distribution is installed you may need to tell TeXworks where to find it in Edit -> Preferences -> Typesetting.") + QLatin1String("</p>"),
 							  QMessageBox::Cancel, this);

@@ -42,9 +42,9 @@
 # such as [Docco][docco] to create a nicely annotated README for the benefit of
 # future developers and maintainers.
 #
-#   [cmake]: http://www.cmake.org
-#   [docco]: http://jashkenas.github.com/docco
-#   [md]: http://daringfireball.net/projects/markdown/
+#   [cmake]: https://cmake.org
+#   [docco]: https://ashkenas.com/docco/
+#   [md]: https://daringfireball.net/projects/markdown/
 #   [tw]: https://github.com/TeXworks/texworks
 
 
@@ -52,7 +52,7 @@
 # ======================
 
 # CMake 3.1 significantly improves support for imported targets, Qt5, c++11, etc.
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1...3.28)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1...4.2)
 
 # Set project name.
 PROJECT(TeXworks)
@@ -187,7 +187,7 @@ ENDIF ()
 
 IF (UNIX AND NOT APPLE)
   SET(TeXworks_HELP_DIR share/doc/texworks-help CACHE PATH "Path where TeXworks looks for help files")
-  SET(TeXworks_DIC_DIR /usr/share/hunspell:/usr/share/myspell/dicts CACHE PATH "Path where TeXworks looks for spellchecking dictionaries")
+  SET(TeXworks_DIC_DIR /usr/share/hunspell:/usr/share/myspell/dicts:/usr/share/myspell CACHE PATH "Path where TeXworks looks for spellchecking dictionaries")
   SET(TeXworks_DOCS_DIR share/doc/texworks CACHE PATH "Path in which documentation files are installed")
   SET(TeXworks_ICON_DIR share/icons/hicolor CACHE PATH "Path in which icons are installed")
   SET(TeXworks_MAN_DIR share/man/man1 CACHE PATH "Path in which manpages are installed")
@@ -206,6 +206,7 @@ IF (UNIX AND NOT APPLE)
 ENDIF()
 
 set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_C_STANDARD 11)
 
 # Dependency Configuration
 # ========================

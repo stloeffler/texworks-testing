@@ -13,10 +13,10 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	For links to further information, or to contact the authors,
-	see <http://www.tug.org/texworks/>.
+	see <https://tug.org/texworks/>.
 */
 
 #include "utils/ResourcesLibrary.h"
@@ -38,7 +38,7 @@ QString ResourcesLibrary::m_portableLibPath;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 // compile-time default paths - customize by defining in the .pro file
 #	ifndef TW_DICPATH
-#		define TW_DICPATH "/usr/share/hunspell" PATH_LIST_SEP "/usr/share/myspell/dicts"
+#		define TW_DICPATH "/usr/share/hunspell" PATH_LIST_SEP "/usr/share/myspell/dicts" PATH_LIST_SEP "/usr/share/myspell"
 #	endif
 #endif
 
