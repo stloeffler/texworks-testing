@@ -26,7 +26,7 @@ runs:
             ;;
         esac
         echo "::group::Uploading ${{ inputs.changes_files }}"
-        dput ${REPO} "${{ inputs.changes_file }}"
+        dput ${REPO} ${{ inputs.changes_file }}
         echo "::endgroup::"
         done
       shell: bash
