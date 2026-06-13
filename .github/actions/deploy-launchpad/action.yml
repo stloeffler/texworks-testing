@@ -25,9 +25,8 @@ runs:
             REPO="${{ inputs.devel-repo }}"
             ;;
         esac
-        for FILE in ${{ inputs.changes_files }}; do
-          echo "::group::Uploading ${FILE}"
-          dput ${REPO} "$FILE"
-          echo "::endgroup::"
+        echo "::group::Uploading ${{ inputs.changes_files }}"
+        dput ${REPO} "${{ inputs.changes_file }}"
+        echo "::endgroup::"
         done
       shell: bash
