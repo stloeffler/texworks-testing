@@ -1,5 +1,4 @@
 [ppa]
-# The HTTPS certificates uses this CN instead of the generic ppa.launchpad.net
-fqdn     = private-ppa.launchpad.net
+fqdn     = ppa.launchpad.net
 method   = https
 incoming = ~$(ppa)s

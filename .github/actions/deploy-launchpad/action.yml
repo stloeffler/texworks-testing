@@ -26,6 +26,8 @@ runs:
             ;;
         esac
         echo "::group::Uploading ${{ inputs.changes_files }}"
+        # FIXME: Bypass HTTPS certificate verification as Launchpad supplies an invalid CN
+        sudo sed -i '24s/^/import ssl\nssl._create_default_https_context = ssl._create_unverified_context\n/' /usr/bin/dput
         dput -c .github/actions/deploy-launchpad/dput.cf ${REPO} ${{ inputs.changes_files }}
         echo "::endgroup::"
         done
