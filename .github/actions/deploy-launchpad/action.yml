@@ -30,7 +30,8 @@ runs:
         #cat /usr/bin/dput
         #sudo sed -i '5s/^/import ssl\nssl._create_default_https_context = ssl._create_unverified_context\n/' /usr/bin/dput
         #cat /usr/bin/dput
-        dput -c .github/actions/deploy-launchpad/dput.cf ${REPO} ${{ inputs.changes_files }}
+        #dput -c .github/actions/deploy-launchpad/dput.cf ${REPO} ${{ inputs.changes_files }}
+        dput --debug ${REPO} ${{ inputs.changes_files }}
         echo "::endgroup::"
         done
       shell: bash
