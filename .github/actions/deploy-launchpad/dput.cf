@@ -1,5 +1,4 @@
 [ppa]
 fqdn     = ppa.launchpad.net
-method   = sftp
+method   = https
 incoming = ~$(ppa)s
-login    = *
