@@ -2,3 +2,4 @@
 fqdn     = ppa.launchpad.net
 method   = sftp
 incoming = ~$(ppa)s
+login    = *
