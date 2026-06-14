@@ -1,4 +1,5 @@
 [ppa]
 fqdn     = ppa.launchpad.net
-method   = https
+method   = sftp
 incoming = ~$(ppa)s
+login    = st.loeffler
