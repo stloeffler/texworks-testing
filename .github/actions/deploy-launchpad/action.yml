@@ -34,7 +34,7 @@ runs:
         #dput --debug ${REPO} ${{ inputs.changes_files }}
         #echo "::endgroup::"
         #done
-        sudo sed -i '64s/^/            self._ftp.set_debuglevel(1)\n' /usr/lib/python3/dist-packages/dput/uploaders/ftp.py
+        sudo sed -i '64s/^/            self._ftp.set_debuglevel(1)\n/' /usr/lib/python3/dist-packages/dput/uploaders/ftp.py
         for FILE in ${{ inputs.changes_files }}; do
           echo "::group::Uploading ${FILE}"
           dput --debug --debug ${REPO} "$FILE"
