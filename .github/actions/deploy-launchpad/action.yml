@@ -36,7 +36,8 @@ runs:
         #done
         for FILE in ${{ inputs.changes_files }}; do
           echo "::group::Uploading ${FILE}"
-          dput ${REPO} "$FILE"
+          dput --debug --debug ${REPO} "$FILE"
+          echo "Going to sleep"
           sleep 5
           echo "::endgroup::"
         done
