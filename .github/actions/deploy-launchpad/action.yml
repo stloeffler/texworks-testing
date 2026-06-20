@@ -39,7 +39,7 @@ runs:
           echo "::group::Uploading ${FILE}"
           dput --debug --debug ${REPO} "$FILE"
           echo "Going to sleep"
-          sleep 5
+          sleep 60
           echo "::endgroup::"
         done
 
