@@ -180,14 +180,14 @@ jobs:
           - label: macOS 11 x86
             macVersion: 11
             qtVersionMajor: 6
-            qtVersion: 6.8.3
+            qtVersion: 6.11.2
             qtModules: qt5compat
             arch: x86_64
             signBundle: OFF
           - label: 11-arm
             macVersion: 11
             qtVersionMajor: 6
-            qtVersion: 6.8.3
+            qtVersion: 6.11.2
             qtModules: qt5compat
             arch: arm64
             signBundle: ON
